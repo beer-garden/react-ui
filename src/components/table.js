@@ -112,11 +112,11 @@ const MyTable =({self, updateData, searchData, includePageNav, disableSearch}) =
         updateData(self);
   };
 
-  const onChange = (event: object) => {
+  const onChange = (event) => {
           searchData(self, event, updateData)
     };
 
-  const onChangeEnd = (event: object) => {
+  const onChangeEnd = (event) => {
             searchData(self, event, updateData, "End")
       };
 
@@ -197,23 +197,31 @@ const MyTable =({self, updateData, searchData, includePageNav, disableSearch}) =
     }
   }
 
+  function getTableHeader(self){
+     if(self.state.tableHeads){
+        return(
+            <TableHead>
+                <TableRow>
+                    {(self.state.tableHeads
+                      ).map((tableHead, index) => (
+                        <TableCell key={tableHead} className={classes.tableCell} >
+                              {tableHead}
+                              <br/>
+                              {formatTextField(self, index, disableSearch)}
+                        </TableCell>
+                      ))}
+                </TableRow>
+            </TableHead>
+        )
+     }
+  };
+
 
   return (
     <Box >
     <TableContainer className={classes.container}>
       <Table stickyHeader className={classes.table} aria-label="custom pagination table">
-        <TableHead>
-            <TableRow>
-                {(self.state.tableHeads
-                  ).map((tableHead, index) => (
-                    <TableCell key={tableHead} className={classes.tableCell} >
-                          {tableHead}
-                          <br/>
-                          {formatTextField(self, index, disableSearch)}
-                    </TableCell>
-                  ))}
-            </TableRow>
-        </TableHead>
+        {getTableHeader(self)}
         <TableBody>
           {(data
           ).map((item, index) => (

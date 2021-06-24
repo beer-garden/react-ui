@@ -8,11 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
 
+import Table from "../components/table"
 import GardenService from "../services/garden_service"
 
 const useStyles = makeStyles({
@@ -35,6 +32,8 @@ const useStyles = makeStyles({
 const GardenAdminCard =({garden}) => {
 
     const classes = useStyles();
+
+    let self = {state: {data: [["Status",garden.status],["Namespaces",garden.namespaces.length],["Systems",garden.systems.length]], tableKeys: [0,1]}}
 
     function getDeleteButton(connection_type){
         if(connection_type!=="LOCAL"){
@@ -64,34 +63,7 @@ const GardenAdminCard =({garden}) => {
           </Toolbar>
       </AppBar>
       <CardContent>
-        <Table >
-            <TableBody>
-                <TableRow>
-                    <TableCell>
-                        Status:
-                    </TableCell>
-                    <TableCell>
-                        {garden.status}
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell>
-                        Namespaces:
-                    </TableCell>
-                    <TableCell>
-                        {garden.namespaces.length}
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell>
-                        Systems:
-                    </TableCell>
-                    <TableCell>
-                        {garden.systems.length}
-                    </TableCell>
-                </TableRow>
-            </TableBody>
-        </Table>
+        <Table self = {self} />
       </CardContent>
       <CardActions>
         <Button variant="contained" color="primary" component={RouterLink} to={"/admin/gardens/"+garden.name}>

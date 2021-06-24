@@ -19,8 +19,6 @@ import Typography from '@material-ui/core/Typography';
       job = {};
 	  state = {
         data: [],
-        page: 0,
-        rowsPerPage: -2,
         tableKeys: ['name', 'request_template__system', 'request_template__system_version', 'request_template__instance_name', 'request_template__command', 'status', 'success_count', 'error_count', 'next_run_time'],
         tableHeads: ['Job Name', 'System', 'System Version', 'Instance Name', 'Command', 'Status', 'Success Count', 'Error Count', 'Next Run Time']
       }

@@ -5,14 +5,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
 import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import List from '@material-ui/core/List';
 
+import Table from "../components/table"
 
 const useStyles = makeStyles({
   root: {
@@ -40,6 +37,16 @@ const GardenInfoCard =({garden}) => {
 
     const classes = useStyles();
 
+    function getNamespaceList(garden){
+        return(<List className={classes.rootList} >
+               {(garden.namespaces).map((namespace) => (
+                   <ListItem>{'\u25CF'} {namespace}</ListItem>
+               ))}
+           </List>)
+    }
+
+    let self = {state: {data: [["Name",garden.name],["Status",garden.status],["Known Namespaces",getNamespaceList(garden)],["Systems",garden.systems.length]], tableKeys: [0,1]}}
+
     return (
         <Box width={1/3} pb={1} >
             <Card className={classes.root}>
@@ -49,46 +56,7 @@ const GardenInfoCard =({garden}) => {
                   </Toolbar>
               </AppBar>
               <CardContent>
-                <Table >
-                    <TableBody>
-                        <TableRow>
-                            <TableCell>
-                                Name:
-                            </TableCell>
-                            <TableCell>
-                                {garden.name}
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>
-                                Status:
-                            </TableCell>
-                            <TableCell>
-                                {garden.status}
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>
-                                Known Namespaces:
-                            </TableCell>
-                            <TableCell>
-                                <List className={classes.rootList} >
-                                    {(garden.namespaces).map((namespace) => (
-                                        <ListItem>{'\u25CF'} {namespace}</ListItem>
-                                    ))}
-                                </List>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>
-                                Connection Type:
-                            </TableCell>
-                            <TableCell>
-                                {garden.connection_type}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                <Table self = {self} />
               </CardContent>
             </Card>
         </Box>

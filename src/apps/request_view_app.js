@@ -18,9 +18,6 @@ import Divider from '../components/divider';
 
 	  state = {
         data: [],
-        page: 0,
-        totalItems: null,
-        rowsPerPage: 0,
         tableKeys: ['command', 'system', 'system_version', 'instance_name', 'status', 'created_at', 'updated_at', 'comment'],
         tableHeads: ['Command', 'System', 'System Version', 'Instance Name', 'Status', 'Created', 'Updated', 'Comment']
       }
