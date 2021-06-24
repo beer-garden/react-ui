@@ -15,7 +15,7 @@ class CommandViewApp extends Component {
 //      { command_name, namespace, system_name, version } = props.match.params;
     systems = this.props.systems;
     initialData = {};
-    schema = {};
+    schema = null;
     uischema = {};
     state = {
         redirect: null,
@@ -48,25 +48,13 @@ class CommandViewApp extends Component {
             requestData = this.formatRequestToData(this.props.location.state.request, this.initialData);
         }
         this.description = this.command.description;
+        this.schema = this.formatSchema(build.model, build.schema);
         this.setState({
             data: (requestData || this.initialData),
             model: this.formatDataToModel(requestData || this.initialData),
-            schema: this.formatSchema(build.model, build.schema)
         });
 
     }
-
-//      successCallback(response) {
-//        let system = SystemsService.getSystem(response.data, this.namespace, this.system_name, this.version);
-//        this.command = SystemsService.getCommand(system.commands, this.command_name)
-//        let SFBuilderService = sfBuilderService();
-//        let build = SFBuilderService.build(system, this.command)
-//        this.schema = build.schema;
-//        this.uischema = build.form;
-//        this.initialData = build.model;
-//        this.description = this.command.description;
-//        this.setState({data: this.initialData});
-//      }
 
     successCallback(response) {
         this.setState({redirect: (<Redirect push to={"/requests/".concat(response.data.id)}/>)})
@@ -131,15 +119,15 @@ class CommandViewApp extends Component {
     }
 
     getForm() {
-        if (this.state.schema) {
-            return (<CommandViewForm self={this} schema={this.state.schema} uischema={this.uischema}
+        if (this.schema) {
+            return (<CommandViewForm self={this} schema={this.schema} uischema={this.uischema}
                                      initialData={this.initialData}/>)
         }
     }
 
     render() {
         if (this['command'] && this.state.data) {
-            this.state.schema = this.formatSchema(this.state.model, this.initialSchema)
+            this.schema = this.formatSchema(this.state.model, this.initialSchema)
         }
         return (
 
@@ -170,7 +158,7 @@ class CommandViewApp extends Component {
                     </Box>
                     <Box width={1 / 3}>
                         <h3>Schema</h3>
-                        <ReactJson src={this.state.schema}/>
+                        <ReactJson src={this.schema}/>
                     </Box>
                     <Box width={1 / 3}>
                         <h3>UI Schema</h3>

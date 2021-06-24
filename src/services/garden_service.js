@@ -233,13 +233,13 @@ class GardensService {
 
     serverModelToForm = function (model) {
 
-        var values = {};
-        var stomp_headers = [];
+        let values = {};
+        let stomp_headers = [];
         values['connection_type'] = model['connection_type'];
         if (model.hasOwnProperty('connection_params') && model.connection_params != null) {
-            for (var parameter of Object.keys(model['connection_params'])) {
-                if (parameter == 'stomp_headers') {
-                    for (var key in model['connection_params'][parameter]) {
+            for (let parameter of Object.keys(model['connection_params'])) {
+                if (parameter === 'stomp_headers') {
+                    for (let key in model['connection_params'][parameter]) {
                         stomp_headers[stomp_headers.length] = {
                             'key': key,
                             'value': model['connection_params'][parameter][key]
@@ -259,14 +259,14 @@ class GardensService {
 
         model['connection_type'] = form['connection_type'];
         model['connection_params'] = {};
-        var stomp_headers = {};
-        for (var field of Object.keys(form)) {
-            if (field == 'stomp_headers') {
-                for (var i in form[field]) {
+        let stomp_headers = {};
+        for (let field of Object.keys(form)) {
+            if (field === 'stomp_headers') {
+                for (let i in form[field]) {
                     stomp_headers[form[field][i]['key']] = form[field][i]['value'];
                 }
                 model['connection_params'][field] = stomp_headers;
-            } else if (field != 'connection_type') {
+            } else if (field !== 'connection_type') {
                 model['connection_params'][field] = form[field];
             }
         }

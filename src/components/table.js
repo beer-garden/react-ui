@@ -14,7 +14,6 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-//import Button from '@material-ui/core/Button';
 import TableHead from '@material-ui/core/TableHead';
 import TextField from '@material-ui/core/TextField';
 
@@ -155,8 +154,6 @@ const MyTable = ({self, updateData, searchData, includePageNav, disableSearch}) 
                             shrink: true,
                         }}/></Box>
                 </Box>);
-            } else if ("" === key) {
-                return;
             } else {
                 return <TextField size="small" id={JSON.stringify(index)} label="" variant="outlined"
                                   onChange={onChange}/>;
@@ -214,7 +211,7 @@ const MyTable = ({self, updateData, searchData, includePageNav, disableSearch}) 
                 </TableHead>
             )
         }
-    };
+    }
 
 
     return (
