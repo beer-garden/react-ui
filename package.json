@@ -1,0 +1,56 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@jsonforms/core": "^2.5.0",
+    "@jsonforms/examples": "^2.5.0",
+    "@jsonforms/material-renderers": "^2.5.0",
+    "@jsonforms/react": "^2.5.0",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/styles": "^4.11.4",
+    "@rjsf/core": "^2.5.1",
+    "@rjsf/material-ui": "^2.5.1",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.21.1",
+    "material-ui-schema-form": "^0.9.9",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-json-view": "^1.21.3",
+    "react-masonry-component": "^6.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-schema-form": "^0.9.10",
+    "react-schema-form-rc-select": "^0.3.18",
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.1.1"
+  },
+  "scripts": {
+    "start": "BROWSER=none react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:2337",
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
