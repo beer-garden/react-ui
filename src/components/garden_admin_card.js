@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink} from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,40 +13,45 @@ import Table from "../components/table"
 import GardenService from "../services/garden_service"
 
 const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
+    root: {
+        minWidth: 275,
+    },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
+    title: {
+        fontSize: 14,
+    },
+    pos: {
+        marginBottom: 12,
+    },
 });
 
-const GardenAdminCard =({garden}) => {
+const GardenAdminCard = ({garden}) => {
 
     const classes = useStyles();
 
-    let self = {state: {data: [["Status",garden.status],["Namespaces",garden.namespaces.length],["Systems",garden.systems.length]], tableKeys: [0,1]}}
+    let self = {
+        state: {
+            data: [["Status", garden.status], ["Namespaces", garden.namespaces.length], ["Systems", garden.systems.length]],
+            tableKeys: [0, 1]
+        }
+    }
 
-    function getDeleteButton(connection_type){
-        if(connection_type!=="LOCAL"){
-            return(
-                <Button onClick={() => GardenService.deleteGarden(garden.name)} variant="contained" color="secondary" >
+    function getDeleteButton(connection_type) {
+        if (connection_type !== "LOCAL") {
+            return (
+                <Button onClick={() => GardenService.deleteGarden(garden.name)} variant="contained" color="secondary">
                     Delete {garden.name}
                 </Button>
             );
         }
     }
 
-    function localOrRemote(connection_type){
-        if(connection_type==="LOCAL"){
+    function localOrRemote(connection_type) {
+        if (connection_type === "LOCAL") {
             return "(LOCAL)";
         } else {
             return "(REMOTE)";
@@ -56,22 +61,23 @@ const GardenAdminCard =({garden}) => {
     return (
 
 
-    <Card className={classes.root}>
-      <AppBar color="inherit" style={{ background: 'lightgray' }} position="static">
-          <Toolbar>
-              <Typography variant="h6" color="inherit" type="title">{garden.name} {localOrRemote(garden.connection_type)}</Typography>
-          </Toolbar>
-      </AppBar>
-      <CardContent>
-        <Table self = {self} />
-      </CardContent>
-      <CardActions>
-        <Button variant="contained" color="primary" component={RouterLink} to={"/admin/gardens/"+garden.name}>
-            Edit {garden.name} configurations
-        </Button>
-        {getDeleteButton(garden.connection_type)}
-      </CardActions>
-    </Card>
+        <Card className={classes.root}>
+            <AppBar color="inherit" style={{background: 'lightgray'}} position="static">
+                <Toolbar>
+                    <Typography variant="h6" color="inherit"
+                                type="title">{garden.name} {localOrRemote(garden.connection_type)}</Typography>
+                </Toolbar>
+            </AppBar>
+            <CardContent>
+                <Table self={self}/>
+            </CardContent>
+            <CardActions>
+                <Button variant="contained" color="primary" component={RouterLink} to={"/admin/gardens/" + garden.name}>
+                    Edit {garden.name} configurations
+                </Button>
+                {getDeleteButton(garden.connection_type)}
+            </CardActions>
+        </Card>
     );
 }
 

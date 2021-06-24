@@ -8,39 +8,38 @@ import {buildCommonSF, buildModelSF} from './builder';
  * @return {Object}                A Service for building valid schema-form objects.
  */
 export function sfBuilderService() {
-  let SFBuilderService = {};
+    let SFBuilderService = {};
 
-  /**
-   * Returns a valid schema / form combination for use in angular-schema-form
-   *
-   * If there are optional fields, it will return a form which includes tabs
-   * where the required and optional fields are separated.
-   * If there are no * optional fields, then it returns a simple flat form with
-   * the required fields only.
-   *
-   * @param {Object} system - A valid beer-garden System object
-   * @param {Object} command - A valid beer-garden Command object
-   * @return {Object} schemaForm - An object with schema and form properties
-   */
-  SFBuilderService.build = function(system, command) {
-    // Build the actual schema and form for this specific command
-    let modelSF = buildModelSF(command, ['parameters']);
-    let commonSF = buildCommonSF(system, command);
+    /**
+     * Returns a valid schema / form combination for use in angular-schema-form
+     *
+     * If there are optional fields, it will return a form which includes tabs
+     * where the required and optional fields are separated.
+     * If there are no * optional fields, then it returns a simple flat form with
+     * the required fields only.
+     *
+     * @param {Object} system - A valid beer-garden System object
+     * @param {Object} command - A valid beer-garden Command object
+     * @return {Object} schemaForm - An object with schema and form properties
+     */
+    SFBuilderService.build = function (system, command) {
+        // Build the actual schema and form for this specific command
+        let modelSF = buildModelSF(command, ['parameters']);
+        let commonSF = buildCommonSF(system, command);
 
-    let buildSchemas = {
-        "type": "object",
-        "properties": Object.assign({}, commonSF.schema, modelSF.schema),
-        "required": commonSF.required
-      };
-    let buildModel = Object.assign({}, commonSF.model, modelSF.model)
-    let buildForm = {
-                        'type': 'VerticalLayout', 'elements': [modelSF.form, commonSF.form],
-                      };
+        let buildSchemas = {
+            "type": "object",
+            "properties": Object.assign({}, commonSF.schema, modelSF.schema),
+            "required": commonSF.required
+        };
+        let buildModel = Object.assign({}, commonSF.model, modelSF.model)
+        let buildForm = {
+            'type': 'VerticalLayout', 'elements': [modelSF.form, commonSF.form],
+        };
 
-    // Merge the two into the final representation
-    // For the schema start with common and add the model to its parameters
-    // If the command has a custom schema then use that instead of the generated one
-
+        // Merge the two into the final representation
+        // For the schema start with common and add the model to its parameters
+        // If the command has a custom schema then use that instead of the generated one
 
 
 //    if (command.schema !== undefined && !_.isEqual({}, command.schema)) {
@@ -100,12 +99,12 @@ export function sfBuilderService() {
 //    // Tie in the model schema in the correct place
 //    commonSF['schema']['parameters'] = modelSchema;
 //
-    return {
-      schema: buildSchemas,
-      form: buildForm,
-      model: buildModel
+        return {
+            schema: buildSchemas,
+            form: buildForm,
+            model: buildModel
+        };
     };
-  };
 
-  return SFBuilderService;
+    return SFBuilderService;
 };

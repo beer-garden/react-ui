@@ -5,7 +5,7 @@ const myDivider = () => {
 
     return (
         <Box pb={1}>
-            <Divider />
+            <Divider/>
         </Box>
     );
 }

@@ -5,8 +5,8 @@ sfErrorMessageConfig.$inject = ['sfErrorMessageProvider'];
  * @param  {Object} sfErrorMessageProvider Provider from angular-schema-form
  */
 export function sfErrorMessageConfig(sfErrorMessageProvider) {
-  sfErrorMessageProvider.setDefaultMessage('requiredAllowNull', 'Required');
-  sfErrorMessageProvider.setDefaultMessage('failNull', 'Required');
+    sfErrorMessageProvider.setDefaultMessage('requiredAllowNull', 'Required');
+    sfErrorMessageProvider.setDefaultMessage('failNull', 'Required');
 };
 
 
