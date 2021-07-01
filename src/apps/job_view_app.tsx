@@ -21,7 +21,7 @@ type MyState = {
     tableHeads: string[];
 }
 
-class JobViewApp extends Component<MyProps,MyState> {
+class JobViewApp extends Component<MyProps, MyState> {
     job: any = {};
     state: MyState = {
         data: [],
@@ -130,7 +130,7 @@ class JobViewApp extends Component<MyProps,MyState> {
                     container
                 >
                     <Grid item>
-                        <PageHeader title={this.title} description={this.id} />
+                        <PageHeader title={this.title} description={this.id}/>
                     </Grid>
                     <Grid item>
                         <Typography style={{flex: 1}}>

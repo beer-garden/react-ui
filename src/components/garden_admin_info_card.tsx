@@ -30,7 +30,7 @@ const useStyles = makeStyles({
     },
 });
 
-interface GardenInfoCardProps{
+interface GardenInfoCardProps {
     garden: any
 }
 

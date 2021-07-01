@@ -39,12 +39,11 @@ const useStyles = makeStyles({
     },
 });
 
-interface SystemAdminCardProps{
-    self: any
+interface SystemAdminCardProps {
     systems: any[]
 }
 
-const SystemAdminCard: FC<SystemAdminCardProps> = ({self, systems}: SystemAdminCardProps) => {
+const SystemAdminCard: FC<SystemAdminCardProps> = ({systems}: SystemAdminCardProps) => {
 
     function getSeverity(status: string) {
         switch (status) {
@@ -84,7 +83,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({self, systems}: SystemAdminC
         <Card className={classes.root}>
             <AppBar color="inherit" style={{background: 'lightgray'}} position="static">
                 <Toolbar>
-                    <Typography variant="h6" color="inherit" >{systems[0].name}</Typography>
+                    <Typography variant="h6" color="inherit">{systems[0].name}</Typography>
                 </Toolbar>
             </AppBar>
             <CardContent>
@@ -105,7 +104,8 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({self, systems}: SystemAdminC
                                     </Grid>
                                     <Grid item key={"system actions"}>
                                         <Toolbar variant='dense'>
-                                            <IconButton onClick={() => InstanceService.startSystem(system)} aria-label="start">
+                                            <IconButton onClick={() => InstanceService.startSystem(system)}
+                                                        aria-label="start">
                                                 <PlayCircleFilledIcon/>
                                             </IconButton>
                                             <IconButton onClick={() => InstanceService.stopSystem(system)}
@@ -140,7 +140,8 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({self, systems}: SystemAdminC
                                                      alignItems="center"
                                                 >
                                                     <Box pr={1}>
-                                                        <Alert variant="filled" icon={false} severity={getSeverity(instance.status)}>
+                                                        <Alert variant="filled" icon={false}
+                                                               severity={getSeverity(instance.status)}>
                                                             {instance.status}
                                                         </Alert>
                                                     </Box>

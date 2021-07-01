@@ -25,7 +25,7 @@ const MenuTabs = () => {
         <Box className={classes.root}>
             <AppBar color="inherit" position="fixed">
                 <Toolbar variant='dense'>
-                    <img src={png} alt=""></img><Typography style={{flex: 1}} variant="h6" color="inherit" >Beer
+                    <img src={png} /><Typography style={{flex: 1}} variant="h6" color="inherit">Beer
                     Garden</Typography>
                     <Box display="flex"
                          alignItems="center"
@@ -40,7 +40,7 @@ const MenuTabs = () => {
                             <Button component={RouterLink} to="/jobs">Scheduler</Button>
                         </Box>
                         <Box>
-                            <AdminMenu />
+                            <AdminMenu/>
                         </Box>
                     </Box>
                 </Toolbar>

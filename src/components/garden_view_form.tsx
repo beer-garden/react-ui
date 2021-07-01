@@ -5,14 +5,13 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import GardenService from '../services/garden_service'
 
-interface GardenViewFormProps{
+interface GardenViewFormProps {
     self: any
     schema: any
     uischema: any
-    initialModel: any
 }
 
-const GardenViewForm: FC<GardenViewFormProps> = ({self, schema, uischema, initialModel}: GardenViewFormProps) => {
+const GardenViewForm: FC<GardenViewFormProps> = ({self, schema, uischema}: GardenViewFormProps) => {
 
     function makeRequest(self: any) {
         if (self.state.errors.length > 0) {

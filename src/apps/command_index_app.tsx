@@ -23,7 +23,7 @@ type MyState = {
     tableHeads: string[];
 }
 
-class CommandsApp extends Component<MyProps,MyState> {
+class CommandsApp extends Component<MyProps, MyState> {
     systems = this.props.systems;
     commands = [];
     namespace = null;

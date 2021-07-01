@@ -22,7 +22,7 @@ type MyState = {
     tableHeads: string[];
 }
 
-class RequestViewApp extends Component<MyProps,MyState> {
+class RequestViewApp extends Component<MyProps, MyState> {
 
     state: MyState = {
         data: [],
@@ -136,7 +136,7 @@ class RequestViewApp extends Component<MyProps,MyState> {
                     container
                 >
                     <Grid item>
-                        <PageHeader title={this.title} description={this.id} />
+                        <PageHeader title={this.title} description={this.id}/>
                     </Grid>
                     <Grid item>
                         <Typography style={{flex: 1}}>

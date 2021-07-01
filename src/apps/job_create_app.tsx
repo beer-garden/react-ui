@@ -18,7 +18,7 @@ type MyState = {
     errors: any[]
 }
 
-class JobCreateApp extends Component<MyProps,MyState> {
+class JobCreateApp extends Component<MyProps, MyState> {
     JobService = jobService;
     schema = this.JobService.SCHEMA;
     uischema = this.JobService.UISCHEMA;

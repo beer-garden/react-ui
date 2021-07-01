@@ -167,7 +167,7 @@ const MyTable: FC<TableProps> = ({self, includePageNav, disableSearch}: TablePro
     }
 
 
-    function pageNav(rowsPerPage: number, totalItems: string, totalItemsFiltered: number|null, page: number, handleChangePage: any, handleChangeRowsPerPage: any, TablePaginationActions: any, includePageNav: boolean) {
+    function pageNav(rowsPerPage: number, totalItems: string, totalItemsFiltered: number | null, page: number, handleChangePage: any, handleChangeRowsPerPage: any, TablePaginationActions: any, includePageNav: boolean) {
         if (includePageNav) {
             let count: any = totalItemsFiltered;
             if (totalItemsFiltered === 0 || !totalItemsFiltered) {

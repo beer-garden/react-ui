@@ -13,7 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import RequestService from '../services/request_service'
 
 
-interface CommandViewFormProps{
+interface CommandViewFormProps {
     self: any
     schema: any
     uischema: any

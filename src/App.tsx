@@ -57,9 +57,11 @@ class App extends Component {
                             <Route path="/admin/gardens/:garden_name/"
                                    component={(routeProps: any) => <GardenViewApp {...routeProps} />}/>
                             <Route path="/admin/gardens" component={() => <GardensAdminApp/>}/>
-                            <Route path="/requests/:id" component={(routeProps: any) => <RequestViewApp {...routeProps} />}/>
+                            <Route path="/requests/:id"
+                                   component={(routeProps: any) => <RequestViewApp {...routeProps} />}/>
                             <Route path="/requests" component={() => <RequestApp/>}/>
-                            <Route path="/jobs/create" component={(routeProps: any) => <JobCreateApp {...routeProps} />}/>
+                            <Route path="/jobs/create"
+                                   component={(routeProps: any) => <JobCreateApp {...routeProps} />}/>
                             <Route path="/jobs/:id" component={(routeProps: any) => <JobViewApp {...routeProps} />}/>
                             <Route path="/jobs" component={() => <JobsApp/>}/>
                             <Redirect to="/systems"/>

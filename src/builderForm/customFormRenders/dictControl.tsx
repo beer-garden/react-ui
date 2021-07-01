@@ -1,10 +1,11 @@
 import {withJsonFormsControlProps} from '@jsonforms/react';
 import {Dictionary} from './dictForm';
 
-interface DictionaryControlProps
-{
+interface DictionaryControlProps {
     data: any;
-    handleChange(path: string, value: any ): void; path: string;
+    path: string;
+
+    handleChange(path: string, value: any): void;
 }
 
 const DictionaryControl = ({data, handleChange, path,}: DictionaryControlProps) => (

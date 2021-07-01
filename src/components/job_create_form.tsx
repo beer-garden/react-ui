@@ -12,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 //import { makeStyles } from '@material-ui/core/styles';
 import JobService from '../services/job_service'
 
-interface JobViewFormProps{
+interface JobViewFormProps {
     self: any
     schema: any
     uischema: any

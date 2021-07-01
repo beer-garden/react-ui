@@ -30,7 +30,7 @@ type MyState = {
     errors: any[],
 }
 
-class GardenViewApp extends Component<MyProps,MyState> {
+class GardenViewApp extends Component<MyProps, MyState> {
 
     schema = GardenService.SCHEMA;
     uischema = GardenService.UISCHEMA;
@@ -107,8 +107,7 @@ class GardenViewApp extends Component<MyProps,MyState> {
                     severity="info">{"Since this is the local Garden it's not possible to modify connection information"}</Alert>
             );
         } else {
-            return (<GardenForm self={this} schema={this.schema} uischema={this.uischema}
-                                initialModel={this.initialModel}/>);
+            return (<GardenForm self={this} schema={this.schema} uischema={this.uischema}/>);
         }
     }
 
@@ -139,7 +138,7 @@ class GardenViewApp extends Component<MyProps,MyState> {
                     container
                 >
                     <Grid item>
-                        <PageHeader title={this.title} description={""} />
+                        <PageHeader title={this.title} description={""}/>
                     </Grid>
                     <Grid item>
                         <Typography style={{flex: 1}}>

@@ -2,9 +2,8 @@ import React, {FC} from 'react';
 import TextField from '@material-ui/core/TextField';
 
 
-interface DictProps
-{
-    id ? : string;
+interface DictProps {
+    id?: string;
     value: any;
     title: string;
     updateValue: (newValue: any) => void;

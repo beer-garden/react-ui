@@ -16,7 +16,7 @@ type MyState = {
     data: any[];
 }
 
-class SystemsAdminApp extends Component<MyProps,MyState> {
+class SystemsAdminApp extends Component<MyProps, MyState> {
     systems = this.props.systems;
     state: MyState = {
         data: []
@@ -65,7 +65,7 @@ class SystemsAdminApp extends Component<MyProps,MyState> {
                 <Grid container spacing={3}>
                     {(this.state.data).map((systems, index) => (
                         <Grid item xs={4} key={"systems" + index}>
-                            <SystemCard systems={systems} self={this}/>
+                            <SystemCard systems={systems}/>
                         </Grid>
                     ))}
                 </Grid>

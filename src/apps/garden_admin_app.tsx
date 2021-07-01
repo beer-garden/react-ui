@@ -7,13 +7,11 @@ import GardenCard from '../components/garden_admin_card';
 import Divider from '../components/divider';
 
 class SystemsAdminApp extends Component {
-//      systems = this.props.systems;
-//      gardens = this.props.gardens;
+
     state = {
         gardens: []
     }
     title = "Gardens Management";
-    breadcrumbs = null;
 
     componentDidMount() {
         GardensService.getGardens(this);

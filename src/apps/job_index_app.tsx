@@ -66,7 +66,7 @@ class JobsApp extends Component {
     render() {
         return (
             <div>
-                <PageHeader title={this.title} description={""} />
+                <PageHeader title={this.title} description={""}/>
                 <Divider/>
                 <RequestsTable self={this} includePageNav={true} disableSearch={true}/>
             </div>

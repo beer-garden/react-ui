@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 
-interface CheckboxesProps{
+interface CheckboxesProps {
     self: any
 }
 

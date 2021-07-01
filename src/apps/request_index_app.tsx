@@ -188,7 +188,7 @@ class RequestApp extends Component {
                      alignItems="flex-end"
                 >
                     <Box>
-                        <IncludeChildren self={this} />
+                        <IncludeChildren self={this}/>
                     </Box>
                 </Box>
                 <Table self={this} includePageNav={true} disableSearch={false}/>

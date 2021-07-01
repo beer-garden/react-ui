@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     },
 });
 
-interface GardenAdminCardProps{
+interface GardenAdminCardProps {
     garden: any
 }
 
@@ -68,11 +68,12 @@ const GardenAdminCard: FC<GardenAdminCardProps> = ({garden}: GardenAdminCardProp
         <Card className={classes.root}>
             <AppBar color="inherit" style={{background: 'lightgray'}} position="static">
                 <Toolbar>
-                    <Typography variant="h6" color="inherit">{garden.name} {localOrRemote(garden.connection_type)}</Typography>
+                    <Typography variant="h6"
+                                color="inherit">{garden.name} {localOrRemote(garden.connection_type)}</Typography>
                 </Toolbar>
             </AppBar>
             <CardContent>
-                <Table self={self} includePageNav={false} disableSearch={true} />
+                <Table self={self} includePageNav={false} disableSearch={true}/>
             </CardContent>
             <CardActions>
                 <Button variant="contained" color="primary" component={RouterLink} to={"/admin/gardens/" + garden.name}>

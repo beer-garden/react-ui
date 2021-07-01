@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import {Link as RouterLink} from 'react-router-dom';
 
-interface MyBreadcrumbsProps{
+interface MyBreadcrumbsProps {
     breadcrumbs: string[]
 }
 

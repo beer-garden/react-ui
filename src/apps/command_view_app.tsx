@@ -22,7 +22,7 @@ type MyState = {
     errors: any;
 }
 
-class CommandViewApp extends Component<MyProps,MyState> {
+class CommandViewApp extends Component<MyProps, MyState> {
 
     systems = this.props.systems;
     initialData = {};
@@ -150,7 +150,7 @@ class CommandViewApp extends Component<MyProps,MyState> {
 
             <Box>
                 {this.state.redirect}
-                <PageHeader title={this.title} description={this.description} />
+                <PageHeader title={this.title} description={this.description}/>
                 <Divider/>
                 <Breadcrumbs breadcrumbs={this.breadcrumbs}/>
                 <Box pt={2}
