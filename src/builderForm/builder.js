@@ -210,7 +210,7 @@ export function buildModelSF(model, parentKey) {
             }
         }
         let sf = buildParameterSF(parameter, parentKey);
-        paramModel.[parentKey][key] = sf.model;
+        paramModel[parentKey][key] = sf.model;
         paramSchemas[parentKey].properties[key] = sf['schema'];
         if (parameter.optional) {
             optionalArray.push(sf['form']);
