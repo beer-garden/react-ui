@@ -1,19 +1,20 @@
-import {sfErrorMessageConfig} from './errorConfig';
+import { sfErrorMessageConfig } from "./errorConfig";
 
 let mut, providerStub;
 
-describe('Error Message Config', function () {
+describe("Error Message Config", function () {
+  beforeEach(function () {
+    providerStub = {
+      setDefaultMessage: sinon.stub(),
+    };
 
-    beforeEach(function () {
-        providerStub = {
-            setDefaultMessage: sinon.stub()
-        };
+    mut = sfErrorMessageConfig(providerStub);
+  });
 
-        mut = sfErrorMessageConfig(providerStub);
-    });
-
-    it('should set "requiredAllowNull" message', function () {
-        expect(providerStub.setDefaultMessage).to.have.been.calledWith('requiredAllowNull');
-        expect(providerStub.setDefaultMessage).to.have.been.calledWith('failNull');
-    });
+  it('should set "requiredAllowNull" message', function () {
+    expect(providerStub.setDefaultMessage).to.have.been.calledWith(
+      "requiredAllowNull"
+    );
+    expect(providerStub.setDefaultMessage).to.have.been.calledWith("failNull");
+  });
 });
