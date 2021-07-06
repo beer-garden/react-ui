@@ -25,7 +25,7 @@ const MenuTabs = () => {
         <Box className={classes.root}>
             <AppBar color="inherit" position="fixed">
                 <Toolbar variant='dense'>
-                    <img src={png} /><Typography style={{flex: 1}} variant="h6" color="inherit">Beer
+                    <img src={png} alt={""} /><Typography style={{flex: 1}} variant="h6" color="inherit">Beer
                     Garden</Typography>
                     <Box display="flex"
                          alignItems="center"
