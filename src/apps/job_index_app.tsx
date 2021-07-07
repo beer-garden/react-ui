@@ -35,7 +35,6 @@ class JobsApp extends Component {
     ],
   };
   title = "Request Scheduler";
-  breadcrumbs = null;
   jobs: any;
 
   updateData() {

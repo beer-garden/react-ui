@@ -493,7 +493,7 @@ class JobService {
   }
 
   deleteJob(self: any, jobId: string) {
-    axios.delete("/api/v1/jobs/" + jobId);
+    axios.delete("/api/v1/jobs/" + jobId).then(() => self.deleteCallback());
   }
 
   resumeJob(self: any, jobId: string) {

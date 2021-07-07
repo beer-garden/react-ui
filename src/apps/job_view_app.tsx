@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import ReactJson from "react-json-view";
+import { Redirect } from "react-router";
 
 import JobService from "../services/job_service";
 import PageHeader from "../components/page_header";
@@ -17,6 +18,7 @@ type MyProps = {
 };
 type MyState = {
   data: any[];
+  redirect: any;
   tableKeys: string[];
   tableHeads: string[];
 };
@@ -25,6 +27,7 @@ class JobViewApp extends Component<MyProps, MyState> {
   job: any = {};
   state: MyState = {
     data: [],
+    redirect: null,
     tableKeys: [
       "name",
       "request_template__system",
@@ -49,7 +52,6 @@ class JobViewApp extends Component<MyProps, MyState> {
     ],
   };
   title = "Job";
-  breadcrumbs = null;
   id: string = "";
   description: string = "";
 
@@ -134,6 +136,10 @@ class JobViewApp extends Component<MyProps, MyState> {
     }
   }
 
+  deleteCallback() {
+    this.setState({ redirect: <Redirect push to={"/jobs/"} /> });
+  }
+
   getButton() {
     if (this.job.status === "RUNNING") {
       return (
@@ -165,6 +171,7 @@ class JobViewApp extends Component<MyProps, MyState> {
   render() {
     return (
       <Box>
+        {this.state.redirect}
         <Grid
           justify="space-between" // Add it here :)
           container

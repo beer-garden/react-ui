@@ -47,7 +47,6 @@ class SystemsApp extends Component<MyProps, MyState> {
     ],
   };
   title = "Systems";
-  breadcrumbs = null;
 
   updateData() {
     let state = this.state;
