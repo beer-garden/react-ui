@@ -29,8 +29,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix",
-    "lint-quiet": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+    "lint": "eslint '*/**/*.{js,ts,tsx}'",
+    "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --fix"
   },
   "proxy": "http://localhost:2337",
   "eslintConfig": {

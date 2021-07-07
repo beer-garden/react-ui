@@ -8,9 +8,10 @@ import AdminService from "../services/admin_service";
 import PageHeader from "../components/page_header";
 import SystemCard from "../components/system_admin_card";
 import Divider from "../components/divider";
+import System from "../custom_types/system_type";
 
 type MyProps = {
-  systems: any;
+  systems: System[];
 };
 type MyState = {
   data: any[];
@@ -22,10 +23,9 @@ class SystemsAdminApp extends Component<MyProps, MyState> {
     data: [],
   };
   title = "Systems Management";
-  breadcrumbs = null;
 
   formatSystems() {
-    let system_names: any = [];
+    let system_names: string[] = [];
     for (let i in this.systems) {
       if (!system_names.includes(this.systems[i].name)) {
         system_names.push(this.systems[i].name);

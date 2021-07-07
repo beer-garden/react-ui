@@ -8,9 +8,11 @@ import Divider from "../components/divider";
 import Breadcrumbs from "../components/breadcrumbs";
 import SystemsService from "../services/system_service";
 import Table from "../components/table";
+import System from "../custom_types/system_type";
+import Command from "../custom_types/command_type";
 
 type MyProps = {
-  systems: any;
+  systems: System[];
   match: any;
 };
 type MyState = {
@@ -24,8 +26,8 @@ type MyState = {
 };
 
 class CommandsApp extends Component<MyProps, MyState> {
-  systems = this.props.systems;
-  commands = [];
+  systems: System[] = this.props.systems;
+  commands: Command[] = [];
   namespace = null;
   systemName = null;
   systemVersion = null;
@@ -76,12 +78,16 @@ class CommandsApp extends Component<MyProps, MyState> {
       version: version,
     });
     for (let i in systems) {
-      for (let k in systems[i].commands) {
-        systems[i].commands[k]["namespace"] = systems[i].namespace;
-        systems[i].commands[k]["systemName"] = systems[i].name;
-        systems[i].commands[k]["systemVersion"] = systems[i].version;
+      if (systems.hasOwnProperty(i)) {
+        for (let k in systems[i].commands) {
+          if (systems[i].commands.hasOwnProperty(k)) {
+            systems[i].commands[k]["namespace"] = systems[i].namespace;
+            systems[i].commands[k]["systemName"] = systems[i].name;
+            systems[i].commands[k]["systemVersion"] = systems[i].version;
+          }
+        }
+        this.commands = this.commands.concat(systems[i].commands);
       }
-      this.commands = this.commands.concat(systems[i].commands);
     }
     this.breadcrumbs = [namespace, system_name, version].filter(function (x) {
       return x !== undefined;

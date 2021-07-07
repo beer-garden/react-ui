@@ -20,8 +20,7 @@ import SystemsService from "./services/system_service";
 
 class App extends Component {
   state = {
-    systems: null,
-    index: 0,
+    systems: [],
   };
 
   componentDidMount() {
@@ -33,7 +32,7 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.systems) {
+    if (this.state.systems[0]) {
       return (
         <Box>
           <Menu />

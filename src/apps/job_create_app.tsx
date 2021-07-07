@@ -10,9 +10,6 @@ type MyProps = {
   location: any;
 };
 type MyState = {
-  schema: any;
-  uischema: any;
-  initialModel: any;
   redirect: any;
   data: any;
   errors: any[];
@@ -24,9 +21,6 @@ class JobCreateApp extends Component<MyProps, MyState> {
   uischema = this.JobService.UISCHEMA;
   initialModel = this.JobService.MODEL;
   state: MyState = {
-    schema: {},
-    uischema: {},
-    initialModel: {},
     redirect: null,
     data: {},
     errors: [],

@@ -9,9 +9,10 @@ import Breadcrumbs from "../components/breadcrumbs";
 import PageHeader from "../components/page_header";
 import CommandViewForm from "../components/command_view_form";
 import SystemsService from "../services/system_service";
+import System from "../custom_types/system_type";
 
 type MyProps = {
-  systems: any;
+  systems: System[];
   match: any;
   location: any;
 };
@@ -23,8 +24,8 @@ type MyState = {
 };
 
 class CommandViewApp extends Component<MyProps, MyState> {
-  systems = this.props.systems;
-  initialData = {};
+  systems: System[] = this.props.systems;
+  initialData: any = {};
   command: any = {};
   schema: any = null;
   namespace: string = "";
@@ -34,7 +35,7 @@ class CommandViewApp extends Component<MyProps, MyState> {
   uischema: object = {};
   state: MyState = {
     redirect: null,
-    data: {},
+    data: undefined,
     model: {},
     errors: [],
   };
