@@ -16,3 +16,4 @@ jobs:
         if: github.event.action == 'opened'
         with:
           project: "https://github.com/orgs/beer-garden/projects/24"
+          column_name: "New Issues"
