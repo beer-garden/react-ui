@@ -5,6 +5,7 @@ import { Link as RouterLink } from "react-router-dom";
 import Table from "../components/table";
 import PageHeader from "../components/page_header";
 import Divider from "../components/divider";
+import System from "../custom_types/system_type";
 
 type MyProps = {
   systems: any;
@@ -20,7 +21,7 @@ type MyState = {
 };
 
 class SystemsApp extends Component<MyProps, MyState> {
-  systems: object[] = this.props.systems;
+  systems: System[] = this.props.systems;
   state: MyState = {
     data: [],
     page: 0,
@@ -91,6 +92,7 @@ class SystemsApp extends Component<MyProps, MyState> {
   exploreButton(system: any) {
     return (
       <Button
+        size="small"
         component={RouterLink}
         to={["/systems", system.namespace, system.name, system.version].join(
           "/"

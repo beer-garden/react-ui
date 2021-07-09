@@ -99,8 +99,8 @@ const useStyles2 = makeStyles({
     minWidth: 500,
   },
   tableCell: {
-    borderWidth: 1,
-    borderColor: "grey",
+    borderWidth: 0.5,
+    borderColor: "lightgrey",
     borderStyle: "solid",
   },
   container: {
@@ -152,11 +152,14 @@ const MyTable: FC<TableProps> = ({
   function formatTextField(self: any, index: number, disableSearch: boolean) {
     let key = self.state.tableKeys[index];
     if (!disableSearch) {
-      if (key.includes("_at")) {
+      if (self.state.tableHeads[index] === "") {
+        return;
+      } else if (key.includes("_at")) {
         return (
           <Box display="flex" alignItems="flex-start">
             <Box width={1 / 2}>
               <TextField
+                style={{ width: 220 }}
                 size="small"
                 id={JSON.stringify(index)}
                 label="Start"
@@ -166,9 +169,10 @@ const MyTable: FC<TableProps> = ({
                 InputLabelProps={{
                   shrink: true,
                 }}
+                fullWidth={false}
               />
             </Box>
-            <Box width={1 / 2}>
+            <Box pl={1} width={1 / 2}>
               <TextField
                 size="small"
                 id={JSON.stringify(index)}
@@ -180,6 +184,8 @@ const MyTable: FC<TableProps> = ({
                 InputLabelProps={{
                   shrink: true,
                 }}
+                style={{ width: 220 }}
+                fullWidth={false}
               />
             </Box>
           </Box>
@@ -244,7 +250,11 @@ const MyTable: FC<TableProps> = ({
         <TableHead>
           <TableRow>
             {self.state.tableHeads.map((tableHead: string, index: number) => (
-              <TableCell key={tableHead} className={classes.tableCell}>
+              <TableCell
+                key={tableHead}
+                className={classes.tableCell}
+                size="small"
+              >
                 {tableHead}
                 <br />
                 {formatTextField(self, index, disableSearch)}
@@ -270,13 +280,14 @@ const MyTable: FC<TableProps> = ({
               <TableRow
                 style={
                   index % 2
-                    ? { background: "lightgrey" }
+                    ? { background: "whitesmoke" }
                     : { background: "white" }
                 }
                 key={"row" + index}
               >
                 {self.state.tableKeys.map((key: string) => (
                   <TableCell
+                    size="small"
                     className={classes.tableCell}
                     key={"cell" + index + key}
                   >

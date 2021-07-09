@@ -118,24 +118,28 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                   <Grid item key={"system actions"}>
                     <Toolbar variant="dense">
                       <IconButton
+                        size="small"
                         onClick={() => InstanceService.startSystem(system)}
                         aria-label="start"
                       >
                         <PlayCircleFilledIcon />
                       </IconButton>
                       <IconButton
+                        size="small"
                         onClick={() => InstanceService.stopSystem(system)}
                         aria-label="stop"
                       >
                         <StopIcon />
                       </IconButton>
                       <IconButton
+                        size="small"
                         onClick={() => SystemService.reloadSystem(system.id)}
                         aria-label="reload"
                       >
                         <CachedIcon />
                       </IconButton>
                       <IconButton
+                        size="small"
                         onClick={() => SystemService.deleteSystem(system.id)}
                         aria-label="delete"
                       >
@@ -148,7 +152,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                   {system.description}
                 </Typography>
                 {system.instances.map((instance: any, index: number) => (
-                  <Box key={instance.name + index}>
+                  <Box pt={1} key={instance.name + index}>
                     <Divider />
                     <Grid
                       justify="space-between" // Add it here :)
@@ -174,6 +178,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                       <Grid item key={"instance actions"}>
                         <Toolbar variant="dense">
                           <IconButton
+                            size="small"
                             onClick={() =>
                               InstanceService.startInstance(instance.id)
                             }
@@ -182,6 +187,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                             <PlayCircleFilledIcon />
                           </IconButton>
                           <IconButton
+                            size="small"
                             onClick={() =>
                               InstanceService.stopInstance(instance.id)
                             }
@@ -189,7 +195,11 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                           >
                             <StopIcon />
                           </IconButton>
-                          <IconButton onClick={handleClick} aria-label="logs">
+                          <IconButton
+                            onClick={handleClick}
+                            size="small"
+                            aria-label="logs"
+                          >
                             <ViewHeadlineIcon />
                           </IconButton>
                           <Menu

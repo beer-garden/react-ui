@@ -6,8 +6,11 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import IconButton from "@material-ui/core/IconButton";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
+import Grid from "@material-ui/core/Grid";
 import Divider from "../components/divider";
 import RequestsTable from "../components/table";
 import PageHeader from "../components/page_header";
@@ -17,13 +20,20 @@ type MyProps = {
   match: any;
 };
 type MyState = {
+  parameterOutputWidth: number;
+  expandOutput: boolean;
+  expandParameter: boolean;
   data: any[];
   tableKeys: string[];
   tableHeads: string[];
 };
 
 class RequestViewApp extends Component<MyProps, MyState> {
+  filename: string = "";
   state: MyState = {
+    parameterOutputWidth: 1,
+    expandOutput: false,
+    expandParameter: false,
     data: [],
     tableKeys: [
       "command",
@@ -91,6 +101,13 @@ class RequestViewApp extends Component<MyProps, MyState> {
 
   successCallback(response: any) {
     this.request = response.data;
+    if (this.request.output_type == "STRING") {
+      this.filename = this.id + ".txt";
+    } else if (this.request.output_type == "HTML") {
+      this.filename = this.id + ".html";
+    } else if (this.request.output_type == "JSON") {
+      this.filename = this.id + ".json";
+    }
     let data = this.formatData([this.request]);
     this.setState({ data: data });
   }
@@ -112,6 +129,92 @@ class RequestViewApp extends Component<MyProps, MyState> {
     }
   }
 
+  getExpandElement() {
+    if (this.state.expandParameter || this.state.expandOutput) {
+      return <ExpandLessIcon />;
+    } else {
+      return <ExpandMoreIcon />;
+    }
+  }
+
+  outputBox() {
+    if (!this.state.expandParameter) {
+      return (
+        <Box width={this.state.parameterOutputWidth}>
+          <Grid justify="space-between" container>
+            <Grid item>
+              <Typography variant="h6">Outputs</Typography>
+            </Grid>
+            <Grid item>
+              <Typography style={{ flex: 1 }}>
+                <IconButton
+                  size="small"
+                  onClick={() =>
+                    this.setState({ expandOutput: !this.state.expandOutput })
+                  }
+                  aria-label="expand"
+                >
+                  {this.getExpandElement()}
+                </IconButton>
+              </Typography>
+            </Grid>
+          </Grid>
+          <Box
+            border={1}
+            borderColor="lightgrey"
+            bgcolor="whitesmoke"
+            borderRadius="borderRadius"
+          >
+            <Box p={2}>{this.outputFormatted()}</Box>
+          </Box>
+        </Box>
+      );
+    }
+  }
+
+  parameterBox() {
+    if (!this.state.expandOutput) {
+      return (
+        <Box
+          pl={1}
+          width={this.state.parameterOutputWidth}
+          style={{ verticalAlign: "top" }}
+        >
+          <Grid justify="space-between" container>
+            <Grid item>
+              <Typography variant="h6">Parameters</Typography>
+            </Grid>
+            <Grid item>
+              <Typography style={{ flex: 1 }}>
+                <IconButton
+                  size="small"
+                  onClick={() =>
+                    this.setState({
+                      expandParameter: !this.state.expandParameter,
+                    })
+                  }
+                  aria-label="start"
+                >
+                  {this.getExpandElement()}
+                </IconButton>
+              </Typography>
+            </Grid>
+          </Grid>
+          <Box
+            border={1}
+            borderColor="lightgrey"
+            bgcolor="whitesmoke"
+            borderRadius="borderRadius"
+          >
+            <Box p={2}>
+              <ReactJson src={this.request.parameters} />
+            </Box>
+          </Box>
+        </Box>
+      );
+    }
+  }
+
   renderComponents() {
     if (this.state.data[0]) {
       return (
@@ -121,15 +224,9 @@ class RequestViewApp extends Component<MyProps, MyState> {
             includePageNav={false}
             disableSearch={true}
           />
-          <Box p={2} display="flex" alignItems="flex-start">
-            <Box width={1 / 2}>
-              <Typography variant="h6">Outputs</Typography>
-              {this.outputFormatted()}
-            </Box>
-            <Box pl={1} width={1 / 2} style={{ verticalAlign: "top" }}>
-              <Typography variant="h6">Parameters</Typography>
-              <ReactJson src={this.request.parameters} />
-            </Box>
+          <Box pt={4} display="flex" alignItems="flex-start">
+            {this.outputBox()}
+            {this.parameterBox()}
           </Box>
         </div>
       );
