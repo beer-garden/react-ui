@@ -52,7 +52,7 @@ export function correctDefault(parameter, type) {
     // If the default is null then default to an empty array
     // Otherwise create a deep copy of the default
     case "array":
-      if (!!parameter.default) {
+      if (parameter.default) {
         return _.merge([], parameter.default);
       } else if (parameter.default === null && parameter.nullable) {
         return null;
@@ -62,7 +62,7 @@ export function correctDefault(parameter, type) {
 
     // If default is defined then return a deep copy, otherwise an empty object
     case "object":
-      if (!!parameter.default) {
+      if (parameter.default) {
         return _.merge({}, parameter.default);
       } else {
         return {};

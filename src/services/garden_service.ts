@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Garden, SuccessCallback } from "../custom_types/custom_types";
 
 class GardensService {
   CONNECTION_TYPES = ["HTTP", "STOMP"];
@@ -242,24 +243,24 @@ class GardensService {
     ],
   };
 
-  getGardens(self: any) {
-    let url = "/api/v1/gardens";
+  getGardens(successCallback: SuccessCallback) {
+    const url = "/api/v1/gardens";
     axios.get(url).then((response) => {
-      self.successCallback(response);
+      successCallback(response);
     });
   }
 
-  getGarden(self: any, garden_name: string) {
-    let url = "/api/v1/gardens";
+  getGarden(successCallback: SuccessCallback, garden_name: string) {
+    const url = "/api/v1/gardens";
     axios.get(url + "/" + garden_name).then((response) => {
-      self.successCallback(response);
+      successCallback(response);
     });
   }
 
-  syncAllGardens(gardens: any[]) {}
+  // syncAllGardens(gardens: Garden[]) {}
 
   syncGarden(garden_name: string) {
-    let url = "/api/v1/gardens";
+    const url = "/api/v1/gardens";
     axios.patch(url + "/" + garden_name, {
       operation: "sync",
       path: "",
@@ -267,8 +268,8 @@ class GardensService {
     });
   }
 
-  updateGardenConfig(garden: any) {
-    let url = "/api/v1/gardens";
+  updateGardenConfig(garden: Garden) {
+    const url = "/api/v1/gardens";
     axios.patch(url + "/" + garden.name, {
       operation: "config",
       path: "",
@@ -277,30 +278,25 @@ class GardensService {
   }
 
   deleteGarden(garden_name: string) {
-    let url = "/api/v1/gardens";
+    const url = "/api/v1/gardens";
     axios.delete(url + "/" + garden_name);
   }
 
   serverModelToForm(model: any) {
-    let values: any = {};
-    let stomp_headers = [];
+    const values: any = {};
+    const stomp_headers = [];
     values["connection_type"] = model["connection_type"];
-    if (
-      model.hasOwnProperty("connection_params") &&
-      model.connection_params != null
-    ) {
-      for (let parameter of Object.keys(model["connection_params"])) {
-        if (parameter === "stomp_headers") {
-          for (let key in model["connection_params"][parameter]) {
-            stomp_headers[stomp_headers.length] = {
-              key: key,
-              value: model["connection_params"][parameter][key],
-            };
-          }
-          values[parameter] = stomp_headers;
-        } else {
-          values[parameter] = model["connection_params"][parameter];
+    for (const parameter of Object.keys(model["connection_params"])) {
+      if (parameter === "stomp_headers") {
+        for (const key in model["connection_params"][parameter]) {
+          stomp_headers[stomp_headers.length] = {
+            key: key,
+            value: model["connection_params"][parameter][key],
+          };
         }
+        values[parameter] = stomp_headers;
+      } else {
+        values[parameter] = model["connection_params"][parameter];
       }
     }
 
@@ -310,10 +306,10 @@ class GardensService {
   formToServerModel = function (model: any, form: any) {
     model["connection_type"] = form["connection_type"];
     model["connection_params"] = {};
-    let stomp_headers: any = {};
-    for (let field of Object.keys(form)) {
+    const stomp_headers: any = {};
+    for (const field of Object.keys(form)) {
       if (field === "stomp_headers") {
-        for (let i in form[field]) {
+        for (const i in form[field]) {
           stomp_headers[form[field][i]["key"]] = form[field][i]["value"];
         }
         model["connection_params"][field] = stomp_headers;

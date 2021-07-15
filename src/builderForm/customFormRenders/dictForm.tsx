@@ -10,8 +10,11 @@ interface DictProps {
 
 export const Dictionary: FC<DictProps> = ({
   // id,
+  // eslint-disable-next-line react/prop-types
   value,
+  // eslint-disable-next-line react/prop-types
   updateValue,
+  // eslint-disable-next-line react/prop-types
   title,
 }) => {
   const handleChange = (event: any) => {
@@ -19,7 +22,7 @@ export const Dictionary: FC<DictProps> = ({
       if (event.target.value === "") {
         updateValue(null);
       } else {
-        let tempDict = JSON.parse(event.target.value);
+        const tempDict = JSON.parse(event.target.value);
         if (typeof tempDict === "object") {
           updateValue(tempDict);
         } else {

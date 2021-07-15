@@ -1,4 +1,9 @@
 import axios from "axios";
+import { Request, SuccessCallback } from "../custom_types/custom_types";
+
+interface DeleteCallback {
+  (): void;
+}
 
 class JobService {
   TRIGGER_TYPES = ["cron", "date", "interval", "file"];
@@ -380,17 +385,17 @@ class JobService {
     ],
   };
 
-  dataFetch(self: any) {
-    let url = "/api/v1/jobs";
+  getJobs(successCallback: SuccessCallback) {
+    const url = "/api/v1/jobs";
     axios.get(url).then((response) => {
-      self.successCallback(response);
+      successCallback(response);
     });
   }
 
-  getJob(self: any, id: string) {
-    let url = "/api/v1/jobs/".concat(id);
+  getJob(successCallback: SuccessCallback, id: string) {
+    const url = "/api/v1/jobs/".concat(id);
     axios.get(url).then((response) => {
-      self.successCallback(response);
+      successCallback(response);
     });
   }
 
@@ -454,8 +459,8 @@ class JobService {
     }
   }
 
-  formToServerModel(formModel: any, requestTemplate: any) {
-    let serviceModel: any = {};
+  formToServerModel(formModel: any, requestTemplate: Request) {
+    const serviceModel: any = {};
     serviceModel["name"] = formModel["name"];
     serviceModel["misfire_grace_time"] = formModel["misfire_grace_time"];
     serviceModel["trigger_type"] = formModel["trigger_type"];
@@ -470,14 +475,14 @@ class JobService {
   }
 
   createJob(self: any, successCallback: any) {
-    let model = this.formToServerModel(self.state.data, self.request);
+    const model = this.formToServerModel(self.state.data, self.request);
 
     axios
       .post("/api/v1/jobs", model)
       .then((response) => successCallback(self, response));
   }
 
-  pauseJob(self: any, jobId: string) {
+  pauseJob(successCallback: SuccessCallback, jobId: string) {
     axios
       .patch("/api/v1/jobs/" + jobId, {
         operations: [
@@ -488,14 +493,14 @@ class JobService {
           },
         ],
       })
-      .then((response) => self.successCallback(response));
+      .then((response) => successCallback(response));
   }
 
-  deleteJob(self: any, jobId: string) {
-    axios.delete("/api/v1/jobs/" + jobId).then(() => self.deleteCallback());
+  deleteJob(deleteCallback: DeleteCallback, jobId: string) {
+    axios.delete("/api/v1/jobs/" + jobId).then(() => deleteCallback());
   }
 
-  resumeJob(self: any, jobId: string) {
+  resumeJob(successCallback: SuccessCallback, jobId: string) {
     axios
       .patch("/api/v1/jobs/" + jobId, {
         operations: [
@@ -506,13 +511,17 @@ class JobService {
           },
         ],
       })
-      .then((response) => self.successCallback(response));
+      .then(() =>
+        setTimeout(() => {
+          this.getJob(successCallback, jobId);
+        }, 100)
+      );
   }
 
   getRequiredKeys(triggerType: string) {
     if (triggerType === "cron") {
-      let requiredKeys = [];
-      for (let key of this.CRON_KEYS) {
+      const requiredKeys = [];
+      for (const key of this.CRON_KEYS) {
         if (
           ![
             "cron_start_date",
@@ -530,8 +539,8 @@ class JobService {
     } else if (triggerType === "file") {
       return [];
     } else {
-      let requiredKeys = [];
-      for (let key of this.INTERVAL_KEYS) {
+      const requiredKeys = [];
+      for (const key of this.INTERVAL_KEYS) {
         if (
           ![
             "interval_start_date",

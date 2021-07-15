@@ -1,3 +1,4 @@
+import React from "react";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { Dictionary } from "./dictForm";
 

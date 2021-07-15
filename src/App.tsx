@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Box from "@material-ui/core/Box";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { AxiosResponse } from "axios";
 
 import Menu from "./components/menu";
 import SystemsApp from "./apps/system_index_app";
@@ -17,108 +18,106 @@ import GardenViewApp from "./apps/garden_view_app";
 import JobCreateApp from "./apps/job_create_app";
 import CommandViewApp from "./apps/command_view_app";
 import SystemsService from "./services/system_service";
+import {
+  CommandParams,
+  GardenNameParam,
+  System,
+  IdParam,
+} from "./custom_types/custom_types";
 
-class App extends Component {
-  state = {
-    systems: [],
-  };
+const App = (): JSX.Element => {
+  const [systems, setSystems] = useState<System[]>([]);
 
-  componentDidMount() {
-    SystemsService.dataFetch(this);
+  if (!systems[0]) {
+    SystemsService.getSystems(successCallback);
   }
 
-  successCallback(response: any) {
-    this.setState({ systems: response.data });
+  function successCallback(response: AxiosResponse) {
+    setSystems(response.data);
   }
-
-  render() {
-    if (this.state.systems[0]) {
-      return (
-        <Box>
-          <Menu />
-          <Box px={2}>
-            <Switch>
-              <Route
-                path="/systems/:namespace/:system_name/:version/commands/:command_name/"
-                component={(routeProps: any) => (
-                  <CommandViewApp
-                    systems={this.state.systems}
-                    {...routeProps}
-                  />
-                )}
-              />
-              <Route
-                path="/systems/:namespace/:system_name/:version/"
-                component={(routeProps: any) => (
-                  <CommandsApp systems={this.state.systems} {...routeProps} />
-                )}
-              />
-              <Route
-                path="/systems/:namespace/:system_name/"
-                component={(routeProps: any) => (
-                  <CommandsApp systems={this.state.systems} {...routeProps} />
-                )}
-              />
-              <Route
-                path="/systems/:namespace/"
-                component={(routeProps: any) => (
-                  <CommandsApp systems={this.state.systems} {...routeProps} />
-                )}
-              />
-              <Route
-                path="/systems"
-                component={() => <SystemsApp systems={this.state.systems} />}
-              />
-              <Route
-                path="/admin/systems"
-                component={() => (
-                  <SystemsAdminApp systems={this.state.systems} />
-                )}
-              />
-              <Route
-                path="/admin/gardens/:garden_name/"
-                component={(routeProps: any) => (
-                  <GardenViewApp {...routeProps} />
-                )}
-              />
-              <Route
-                path="/admin/gardens"
-                component={() => <GardensAdminApp />}
-              />
-              <Route
-                path="/requests/:id"
-                component={(routeProps: any) => (
-                  <RequestViewApp {...routeProps} />
-                )}
-              />
-              <Route path="/requests" component={() => <RequestApp />} />
-              <Route
-                path="/jobs/create"
-                component={(routeProps: any) => (
-                  <JobCreateApp {...routeProps} />
-                )}
-              />
-              <Route
-                path="/jobs/:id"
-                component={(routeProps: any) => <JobViewApp {...routeProps} />}
-              />
-              <Route path="/jobs" component={() => <JobsApp />} />
-              <Redirect to="/systems" />
-            </Switch>
-          </Box>
+  if (systems[0]) {
+    return (
+      <Box>
+        <Menu />
+        <Box px={2}>
+          <Switch>
+            <Route
+              path="/systems/:namespace/:system_name/:version/commands/:command_name/"
+              component={(routeProps: RouteComponentProps<CommandParams>) => (
+                <CommandViewApp systems={systems} {...routeProps} />
+              )}
+            />
+            <Route
+              path="/systems/:namespace/:system_name/:version/"
+              component={(routeProps: RouteComponentProps<CommandParams>) => (
+                <CommandsApp systems={systems} {...routeProps} />
+              )}
+            />
+            <Route
+              path="/systems/:namespace/:system_name/"
+              component={(routeProps: RouteComponentProps<CommandParams>) => (
+                <CommandsApp systems={systems} {...routeProps} />
+              )}
+            />
+            <Route
+              path="/systems/:namespace/"
+              component={(routeProps: RouteComponentProps<CommandParams>) => (
+                <CommandsApp systems={systems} {...routeProps} />
+              )}
+            />
+            <Route
+              path="/systems"
+              component={() => <SystemsApp systems={systems} />}
+            />
+            <Route
+              path="/admin/systems"
+              component={() => <SystemsAdminApp systems={systems} />}
+            />
+            <Route
+              path="/admin/gardens/:garden_name/"
+              component={(routeProps: RouteComponentProps<GardenNameParam>) => (
+                <GardenViewApp {...routeProps} />
+              )}
+            />
+            <Route
+              path="/admin/gardens"
+              component={() => <GardensAdminApp />}
+            />
+            <Route
+              path="/requests/:id"
+              component={(routeProps: RouteComponentProps<IdParam>) => (
+                <RequestViewApp {...routeProps} />
+              )}
+            />
+            <Route path="/requests" component={() => <RequestApp />} />
+            <Route
+              path="/jobs/create"
+              component={(routeProps: RouteComponentProps) => (
+                <JobCreateApp {...routeProps} />
+              )}
+            />
+            <Route
+              path="/jobs/:id"
+              component={(routeProps: RouteComponentProps<IdParam>) => (
+                <JobViewApp {...routeProps} />
+              )}
+            />
+            <Route path="/jobs" component={() => <JobsApp />} />
+            <Redirect to="/systems" />
+          </Switch>
         </Box>
-      );
-    } else {
-      return (
-        <Box>
-          <Menu />
-          <Backdrop open={true}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        </Box>
-      );
-    }
+      </Box>
+    );
+  } else {
+    return (
+      <Box>
+        <Menu />
+        <Backdrop open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </Box>
+    );
   }
-}
+};
 
 export default App;

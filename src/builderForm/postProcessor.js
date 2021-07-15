@@ -26,10 +26,10 @@ export function sfPostProcessor(postProcess, schemaForm) {
       schemaForm.traverseForm(canonicalForm[i], function (formObj) {
         if (formObj.schema) {
           let validators = {};
-          if (!!formObj.schema.requiredAllowNull) {
+          if (formObj.schema.requiredAllowNull) {
             validators["requiredAllowNull"] = requiredAllowNull;
           }
-          if (!!formObj.schema.failNull) {
+          if (formObj.schema.failNull) {
             validators["failNull"] = failNull;
           }
           formObj.$validators = _.merge({}, formObj.$validators, validators);

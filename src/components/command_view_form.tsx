@@ -26,8 +26,10 @@ const CommandViewForm: FC<CommandViewFormProps> = ({
   uischema,
   initialData,
 }: CommandViewFormProps) => {
+  const requestService = new RequestService();
+
   function submitForm(self: any) {
-    RequestService.createRequest(self, self.state.model);
+    requestService.createRequest(self, self.state.model);
   }
 
   function makeRequest(self: any) {
@@ -83,12 +85,12 @@ const CommandViewForm: FC<CommandViewFormProps> = ({
   }
 
   function onChange(self: any, data: any, errors: any) {
-    let temp_errors: any[] = [];
-    for (let i in errors) {
-      let path = errors[i].dataPath
+    const temp_errors: any[] = [];
+    for (const i in errors) {
+      const path = errors[i].dataPath
         .replace("parameters.", "")
         .replace("__dict", "");
-      let parameter =
+      const parameter =
         self.command.parameters.find((para: any) => para["key"] === path) || {};
       if (
         !(

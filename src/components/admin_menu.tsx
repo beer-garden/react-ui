@@ -4,11 +4,12 @@ import Box from "@material-ui/core/Box";
 import { Link as RouterLink } from "react-router-dom";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import { BaseSyntheticEvent } from "react";
 
-const AdminMenuTabs = () => {
+const AdminMenuTabs = (): JSX.Element => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event: any) => {
+  const handleClick = (event: BaseSyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
 

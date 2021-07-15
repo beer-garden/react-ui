@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
 }));
 
-const MenuTabs = () => {
+const MenuTabs = (): JSX.Element => {
   const classes = useStyles();
 
   return (

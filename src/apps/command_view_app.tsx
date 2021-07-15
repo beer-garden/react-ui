@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactJson from "react-json-view";
 import Box from "@material-ui/core/Box";
 import { Redirect } from "react-router";
+import { match as Match, RouteComponentProps } from "react-router-dom";
 
 import { sfBuilderService } from "../builderForm/service";
 import Divider from "../components/divider";
@@ -9,13 +10,13 @@ import Breadcrumbs from "../components/breadcrumbs";
 import PageHeader from "../components/page_header";
 import CommandViewForm from "../components/command_view_form";
 import SystemsService from "../services/system_service";
-import System from "../custom_types/system_type";
+import { CommandParams, System } from "../custom_types/custom_types";
 
-type MyProps = {
+interface MyProps extends RouteComponentProps<CommandParams> {
   systems: System[];
-  match: any;
+  match: Match<CommandParams>;
   location: any;
-};
+}
 type MyState = {
   redirect: any;
   data: any;
@@ -28,30 +29,30 @@ class CommandViewApp extends Component<MyProps, MyState> {
   initialData: any = {};
   command: any = {};
   schema: any = null;
-  namespace: string = "";
-  system_name: string = "";
-  version: string = "";
+  namespace = "";
+  system_name = "";
+  version = "";
   command_name = "";
-  uischema: object = {};
+  uischema: any = {};
   state: MyState = {
     redirect: null,
     data: undefined,
     model: {},
     errors: [],
   };
-  title: string = "";
-  description: string = "";
+  title = "";
+  description = "";
   breadcrumbs: any[] = [];
   initialSchema: any = {};
 
   componentDidMount() {
     const { command_name, namespace, system_name, version } =
       this.props.match.params;
-    this.namespace = namespace;
-    this.system_name = system_name;
-    this.version = version;
-    this.command_name = command_name;
-    this.title = command_name;
+    this.namespace = namespace || "";
+    this.system_name = system_name || "";
+    this.version = version || "";
+    this.command_name = command_name || "";
+    this.title = command_name || "";
     this.breadcrumbs = [
       this.namespace,
       this.system_name,
@@ -59,18 +60,20 @@ class CommandViewApp extends Component<MyProps, MyState> {
       this.command_name,
     ];
 
-    let system = SystemsService.getSystem(
+    const system = SystemsService.getSystem(
       this.systems,
       this.namespace,
       this.system_name,
       this.version
     );
-    this.command = SystemsService.getCommand(
-      system.commands,
-      this.command_name
-    );
-    let SFBuilderService: any = sfBuilderService();
-    let build = SFBuilderService.build(system, this.command);
+    if (system) {
+      this.command = SystemsService.getCommand(
+        system.commands,
+        this.command_name
+      );
+    }
+    const SFBuilderService: any = sfBuilderService();
+    const build = SFBuilderService.build(system, this.command);
     this.initialSchema = build.schema;
     this.uischema = build.form;
     this.initialData = build.model;
@@ -96,13 +99,13 @@ class CommandViewApp extends Component<MyProps, MyState> {
   }
 
   formatDataToModel(data: any) {
-    let model: any = {};
-    for (let key in data) {
+    const model: any = {};
+    for (const key in data) {
       if (key === "parameters") {
         if (!model[key]) {
           model[key] = {};
         }
-        for (let parameters_key in data[key]) {
+        for (const parameters_key in data[key]) {
           if (parameters_key.endsWith("__dict")) {
             model[key][parameters_key.replace("__dict", "")] =
               data[key][parameters_key];
@@ -118,11 +121,11 @@ class CommandViewApp extends Component<MyProps, MyState> {
   }
 
   formatRequestToData(request: any, data: any) {
-    let tempData: any = {};
-    for (let key in data) {
+    const tempData: any = {};
+    for (const key in data) {
       tempData[key] = {};
       if (key === "parameters") {
-        for (let parameters_key in data[key]) {
+        for (const parameters_key in data[key]) {
           if (parameters_key.endsWith("__dict")) {
             tempData[key][parameters_key] =
               request[key][parameters_key.replace("__dict", "")];
@@ -141,14 +144,14 @@ class CommandViewApp extends Component<MyProps, MyState> {
   }
 
   formatSchema(data: any, schema: any) {
-    for (let i in this.command.parameters) {
-      let parameter = this.command.parameters[i];
+    for (const i in this.command.parameters) {
+      const parameter = this.command.parameters[i];
       if (parameter.choices) {
-        let key =
+        const key =
           data[parameter.choices.details.key_reference] ||
           data.parameters[parameter.choices.details.key_reference];
         if (parameter.choices.value.constructor === Object) {
-          let value = parameter.choices.value[key] || [""];
+          const value = parameter.choices.value[key] || [""];
           schema.properties.parameters.properties[parameter.key]["enum"] =
             Array.from(new Set(value));
         }

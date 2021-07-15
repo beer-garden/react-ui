@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { BaseSyntheticEvent, FC } from "react";
 import Divider from "@material-ui/core/Divider";
 import Box from "@material-ui/core/Box";
 import Card from "@material-ui/core/Card";
@@ -21,6 +21,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import InstanceService from "../services/instance_service";
 import SystemService from "../services/system_service";
+import { Instance, System } from "../custom_types/custom_types";
 
 const useStyles = makeStyles({
   root: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles({
 });
 
 interface SystemAdminCardProps {
-  systems: any[];
+  systems: System[];
 }
 
 const SystemAdminCard: FC<SystemAdminCardProps> = ({
@@ -68,7 +69,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event: any) => {
+  const handleClick = (event: BaseSyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -96,11 +97,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
           <Box pt={1} key={system.name + system.version + "box"}>
             <Card className={classes.root}>
               <CardContent>
-                <Grid
-                  justify="space-between" // Add it here :)
-                  alignItems="center"
-                  container
-                >
+                <Grid justify="space-between" alignItems="center" container>
                   <Grid item key={system.namespace + "/" + system.version}>
                     <Typography
                       variant="h6"
@@ -151,7 +148,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                 <Typography className={classes.pos} color="textSecondary">
                   {system.description}
                 </Typography>
-                {system.instances.map((instance: any, index: number) => (
+                {system.instances.map((instance: Instance, index: number) => (
                   <Box pt={1} key={instance.name + index}>
                     <Divider />
                     <Grid
