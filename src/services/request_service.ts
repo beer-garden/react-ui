@@ -8,20 +8,7 @@ class RequestService {
   }
 
   dataFetch(self: any, data: any[]) {
-    //	    let column = [{"data":"command","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"namespace","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"system","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"system_version","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"instance_name","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"status","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"created_at","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"comment","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"metadata","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},
-    //	     {"data":"id"}];
-    //	    let order = [{column: 6, dir: "desc"}]
-    //        search='value: "sleep_say",regex: true'
     let url = "/api/v1/requests?";
-    //	    url = url.replace('{data}', data);
     for (let key in data) {
       if (key === "columns" || key === "order") {
         for (let columnsKey in data[key]) {
@@ -56,8 +43,6 @@ class RequestService {
     });
   }
 }
-
-//   order: [{column: 6, dir: "desc"}]
 
 const item = new RequestService();
 

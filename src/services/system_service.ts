@@ -3,7 +3,6 @@ import axios from "axios";
 class SystemsService {
   dataFetch(self: any) {
     let url = "/api/v1/systems";
-    //	    url = url.replace('{start}', start).replace('{length}', length);
     axios.get(url).then((response) => {
       self.successCallback(response);
     });

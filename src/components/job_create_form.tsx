@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-//import JobService from './jobsform';
 import {
   materialCells,
   materialRenderers,
@@ -12,7 +11,6 @@ import DictionaryTester from "../builderForm/customFormRenders/dictTester";
 import Button from "@material-ui/core/Button";
 import { Redirect } from "react-router";
 import Tooltip from "@material-ui/core/Tooltip";
-//import { makeStyles } from '@material-ui/core/styles';
 import JobService from "../services/job_service";
 
 interface JobViewFormProps {

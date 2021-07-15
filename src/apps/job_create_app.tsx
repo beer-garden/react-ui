@@ -3,7 +3,6 @@ import ReactJson from "react-json-view";
 import Box from "@material-ui/core/Box";
 
 import jobService from "../services/job_service";
-//import PageHeader from '../components/page_header';
 import JobViewForm from "../components/job_create_form";
 
 type MyProps = {

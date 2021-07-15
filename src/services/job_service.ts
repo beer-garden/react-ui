@@ -382,7 +382,6 @@ class JobService {
 
   dataFetch(self: any) {
     let url = "/api/v1/jobs";
-    //	    url = url.replace('{start}', start).replace('{length}', length);
     axios.get(url).then((response) => {
       self.successCallback(response);
     });
