@@ -6,27 +6,42 @@ import Table from "../components/table";
 import PageHeader from "../components/page_header";
 import Divider from "../components/divider";
 import System from "../custom_types/system_type";
+import CacheService from "../services/cache_service";
+import TableService from "../services/table_service";
+import MyState from "../custom_types/table_state_type";
 
 type MyProps = {
-  systems: any;
-};
-type MyState = {
-  data: any[];
-  page: number;
-  rowsPerPage: number;
-  totalItems: number | null;
-  search: string;
-  tableKeys: string[];
-  tableHeads: string[];
+  systems: System[];
 };
 
+type CachedStateType = {
+  rowsPerPage: number;
+};
+
+function exploreButton(system: any) {
+  return (
+    <Button
+      size="small"
+      component={RouterLink}
+      to={["/systems", system.namespace, system.name, system.version].join("/")}
+      variant="contained"
+      color="primary"
+    >
+      Explore
+    </Button>
+  );
+}
+
 class SystemsApp extends Component<MyProps, MyState> {
-  systems: System[] = this.props.systems;
+  cachedState: CachedStateType = CacheService.getIndexLastState(
+    `lastKnownState_${window.location.href}`
+  );
   state: MyState = {
     data: [],
     page: 0,
-    rowsPerPage: 5,
-    totalItems: null,
+    rowsPerPage: this.cachedState.rowsPerPage,
+    totalItems: this.props.systems.length,
+    totalItemsFiltered: 0,
     search: "",
     tableKeys: [
       "namespace",
@@ -50,13 +65,12 @@ class SystemsApp extends Component<MyProps, MyState> {
   title = "Systems";
 
   updateData() {
-    let state = this.state;
-    let newData = this.systems.slice(
-      state.page * state.rowsPerPage,
-      state.page * state.rowsPerPage + state.rowsPerPage
+    TableService.updateData(
+      this,
+      this.props.systems,
+      this.props.systems.length,
+      `lastKnownState_${window.location.href}`
     );
-    newData = this.formatData(newData);
-    this.setState({ data: newData, totalItems: this.systems.length });
   }
 
   formatData(data: any[]) {
@@ -73,9 +87,7 @@ class SystemsApp extends Component<MyProps, MyState> {
           tempData[i][this.state.tableKeys[tableKey]] =
             data[i][this.state.tableKeys[tableKey]].length;
         } else if (this.state.tableKeys[tableKey] === "") {
-          tempData[i][this.state.tableKeys[tableKey]] = this.exploreButton(
-            data[i]
-          );
+          tempData[i][this.state.tableKeys[tableKey]] = exploreButton(data[i]);
         } else {
           tempData[i][this.state.tableKeys[tableKey]] =
             data[i][this.state.tableKeys[tableKey]];
@@ -87,22 +99,6 @@ class SystemsApp extends Component<MyProps, MyState> {
 
   componentDidMount() {
     this.updateData();
-  }
-
-  exploreButton(system: any) {
-    return (
-      <Button
-        size="small"
-        component={RouterLink}
-        to={["/systems", system.namespace, system.name, system.version].join(
-          "/"
-        )}
-        variant="contained"
-        color="primary"
-      >
-        Explore
-      </Button>
-    );
   }
 
   render() {

@@ -5,14 +5,25 @@ import RequestsTable from "../components/table";
 import PageHeader from "../components/page_header";
 import JobsService from "../services/job_service";
 import Divider from "../components/divider";
+import CacheService from "../services/cache_service";
+import TableService from "../services/table_service";
+import MyState from "../custom_types/table_state_type";
+
+type CachedStateType = {
+  rowsPerPage: number;
+};
 
 class JobsApp extends Component {
-  state = {
-    jobs: {},
+  cachedState: CachedStateType = CacheService.getIndexLastState(
+    `lastKnownState_${window.location.href}`
+  );
+  state: MyState = {
     page: 0,
     data: [],
+    search: "",
     totalItems: 0,
-    rowsPerPage: 5,
+    totalItemsFiltered: 0,
+    rowsPerPage: this.cachedState.rowsPerPage,
     tableKeys: [
       "name",
       "status",
@@ -38,13 +49,12 @@ class JobsApp extends Component {
   jobs: any;
 
   updateData() {
-    let state = this.state;
-    let newData: any[] = this.jobs.slice(
-      state.page * state.rowsPerPage,
-      state.page * state.rowsPerPage + state.rowsPerPage
+    TableService.updateData(
+      this,
+      this.jobs,
+      this.jobs.length,
+      `lastKnownState_${window.location.href}`
     );
-    newData = this.formatData(newData);
-    this.setState({ data: newData, totalItems: this.jobs.length });
   }
 
   componentDidMount() {

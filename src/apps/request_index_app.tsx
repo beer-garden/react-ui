@@ -8,19 +8,26 @@ import Divider from "../components/divider";
 import Table from "../components/table";
 import RequestService from "../services/request_service";
 import IncludeChildren from "../components/include_children_checkbox";
+import CacheService from "../services/cache_service";
+import MyState from "../custom_types/table_state_type";
+
+type CachedStateType = {
+  rowsPerPage: number;
+};
 
 class RequestApp extends Component {
-  state = {
-    response: {},
+  cachedState: CachedStateType = CacheService.getIndexLastState(
+    `lastKnownState_${window.location.href}`
+  );
+  dateStart: string = "";
+  dateEnd: string = "";
+  state: MyState = {
     data: [],
-    include_children: false,
     page: 0,
-    dateStart: "",
-    dateEnd: "",
     search: "",
     totalItems: 0,
     totalItemsFiltered: 0,
-    rowsPerPage: 5,
+    rowsPerPage: this.cachedState.rowsPerPage,
     tableKeys: [
       "command",
       "namespace",
@@ -112,7 +119,7 @@ class RequestApp extends Component {
     ],
     draw: 1,
     include_children: false,
-    length: 5,
+    length: this.cachedState.rowsPerPage,
     order: [{ column: 6, dir: "desc" }],
     search: { value: "", regex: false },
     start: 0,
@@ -124,6 +131,12 @@ class RequestApp extends Component {
     let state = this.state;
     this.searchDataAPI.start = state.page * state.rowsPerPage;
     this.searchDataAPI.length = state.rowsPerPage;
+    CacheService.setItemInCache(
+      {
+        rowsPerPage: this.state.rowsPerPage,
+      },
+      `lastKnownState_${window.location.href}`
+    );
     RequestService.dataFetch(this, this.searchDataAPI);
   }
 
@@ -197,11 +210,11 @@ class RequestApp extends Component {
     let value = event.target.value;
     if (parseInt(event.target.id) === 6) {
       if (dateEnd) {
-        this.state.dateStart = value.replace("T", "+");
+        this.dateStart = value.replace("T", "+");
       } else if (dateEnd) {
-        this.state.dateEnd = value.replace("T", "+");
+        this.dateEnd = value.replace("T", "+");
       }
-      value = this.state.dateStart + "~" + this.state.dateEnd;
+      value = this.dateStart + "~" + this.dateEnd;
     }
     this.searchDataAPI.columns[parseInt(event.target.id)].search.value = value;
     this.updateData();
