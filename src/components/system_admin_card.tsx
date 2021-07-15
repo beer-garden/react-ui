@@ -1,6 +1,5 @@
 import React, { BaseSyntheticEvent, FC } from "react";
 import Divider from "@material-ui/core/Divider";
-import Box from "@material-ui/core/Box";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,12 +11,15 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import StopIcon from "@material-ui/icons/Stop";
 import CachedIcon from "@material-ui/icons/Cached";
 import DeleteIcon from "@material-ui/icons/Delete";
-import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
-import Alert from "@material-ui/lab/Alert";
+import { Alert, AlertTitle } from "@material-ui/lab";
+import { Color } from "@material-ui/lab/Alert";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Grid from "@material-ui/core/Grid";
 import { Link as RouterLink } from "react-router-dom";
+import LinkIcon from "@material-ui/icons/Link";
+import { Select, Tooltip } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 import InstanceService from "../services/instance_service";
 import SystemService from "../services/system_service";
@@ -35,13 +37,11 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
-  pos: {
-    marginBottom: 12,
-  },
 });
 
 interface SystemAdminCardProps {
   systems: System[];
+  namespace: string;
 }
 
 const SystemAdminCard: FC<SystemAdminCardProps> = ({
@@ -56,7 +56,6 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
         return "warning";
       case "STARTING":
       case "INITIALIZING":
-        return "info";
       case "RELOADING":
         return "info";
       case "DEAD":
@@ -67,15 +66,55 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
     }
   }
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  function getSystemsSeverity(systems: System[]) {
+    let status: Color = "success";
+    for (const i in systems) {
+      const system = systems[i];
+      for (const k in system.instances) {
+        const instance = system.instances[k];
+        if (
+          (instance.status === "STOPPING" ||
+            instance.status === "UNRESPONSIVE") &&
+          status !== "error"
+        ) {
+          status = "warning";
+        } else if (
+          (instance.status === "STARTING" ||
+            instance.status === "INITIALIZING" ||
+            instance.status === "RELOADING") &&
+          status !== "error" &&
+          status !== "warning"
+        ) {
+          status = "info";
+        } else if (
+          (instance.status === "DEAD" || instance.status === "STOPPED") &&
+          status !== "error"
+        ) {
+          status = "error";
+          break;
+        }
+      }
+    }
+    return status;
+  }
 
-  const handleClick = (event: BaseSyntheticEvent) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [menuId, setMenuId] = React.useState("");
+
+  function handleClick(event: BaseSyntheticEvent, id: string) {
+    setMenuId(id);
     setAnchorEl(event.currentTarget);
-  };
+  }
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleChange = (event: BaseSyntheticEvent) => {
+    setSystemIndex(event.target.value);
+  };
+
+  const [systemIndex, setSystemIndex] = React.useState(0);
 
   const classes = useStyles();
 
@@ -86,140 +125,130 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
         style={{ background: "lightgray" }}
         position="static"
       >
-        <Toolbar>
+        <Alert variant="outlined" severity={getSystemsSeverity(systems)}>
           <Typography variant="h6" color="inherit">
             {systems[0].name}
           </Typography>
-        </Toolbar>
+        </Alert>
       </AppBar>
       <CardContent>
-        {systems.map((system) => (
-          <Box pt={1} key={system.name + system.version + "box"}>
-            <Card className={classes.root}>
-              <CardContent>
-                <Grid justify="space-between" alignItems="center" container>
-                  <Grid item key={system.namespace + "/" + system.version}>
-                    <Typography
-                      variant="h6"
-                      component={RouterLink}
-                      to={[
-                        "/systems",
-                        system.namespace,
-                        system.name,
-                        system.version,
-                      ].join("/")}
-                    >
-                      {system.namespace}/{system.version}
-                    </Typography>
-                  </Grid>
-                  <Grid item key={"system actions"}>
-                    <Toolbar variant="dense">
-                      <IconButton
-                        size="small"
-                        onClick={() => InstanceService.startSystem(system)}
-                        aria-label="start"
-                      >
-                        <PlayCircleFilledIcon />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => InstanceService.stopSystem(system)}
-                        aria-label="stop"
-                      >
-                        <StopIcon />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => SystemService.reloadSystem(system.id)}
-                        aria-label="reload"
-                      >
-                        <CachedIcon />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => SystemService.deleteSystem(system.id)}
-                        aria-label="delete"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Toolbar>
-                  </Grid>
-                </Grid>
-                <Typography className={classes.pos} color="textSecondary">
-                  {system.description}
-                </Typography>
-                {system.instances.map((instance: Instance, index: number) => (
-                  <Box pt={1} key={instance.name + index}>
-                    <Divider />
-                    <Grid
-                      justify="space-between" // Add it here :)
-                      alignItems="center"
-                      container
-                    >
-                      <Grid item key={instance.name}>
-                        <Box pt={1} display="flex" alignItems="center">
-                          <Box pr={1}>
-                            <Alert
-                              variant="filled"
-                              icon={false}
-                              severity={getSeverity(instance.status)}
-                            >
-                              {instance.status}
-                            </Alert>
-                          </Box>
-                          <Box>
-                            <Typography>{instance.name}</Typography>
-                          </Box>
-                        </Box>
-                      </Grid>
-                      <Grid item key={"instance actions"}>
-                        <Toolbar variant="dense">
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              InstanceService.startInstance(instance.id)
-                            }
-                            aria-label="start"
-                          >
-                            <PlayCircleFilledIcon />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              InstanceService.stopInstance(instance.id)
-                            }
-                            aria-label="stop"
-                          >
-                            <StopIcon />
-                          </IconButton>
-                          <IconButton
-                            onClick={handleClick}
-                            size="small"
-                            aria-label="logs"
-                          >
-                            <ViewHeadlineIcon />
-                          </IconButton>
-                          <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                          >
-                            <MenuItem onClick={handleClose}>Show Logs</MenuItem>
-                            <MenuItem onClick={handleClose}>
-                              Manage Queue
-                            </MenuItem>
-                          </Menu>
-                        </Toolbar>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                ))}
-              </CardContent>
-            </Card>
-          </Box>
-        ))}
+        <Grid alignItems="center" container>
+          <Grid item key={"selector"}>
+            <Select value={systemIndex} onChange={handleChange}>
+              {systems.map((system, index) => (
+                <MenuItem key={system.version} value={index}>
+                  <Alert severity={getSystemsSeverity([system])}>
+                    <AlertTitle>{system.version}</AlertTitle>
+                  </Alert>
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item key={"systems[systemIndex] actions"}>
+            <Toolbar variant="dense">
+              <IconButton
+                size="small"
+                component={RouterLink}
+                to={[
+                  "/systems",
+                  systems[systemIndex].namespace,
+                  systems[systemIndex].name,
+                  systems[systemIndex].version,
+                ].join("/")}
+              >
+                <LinkIcon />
+              </IconButton>
+              <IconButton
+                size="small"
+                onClick={() =>
+                  InstanceService.startSystem(systems[systemIndex])
+                }
+                aria-label="start"
+              >
+                <PlayCircleFilledIcon />
+              </IconButton>
+              <IconButton
+                size="small"
+                onClick={() => InstanceService.stopSystem(systems[systemIndex])}
+                aria-label="stop"
+              >
+                <StopIcon />
+              </IconButton>
+              <IconButton
+                size="small"
+                onClick={() =>
+                  SystemService.reloadSystem(systems[systemIndex].id)
+                }
+                aria-label="reload"
+              >
+                <CachedIcon />
+              </IconButton>
+              <IconButton
+                size="small"
+                onClick={() =>
+                  SystemService.deleteSystem(systems[systemIndex].id)
+                }
+                aria-label="delete"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Toolbar>
+          </Grid>
+        </Grid>
+        <Typography variant={"body2"} color="textSecondary">
+          {systems[systemIndex].description}
+        </Typography>
+        <Divider />
+        <Grid alignItems="center" container>
+          {systems[systemIndex].instances.map((instance: Instance) => (
+            <Grid item key={instance.name}>
+              <Button
+                onClick={(event) => handleClick(event, instance.id)}
+                size="small"
+              >
+                <Tooltip arrow title={instance.status} placement="bottom-start">
+                  <Alert severity={getSeverity(instance.status)}>
+                    <Typography variant="body2">{instance.name}</Typography>
+                  </Alert>
+                </Tooltip>
+              </Button>
+              <Menu
+                id="menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  key="start"
+                  onClick={() => {
+                    handleClose();
+                    InstanceService.startInstance(menuId);
+                  }}
+                >
+                  Start
+                  <PlayCircleFilledIcon />
+                </MenuItem>
+                <MenuItem
+                  key="stop"
+                  onClick={() => {
+                    handleClose();
+                    InstanceService.stopInstance(menuId);
+                  }}
+                >
+                  Stop
+                  <StopIcon />
+                </MenuItem>
+                <MenuItem key="logs" onClick={handleClose}>
+                  Show Logs
+                </MenuItem>
+                <MenuItem key="queue" onClick={handleClose}>
+                  Manage Queue
+                </MenuItem>
+              </Menu>
+            </Grid>
+          ))}
+        </Grid>
       </CardContent>
     </Card>
   );

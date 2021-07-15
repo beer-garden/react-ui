@@ -18,6 +18,7 @@ import GardenViewApp from "./apps/garden_view_app";
 import JobCreateApp from "./apps/job_create_app";
 import CommandViewApp from "./apps/command_view_app";
 import SystemsService from "./services/system_service";
+import NamespacesService from "./services/namespace_service";
 import {
   CommandParams,
   GardenNameParam,
@@ -27,15 +28,21 @@ import {
 
 const App = (): JSX.Element => {
   const [systems, setSystems] = useState<System[]>([]);
+  const [namespaces, setNamespaces] = useState<string[]>([]);
 
   if (!systems[0]) {
     SystemsService.getSystems(successCallback);
+    NamespacesService.getNamespaces(successNamespaceCallback);
   }
 
   function successCallback(response: AxiosResponse) {
     setSystems(response.data);
   }
-  if (systems[0]) {
+
+  function successNamespaceCallback(response: AxiosResponse) {
+    setNamespaces(response.data);
+  }
+  if (systems[0] && namespaces[0]) {
     return (
       <Box>
         <Menu />
@@ -71,7 +78,12 @@ const App = (): JSX.Element => {
             />
             <Route
               path="/admin/systems"
-              component={() => <SystemsAdminApp systems={systems} />}
+              component={() => (
+                  <SystemsAdminApp
+                      namespaces={namespaces}
+                      systems={systems}
+                  />
+              )}
             />
             <Route
               path="/admin/gardens/:garden_name/"
