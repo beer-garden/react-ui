@@ -204,6 +204,23 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
           }}
           variant="contained"
           color="primary"
+          onAuxClick={() => {
+            console.log("clicked");
+            window.localStorage.setItem(
+              `lastKnown_pour_it_again_request`,
+              JSON.stringify({
+                request: this.request,
+              })
+            );
+          }}
+          onClick={() => {
+            window.localStorage.setItem(
+              `lastKnown_pour_it_again_request`,
+              JSON.stringify({
+                request: this.request,
+              })
+            );
+          }}
         >
           Pour it Again
         </Button>

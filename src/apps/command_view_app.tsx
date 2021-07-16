@@ -78,10 +78,19 @@ class CommandViewApp extends Component<MyProps, MyState> {
     this.uischema = build.form;
     this.initialData = build.model;
     let requestData = null;
-    if (this.props.location.state) {
+    let pourItAgainRequest: any = window.localStorage.getItem(
+      `lastKnown_pour_it_again_request`
+    );
+    pourItAgainRequest = JSON.parse(pourItAgainRequest);
+    if (pourItAgainRequest) {
       requestData = this.formatRequestToData(
-        this.props.location.state.request,
+        pourItAgainRequest.request,
         this.initialData
+      );
+      console.log(pourItAgainRequest);
+      window.localStorage.setItem(
+        `lastKnown_pour_it_again_request`,
+        JSON.stringify(false)
       );
     }
     this.description = this.command["description"];
