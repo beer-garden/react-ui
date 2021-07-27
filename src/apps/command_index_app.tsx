@@ -10,22 +10,24 @@ import SystemsService from "../services/system_service";
 import Table from "../components/table";
 import System from "../custom_types/system_type";
 import Command from "../custom_types/command_type";
+import CacheService from "../services/cache_service";
+import TableService from "../services/table_service";
+import MyState from "../custom_types/table_state_type";
 
 type MyProps = {
   systems: System[];
   match: any;
 };
-type MyState = {
-  data: any[];
-  page: number;
+
+type CachedStateType = {
   rowsPerPage: number;
-  totalItems: number | null;
-  search: string;
-  tableKeys: string[];
-  tableHeads: string[];
 };
 
 class CommandsApp extends Component<MyProps, MyState> {
+  cachedState: CachedStateType = CacheService.getIndexLastState(
+    `lastKnownStateCommandIndex`
+  );
+
   systems: System[] = this.props.systems;
   commands: Command[] = [];
   namespace = null;
@@ -34,8 +36,9 @@ class CommandsApp extends Component<MyProps, MyState> {
   state: MyState = {
     data: [],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: this.cachedState.rowsPerPage,
     totalItems: null,
+    totalItemsFiltered: 0,
     search: "",
     tableKeys: [
       "namespace",
@@ -58,13 +61,12 @@ class CommandsApp extends Component<MyProps, MyState> {
   breadcrumbs: any = null;
 
   updateData() {
-    let state = this.state;
-    let newData: any[] = this.commands.slice(
-      state.page * state.rowsPerPage,
-      state.page * state.rowsPerPage + state.rowsPerPage
+    TableService.updateData(
+      this,
+      this.commands,
+      this.commands.length,
+      `lastKnownStateCommandIndex`
     );
-    newData = this.formatData(newData);
-    this.setState({ data: newData, totalItems: this.commands.length });
   }
 
   componentDidMount() {
