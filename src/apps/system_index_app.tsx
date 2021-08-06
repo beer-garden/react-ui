@@ -5,20 +5,14 @@ import { Link as RouterLink } from "react-router-dom";
 import Table from "../components/table";
 import PageHeader from "../components/page_header";
 import Divider from "../components/divider";
-import System from "../custom_types/system_type";
-import CacheService from "../services/cache_service";
-import TableService from "../services/table_service";
-import MyState from "../custom_types/table_state_type";
+import { System, TableState } from "../custom_types/custom_types";
+import Box from "@material-ui/core/Box";
 
 type MyProps = {
   systems: System[];
 };
 
-type CachedStateType = {
-  rowsPerPage: number;
-};
-
-function exploreButton(system: any) {
+function exploreButton(system: System) {
   return (
     <Button
       size="small"
@@ -32,26 +26,13 @@ function exploreButton(system: any) {
   );
 }
 
-class SystemsApp extends Component<MyProps, MyState> {
-  cachedState: CachedStateType = CacheService.getIndexLastState(
-    `lastKnownState_${window.location.href}`
-  );
-  state: MyState = {
-    data: [],
-    page: 0,
-    rowsPerPage: this.cachedState.rowsPerPage,
-    totalItems: this.props.systems.length,
-    totalItemsFiltered: 0,
-    search: "",
-    tableKeys: [
-      "namespace",
-      "name",
-      "version",
-      "description",
-      "commands",
-      "instances",
-      "",
-    ],
+class SystemsApp extends Component<MyProps, TableState> {
+  state: TableState = {
+    completeDataSet: this.props.systems,
+    formatData: this.formatData,
+    cacheKey: `lastKnown_${window.location.href}`,
+    includePageNav: true,
+    disableSearch: false,
     tableHeads: [
       "Namespace",
       "System",
@@ -62,51 +43,33 @@ class SystemsApp extends Component<MyProps, MyState> {
       "",
     ],
   };
+
   title = "Systems";
 
-  updateData() {
-    TableService.updateData(
-      this,
-      this.props.systems,
-      this.props.systems.length,
-      `lastKnownState_${window.location.href}`
-    );
-  }
-
-  formatData(data: any[]) {
-    let tempData: any[] = [];
-    for (let i in data) {
-      for (let tableKey in this.state.tableKeys) {
-        if (!tempData[i]) {
-          tempData[i] = {};
-        }
-        if (
-          this.state.tableKeys[tableKey] === "commands" ||
-          this.state.tableKeys[tableKey] === "instances"
-        ) {
-          tempData[i][this.state.tableKeys[tableKey]] =
-            data[i][this.state.tableKeys[tableKey]].length;
-        } else if (this.state.tableKeys[tableKey] === "") {
-          tempData[i][this.state.tableKeys[tableKey]] = exploreButton(data[i]);
-        } else {
-          tempData[i][this.state.tableKeys[tableKey]] =
-            data[i][this.state.tableKeys[tableKey]];
-        }
-      }
+  formatData(systems: System[]): (string | JSX.Element | number)[][] {
+    const tempData: (string | JSX.Element | number)[][] = [];
+    for (const i in systems) {
+      tempData[i] = [
+        systems[i].namespace,
+        systems[i].name,
+        systems[i].version,
+        systems[i].description,
+        systems[i].commands.length,
+        systems[i].instances.length,
+        exploreButton(systems[i]),
+      ];
     }
     return tempData;
   }
 
-  componentDidMount() {
-    this.updateData();
-  }
-
-  render() {
+  render(): JSX.Element {
     return (
       <div>
         <PageHeader title={this.title} description={""} />
         <Divider />
-        <Table self={this} disableSearch={false} includePageNav={true} />
+        <Box pt={1}>
+          <Table parentState={this.state} />
+        </Box>
       </div>
     );
   }

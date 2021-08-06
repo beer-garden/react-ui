@@ -1,55 +1,22 @@
-import React, { Component } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useState } from "react";
 import Box from "@material-ui/core/Box";
-import SubdirectoryArrowRightIcon from "@material-ui/icons/SubdirectoryArrowRight";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import PageHeader from "../components/page_header";
 import Divider from "../components/divider";
 import Table from "../components/table";
+import {
+  Request,
+  RequestsSearchApi,
+  SuccessCallback,
+  TableState,
+} from "../custom_types/custom_types";
 import RequestService from "../services/request_service";
-import IncludeChildren from "../components/include_children_checkbox";
-import CacheService from "../services/cache_service";
-import MyState from "../custom_types/table_state_type";
+import { requestLink, systemLink } from "../services/routing_links";
 
-type CachedStateType = {
-  rowsPerPage: number;
-};
-
-class RequestApp extends Component {
-  cachedState: CachedStateType = CacheService.getIndexLastState(
-    `lastKnownState_${window.location.href}`
-  );
-  dateStart: string = "";
-  dateEnd: string = "";
-  state: MyState = {
-    data: [],
-    page: 0,
-    search: "",
-    totalItems: 0,
-    totalItemsFiltered: 0,
-    rowsPerPage: this.cachedState.rowsPerPage,
-    tableKeys: [
-      "command",
-      "namespace",
-      "system",
-      "system_version",
-      "instance_name",
-      "status",
-      "created_at",
-      "comment",
-    ],
-    tableHeads: [
-      "Command",
-      "Namespace",
-      "System",
-      "Version",
-      "Instance",
-      "Status",
-      "Created",
-      "Comment",
-    ],
-  };
-  searchDataAPI: any = {
+const RequestApp = (): JSX.Element => {
+  const [includeChildren, setIncludeChildren] = useState(false);
+  const searchApi: RequestsSearchApi = {
     columns: [
       {
         data: "command",
@@ -118,122 +85,109 @@ class RequestApp extends Component {
       { data: "parent" },
     ],
     draw: 1,
-    include_children: false,
-    length: this.cachedState.rowsPerPage,
+    include_children: includeChildren,
+    length: 5,
     order: [{ column: 6, dir: "desc" }],
     search: { value: "", regex: false },
     start: 0,
   };
-  title = "Requests";
-  headers: any;
+  const requestService = new RequestService();
+  const state: TableState = {
+    apiDataCall: apiRequestCall,
+    setSearchApi: setSearchApi,
+    formatData: formatData,
+    includeChildren: includeChildren,
+    includePageNav: true,
+    cacheKey: `lastKnown_${window.location.href}`,
+    disableSearch: false,
+    tableHeads: [
+      "Command",
+      "Namespace",
+      "System",
+      "Version",
+      "Instance",
+      "Status",
+      "Created",
+      "Comment",
+    ],
+  };
 
-  updateData() {
-    let state = this.state;
-    this.searchDataAPI.start = state.page * state.rowsPerPage;
-    this.searchDataAPI.length = state.rowsPerPage;
-    CacheService.setItemInCache(
-      {
-        rowsPerPage: this.state.rowsPerPage,
-      },
-      `lastKnownState_${window.location.href}`
-    );
-    RequestService.dataFetch(this, this.searchDataAPI);
+  function setSearchApi(value: string, id: string, setDateEnd = false) {
+    if (parseInt(id)) {
+      if (parseInt(id) === 6) {
+        let dateStart = "";
+        let dateEnd = "";
+        if (setDateEnd) {
+          dateStart = value.replace("T", "+");
+        } else {
+          dateEnd = value.replace("T", "+");
+        }
+        value = dateStart + "~" + dateEnd;
+      }
+      const temp = searchApi.columns[parseInt(id)];
+      if (temp.search) {
+        temp.search.value = value;
+        searchApi.columns[parseInt(id)] = temp;
+      }
+    } else if (id === "draw" || id === "length" || id === "start") {
+      searchApi[id] = parseInt(value);
+    } else if (id === "include_children") {
+      searchApi[id] = "true" === value;
+    }
   }
 
-  formatData(data: any[]) {
-    let tempData: any = [];
-    for (let i in data) {
-      for (let tableKey in this.state.tableKeys) {
-        if (!tempData[i]) {
-          tempData[i] = {};
-        }
-        if (this.state.tableKeys[tableKey] === "command") {
-          if (data[i].parent) {
-            tempData[i][this.state.tableKeys[tableKey]] = (
-              <Box>
-                <RouterLink to={"/requests/" + data[i].parent.id}>
-                  <SubdirectoryArrowRightIcon />
-                </RouterLink>
-                <RouterLink to={"/requests/" + data[i].id}>
-                  {data[i][this.state.tableKeys[tableKey]]}
-                </RouterLink>
-              </Box>
-            );
-          } else {
-            tempData[i][this.state.tableKeys[tableKey]] = (
-              <RouterLink to={"/requests/" + data[i].id}>
-                {data[i][this.state.tableKeys[tableKey]]}
-              </RouterLink>
-            );
-          }
-        } else if (this.state.tableKeys[tableKey] === "system_version") {
-          tempData[i][this.state.tableKeys[tableKey]] = (
-            <RouterLink
-              to={[
-                "/systems",
-                data[i].namespace,
-                data[i].system,
-                data[i].system_version,
-              ].join("/")}
-            >
-              {data[i][this.state.tableKeys[tableKey]]}
-            </RouterLink>
-          );
-        } else if (this.state.tableKeys[tableKey].includes("_at")) {
-          tempData[i][this.state.tableKeys[tableKey]] = new Date(
-            data[i][this.state.tableKeys[tableKey]]
-          ).toString();
-        } else {
-          tempData[i][this.state.tableKeys[tableKey]] =
-            data[i][this.state.tableKeys[tableKey]];
-        }
-      }
+  function apiRequestCall(
+    page: number,
+    rowsPerPage: number,
+    successCallback: SuccessCallback
+  ) {
+    requestService.getRequests(successCallback, searchApi);
+  }
+
+  function formatData(requests: Request[]) {
+    const tempData: (string | JSX.Element | null)[][] = [];
+    for (const i in requests) {
+      tempData[i] = [
+        requestLink(requests[i]),
+        requests[i].namespace,
+        requests[i].system,
+        systemLink(requests[i].system_version, [
+          requests[i].namespace,
+          requests[i].system,
+          requests[i].system_version,
+        ]),
+        requests[i].instance_name,
+        requests[i].status,
+        new Date(requests[i].created_at).toString(),
+        requests[i].comment,
+      ];
     }
     return tempData;
   }
 
-  successCallback(response: any) {
-    this.headers = response.headers;
-    let data = this.formatData(response.data);
-    this.setState({
-      data: data,
-      totalItems: response.headers.recordstotal,
-      totalItemsFiltered: response.headers.recordsfiltered,
-    });
-  }
+  const title = "Requests";
 
-  componentDidMount() {
-    RequestService.dataFetch(this, this.searchDataAPI);
-  }
-
-  searchData(event: any, dateEnd: boolean = false) {
-    let value = event.target.value;
-    if (parseInt(event.target.id) === 6) {
-      if (dateEnd) {
-        this.dateStart = value.replace("T", "+");
-      } else if (dateEnd) {
-        this.dateEnd = value.replace("T", "+");
-      }
-      value = this.dateStart + "~" + this.dateEnd;
-    }
-    this.searchDataAPI.columns[parseInt(event.target.id)].search.value = value;
-    this.updateData();
-  }
-
-  render() {
-    return (
-      <Box>
-        <PageHeader title={this.title} description={""} />
-        <Divider />
-        <Box display="flex" alignItems="flex-end">
-          <Box>
-            <IncludeChildren self={this} />
-          </Box>
+  const handleChange = (checked: boolean) => {
+    setIncludeChildren(checked);
+  };
+  return (
+    <Box>
+      <PageHeader title={title} description={""} />
+      <Divider />
+      <Box display="flex" alignItems="flex-end">
+        <Box>
+          <Checkbox
+            checked={includeChildren}
+            onChange={() => {
+              handleChange(!includeChildren);
+            }}
+          />
+          Include Children
         </Box>
-        <Table self={this} includePageNav={true} disableSearch={false} />
       </Box>
-    );
-  }
-}
+      <Table parentState={state} />
+    </Box>
+  );
+};
 
 export default RequestApp;

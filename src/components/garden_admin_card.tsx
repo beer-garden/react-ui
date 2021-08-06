@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 
 import Table from "./table";
 import GardenService from "../services/garden_service";
+import { Garden, TableState } from "../custom_types/custom_types";
 
 const useStyles = makeStyles({
   root: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
 });
 
 interface GardenAdminCardProps {
-  garden: any;
+  garden: Garden;
 }
 
 const GardenAdminCard: FC<GardenAdminCardProps> = ({
@@ -38,15 +39,19 @@ const GardenAdminCard: FC<GardenAdminCardProps> = ({
 }: GardenAdminCardProps) => {
   const classes = useStyles();
 
-  let self = {
-    state: {
-      data: [
-        ["Status", garden.status],
-        ["Namespaces", garden.namespaces.length],
-        ["Systems", garden.systems.length],
-      ],
-      tableKeys: [0, 1],
-    },
+  function getTableData() {
+    return [
+      ["Status", garden.status],
+      ["Namespaces", garden.namespaces.length],
+      ["Systems", garden.systems.length],
+    ];
+  }
+
+  const state: TableState = {
+    formatData: getTableData,
+    tableHeads: [],
+    includePageNav: false,
+    disableSearch: true,
   };
 
   function getDeleteButton(connection_type: string) {
@@ -85,7 +90,7 @@ const GardenAdminCard: FC<GardenAdminCardProps> = ({
         </Toolbar>
       </AppBar>
       <CardContent>
-        <Table self={self} includePageNav={false} disableSearch={true} />
+        <Table parentState={state} />
       </CardContent>
       <CardActions>
         <Button

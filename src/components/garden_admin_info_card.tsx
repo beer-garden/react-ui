@@ -10,6 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
 
 import Table from "./table";
+import { Garden, TableState } from "../custom_types/custom_types";
 
 const useStyles = makeStyles({
   root: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles({
 });
 
 interface GardenInfoCardProps {
-  garden: any;
+  garden: Garden;
 }
 
 const GardenInfoCard: FC<GardenInfoCardProps> = ({
@@ -39,11 +40,11 @@ const GardenInfoCard: FC<GardenInfoCardProps> = ({
 }: GardenInfoCardProps) => {
   const classes = useStyles();
 
-  function getNamespaceList(garden: any) {
+  function getNamespaceList(garden: Garden) {
     return (
       <List className={classes.rootList}>
         {garden.namespaces.map((namespace: string) => (
-          <ListItem>
+          <ListItem key={namespace}>
             {"\u25CF"} {namespace}
           </ListItem>
         ))}
@@ -51,16 +52,20 @@ const GardenInfoCard: FC<GardenInfoCardProps> = ({
     );
   }
 
-  let self = {
-    state: {
-      data: [
-        ["Name", garden.name],
-        ["Status", garden.status],
-        ["Known Namespaces", getNamespaceList(garden)],
-        ["Systems", garden.systems.length],
-      ],
-      tableKeys: [0, 1],
-    },
+  function getTableData() {
+    return [
+      ["Name", garden.name],
+      ["Status", garden.status],
+      ["Known Namespaces", getNamespaceList(garden)],
+      ["Systems", garden.systems.length],
+    ];
+  }
+
+  const state: TableState = {
+    formatData: getTableData,
+    tableHeads: [],
+    includePageNav: false,
+    disableSearch: true,
   };
 
   return (
@@ -78,7 +83,7 @@ const GardenInfoCard: FC<GardenInfoCardProps> = ({
           </Toolbar>
         </AppBar>
         <CardContent>
-          <Table self={self} includePageNav={false} disableSearch={true} />
+          <Table parentState={state} />
         </CardContent>
       </Card>
     </Box>

@@ -8,13 +8,13 @@ import AdminService from "../services/admin_service";
 import PageHeader from "../components/page_header";
 import SystemCard from "../components/system_admin_card";
 import Divider from "../components/divider";
-import System from "../custom_types/system_type";
+import { System } from "../custom_types/custom_types";
 
 type MyProps = {
   systems: System[];
 };
 type MyState = {
-  data: any[];
+  data: System[][];
 };
 
 class SystemsAdminApp extends Component<MyProps, MyState> {
@@ -24,28 +24,30 @@ class SystemsAdminApp extends Component<MyProps, MyState> {
   };
   title = "Systems Management";
 
-  formatSystems() {
-    let system_names: string[] = [];
-    for (let i in this.systems) {
+  formatSystems(): void {
+    const system_names: string[] = [];
+    for (const i in this.systems) {
       if (!system_names.includes(this.systems[i].name)) {
         system_names.push(this.systems[i].name);
       }
     }
     system_names.sort();
-    let sortedSystems: any = [];
-    for (let i in system_names) {
+    const sortedSystems: System[][] = [];
+    for (const i in system_names) {
       sortedSystems[i] = SystemsService.filterSystems(this.systems, {
         name: system_names[i],
+        namespace: "",
+        version: "",
       });
     }
     this.setState({ data: sortedSystems });
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.formatSystems();
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div>
         <Grid justify="space-between" container>

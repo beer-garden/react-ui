@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { FC, useState } from "react";
 import Box from "@material-ui/core/Box";
-import { Link as RouterLink } from "react-router-dom";
+import { match as Match, RouteComponentProps } from "react-router-dom";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
@@ -12,33 +12,22 @@ import { Redirect } from "react-router";
 import JobService from "../services/job_service";
 import PageHeader from "../components/page_header";
 import Table from "../components/table";
+import { IdParam, Job, TableState } from "../custom_types/custom_types";
+import { AxiosResponse } from "axios";
+import { systemLink } from "../services/routing_links";
 
-type MyProps = {
-  match: any;
-};
-type MyState = {
-  data: any[];
-  redirect: any;
-  tableKeys: string[];
-  tableHeads: string[];
-};
+interface MyProps extends RouteComponentProps<IdParam> {
+  match: Match<IdParam>;
+}
 
-class JobViewApp extends Component<MyProps, MyState> {
-  job: any = {};
-  state: MyState = {
-    data: [],
-    redirect: null,
-    tableKeys: [
-      "name",
-      "request_template__system",
-      "request_template__system_version",
-      "request_template__instance_name",
-      "request_template__command",
-      "status",
-      "success_count",
-      "error_count",
-      "next_run_time",
-    ],
+const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
+  const [job, setJob] = useState<Job>();
+  const [redirect, setRedirect] = useState<JSX.Element>();
+  const state: TableState = {
+    completeDataSet: [],
+    formatData: formatData,
+    includePageNav: false,
+    disableSearch: true,
     tableHeads: [
       "Job Name",
       "System",
@@ -51,77 +40,68 @@ class JobViewApp extends Component<MyProps, MyState> {
       "Next Run Time",
     ],
   };
-  title = "Job";
-  id: string = "";
-  description: string = "";
+  const title = "Job";
+  const id = match.params.id;
+  let description = id;
 
-  componentDidMount() {
-    const { id } = this.props.match.params;
-    this.id = id;
-    JobService.getJob(this, id);
+  if (!job) {
+    JobService.getJob(successCallback, id);
   }
 
-  formatData(data: any[]) {
-    let tempData: any[] = [];
-    for (let i in data) {
-      for (let tableKey in this.state.tableKeys) {
-        if (!tempData[i]) {
-          tempData[i] = {};
-        }
-        if (this.state.tableKeys[tableKey] === "next_run_time") {
-          tempData[i][this.state.tableKeys[tableKey]] = new Date(
-            data[i][this.state.tableKeys[tableKey]]
-          ).toString();
-        } else if (this.state.tableKeys[tableKey].includes("__")) {
-          let keys = this.state.tableKeys[tableKey].split("__");
-          if (keys[1] === "system_version") {
-            tempData[i][this.state.tableKeys[tableKey]] = (
-              <RouterLink
-                to={[
-                  "/systems",
-                  data[i].request_template.namespace,
-                  data[i].request_template.system,
-                  data[i].request_template.system_version,
-                ].join("/")}
-              >
-                {data[i][keys[0]][keys[1]]}
-              </RouterLink>
-            );
-          } else {
-            tempData[i][this.state.tableKeys[tableKey]] =
-              data[i][keys[0]][keys[1]];
-          }
-        } else {
-          tempData[i][this.state.tableKeys[tableKey]] =
-            data[i][this.state.tableKeys[tableKey]];
-        }
+  function formatData(jobs: Job[]) {
+    const tempData: (string | JSX.Element | number | null)[][] = [];
+    for (const i in jobs) {
+      let date = "";
+      if (jobs[i].status === "RUNNING") {
+        date = new Date(jobs[i].next_run_time).toString();
       }
+      tempData[i] = [
+        jobs[i].name,
+        systemLink(jobs[i].request_template.system, [
+          jobs[i].request_template.namespace,
+          jobs[i].request_template.system,
+        ]),
+        systemLink(jobs[i].request_template.system_version, [
+          jobs[i].request_template.namespace,
+          jobs[i].request_template.system,
+          jobs[i].request_template.system_version,
+        ]),
+        jobs[i].request_template.instance_name,
+        jobs[i].request_template.command,
+        jobs[i].status,
+        jobs[i].success_count,
+        jobs[i].error_count,
+        date,
+      ];
     }
     return tempData;
   }
 
-  successCallback(response: any) {
-    this.description = [response.data.name, this.id].join(" - ");
-    this.job = response.data;
-    this.setState({ data: this.formatData([response.data]) });
+  function successCallback(response: AxiosResponse) {
+    setJob(response.data);
   }
 
-  renderComponents() {
-    if (this.state.data[0]) {
+  if (job) {
+    description = [job.name, id].join(" - ");
+    state.completeDataSet = [job];
+  }
+
+  function renderComponents() {
+    if (job) {
       return (
         <div>
-          <Table self={this} includePageNav={false} disableSearch={true} />
+          <Table parentState={state} />
           <Box p={2} display="flex" alignItems="flex-start">
             <Box width={1 / 2}>
               <h3>Trigger</h3>
               <Box border={1}>
-                <ReactJson src={this.job.trigger} />
+                <ReactJson src={job.trigger} />
               </Box>
             </Box>
             <Box pl={1} width={1 / 2}>
               <h3>Request Template</h3>
               <Box border={1}>
-                <ReactJson src={this.job.request_template} />
+                <ReactJson src={job.request_template} />
               </Box>
             </Box>
           </Box>
@@ -136,71 +116,70 @@ class JobViewApp extends Component<MyProps, MyState> {
     }
   }
 
-  deleteCallback() {
-    this.setState({ redirect: <Redirect push to={"/jobs/"} /> });
+  function deleteCallback() {
+    setRedirect(<Redirect push to={"/jobs/"} />);
   }
 
-  getButton() {
-    if (this.job.status === "RUNNING") {
-      return (
-        <Button
-          variant="contained"
-          style={{ backgroundColor: "#e38d13", color: "white" }}
-          onClick={() => {
-            JobService.pauseJob(this, this.id);
-          }}
-        >
-          Pause job
-        </Button>
-      );
-    } else if (this.job.status === "PAUSED") {
-      return (
-        <Button
-          variant="contained"
-          style={{ backgroundColor: "green", color: "white" }}
-          onClick={() => {
-            JobService.resumeJob(this, this.id);
-          }}
-        >
-          Resume job
-        </Button>
-      );
+  function getButton() {
+    if (job) {
+      if (job.status === "RUNNING") {
+        return (
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#e38d13", color: "white" }}
+            onClick={() => {
+              JobService.pauseJob(successCallback, id);
+            }}
+          >
+            Pause job
+          </Button>
+        );
+      } else if (job.status === "PAUSED") {
+        return (
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "green", color: "white" }}
+            onClick={() => {
+              JobService.resumeJob(successCallback, id);
+            }}
+          >
+            Resume job
+          </Button>
+        );
+      }
     }
   }
-
-  render() {
-    return (
-      <Box>
-        {this.state.redirect}
-        <Grid
-          justify="space-between" // Add it here :)
-          container
-        >
-          <Grid item>
-            <PageHeader title={this.title} description={this.id} />
-          </Grid>
-          <Grid item>
-            <Typography style={{ flex: 1 }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => {
-                  JobService.deleteJob(this, this.id);
-                }}
-              >
-                Delete Job
-              </Button>
-              {this.getButton()}
-              <Button variant="contained" color="primary">
-                Update Job
-              </Button>
-            </Typography>
-          </Grid>
+  return (
+    <Box>
+      {redirect}
+      <Grid
+        justify="space-between" // Add it here :)
+        container
+      >
+        <Grid item>
+          <PageHeader title={title} description={description} />
         </Grid>
-        {this.renderComponents()}
-      </Box>
-    );
-  }
-}
+        <Grid item>
+          <Typography style={{ flex: 1 }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                JobService.deleteJob(deleteCallback, id);
+              }}
+            >
+              Delete Job
+            </Button>
+            {getButton()}
+            <Button variant="contained" color="primary">
+              Update Job
+            </Button>
+          </Typography>
+        </Grid>
+      </Grid>
+      {renderComponents()}
+    </Box>
+  );
+};
 
 export default JobViewApp;

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { BaseSyntheticEvent, FC, useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -16,6 +16,10 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import TableHead from "@material-ui/core/TableHead";
 import TextField from "@material-ui/core/TextField";
+import { TableInterface } from "../custom_types/custom_types";
+import { AxiosResponse } from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import CacheService from "../services/cache_service";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -24,24 +28,29 @@ const useStyles1 = makeStyles((theme) => ({
   },
 }));
 
-function TablePaginationActions(props: any) {
+function TablePaginationActions(props: {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onChangePage(event: BaseSyntheticEvent | null, value: number): void;
+}) {
   const classes = useStyles1();
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
 
-  const handleFirstPageButtonClick = (event: any) => {
+  const handleFirstPageButtonClick = (event: BaseSyntheticEvent) => {
     onChangePage(event, 0);
   };
 
-  const handleBackButtonClick = (event: any) => {
+  const handleBackButtonClick = (event: BaseSyntheticEvent) => {
     onChangePage(event, page - 1);
   };
 
-  const handleNextButtonClick = (event: any) => {
+  const handleNextButtonClick = (event: BaseSyntheticEvent) => {
     onChangePage(event, page + 1);
   };
 
-  const handleLastPageButtonClick = (event: any) => {
+  const handleLastPageButtonClick = (event: BaseSyntheticEvent) => {
     onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
@@ -108,53 +117,73 @@ const useStyles2 = makeStyles({
   },
 });
 
-interface TableProps {
-  self: any;
-  includePageNav: boolean;
-  disableSearch: boolean;
-}
-
-const MyTable: FC<TableProps> = ({
-  self,
-  includePageNav,
-  disableSearch,
-}: TableProps) => {
+const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
+  let cachedState: { rowsPerPage: number } = { rowsPerPage: 5 };
+  if (parentState.cacheKey) {
+    cachedState = CacheService.getIndexLastState(parentState.cacheKey);
+  }
+  const [data, setData] = useState<(string | JSX.Element | number | null)[][]>(
+    []
+  );
+  const [completeDataSet, setCompleteDataSet] = useState(
+    parentState.completeDataSet
+  );
+  const [isLoading, setLoading] = useState(true);
   const classes = useStyles2();
-  const page = self.state.page;
-  const rowsPerPage = self.state.rowsPerPage;
-  const data = self.state.data;
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(cachedState.rowsPerPage);
+  const [totalItemsFiltered, setTotalItemsFiltered] = useState("0");
+  const [totalItems, setTotalItems] = useState("0");
+  const [includeChildren, setIncludeChildren] = useState(
+    parentState.includeChildren
+  );
 
-  const totalItems = self.state.totalItems;
-  const totalItemsFiltered = self.state.totalItemsFiltered;
+  function handleChangePage(event: BaseSyntheticEvent | null, newPage: number) {
+    if (parentState.setSearchApi) {
+      parentState.setSearchApi("" + newPage * rowsPerPage, "start");
+    }
+    setPage(newPage);
+    setLoading(true);
+  }
 
-  //  const emptyRows = rowsPerPage - Math.min(rowsPerPage, totalItems - page * rowsPerPage);
-
-  const handleChangePage = (event: any, newPage: number) => {
-    self.state.page = newPage;
-    self.updateData();
+  const onChange = (event: BaseSyntheticEvent) => {
+    if (parentState.setSearchApi) {
+      parentState.setSearchApi(event.target.value, event.target.id);
+    }
+    setPage(0);
+    setLoading(true);
   };
 
-  const onChange = (event: any) => {
-    self.state.page = 0;
-    self.searchData(event);
+  const onChangeEnd = (event: BaseSyntheticEvent) => {
+    if (parentState.setSearchApi) {
+      parentState.setSearchApi(event.target.value, event.target.id, true);
+    }
+    setPage(0);
+    setLoading(true);
   };
 
-  const onChangeEnd = (event: any) => {
-    self.searchData(event, true);
+  const handleChangeRowsPerPage = (event: BaseSyntheticEvent) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    if (parentState.setSearchApi) {
+      parentState.setSearchApi("0", "start");
+    }
+    setLoading(true);
+    if (parentState.cacheKey) {
+      CacheService.setItemInCache(
+        {
+          rowsPerPage: event.target.value,
+        },
+        parentState.cacheKey
+      );
+    }
   };
 
-  const handleChangeRowsPerPage = (event: any) => {
-    self.state.rowsPerPage = parseInt(event.target.value, 10);
-    self.state.page = 0;
-    self.updateData();
-  };
-
-  function formatTextField(self: any, index: number, disableSearch: boolean) {
-    let key = self.state.tableKeys[index];
-    if (!disableSearch) {
-      if (self.state.tableHeads[index] === "") {
+  function formatTextField(index: number) {
+    if (!parentState.disableSearch) {
+      if (parentState.tableHeads[index] === "") {
         return;
-      } else if (key.includes("_at")) {
+      } else if (["Created"].includes(parentState.tableHeads[index])) {
         return (
           <Box display="flex" alignItems="flex-start">
             <Box width={1 / 2}>
@@ -204,19 +233,10 @@ const MyTable: FC<TableProps> = ({
     }
   }
 
-  function pageNav(
-    rowsPerPage: number,
-    totalItems: string,
-    totalItemsFiltered: number | null,
-    page: number,
-    handleChangePage: any,
-    handleChangeRowsPerPage: any,
-    TablePaginationActions: any,
-    includePageNav: boolean
-  ) {
-    if (includePageNav) {
-      let count: any = totalItemsFiltered;
-      if (totalItemsFiltered === 0 || !totalItemsFiltered) {
+  function pageNav() {
+    if (parentState.includePageNav) {
+      let count: string = totalItemsFiltered;
+      if (totalItemsFiltered === "0" || !totalItemsFiltered) {
         count = totalItems;
       }
       return (
@@ -244,12 +264,12 @@ const MyTable: FC<TableProps> = ({
     }
   }
 
-  function getTableHeader(self: any) {
-    if (self.state.tableHeads) {
+  function getTableHeader() {
+    if (parentState.tableHeads) {
       return (
         <TableHead>
           <TableRow>
-            {self.state.tableHeads.map((tableHead: string, index: number) => (
+            {parentState.tableHeads.map((tableHead: string, index: number) => (
               <TableCell
                 key={tableHead}
                 className={classes.tableCell}
@@ -257,12 +277,70 @@ const MyTable: FC<TableProps> = ({
               >
                 {tableHead}
                 <br />
-                {formatTextField(self, index, disableSearch)}
+                {formatTextField(index)}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
       );
+    }
+  }
+
+  function updateData() {
+    if (!isLoading) {
+      setLoading(true);
+    }
+    if (parentState.apiDataCall) {
+      if (parentState.setSearchApi) {
+        parentState.setSearchApi("" + rowsPerPage, "length");
+      }
+      parentState.apiDataCall(page, rowsPerPage, successCallback);
+    } else {
+      if (parentState.completeDataSet && parentState.formatData) {
+        setLoading(false);
+        setData(
+          parentState.formatData(
+            parentState.completeDataSet.slice(
+              page * rowsPerPage,
+              page * rowsPerPage + rowsPerPage
+            )
+          )
+        );
+        setTotalItems("" + parentState.completeDataSet.length);
+      } else if (parentState.formatData) {
+        setLoading(false);
+        setData(parentState.formatData());
+      }
+    }
+  }
+
+  function successCallback(response: AxiosResponse) {
+    setLoading(false);
+    if (parentState.formatData) {
+      setData(parentState.formatData(response.data));
+    }
+    setTotalItems(response.headers.recordstotal);
+    setTotalItemsFiltered(response.headers.recordsfiltered);
+  }
+
+  if (
+    isLoading ||
+    parentState.includeChildren !== includeChildren ||
+    parentState.completeDataSet !== completeDataSet
+  ) {
+    if (parentState.includeChildren !== includeChildren) {
+      setIncludeChildren(parentState.includeChildren);
+      setPage(0);
+    }
+    if (parentState.completeDataSet) {
+      setCompleteDataSet(parentState.completeDataSet);
+    }
+    updateData();
+  }
+
+  function getCircularProgress() {
+    if (isLoading) {
+      return <CircularProgress size={25} color="inherit" />;
     }
   }
 
@@ -274,9 +352,9 @@ const MyTable: FC<TableProps> = ({
           className={classes.table}
           aria-label="custom pagination table"
         >
-          {getTableHeader(self)}
+          {getTableHeader()}
           <TableBody>
-            {data.map((item: any, index: number) => (
+            {data.map((items, index: number) => (
               <TableRow
                 style={
                   index % 2
@@ -285,13 +363,13 @@ const MyTable: FC<TableProps> = ({
                 }
                 key={"row" + index}
               >
-                {self.state.tableKeys.map((key: string) => (
+                {items.map((item, itemIndex: number) => (
                   <TableCell
                     size="small"
                     className={classes.tableCell}
-                    key={"cell" + index + key}
+                    key={"cell" + index + itemIndex}
                   >
-                    {item[key]}
+                    {item}
                   </TableCell>
                 ))}
               </TableRow>
@@ -299,22 +377,16 @@ const MyTable: FC<TableProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      {pageNav(
-        rowsPerPage,
-        totalItems,
-        totalItemsFiltered,
-        page,
-        handleChangePage,
-        handleChangeRowsPerPage,
-        TablePaginationActions,
-        includePageNav
-      )}
+      <Box
+        alignItems="center"
+        justifyContent="flex-end"
+        display="flex"
+        flexDirection="row"
+      >
+        <Box>{getCircularProgress()}</Box>
+        <Box>{pageNav()}</Box>
+      </Box>
     </Box>
   );
 };
-//{emptyRows > 0 && (
-//            <TableRow style={{ height: 68 * emptyRows }}>
-//              <TableCell className={classes.tableCell} colSpan={self.state.tableKeys.length} />
-//            </TableRow>
-//          )}
 export default MyTable;

@@ -1,10 +1,11 @@
 import axios from "axios";
+import { Command, SuccessCallback, System } from "../custom_types/custom_types";
 
 class SystemsService {
-  dataFetch(self: any) {
-    let url = "/api/v1/systems";
+  getSystems(successCallback: SuccessCallback) {
+    const url = "/api/v1/systems";
     axios.get(url).then((response) => {
-      self.successCallback(response);
+      successCallback(response);
     });
   }
 
@@ -20,8 +21,13 @@ class SystemsService {
     axios.delete("/api/v1/systems/" + system_id);
   }
 
-  getSystem(systems: any, namespace: string, name: string, version: string) {
-    return systems.find(function (system: any) {
+  getSystem(
+    systems: System[],
+    namespace: string,
+    name: string,
+    version: string
+  ) {
+    return systems.find(function (system: System) {
       return (
         system["name"] === name &&
         system["version"] === version &&
@@ -30,27 +36,34 @@ class SystemsService {
     });
   }
 
-  filterSystems(systems: any, params: any) {
+  filterSystems(
+    systems: System[],
+    params: {
+      name: string | undefined;
+      namespace: string | undefined;
+      version: string | undefined;
+    }
+  ) {
     if (params.name) {
-      systems = systems.filter(function (system: any) {
+      systems = systems.filter(function (system: System) {
         return system["name"] === params.name;
       });
     }
     if (params.namespace) {
-      systems = systems.filter(function (system: any) {
+      systems = systems.filter(function (system: System) {
         return system["namespace"] === params.namespace;
       });
     }
     if (params.version) {
-      systems = systems.filter(function (system: any) {
+      systems = systems.filter(function (system: System) {
         return system["version"] === params.version;
       });
     }
     return systems;
   }
 
-  getCommand(commands: any, name: string) {
-    return commands.find(function (command: any) {
+  getCommand(commands: Command[], name: string) {
+    return commands.find(function (command: Command) {
       return command["name"] === name;
     });
   }
