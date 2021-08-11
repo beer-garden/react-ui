@@ -22,6 +22,7 @@ import RequestService from "../services/request_service";
 import { IdParam, Request, TableState } from "../custom_types/custom_types";
 import Breadcrumbs from "../components/breadcrumbs";
 import { AxiosResponse } from "axios";
+import CacheService from "../services/cache_service";
 
 interface MyProps extends RouteComponentProps<IdParam> {
   match: Match<IdParam>;
@@ -55,6 +56,12 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
       ];
     }
     return tempData;
+  }
+
+  function pourItAgainClick() {
+    if (request) {
+      CacheService.pushQueue(request, `lastKnownPourItAgainRequest`);
+    }
   }
 
   function successCallback(response: AxiosResponse) {
@@ -205,21 +212,10 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
           variant="contained"
           color="primary"
           onAuxClick={() => {
-            console.log("clicked");
-            window.localStorage.setItem(
-              `lastKnown_pour_it_again_request`,
-              JSON.stringify({
-                request: this.request,
-              })
-            );
+            pourItAgainClick();
           }}
           onClick={() => {
-            window.localStorage.setItem(
-              `lastKnown_pour_it_again_request`,
-              JSON.stringify({
-                request: this.request,
-              })
-            );
+            pourItAgainClick();
           }}
         >
           Pour it Again

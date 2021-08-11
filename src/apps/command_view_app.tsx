@@ -10,7 +10,8 @@ import Breadcrumbs from "../components/breadcrumbs";
 import PageHeader from "../components/page_header";
 import CommandViewForm from "../components/command_view_form";
 import SystemsService from "../services/system_service";
-import { CommandParams, System } from "../custom_types/custom_types";
+import { CommandParams, Request, System } from "../custom_types/custom_types";
+import CacheService from "../services/cache_service";
 
 interface MyProps extends RouteComponentProps<CommandParams> {
   systems: System[];
@@ -78,19 +79,13 @@ class CommandViewApp extends Component<MyProps, MyState> {
     this.uischema = build.form;
     this.initialData = build.model;
     let requestData = null;
-    let pourItAgainRequest: any = window.localStorage.getItem(
-      `lastKnown_pour_it_again_request`
+    const pourItAgainRequest = CacheService.popQueue(
+      `lastKnownPourItAgainRequest`
     );
-    pourItAgainRequest = JSON.parse(pourItAgainRequest);
     if (pourItAgainRequest) {
       requestData = this.formatRequestToData(
-        pourItAgainRequest.request,
+        pourItAgainRequest,
         this.initialData
-      );
-      console.log(pourItAgainRequest);
-      window.localStorage.setItem(
-        `lastKnown_pour_it_again_request`,
-        JSON.stringify(false)
       );
     }
     this.description = this.command["description"];
