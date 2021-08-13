@@ -10,7 +10,8 @@ import Breadcrumbs from "../components/breadcrumbs";
 import PageHeader from "../components/page_header";
 import CommandViewForm from "../components/command_view_form";
 import SystemsService from "../services/system_service";
-import { CommandParams, System } from "../custom_types/custom_types";
+import { CommandParams, Request, System } from "../custom_types/custom_types";
+import CacheService from "../services/cache_service";
 
 interface MyProps extends RouteComponentProps<CommandParams> {
   systems: System[];
@@ -78,9 +79,12 @@ class CommandViewApp extends Component<MyProps, MyState> {
     this.uischema = build.form;
     this.initialData = build.model;
     let requestData = null;
-    if (this.props.location.state) {
+    const pourItAgainRequest = CacheService.popQueue(
+      `lastKnownPourItAgainRequest`
+    );
+    if (pourItAgainRequest) {
       requestData = this.formatRequestToData(
-        this.props.location.state.request,
+        pourItAgainRequest,
         this.initialData
       );
     }
