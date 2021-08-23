@@ -1,6 +1,10 @@
-import React, { Component } from "react";
+import React, { FC, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import AppBar from "@material-ui/core/AppBar";
+import CardContent from "@material-ui/core/CardContent";
+import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 
 import SystemsService from "../services/system_service";
@@ -9,53 +13,81 @@ import PageHeader from "../components/page_header";
 import SystemCard from "../components/system_admin_card";
 import Divider from "../components/divider";
 import { System } from "../custom_types/custom_types";
+import NamespaceSelect from "../components/namespace_select";
+import CacheService from "../services/cache_service";
+import { Alert } from "@material-ui/lab";
 
 type MyProps = {
+  namespaces: string[];
   systems: System[];
 };
-type MyState = {
-  data: System[][];
-};
 
-class SystemsAdminApp extends Component<MyProps, MyState> {
-  systems = this.props.systems;
-  state: MyState = {
-    data: [],
-  };
-  title = "Systems Management";
-
-  formatSystems(): void {
+function formatSystems(
+  namespaces: string[],
+  allSystems: System[]
+): { [key: string]: System[][] } {
+  const sortedSystems: { [key: string]: System[][] } = {};
+  for (const m in namespaces) {
+    const namespace = namespaces[m];
     const system_names: string[] = [];
-    for (const i in this.systems) {
-      if (!system_names.includes(this.systems[i].name)) {
-        system_names.push(this.systems[i].name);
+
+    const systems: System[] = SystemsService.filterSystems(allSystems, {
+      namespace: namespace,
+    });
+    sortedSystems[namespace] = [];
+    for (const i in systems) {
+      if (!system_names.includes(systems[i].name)) {
+        system_names.push(systems[i].name);
+        sortedSystems[namespace].push(
+          SystemsService.filterSystems(systems, {
+            name: systems[i].name,
+          })
+        );
+        sortedSystems[namespace][sortedSystems[namespace].length - 1] =
+          SystemsService.sortSystemsVersion(
+            sortedSystems[namespace][sortedSystems[namespace].length - 1]
+          );
       }
     }
-    system_names.sort();
-    const sortedSystems: System[][] = [];
-    for (const i in system_names) {
-      sortedSystems[i] = SystemsService.filterSystems(this.systems, {
-        name: system_names[i],
-        namespace: "",
-        version: "",
-      });
-    }
-    this.setState({ data: sortedSystems });
+    sortedSystems[namespace].sort((a: System[], b: System[]) =>
+      a[0].name > b[0].name ? 1 : -1
+    );
   }
+  return sortedSystems;
+}
 
-  componentDidMount(): void {
-    this.formatSystems();
+function getSelectMessage(namespacesSelected: string[]): JSX.Element | void {
+  if (!namespacesSelected.length) {
+    return <Alert severity="info">Please select a namespace</Alert>;
   }
+}
 
-  render(): JSX.Element {
-    return (
-      <div>
-        <Grid justify="space-between" container>
-          <Grid item>
-            <PageHeader title={this.title} description={""} />
-          </Grid>
-          <Grid item>
-            <Typography style={{ flex: 1 }}>
+const SystemsAdminApp: FC<MyProps> = ({ namespaces, systems }: MyProps) => {
+  namespaces = namespaces.sort();
+  const [namespacesSelected, setNamespacesSelected] = useState(
+    CacheService.getNamespacesSelected(
+      `lastKnown_${window.location.href}`,
+      namespaces
+    ).namespacesSelected
+  );
+  const sortedSystems = formatSystems(namespacesSelected, systems);
+  const title = "Systems Management";
+  return (
+    <Box>
+      <Grid alignItems="flex-end" justify="space-between" container>
+        <Grid key={"header"} item>
+          <PageHeader title={title} description={""} />
+        </Grid>
+        <Grid key={"actions"} item>
+          <Box display="flex" alignItems="center" flexDirection="row">
+            <Box>
+              <NamespaceSelect
+                namespaces={namespaces}
+                namespacesSelected={namespacesSelected}
+                setNamespacesSelected={setNamespacesSelected}
+              />
+            </Box>
+            <Box>
               <Button variant="contained" color="secondary">
                 Clear All Queues
               </Button>
@@ -66,20 +98,56 @@ class SystemsAdminApp extends Component<MyProps, MyState> {
               >
                 Rescan Plugin Directory
               </Button>
-            </Typography>
-          </Grid>
+            </Box>
+          </Box>
         </Grid>
-        <Divider />
-        <Grid container spacing={3}>
-          {this.state.data.map((systems, index) => (
-            <Grid item xs={4} key={"systems" + index}>
-              <SystemCard systems={systems} />
-            </Grid>
-          ))}
-        </Grid>
-      </div>
-    );
-  }
-}
+      </Grid>
+      <Divider />
+      <Box>
+        {namespacesSelected.map((namespace: string) => (
+          <Box py={1} key={namespace + "box"}>
+            <Card>
+              <AppBar
+                color="inherit"
+                style={{ background: "lightgray" }}
+                position="static"
+              >
+                <Box p={0.5}>
+                  <Typography variant="h5" color="inherit">
+                    {namespace}
+                  </Typography>
+                </Box>
+              </AppBar>
+              <CardContent>
+                <Grid container spacing={2}>
+                  <Box
+                    display="flex"
+                    flexWrap="wrap"
+                    flexDirection="row"
+                    key={"systems" + namespace}
+                  >
+                    {sortedSystems[namespace].map(
+                      (systems: System[], index: number) => (
+                        <Box
+                          key={"systems" + index + namespace}
+                          minWidth={0.24}
+                          p={1}
+                          maxWidth={1 / 2}
+                        >
+                          <SystemCard systems={systems} namespace={namespace} />
+                        </Box>
+                      )
+                    )}
+                  </Box>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Box>
+        ))}
+        {getSelectMessage(namespacesSelected)}
+      </Box>
+    </Box>
+  );
+};
 
 export default SystemsAdminApp;

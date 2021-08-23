@@ -36,12 +36,17 @@ class SystemsService {
     });
   }
 
+  sortSystemsVersion(systems: System[]) {
+    systems.sort((a, b) => (a.version > b.version ? -1 : 1));
+    return systems;
+  }
+
   filterSystems(
     systems: System[],
     params: {
-      name: string | undefined;
-      namespace: string | undefined;
-      version: string | undefined;
+      name?: string | undefined;
+      namespace?: string | undefined;
+      version?: string | undefined;
     }
   ) {
     if (params.name) {

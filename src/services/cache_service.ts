@@ -4,6 +4,7 @@ type CachedStates = {
   rowsPerPage?: number;
   request?: Request;
   requestQueue?: Request[];
+  namespacesSelected?: string[];
 };
 
 function getItem(key: string): CachedStates {
@@ -19,6 +20,16 @@ const CacheService = {
   getIndexLastState(key: string): { rowsPerPage: number } {
     const item = getItem(key);
     return { rowsPerPage: item.rowsPerPage || 5 };
+  },
+
+  getNamespacesSelected(
+    key: string,
+    defaultValue: string[] = []
+  ): { namespacesSelected: string[] } {
+    const item = getItem(key);
+    return {
+      namespacesSelected: item.namespacesSelected || defaultValue,
+    };
   },
 
   popQueue(key: string): Request | undefined | void {
