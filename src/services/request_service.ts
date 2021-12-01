@@ -6,10 +6,10 @@ import {
 } from "../custom_types/custom_types";
 
 export default class RequestService {
-  createRequest(self: any, model: any): void {
+  createRequest(successCallback: SuccessCallback, model: unknown): void {
     axios
       .post("/api/v1/requests", model)
-      .then((response) => self.successCallback(response));
+      .then((response) => successCallback(response));
   }
 
   getRequests(

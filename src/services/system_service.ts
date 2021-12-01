@@ -67,6 +67,21 @@ class SystemsService {
     return systems;
   }
 
+  getSystemAndComand(
+    systems: System[],
+    namespace: string,
+    system_name: string,
+    command_name: string,
+    version: string
+  ) {
+    const system = this.getSystem(systems, namespace, system_name, version);
+    if (system) {
+      const command = this.getCommand(system.commands, command_name);
+      return { system: system, command: command };
+    }
+    return { system: system, command: undefined };
+  }
+
   getCommand(commands: Command[], name: string) {
     return commands.find(function (command: Command) {
       return command["name"] === name;
