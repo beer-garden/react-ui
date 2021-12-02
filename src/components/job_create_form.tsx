@@ -1,44 +1,43 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   materialCells,
   materialRenderers,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import AlertForm from "../builderForm/alertControl";
-import AlertTester from "../builderForm/alertTester";
-import DictionaryControl from "../builderForm/customFormRenders/dictControl";
-import DictionaryTester from "../builderForm/customFormRenders/dictTester";
+import Ajv from "ajv";
+
+import AlertForm from "../builderForm/customFormRenders/alert_control";
+import AlertTester from "../builderForm/customFormRenders/alert_tester";
+import DictionaryControl from "../builderForm/customFormRenders/dict_any_control";
+import DictionaryTester from "../builderForm/customFormRenders/dict_any_tester";
 import Button from "@material-ui/core/Button";
 import { Redirect } from "react-router";
 import Tooltip from "@material-ui/core/Tooltip";
 import JobService from "../services/job_service";
+import { Request, SuccessCallback } from "../custom_types/custom_types";
+import ReactJson from "react-json-view";
+import Box from "@material-ui/core/Box";
+import { AxiosResponse } from "axios";
 
 interface JobViewFormProps {
-  self: any;
-  schema: any;
-  uischema: any;
-  initialModel: any;
+  request: Request;
 }
 
-const JobViewForm: FC<JobViewFormProps> = ({
-  self,
-  schema,
-  uischema,
-  initialModel,
-}: JobViewFormProps) => {
-  function submitForm(self: any, successCallback: any) {
-    JobService.createJob(self, successCallback);
-    //          self.setState({redirect: (<Redirect push to="/requests" />)})
+const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
+  const [model, setModel] = useState(JobService.MODEL);
+  const [errors, setErrors] = useState<Ajv.ErrorObject[]>([]);
+  const [redirect, setRedirect] = useState<JSX.Element>();
+
+  function submitForm(successCallback: SuccessCallback) {
+    JobService.createJob(request, model, successCallback);
   }
 
-  function successCallback(self: any, response: any) {
-    self.setState({
-      redirect: <Redirect push to={"/jobs/".concat(response.data.id)} />,
-    });
+  function successCallback(response: AxiosResponse) {
+    setRedirect(<Redirect push to={"/jobs/".concat(response.data.id)} />);
   }
 
-  function makeRequest(self: any) {
-    if (self.state.errors.length > 0) {
+  function makeRequest() {
+    if (errors.length > 0) {
       return (
         <Tooltip title="Missing required properties">
           <span>
@@ -51,7 +50,7 @@ const JobViewForm: FC<JobViewFormProps> = ({
     } else {
       return (
         <Button
-          onClick={() => submitForm(self, successCallback)}
+          onClick={() => submitForm(successCallback)}
           variant="contained"
           color="primary"
         >
@@ -62,34 +61,43 @@ const JobViewForm: FC<JobViewFormProps> = ({
   }
 
   return (
-    <div>
-      <JsonForms
-        schema={schema}
-        uischema={uischema}
-        data={self.state.data}
-        renderers={[
-          ...materialRenderers,
-          { tester: AlertTester, renderer: AlertForm },
-          {
-            tester: DictionaryTester,
-            renderer: DictionaryControl,
-          },
-        ]}
-        cells={materialCells}
-        onChange={({ data, errors }) => {
-          self.setState({ data: data, errors: errors });
-        }}
-      />
-      <Button
-        variant="contained"
-        onClick={() => self.setState({ data: initialModel })}
-        color="secondary"
-      >
-        Reset
-      </Button>
+    <Box display="flex" alignItems="flex-start">
+      <Box width={3 / 4}>
+        {redirect}
+        <JsonForms
+          schema={JobService.SCHEMA}
+          uischema={JobService.UISCHEMA}
+          data={model}
+          renderers={[
+            ...materialRenderers,
+            { tester: AlertTester, renderer: AlertForm },
+            {
+              tester: DictionaryTester,
+              renderer: DictionaryControl,
+            },
+          ]}
+          cells={materialCells}
+          onChange={({ data, errors }) => {
+            setModel(data);
+            setErrors(errors || []);
+          }}
+        />
+        <Button
+          variant="contained"
+          onClick={() => setModel(JobService.MODEL)}
+          color="secondary"
+        >
+          Reset
+        </Button>
 
-      {makeRequest(self)}
-    </div>
+        {makeRequest()}
+      </Box>
+
+      <Box pl={1} width={1 / 4} style={{ verticalAlign: "top" }}>
+        <h3>Preview</h3>
+        <ReactJson src={model} />
+      </Box>
+    </Box>
   );
 };
 

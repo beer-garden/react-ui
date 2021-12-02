@@ -1,5 +1,9 @@
 import axios from "axios";
-import { Request, SuccessCallback } from "../custom_types/custom_types";
+import {
+  Dictionary,
+  Request,
+  SuccessCallback,
+} from "../custom_types/custom_types";
 
 interface DeleteCallback {
   (): void;
@@ -399,7 +403,7 @@ class JobService {
     });
   }
 
-  getTrigger(triggerType: string, formModel: any) {
+  getTrigger(triggerType: string, formModel: Dictionary) {
     if (triggerType === "date") {
       return {
         run_date: formModel["run_date"],
@@ -459,8 +463,8 @@ class JobService {
     }
   }
 
-  formToServerModel(formModel: any, requestTemplate: Request) {
-    const serviceModel: any = {};
+  formToServerModel(formModel: Dictionary, requestTemplate: Request) {
+    const serviceModel: Dictionary = {};
     serviceModel["name"] = formModel["name"];
     serviceModel["misfire_grace_time"] = formModel["misfire_grace_time"];
     serviceModel["trigger_type"] = formModel["trigger_type"];
@@ -474,12 +478,16 @@ class JobService {
     return serviceModel;
   }
 
-  createJob(self: any, successCallback: any) {
-    const model = this.formToServerModel(self.state.data, self.request);
+  createJob(
+    request: Request,
+    data: Dictionary,
+    successCallback: SuccessCallback
+  ) {
+    const model = this.formToServerModel(data, request);
 
     axios
       .post("/api/v1/jobs", model)
-      .then((response) => successCallback(self, response));
+      .then((response) => successCallback(response));
   }
 
   pauseJob(successCallback: SuccessCallback, jobId: string) {

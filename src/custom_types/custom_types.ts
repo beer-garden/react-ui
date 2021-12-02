@@ -1,5 +1,9 @@
 import { AxiosResponse } from "axios";
 
+export type Dictionary = {
+  [key: string]: any;
+};
+
 export type Command = {
   name: string;
   description: string;
@@ -33,7 +37,7 @@ export type Parameter = {
   optional: boolean;
   default: string;
   description: string;
-  choices: Choice[];
+  choices: Choice;
   parameters: Parameter[];
   nullable: boolean;
   maximum: number;
