@@ -1,51 +1,51 @@
-import React, { FC, useState } from "react";
-import Box from "@material-ui/core/Box";
-import ReactJson from "react-json-view";
+import React, { FC, useState } from 'react'
+import Box from '@material-ui/core/Box'
+import ReactJson from 'react-json-view'
 import {
   Link as RouterLink,
   RouteComponentProps,
   match as Match,
-} from "react-router-dom";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import Grid from "@material-ui/core/Grid";
+} from 'react-router-dom'
+import Backdrop from '@material-ui/core/Backdrop'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import IconButton from '@material-ui/core/IconButton'
+import ExpandLessIcon from '@material-ui/icons/ExpandLess'
+import Grid from '@material-ui/core/Grid'
 
-import Divider from "../components/divider";
-import RequestsTable from "../components/table";
-import PageHeader from "../components/page_header";
-import RequestService from "../services/request_service";
-import { IdParam, Request, TableState } from "../custom_types/custom_types";
-import Breadcrumbs from "../components/breadcrumbs";
-import { AxiosResponse } from "axios";
-import CacheService from "../services/cache_service";
+import Divider from '../components/divider'
+import RequestsTable from '../components/table'
+import PageHeader from '../components/page_header'
+import RequestService from '../services/request_service'
+import { IdParam, Request, TableState } from '../custom_types/custom_types'
+import Breadcrumbs from '../components/breadcrumbs'
+import { AxiosResponse } from 'axios'
+import CacheService from '../services/cache_service'
 
 interface MyProps extends RouteComponentProps<IdParam> {
-  match: Match<IdParam>;
+  match: Match<IdParam>
 }
 
 const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
-  const [request, setRequest] = useState<Request>();
-  const requestService = new RequestService();
-  let filename = "";
-  const parameterOutputWidth = 1;
-  const [expandOutput, setExpandOutput] = useState(false);
-  const [expandParameter, setExpandParameter] = useState(false);
-  const { id } = match.params;
+  const [request, setRequest] = useState<Request>()
+  const requestService = new RequestService()
+  let filename = ''
+  const parameterOutputWidth = 1
+  const [expandOutput, setExpandOutput] = useState(false)
+  const [expandParameter, setExpandParameter] = useState(false)
+  const { id } = match.params
   const state: TableState = {
     completeDataSet: [],
     formatData: formatData,
     includePageNav: false,
     disableSearch: true,
-    tableHeads: ["Instance Name", "Status", "Created", "Updated", "Comment"],
-  };
-  const title = "Request View";
+    tableHeads: ['Instance Name', 'Status', 'Created', 'Updated', 'Comment'],
+  }
+  const title = 'Request View'
   function formatData(requests: Request[]) {
-    const tempData: (string | JSX.Element | number | null)[][] = [];
+    const tempData: (string | JSX.Element | number | null)[][] = []
     for (const i in requests) {
       tempData[i] = [
         requests[i].instance_name,
@@ -53,42 +53,42 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
         new Date(requests[i].created_at).toString(),
         new Date(requests[i].updated_at).toString(),
         requests[i].comment,
-      ];
+      ]
     }
-    return tempData;
+    return tempData
   }
 
   function pourItAgainClick() {
     if (request) {
-      CacheService.pushQueue(request, `lastKnownPourItAgainRequest`);
+      CacheService.pushQueue(request, `lastKnownPourItAgainRequest`)
     }
   }
 
   function successCallback(response: AxiosResponse) {
-    setRequest(response.data);
+    setRequest(response.data)
   }
 
   function outputFormatted(request: Request) {
-    if (["SUCCESS", "CANCELED", "ERROR"].includes(request.status)) {
-      const output = request.output;
-      const output_type = request.output_type;
-      if (output_type === "STRING") {
-        return <span>{output}</span>;
-      } else if (output_type === "JSON") {
-        return <ReactJson src={JSON.parse(output)} />;
-      } else if (output_type === "HTML") {
-        return <div dangerouslySetInnerHTML={{ __html: output }} />;
+    if (['SUCCESS', 'CANCELED', 'ERROR'].includes(request.status)) {
+      const output = request.output
+      const output_type = request.output_type
+      if (output_type === 'STRING') {
+        return <span>{output}</span>
+      } else if (output_type === 'JSON') {
+        return <ReactJson src={JSON.parse(output)} />
+      } else if (output_type === 'HTML') {
+        return <div dangerouslySetInnerHTML={{ __html: output }} />
       }
     } else {
-      return <CircularProgress color="inherit" />;
+      return <CircularProgress color="inherit" />
     }
   }
 
   function getExpandElement() {
     if (expandParameter || expandOutput) {
-      return <ExpandLessIcon />;
+      return <ExpandLessIcon />
     } else {
-      return <ExpandMoreIcon />;
+      return <ExpandMoreIcon />
     }
   }
 
@@ -121,7 +121,7 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
             <Box p={2}>{outputFormatted(request)}</Box>
           </Box>
         </Box>
-      );
+      )
     }
   }
 
@@ -131,7 +131,7 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
         <Box
           pl={1}
           width={parameterOutputWidth}
-          style={{ verticalAlign: "top" }}
+          style={{ verticalAlign: 'top' }}
         >
           <Grid justify="space-between" container>
             <Grid item>
@@ -160,7 +160,7 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
             </Box>
           </Box>
         </Box>
-      );
+      )
     }
   }
 
@@ -174,7 +174,7 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
               request.system,
               request.system_version,
               request.command,
-              "",
+              '',
             ]}
           />
           <RequestsTable parentState={state} />
@@ -183,13 +183,13 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
             {parameterBox(request)}
           </Box>
         </div>
-      );
+      )
     } else {
       return (
         <Backdrop open={true}>
           <CircularProgress color="inherit" />
         </Backdrop>
-      );
+      )
     }
   }
 
@@ -200,41 +200,41 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
           component={RouterLink}
           to={{
             pathname: [
-              "/systems",
+              '/systems',
               request.namespace,
               request.system,
               request.system_version,
-              "commands",
+              'commands',
               request.command,
-            ].join("/"),
+            ].join('/'),
             state: { request: request },
           }}
           variant="contained"
           color="primary"
           onAuxClick={() => {
-            pourItAgainClick();
+            pourItAgainClick()
           }}
           onClick={() => {
-            pourItAgainClick();
+            pourItAgainClick()
           }}
         >
           Pour it Again
         </Button>
-      );
+      )
     }
   }
 
   if (request) {
-    if (request.output_type === "STRING") {
-      filename = id + ".txt";
-    } else if (request.output_type === "HTML") {
-      filename = id + ".html";
-    } else if (request.output_type === "JSON") {
-      filename = id + ".json";
+    if (request.output_type === 'STRING') {
+      filename = id + '.txt'
+    } else if (request.output_type === 'HTML') {
+      filename = id + '.html'
+    } else if (request.output_type === 'JSON') {
+      filename = id + '.json'
     }
-    state.completeDataSet = [request];
+    state.completeDataSet = [request]
   } else {
-    requestService.getRequest(successCallback, id);
+    requestService.getRequest(successCallback, id)
   }
 
   return (
@@ -250,7 +250,7 @@ const RequestViewApp: FC<MyProps> = ({ match }: MyProps) => {
       <Divider />
       {renderComponents()}
     </Box>
-  );
-};
+  )
+}
 
-export default RequestViewApp;
+export default RequestViewApp

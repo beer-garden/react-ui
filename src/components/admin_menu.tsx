@@ -1,21 +1,21 @@
-import * as React from "react";
-import Button from "@material-ui/core/Button";
-import Box from "@material-ui/core/Box";
-import { Link as RouterLink } from "react-router-dom";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import { BaseSyntheticEvent } from "react";
+import * as React from 'react'
+import Button from '@material-ui/core/Button'
+import Box from '@material-ui/core/Box'
+import { Link as RouterLink } from 'react-router-dom'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import { BaseSyntheticEvent } from 'react'
 
 const AdminMenuTabs = (): JSX.Element => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = (event: BaseSyntheticEvent) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   return (
     <Box>
@@ -50,7 +50,7 @@ const AdminMenuTabs = (): JSX.Element => {
         </MenuItem>
       </Menu>
     </Box>
-  );
-};
+  )
+}
 
-export default AdminMenuTabs;
+export default AdminMenuTabs

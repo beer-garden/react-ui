@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios from 'axios'
 
 class AdminService {
   rescan() {
-    axios.patch("/api/v1/admin/", { operation: "rescan" });
+    axios.patch('/api/v1/admin/', { operation: 'rescan' })
   }
 }
 
-const item = new AdminService();
+const item = new AdminService()
 
-export default item;
+export default item

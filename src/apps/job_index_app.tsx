@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Backdrop from "@material-ui/core/Backdrop";
-import { AxiosResponse } from "axios";
+import React, { useState } from 'react'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Backdrop from '@material-ui/core/Backdrop'
+import { AxiosResponse } from 'axios'
 
-import RequestsTable from "../components/table";
-import PageHeader from "../components/page_header";
-import JobsService from "../services/job_service";
-import Divider from "../components/divider";
-import { Job, TableState } from "../custom_types/custom_types";
-import { systemLink, jobLink } from "../services/routing_links";
+import RequestsTable from '../components/table'
+import PageHeader from '../components/page_header'
+import JobsService from '../services/job_service'
+import Divider from '../components/divider'
+import { Job, TableState } from '../custom_types/custom_types'
+import { systemLink, jobLink } from '../services/routing_links'
 
 const JobsApp = (): JSX.Element => {
-  const [jobs, setJobs] = useState<Job[]>();
+  const [jobs, setJobs] = useState<Job[]>()
   const state: TableState = {
     completeDataSet: [],
     formatData: formatData,
@@ -19,24 +19,24 @@ const JobsApp = (): JSX.Element => {
     includePageNav: true,
     disableSearch: true,
     tableHeads: [
-      "Job Name",
-      "Status",
-      "System",
-      "Instance",
-      "Command",
-      "Next Run Time",
-      "Success Count",
-      "Error Count",
+      'Job Name',
+      'Status',
+      'System',
+      'Instance',
+      'Command',
+      'Next Run Time',
+      'Success Count',
+      'Error Count',
     ],
-  };
-  const title = "Request Scheduler";
+  }
+  const title = 'Request Scheduler'
 
   if (!jobs) {
-    JobsService.getJobs(successCallback);
+    JobsService.getJobs(successCallback)
   }
 
   function formatData(jobs: Job[]) {
-    const tempData: (string | JSX.Element | number | null)[][] = [];
+    const tempData: (string | JSX.Element | number | null)[][] = []
     for (const i in jobs) {
       tempData[i] = [
         jobLink(jobs[i].name, jobs[i].id),
@@ -50,34 +50,34 @@ const JobsApp = (): JSX.Element => {
         new Date(jobs[i].next_run_time).toString(),
         jobs[i].success_count,
         jobs[i].error_count,
-      ];
+      ]
     }
-    return tempData;
+    return tempData
   }
 
   function successCallback(response: AxiosResponse) {
-    setJobs(response.data);
+    setJobs(response.data)
   }
 
   function getTable() {
     if (jobs) {
-      state.completeDataSet = jobs;
-      return <RequestsTable parentState={state} />;
+      state.completeDataSet = jobs
+      return <RequestsTable parentState={state} />
     } else {
       return (
         <Backdrop open={true}>
           <CircularProgress color="inherit" />
         </Backdrop>
-      );
+      )
     }
   }
   return (
     <div>
-      <PageHeader title={title} description={""} />
+      <PageHeader title={title} description={''} />
       <Divider />
       {getTable()}
     </div>
-  );
-};
+  )
+}
 
-export default JobsApp;
+export default JobsApp
