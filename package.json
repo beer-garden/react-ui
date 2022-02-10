@@ -31,6 +31,7 @@
     "@types/react-dom": "^17.0.11",
     "axios": "^0.25.0",
     "lodash": "^4.17.21",
+    "node-polyfill-webpack-plugin": "^1.1.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-json-view": "^1.21.3",
@@ -58,6 +59,7 @@
     "lint-prepush": "^2.2.0",
     "lint-staged": "^12.3.3",
     "prettier": "^2.5.1",
+    "react-app-rewired": "^2.1.11",
     "stylelint": "^14.4.0",
     "stylelint-config-prettier": "^9.0.3"
   },
@@ -81,12 +83,12 @@
   },
   "proxy": "http://localhost:2337",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "react-app-rewired build",
     "eject": "react-scripts eject",
     "lint": "eslint '*/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
     "prepare": "husky install",
-    "start": "PORT=4000 BROWSER=none react-scripts start",
+    "start": "PORT=4000 BROWSER=none react-app-rewired start",
     "test": "NODE_ENV=test jest --bail --findRelatedTests --passWithNoTests src/"
   }
 }
