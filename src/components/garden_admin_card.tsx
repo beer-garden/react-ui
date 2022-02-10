@@ -1,17 +1,18 @@
-import React, { FC } from 'react'
+import { makeStyles } from '@material-ui/core/styles' // TODO
+import {
+  AppBar,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Toolbar,
+  Typography,
+} from '@mui/material'
+import { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Button from '@material-ui/core/Button'
-
-import Table from './table'
-import GardenService from '../services/garden_service'
 import { Garden, TableState } from '../custom_types/custom_types'
+import GardenService from '../services/garden_service'
+import Table from './table'
 
 const useStyles = makeStyles({
   root: {

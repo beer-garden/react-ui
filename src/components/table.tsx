@@ -1,24 +1,28 @@
-import React, { BaseSyntheticEvent, FC, useState } from 'react'
-import PropTypes from 'prop-types'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableFooter from '@material-ui/core/TableFooter'
-import Box from '@material-ui/core/Box'
-import TablePagination from '@material-ui/core/TablePagination'
-import TableRow from '@material-ui/core/TableRow'
-import IconButton from '@material-ui/core/IconButton'
-import FirstPageIcon from '@material-ui/icons/FirstPage'
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
-import LastPageIcon from '@material-ui/icons/LastPage'
-import TableHead from '@material-ui/core/TableHead'
-import TextField from '@material-ui/core/TextField'
-import { TableInterface } from '../custom_types/custom_types'
+import { makeStyles, useTheme } from '@material-ui/core/styles' // TODO
+import {
+  FirstPage as FirstPageIcon,
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  LastPage as LastPageIcon,
+} from '@mui/icons-material'
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TextField,
+} from '@mui/material'
 import { AxiosResponse } from 'axios'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import PropTypes from 'prop-types'
+import { BaseSyntheticEvent, FC, useState } from 'react'
+import { TableInterface } from '../custom_types/custom_types'
 import CacheService from '../services/cache_service'
 
 const useStyles1 = makeStyles((theme) => ({
@@ -32,26 +36,26 @@ function TablePaginationActions(props: {
   count: number
   page: number
   rowsPerPage: number
-  onChangePage(event: BaseSyntheticEvent | null, value: number): void
+  onPageChange(event: BaseSyntheticEvent | null, value: number): void
 }) {
   const classes = useStyles1()
   const theme = useTheme()
-  const { count, page, rowsPerPage, onChangePage } = props
+  const { count, page, rowsPerPage, onPageChange } = props
 
   const handleFirstPageButtonClick = (event: BaseSyntheticEvent) => {
-    onChangePage(event, 0)
+    onPageChange(event, 0)
   }
 
   const handleBackButtonClick = (event: BaseSyntheticEvent) => {
-    onChangePage(event, page - 1)
+    onPageChange(event, page - 1)
   }
 
   const handleNextButtonClick = (event: BaseSyntheticEvent) => {
-    onChangePage(event, page + 1)
+    onPageChange(event, page + 1)
   }
 
   const handleLastPageButtonClick = (event: BaseSyntheticEvent) => {
-    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
   }
 
   return (
@@ -98,7 +102,7 @@ function TablePaginationActions(props: {
 
 TablePaginationActions.propTypes = {
   count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
 }
@@ -253,8 +257,8 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
                   inputProps: { 'aria-label': 'rows per page' },
                   native: true,
                 }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
                 ActionsComponent={TablePaginationActions}
               />
             </TableRow>

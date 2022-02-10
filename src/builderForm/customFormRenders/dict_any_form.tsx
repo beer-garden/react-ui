@@ -1,7 +1,6 @@
-import React, { BaseSyntheticEvent, FC } from 'react'
-import TextField from '@material-ui/core/TextField'
 import { ControlProps } from '@jsonforms/core'
-import { Box } from '@material-ui/core'
+import { Box, TextField } from '@mui/material'
+import { BaseSyntheticEvent, FC } from 'react'
 
 interface DictAnyProps {
   controlProps: ControlProps
@@ -86,7 +85,7 @@ export const DictionaryAny: FC<DictAnyProps> = ({
           typeof type === 'string'
         }
         rows={3}
-        rowsMax={3}
+        maxRows={3}
         fullWidth
         label={getTitle(controlProps)}
         helperText={getHelperText()}

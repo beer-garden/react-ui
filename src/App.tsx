@@ -1,30 +1,22 @@
-import React, { useState } from 'react'
-import Box from '@material-ui/core/Box'
-import Backdrop from '@material-ui/core/Backdrop'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom'
+import { Backdrop, Box, CircularProgress } from '@mui/material'
 import { AxiosResponse } from 'axios'
-
-import Menu from './components/menu'
-import SystemsApp from './apps/system_index_app'
-import RequestApp from './apps/request_index_app'
+import { useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import CommandsApp from './apps/command_index_app'
-import RequestViewApp from './apps/request_view_app'
-import SystemsAdminApp from './apps/system_admin_app'
+import CommandViewApp from './apps/command_view_app'
 import GardensAdminApp from './apps/garden_admin_app'
-import JobsApp from './apps/job_index_app'
-import JobViewApp from './apps/job_view_app'
 import GardenViewApp from './apps/garden_view_app'
 import JobCreateApp from './apps/job_create_app'
-import CommandViewApp from './apps/command_view_app'
-import SystemsService from './services/system_service'
+import JobsApp from './apps/job_index_app'
+import JobViewApp from './apps/job_view_app'
+import RequestApp from './apps/request_index_app'
+import RequestViewApp from './apps/request_view_app'
+import SystemsAdminApp from './apps/system_admin_app'
+import SystemsApp from './apps/system_index_app'
+import Menu from './components/menu'
+import { System } from './custom_types/custom_types'
 import NamespacesService from './services/namespace_service'
-import {
-  CommandParams,
-  GardenNameParam,
-  System,
-  IdParam,
-} from './custom_types/custom_types'
+import SystemsService from './services/system_service'
 
 const App = (): JSX.Element => {
   const [systems, setSystems] = useState<System[]>([])
@@ -47,73 +39,48 @@ const App = (): JSX.Element => {
       <Box>
         <Menu />
         <Box px={2}>
-          <Switch>
+          <Routes>
             <Route
               path="/systems/:namespace/:system_name/:version/commands/:command_name/"
-              component={(routeProps: RouteComponentProps<CommandParams>) => (
-                <CommandViewApp systems={systems} {...routeProps} />
-              )}
-            />
+              element={<CommandViewApp systems={systems} />}
+            ></Route>
             <Route
               path="/systems/:namespace/:system_name/:version/"
-              component={(routeProps: RouteComponentProps<CommandParams>) => (
-                <CommandsApp systems={systems} {...routeProps} />
-              )}
+              element={<CommandsApp systems={systems} />}
+            ></Route>
+            <Route
+              path={'/systems/:namespace/:system_name/'}
+              element={<CommandsApp systems={systems} />}
             />
             <Route
-              path="/systems/:namespace/:system_name/"
-              component={(routeProps: RouteComponentProps<CommandParams>) => (
-                <CommandsApp systems={systems} {...routeProps} />
-              )}
+              path={'/systems/:namespace/'}
+              element={<CommandsApp systems={systems} />}
             />
             <Route
-              path="/systems/:namespace/"
-              component={(routeProps: RouteComponentProps<CommandParams>) => (
-                <CommandsApp systems={systems} {...routeProps} />
-              )}
-            />
-            <Route
-              path="/systems"
-              component={() => <SystemsApp systems={systems} />}
+              path={'/systems'}
+              element={<SystemsApp systems={systems} />}
             />
             <Route
               path="/admin/systems"
-              component={() => (
+              element={
                 <SystemsAdminApp namespaces={namespaces} systems={systems} />
-              )}
+              }
             />
             <Route
               path="/admin/gardens/:garden_name/"
-              component={(routeProps: RouteComponentProps<GardenNameParam>) => (
-                <GardenViewApp {...routeProps} />
-              )}
+              element={<GardenViewApp />}
             />
-            <Route
-              path="/admin/gardens"
-              component={() => <GardensAdminApp />}
-            />
-            <Route
-              path="/requests/:id"
-              component={(routeProps: RouteComponentProps<IdParam>) => (
-                <RequestViewApp {...routeProps} />
-              )}
-            />
-            <Route path="/requests" component={() => <RequestApp />} />
+            <Route path="/admin/gardens" element={<GardensAdminApp />} />
+            <Route path="/requests/:id" element={<RequestViewApp />} />
+            <Route path="/requests" element={<RequestApp />} />
             <Route
               path="/jobs/create"
-              component={(routeProps: RouteComponentProps) => (
-                <JobCreateApp {...routeProps} />
-              )}
+              element={<JobCreateApp location={{}} />}
             />
-            <Route
-              path="/jobs/:id"
-              component={(routeProps: RouteComponentProps<IdParam>) => (
-                <JobViewApp {...routeProps} />
-              )}
-            />
-            <Route path="/jobs" component={() => <JobsApp />} />
-            <Redirect to="/systems" />
-          </Switch>
+            <Route path="/jobs/:id" element={<JobViewApp />} />
+            <Route path="/jobs" element={<JobsApp />} />
+            <Route path="*" element={<Navigate to="systems" replace />} />
+          </Routes>
         </Box>
       </Box>
     )

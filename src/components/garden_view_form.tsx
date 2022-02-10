@@ -1,8 +1,7 @@
-import React, { FC } from 'react'
 import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
 import { JsonForms } from '@jsonforms/react'
-import Button from '@material-ui/core/Button'
-import Tooltip from '@material-ui/core/Tooltip'
+import { Button, Tooltip } from '@mui/material'
+import { FC } from 'react'
 import GardenService from '../services/garden_service'
 
 interface GardenViewFormProps {

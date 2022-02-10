@@ -1,11 +1,11 @@
 import {
-  rankWith,
-  resolveSchema,
   hasType,
   isControl,
-  UISchemaElement,
   JsonSchema,
+  rankWith,
+  resolveSchema,
   Tester,
+  UISchemaElement,
 } from '@jsonforms/core'
 import isEmpty from 'lodash/isEmpty'
 

@@ -1,6 +1,4 @@
-import React from 'react'
-import Box from '@material-ui/core/Box'
-import Divider from '@material-ui/core/Divider'
+import { Box, Divider } from '@mui/material'
 
 const myDivider = (): JSX.Element => {
   return (

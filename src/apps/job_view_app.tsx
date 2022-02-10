@@ -1,26 +1,22 @@
-import React, { FC, useState } from 'react'
-import Box from '@material-ui/core/Box'
-import { match as Match, RouteComponentProps } from 'react-router-dom'
-import Backdrop from '@material-ui/core/Backdrop'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from '@mui/material'
+import { AxiosResponse } from 'axios'
+import { FC, useState } from 'react'
 import ReactJson from 'react-json-view'
-import { Redirect } from 'react-router'
-
-import JobService from '../services/job_service'
+import { Navigate, useParams } from 'react-router-dom'
 import PageHeader from '../components/page_header'
 import Table from '../components/table'
-import { IdParam, Job, TableState } from '../custom_types/custom_types'
-import { AxiosResponse } from 'axios'
+import { Job, TableState } from '../custom_types/custom_types'
+import JobService from '../services/job_service'
 import { systemLink } from '../services/routing_links'
 
-interface MyProps extends RouteComponentProps<IdParam> {
-  match: Match<IdParam>
-}
-
-const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
+const JobViewApp: FC = () => {
   const [job, setJob] = useState<Job>()
   const [redirect, setRedirect] = useState<JSX.Element>()
   const state: TableState = {
@@ -41,7 +37,8 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
     ],
   }
   const title = 'Job'
-  const id = match.params.id
+  const params = useParams()
+  const id = String(params.id)
   let description = id
 
   if (!job) {
@@ -117,7 +114,7 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
   }
 
   function deleteCallback() {
-    setRedirect(<Redirect push to={'/jobs/'} />)
+    setRedirect(<Navigate to={'/jobs/'} />)
   }
 
   function getButton() {
@@ -153,7 +150,7 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
     <Box>
       {redirect}
       <Grid
-        justify="space-between" // Add it here :)
+        justifyContent="space-between" // Add it here :)
         container
       >
         <Grid item>

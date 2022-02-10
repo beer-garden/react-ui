@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
-import Grid from '@material-ui/core/Grid'
-
-import GardensService from '../services/garden_service'
-import PageHeader from '../components/page_header'
-import GardenCard from '../components/garden_admin_card'
-import Divider from '../components/divider'
+import { Grid } from '@mui/material'
 import { AxiosResponse } from 'axios'
+import { useState } from 'react'
+import Divider from '../components/divider'
+import GardenCard from '../components/garden_admin_card'
+import PageHeader from '../components/page_header'
 import { Garden } from '../custom_types/custom_types'
+import GardensService from '../services/garden_service'
 
 const GardensAdminApp = (): JSX.Element => {
   const [gardens, setGardens] = useState<Garden[]>([])

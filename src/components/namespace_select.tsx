@@ -1,14 +1,14 @@
-import React, { BaseSyntheticEvent, FC } from 'react'
+import { makeStyles } from '@material-ui/core/styles' // TODO
 import {
   Checkbox,
   Chip,
   FormControl,
   Input,
   InputLabel,
-  Select,
-} from '@material-ui/core'
-import MenuItem from '@material-ui/core/MenuItem'
-import { makeStyles } from '@material-ui/core/styles'
+  MenuItem,
+} from '@mui/material'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { FC } from 'react'
 import CacheService from '../services/cache_service'
 
 interface NamespaceSelectProps {
@@ -40,15 +40,22 @@ const NamespaceSelect: FC<NamespaceSelectProps> = ({
   setNamespacesSelected,
 }: NamespaceSelectProps) => {
   const classes = useStyles()
-  const handleChange = (event: BaseSyntheticEvent) => {
+  const handleChange = (event: SelectChangeEvent<typeof namespaces>) => {
+    const {
+      target: { value },
+    } = event
+
     let selected: string[] = []
-    if (event.target.value.includes('showAll')) {
+    const theValue = typeof value === 'string' ? value.split(',') : value
+
+    if (theValue.includes('showAll')) {
       if (namespaces.length !== namespacesSelected.length) {
         selected = namespaces
       }
     } else {
-      selected = event.target.value.sort()
+      selected = theValue.sort()
     }
+
     CacheService.setItemInCache(
       { namespacesSelected: selected },
       `lastKnown_${window.location.href}`
@@ -61,10 +68,10 @@ const NamespaceSelect: FC<NamespaceSelectProps> = ({
       <InputLabel id="namespaceSelectLabel">Namespaces:</InputLabel>
       <Select
         labelId="namespaceSelectLabel"
+        multiple
         value={namespacesSelected}
         onChange={handleChange}
         input={<Input />}
-        multiple
         renderValue={(selected) => (
           <div className={classes.chips}>
             {(selected as string[]).map((value: string) => (

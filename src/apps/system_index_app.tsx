@@ -1,12 +1,10 @@
-import React, { Component } from 'react'
-import Button from '@material-ui/core/Button'
+import { Box, Button } from '@mui/material'
+import { Component } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-
-import Table from '../components/table'
-import PageHeader from '../components/page_header'
 import Divider from '../components/divider'
+import PageHeader from '../components/page_header'
+import Table from '../components/table'
 import { System, TableState } from '../custom_types/custom_types'
-import Box from '@material-ui/core/Box'
 
 type MyProps = {
   systems: System[]

@@ -1,16 +1,17 @@
-import React, { FC } from 'react'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Box from '@material-ui/core/Box'
-import ListItem from '@material-ui/core/ListItem'
-import List from '@material-ui/core/List'
-
-import Table from './table'
+import { makeStyles } from '@material-ui/core/styles' // TODO
+import {
+  AppBar,
+  Box,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  Toolbar,
+  Typography,
+} from '@mui/material'
+import { FC } from 'react'
 import { Garden, TableState } from '../custom_types/custom_types'
+import Table from './table'
 
 const useStyles = makeStyles({
   root: {

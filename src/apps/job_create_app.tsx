@@ -1,7 +1,6 @@
-import React, { FC } from 'react'
+import { Alert, Link } from '@mui/material'
+import { FC } from 'react'
 import JobViewForm from '../components/job_create_form'
-import { Alert } from '@material-ui/lab'
-import { Link } from '@material-ui/core'
 
 type MyProps = {
   location: any

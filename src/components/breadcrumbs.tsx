@@ -1,5 +1,5 @@
-import React, { FC } from 'react'
-import Breadcrumbs from '@material-ui/core/Breadcrumbs'
+import Breadcrumbs from '@mui/material/Breadcrumbs'
+import { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 interface MyBreadcrumbsProps {

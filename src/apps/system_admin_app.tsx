@@ -1,21 +1,22 @@
-import React, { FC, useState } from 'react'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Box from '@material-ui/core/Box'
-import AppBar from '@material-ui/core/AppBar'
-import CardContent from '@material-ui/core/CardContent'
-import Card from '@material-ui/core/Card'
-import Button from '@material-ui/core/Button'
-
-import SystemsService from '../services/system_service'
-import AdminService from '../services/admin_service'
+import {
+  Alert,
+  AppBar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+} from '@mui/material'
+import { FC, useState } from 'react'
+import Divider from '../components/divider'
+import NamespaceSelect from '../components/namespace_select'
 import PageHeader from '../components/page_header'
 import SystemCard from '../components/system_admin_card'
-import Divider from '../components/divider'
 import { System } from '../custom_types/custom_types'
-import NamespaceSelect from '../components/namespace_select'
+import AdminService from '../services/admin_service'
 import CacheService from '../services/cache_service'
-import { Alert } from '@material-ui/lab'
+import SystemsService from '../services/system_service'
 
 type MyProps = {
   namespaces: string[]
@@ -74,7 +75,7 @@ const SystemsAdminApp: FC<MyProps> = ({ namespaces, systems }: MyProps) => {
   const title = 'Systems Management'
   return (
     <Box>
-      <Grid alignItems="flex-end" justify="space-between" container>
+      <Grid alignItems="flex-end" justifyContent="space-between" container>
         <Grid key={'header'} item>
           <PageHeader title={title} description={''} />
         </Grid>

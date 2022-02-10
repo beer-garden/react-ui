@@ -1,6 +1,5 @@
-import React, { FC } from 'react'
-import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
+import { Box, Typography } from '@mui/material'
+import { FC } from 'react'
 
 interface PageHeaderProps {
   title: string

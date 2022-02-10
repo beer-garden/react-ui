@@ -1,27 +1,14 @@
-import React, { Component } from 'react'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
-import {
-  Link as RouterLink,
-  match as Match,
-  RouteComponentProps,
-} from 'react-router-dom'
-
-import PageHeader from '../components/page_header'
-import Divider from '../components/divider'
+import { Box, Button } from '@mui/material'
+import { Component } from 'react'
+import { Link as RouterLink, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/breadcrumbs'
-import SystemsService from '../services/system_service'
+import Divider from '../components/divider'
+import PageHeader from '../components/page_header'
 import Table from '../components/table'
-import {
-  Command,
-  CommandParams,
-  System,
-  TableState,
-} from '../custom_types/custom_types'
-
-interface MyProps extends RouteComponentProps<CommandParams> {
+import { Command, System, TableState } from '../custom_types/custom_types'
+import SystemsService from '../services/system_service'
+interface MyProps {
   systems: System[]
-  match: Match<CommandParams>
 }
 
 function makeItHappenButton(command: Command) {
@@ -63,8 +50,10 @@ class CommandsApp extends Component<MyProps, TableState> {
   }
   title = 'Commands'
 
+  params = useParams()
+
   getCommands(): Command[] {
-    const { namespace, system_name, version } = this.props.match.params
+    const { namespace, system_name, version } = this.params
     const systems = SystemsService.filterSystems(this.props.systems, {
       namespace: namespace,
       name: system_name,
@@ -98,10 +87,14 @@ class CommandsApp extends Component<MyProps, TableState> {
   }
 
   render(): JSX.Element {
-    const { namespace, system_name, version } = this.props.match.params
-    const breadcrumbs = [namespace, system_name, version].filter(function (x) {
-      return x !== undefined
-    })
+    const { namespace, system_name, version } = this.params
+    // const breadcrumbs = [namespace, system_name, version].filter(function (x) {
+    //   return x !== undefined
+    // })
+    const breadcrumbs: string[] = [namespace, system_name, version]
+      .filter((x) => x !== undefined)
+      .map((x) => String(x))
+
     return (
       <Box>
         <PageHeader title={this.title} description={''} />

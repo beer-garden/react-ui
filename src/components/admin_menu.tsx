@@ -1,13 +1,9 @@
-import * as React from 'react'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
+import { Box, Button, Menu, MenuItem } from '@mui/material'
+import { BaseSyntheticEvent, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import { BaseSyntheticEvent } from 'react'
 
 const AdminMenuTabs = (): JSX.Element => {
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
 
   const handleClick = (event: BaseSyntheticEvent) => {
     setAnchorEl(event.currentTarget)
@@ -20,7 +16,7 @@ const AdminMenuTabs = (): JSX.Element => {
   return (
     <Box>
       <Button
-        color="default"
+        color="primary"
         aria-controls="simple-menu"
         aria-haspopup="true"
         onClick={handleClick}

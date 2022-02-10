@@ -1,37 +1,29 @@
-import React, { FC, useState } from 'react'
-import Box from '@material-ui/core/Box'
-import { match as Match, RouteComponentProps } from 'react-router-dom'
-import Backdrop from '@material-ui/core/Backdrop'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
-import Alert from '@material-ui/lab/Alert'
-
+import {
+  Alert,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from '@mui/material'
+import { AxiosResponse } from 'axios'
+import { FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import Divider from '../components/divider'
-import Table from '../components/table'
 import InfoCard from '../components/garden_admin_info_card'
 import PageHeader from '../components/page_header'
-import GardenForm from '../components/garden_view_form'
+import Table from '../components/table'
+import { Garden, System, TableState } from '../custom_types/custom_types'
 import GardenService from '../services/garden_service'
-import {
-  Garden,
-  GardenNameParam,
-  System,
-  TableState,
-} from '../custom_types/custom_types'
-import { AxiosResponse } from 'axios'
 import { systemLink } from '../services/routing_links'
 
-interface MyProps extends RouteComponentProps<GardenNameParam> {
-  match: Match<GardenNameParam>
-}
 type FormState = {
   dataForm: any
   errors: any[]
 }
 
-const GardenViewApp: FC<MyProps> = ({ match }: MyProps) => {
+const GardenViewApp: FC = () => {
   const schema = GardenService.SCHEMA
   const uischema = GardenService.UISCHEMA
   const initialModel = {}
@@ -52,7 +44,8 @@ const GardenViewApp: FC<MyProps> = ({ match }: MyProps) => {
     errors: [],
   }
   const title = 'Garden View'
-  const garden_name = match.params.garden_name
+  const params = useParams()
+  const garden_name = String(params.garden_name)
 
   if (!garden) {
     GardenService.getGarden(successCallback, garden_name)
@@ -120,7 +113,7 @@ const GardenViewApp: FC<MyProps> = ({ match }: MyProps) => {
   }
   return (
     <Box pb={10}>
-      <Grid justify="space-between" container>
+      <Grid justifyContent="space-between" container>
         <Grid item>
           <PageHeader title={title} description={''} />
         </Grid>

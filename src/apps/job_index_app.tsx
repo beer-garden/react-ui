@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Backdrop from '@material-ui/core/Backdrop'
+import { Backdrop, CircularProgress } from '@mui/material'
 import { AxiosResponse } from 'axios'
-
-import RequestsTable from '../components/table'
-import PageHeader from '../components/page_header'
-import JobsService from '../services/job_service'
+import { useState } from 'react'
 import Divider from '../components/divider'
+import PageHeader from '../components/page_header'
+import RequestsTable from '../components/table'
 import { Job, TableState } from '../custom_types/custom_types'
-import { systemLink, jobLink } from '../services/routing_links'
+import JobsService from '../services/job_service'
+import { jobLink, systemLink } from '../services/routing_links'
 
 const JobsApp = (): JSX.Element => {
   const [jobs, setJobs] = useState<Job[]>()

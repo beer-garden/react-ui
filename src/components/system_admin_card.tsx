@@ -1,29 +1,35 @@
-import React, { BaseSyntheticEvent, FC } from 'react'
-import Divider from '@material-ui/core/Divider'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled'
-import StopIcon from '@material-ui/icons/Stop'
-import CachedIcon from '@material-ui/icons/Cached'
-import DeleteIcon from '@material-ui/icons/Delete'
-import { Alert, AlertTitle } from '@material-ui/lab'
-import { Color } from '@material-ui/lab/Alert'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles' // TODO
+import {
+  Cached as CachedIcon,
+  Delete as DeleteIcon,
+  Link as LinkIcon,
+  PlayCircleFilled as PlayCircleFilledIcon,
+  Stop as StopIcon,
+} from '@mui/icons-material'
+import {
+  Alert,
+  AlertColor,
+  AlertTitle,
+  AppBar,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import { BaseSyntheticEvent, FC, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import LinkIcon from '@material-ui/icons/Link'
-import { Select, Tooltip } from '@material-ui/core'
-import Button from '@material-ui/core/Button'
-
+import { Instance, System } from '../custom_types/custom_types'
 import InstanceService from '../services/instance_service'
 import SystemService from '../services/system_service'
-import { Instance, System } from '../custom_types/custom_types'
 
 const useStyles = makeStyles({
   root: {
@@ -67,7 +73,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
   }
 
   function getSystemsSeverity(systems: System[]) {
-    let status: Color = 'success'
+    let status: AlertColor = 'success'
     for (const i in systems) {
       const system = systems[i]
       for (const k in system.instances) {
@@ -98,8 +104,8 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
     return status
   }
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const [menuId, setMenuId] = React.useState('')
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [menuId, setMenuId] = useState('')
 
   function handleClick(event: BaseSyntheticEvent, id: string) {
     setMenuId(id)
@@ -110,11 +116,11 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
     setAnchorEl(null)
   }
 
-  const handleChange = (event: BaseSyntheticEvent) => {
-    setSystemIndex(event.target.value)
+  const handleChange = (event: SelectChangeEvent) => {
+    setSystemIndex(parseInt(event.target.value))
   }
 
-  const [systemIndex, setSystemIndex] = React.useState(0)
+  const [systemIndex, setSystemIndex] = useState(0)
 
   const classes = useStyles()
 
@@ -134,7 +140,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
       <CardContent>
         <Grid alignItems="center" container>
           <Grid item key={'selector'}>
-            <Select value={systemIndex} onChange={handleChange}>
+            <Select value={systemIndex.toString()} onChange={handleChange}>
               {systems.map((system, index) => (
                 <MenuItem key={system.version} value={index}>
                   <Alert severity={getSystemsSeverity([system])}>

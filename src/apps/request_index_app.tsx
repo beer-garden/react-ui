@@ -1,9 +1,7 @@
-import React, { useState } from 'react'
-import Box from '@material-ui/core/Box'
-import Checkbox from '@material-ui/core/Checkbox'
-
-import PageHeader from '../components/page_header'
+import { Box, Checkbox } from '@mui/material'
+import { useState } from 'react'
 import Divider from '../components/divider'
+import PageHeader from '../components/page_header'
 import Table from '../components/table'
 import {
   Request,
