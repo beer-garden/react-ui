@@ -1,10 +1,9 @@
-import React, { FC } from "react";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
+import { Box, Typography } from '@mui/material'
+import { FC } from 'react'
 
 interface PageHeaderProps {
-  title: string;
-  description: string;
+  title: string
+  description: string
 }
 
 const PageHeader: FC<PageHeaderProps> = ({
@@ -22,7 +21,7 @@ const PageHeader: FC<PageHeaderProps> = ({
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default PageHeader;
+export default PageHeader

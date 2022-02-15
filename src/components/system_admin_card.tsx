@@ -1,47 +1,53 @@
-import React, { BaseSyntheticEvent, FC } from "react";
-import Divider from "@material-ui/core/Divider";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
-import StopIcon from "@material-ui/icons/Stop";
-import CachedIcon from "@material-ui/icons/Cached";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import { Color } from "@material-ui/lab/Alert";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Grid from "@material-ui/core/Grid";
-import { Link as RouterLink } from "react-router-dom";
-import LinkIcon from "@material-ui/icons/Link";
-import { Select, Tooltip } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-
-import InstanceService from "../services/instance_service";
-import SystemService from "../services/system_service";
-import { Instance, System } from "../custom_types/custom_types";
+import { makeStyles } from '@material-ui/core/styles' // TODO
+import {
+  Cached as CachedIcon,
+  Delete as DeleteIcon,
+  Link as LinkIcon,
+  PlayCircleFilled as PlayCircleFilledIcon,
+  Stop as StopIcon,
+} from '@mui/icons-material'
+import {
+  Alert,
+  AlertColor,
+  AlertTitle,
+  AppBar,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import { BaseSyntheticEvent, FC, useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import { Instance, System } from '../custom_types/custom_types'
+import InstanceService from '../services/instance_service'
+import SystemService from '../services/system_service'
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
   },
   bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
   },
   title: {
     fontSize: 14,
   },
-});
+})
 
 interface SystemAdminCardProps {
-  systems: System[];
-  namespace: string;
+  systems: System[]
+  namespace: string
 }
 
 const SystemAdminCard: FC<SystemAdminCardProps> = ({
@@ -49,80 +55,80 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
 }: SystemAdminCardProps) => {
   function getSeverity(status: string) {
     switch (status) {
-      case "RUNNING":
-        return "success";
-      case "STOPPING":
-      case "UNRESPONSIVE":
-        return "warning";
-      case "STARTING":
-      case "INITIALIZING":
-      case "RELOADING":
-        return "info";
-      case "DEAD":
-      case "STOPPED":
-        return "error";
+      case 'RUNNING':
+        return 'success'
+      case 'STOPPING':
+      case 'UNRESPONSIVE':
+        return 'warning'
+      case 'STARTING':
+      case 'INITIALIZING':
+      case 'RELOADING':
+        return 'info'
+      case 'DEAD':
+      case 'STOPPED':
+        return 'error'
       default:
-        break;
+        break
     }
   }
 
   function getSystemsSeverity(systems: System[]) {
-    let status: Color = "success";
+    let status: AlertColor = 'success'
     for (const i in systems) {
-      const system = systems[i];
+      const system = systems[i]
       for (const k in system.instances) {
-        const instance = system.instances[k];
+        const instance = system.instances[k]
         if (
-          (instance.status === "STOPPING" ||
-            instance.status === "UNRESPONSIVE") &&
-          status !== "error"
+          (instance.status === 'STOPPING' ||
+            instance.status === 'UNRESPONSIVE') &&
+          status !== 'error'
         ) {
-          status = "warning";
+          status = 'warning'
         } else if (
-          (instance.status === "STARTING" ||
-            instance.status === "INITIALIZING" ||
-            instance.status === "RELOADING") &&
-          status !== "error" &&
-          status !== "warning"
+          (instance.status === 'STARTING' ||
+            instance.status === 'INITIALIZING' ||
+            instance.status === 'RELOADING') &&
+          status !== 'error' &&
+          status !== 'warning'
         ) {
-          status = "info";
+          status = 'info'
         } else if (
-          (instance.status === "DEAD" || instance.status === "STOPPED") &&
-          status !== "error"
+          (instance.status === 'DEAD' || instance.status === 'STOPPED') &&
+          status !== 'error'
         ) {
-          status = "error";
-          break;
+          status = 'error'
+          break
         }
       }
     }
-    return status;
+    return status
   }
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuId, setMenuId] = React.useState("");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [menuId, setMenuId] = useState('')
 
   function handleClick(event: BaseSyntheticEvent, id: string) {
-    setMenuId(id);
-    setAnchorEl(event.currentTarget);
+    setMenuId(id)
+    setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const handleChange = (event: BaseSyntheticEvent) => {
-    setSystemIndex(event.target.value);
-  };
+  const handleChange = (event: SelectChangeEvent) => {
+    setSystemIndex(parseInt(event.target.value))
+  }
 
-  const [systemIndex, setSystemIndex] = React.useState(0);
+  const [systemIndex, setSystemIndex] = useState(0)
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Card className={classes.root}>
       <AppBar
         color="inherit"
-        style={{ background: "lightgray" }}
+        style={{ background: 'lightgray' }}
         position="static"
       >
         <Alert variant="outlined" severity={getSystemsSeverity(systems)}>
@@ -133,8 +139,8 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
       </AppBar>
       <CardContent>
         <Grid alignItems="center" container>
-          <Grid item key={"selector"}>
-            <Select value={systemIndex} onChange={handleChange}>
+          <Grid item key={'selector'}>
+            <Select value={systemIndex.toString()} onChange={handleChange}>
               {systems.map((system, index) => (
                 <MenuItem key={system.version} value={index}>
                   <Alert severity={getSystemsSeverity([system])}>
@@ -144,17 +150,17 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
               ))}
             </Select>
           </Grid>
-          <Grid item key={"systems[systemIndex] actions"}>
+          <Grid item key={'systems[systemIndex] actions'}>
             <Toolbar variant="dense">
               <IconButton
                 size="small"
                 component={RouterLink}
                 to={[
-                  "/systems",
+                  '/systems',
                   systems[systemIndex].namespace,
                   systems[systemIndex].name,
                   systems[systemIndex].version,
-                ].join("/")}
+                ].join('/')}
               >
                 <LinkIcon />
               </IconButton>
@@ -195,7 +201,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
             </Toolbar>
           </Grid>
         </Grid>
-        <Typography variant={"body2"} color="textSecondary">
+        <Typography variant={'body2'} color="textSecondary">
           {systems[systemIndex].description}
         </Typography>
         <Divider />
@@ -222,8 +228,8 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                 <MenuItem
                   key="start"
                   onClick={() => {
-                    handleClose();
-                    InstanceService.startInstance(menuId);
+                    handleClose()
+                    InstanceService.startInstance(menuId)
                   }}
                 >
                   Start
@@ -232,8 +238,8 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
                 <MenuItem
                   key="stop"
                   onClick={() => {
-                    handleClose();
-                    InstanceService.stopInstance(menuId);
+                    handleClose()
+                    InstanceService.stopInstance(menuId)
                   }}
                 >
                   Stop
@@ -251,7 +257,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
         </Grid>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default SystemAdminCard;
+export default SystemAdminCard

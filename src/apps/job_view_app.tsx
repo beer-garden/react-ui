@@ -1,59 +1,56 @@
-import React, { FC, useState } from "react";
-import Box from "@material-ui/core/Box";
-import { match as Match, RouteComponentProps } from "react-router-dom";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import ReactJson from "react-json-view";
-import { Redirect } from "react-router";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from '@mui/material'
+import { AxiosResponse } from 'axios'
+import { FC, useState } from 'react'
+import ReactJson from 'react-json-view'
+import { Navigate, useParams } from 'react-router-dom'
+import PageHeader from '../components/page_header'
+import Table from '../components/table'
+import { Job, TableState } from '../custom_types/custom_types'
+import JobService from '../services/job_service'
+import { systemLink } from '../services/routing_links'
 
-import JobService from "../services/job_service";
-import PageHeader from "../components/page_header";
-import Table from "../components/table";
-import { IdParam, Job, TableState } from "../custom_types/custom_types";
-import { AxiosResponse } from "axios";
-import { systemLink } from "../services/routing_links";
-
-interface MyProps extends RouteComponentProps<IdParam> {
-  match: Match<IdParam>;
-}
-
-const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
-  const [job, setJob] = useState<Job>();
-  const [redirect, setRedirect] = useState<JSX.Element>();
+const JobViewApp: FC = () => {
+  const [job, setJob] = useState<Job>()
+  const [redirect, setRedirect] = useState<JSX.Element>()
   const state: TableState = {
     completeDataSet: [],
     formatData: formatData,
     includePageNav: false,
     disableSearch: true,
     tableHeads: [
-      "Job Name",
-      "System",
-      "System Version",
-      "Instance Name",
-      "Command",
-      "Status",
-      "Success Count",
-      "Error Count",
-      "Next Run Time",
+      'Job Name',
+      'System',
+      'System Version',
+      'Instance Name',
+      'Command',
+      'Status',
+      'Success Count',
+      'Error Count',
+      'Next Run Time',
     ],
-  };
-  const title = "Job";
-  const id = match.params.id;
-  let description = id;
+  }
+  const title = 'Job'
+  const params = useParams()
+  const id = String(params.id)
+  let description = id
 
   if (!job) {
-    JobService.getJob(successCallback, id);
+    JobService.getJob(successCallback, id)
   }
 
   function formatData(jobs: Job[]) {
-    const tempData: (string | JSX.Element | number | null)[][] = [];
+    const tempData: (string | JSX.Element | number | null)[][] = []
     for (const i in jobs) {
-      let date = "";
-      if (jobs[i].status === "RUNNING") {
-        date = new Date(jobs[i].next_run_time).toString();
+      let date = ''
+      if (jobs[i].status === 'RUNNING') {
+        date = new Date(jobs[i].next_run_time).toString()
       }
       tempData[i] = [
         jobs[i].name,
@@ -72,18 +69,18 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
         jobs[i].success_count,
         jobs[i].error_count,
         date,
-      ];
+      ]
     }
-    return tempData;
+    return tempData
   }
 
   function successCallback(response: AxiosResponse) {
-    setJob(response.data);
+    setJob(response.data)
   }
 
   if (job) {
-    description = [job.name, id].join(" - ");
-    state.completeDataSet = [job];
+    description = [job.name, id].join(' - ')
+    state.completeDataSet = [job]
   }
 
   function renderComponents() {
@@ -106,46 +103,46 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
             </Box>
           </Box>
         </div>
-      );
+      )
     } else {
       return (
         <Backdrop open={true}>
           <CircularProgress color="inherit" />
         </Backdrop>
-      );
+      )
     }
   }
 
   function deleteCallback() {
-    setRedirect(<Redirect push to={"/jobs/"} />);
+    setRedirect(<Navigate to={'/jobs/'} />)
   }
 
   function getButton() {
     if (job) {
-      if (job.status === "RUNNING") {
+      if (job.status === 'RUNNING') {
         return (
           <Button
             variant="contained"
-            style={{ backgroundColor: "#e38d13", color: "white" }}
+            style={{ backgroundColor: '#e38d13', color: 'white' }}
             onClick={() => {
-              JobService.pauseJob(successCallback, id);
+              JobService.pauseJob(successCallback, id)
             }}
           >
             Pause job
           </Button>
-        );
-      } else if (job.status === "PAUSED") {
+        )
+      } else if (job.status === 'PAUSED') {
         return (
           <Button
             variant="contained"
-            style={{ backgroundColor: "green", color: "white" }}
+            style={{ backgroundColor: 'green', color: 'white' }}
             onClick={() => {
-              JobService.resumeJob(successCallback, id);
+              JobService.resumeJob(successCallback, id)
             }}
           >
             Resume job
           </Button>
-        );
+        )
       }
     }
   }
@@ -153,7 +150,7 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
     <Box>
       {redirect}
       <Grid
-        justify="space-between" // Add it here :)
+        justifyContent="space-between" // Add it here :)
         container
       >
         <Grid item>
@@ -165,7 +162,7 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
               variant="contained"
               color="secondary"
               onClick={() => {
-                JobService.deleteJob(deleteCallback, id);
+                JobService.deleteJob(deleteCallback, id)
               }}
             >
               Delete Job
@@ -179,7 +176,7 @@ const JobViewApp: FC<MyProps> = ({ match }: MyProps) => {
       </Grid>
       {renderComponents()}
     </Box>
-  );
-};
+  )
+}
 
-export default JobViewApp;
+export default JobViewApp

@@ -1,39 +1,33 @@
-import React, { FC, useState } from "react";
-import {
-  materialCells,
-  materialRenderers,
-} from "@jsonforms/material-renderers";
-import { JsonForms } from "@jsonforms/react";
-import Ajv from "ajv";
-
-import AlertForm from "../builderForm/customFormRenders/alert_control";
-import AlertTester from "../builderForm/customFormRenders/alert_tester";
-import DictionaryControl from "../builderForm/customFormRenders/dict_any_control";
-import DictionaryTester from "../builderForm/customFormRenders/dict_any_tester";
-import Button from "@material-ui/core/Button";
-import { Redirect } from "react-router";
-import Tooltip from "@material-ui/core/Tooltip";
-import JobService from "../services/job_service";
-import { Request, SuccessCallback } from "../custom_types/custom_types";
-import ReactJson from "react-json-view";
-import Box from "@material-ui/core/Box";
-import { AxiosResponse } from "axios";
+import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
+import { JsonForms } from '@jsonforms/react'
+import { Box, Button, Tooltip } from '@mui/material'
+import Ajv from 'ajv'
+import { AxiosResponse } from 'axios'
+import { FC, useState } from 'react'
+import ReactJson from 'react-json-view'
+import { Navigate } from 'react-router-dom'
+import AlertForm from '../builderForm/customFormRenders/alert_control'
+import AlertTester from '../builderForm/customFormRenders/alert_tester'
+import DictionaryControl from '../builderForm/customFormRenders/dict_any_control'
+import DictionaryTester from '../builderForm/customFormRenders/dict_any_tester'
+import { Request, SuccessCallback } from '../custom_types/custom_types'
+import JobService from '../services/job_service'
 
 interface JobViewFormProps {
-  request: Request;
+  request: Request
 }
 
 const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
-  const [model, setModel] = useState(JobService.MODEL);
-  const [errors, setErrors] = useState<Ajv.ErrorObject[]>([]);
-  const [redirect, setRedirect] = useState<JSX.Element>();
+  const [model, setModel] = useState(JobService.MODEL)
+  const [errors, setErrors] = useState<Ajv.ErrorObject[]>([])
+  const [redirect, setRedirect] = useState<JSX.Element>()
 
   function submitForm(successCallback: SuccessCallback) {
-    JobService.createJob(request, model, successCallback);
+    JobService.createJob(request, model, successCallback)
   }
 
   function successCallback(response: AxiosResponse) {
-    setRedirect(<Redirect push to={"/jobs/".concat(response.data.id)} />);
+    setRedirect(<Navigate to={'/jobs/'.concat(response.data.id)} />)
   }
 
   function makeRequest() {
@@ -46,7 +40,7 @@ const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
             </Button>
           </span>
         </Tooltip>
-      );
+      )
     } else {
       return (
         <Button
@@ -56,7 +50,7 @@ const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
         >
           Create Job
         </Button>
-      );
+      )
     }
   }
 
@@ -78,8 +72,8 @@ const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
           ]}
           cells={materialCells}
           onChange={({ data, errors }) => {
-            setModel(data);
-            setErrors(errors || []);
+            setModel(data)
+            setErrors(errors || [])
           }}
         />
         <Button
@@ -93,12 +87,12 @@ const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
         {makeRequest()}
       </Box>
 
-      <Box pl={1} width={1 / 4} style={{ verticalAlign: "top" }}>
+      <Box pl={1} width={1 / 4} style={{ verticalAlign: 'top' }}>
         <h3>Preview</h3>
         <ReactJson src={model} />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default JobViewForm;
+export default JobViewForm

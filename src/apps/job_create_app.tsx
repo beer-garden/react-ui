@@ -1,28 +1,27 @@
-import React, { FC } from "react";
-import JobViewForm from "../components/job_create_form";
-import { Alert } from "@material-ui/lab";
-import { Link } from "@material-ui/core";
+import { Alert, Link } from '@mui/material'
+import { FC } from 'react'
+import JobViewForm from '../components/job_create_form'
 
 type MyProps = {
-  location: any;
-};
+  location: any
+}
 
 const JobCreateApp: FC<MyProps> = ({ location }: MyProps) => {
-  const { request } = location.state || {};
+  const { request } = location.state || {}
 
-  let formElement: JSX.Element;
+  let formElement: JSX.Element
 
   if (request) {
-    formElement = <JobViewForm request={request} />;
+    formElement = <JobViewForm request={request} />
   } else {
     formElement = (
       <Alert severity="error">
-        Need to pick a command before creating a job.{" "}
+        Need to pick a command before creating a job.{' '}
         <Link href="/systems">Systems</Link>
       </Alert>
-    );
+    )
   }
-  return formElement;
-};
+  return formElement
+}
 
-export default JobCreateApp;
+export default JobCreateApp

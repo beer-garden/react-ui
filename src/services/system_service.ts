@@ -1,24 +1,24 @@
-import axios from "axios";
-import { Command, SuccessCallback, System } from "../custom_types/custom_types";
+import axios from 'axios'
+import { Command, SuccessCallback, System } from '../custom_types/custom_types'
 
 class SystemsService {
   getSystems(successCallback: SuccessCallback) {
-    const url = "/api/v1/systems";
+    const url = '/api/v1/systems'
     axios.get(url).then((response) => {
-      successCallback(response);
-    });
+      successCallback(response)
+    })
   }
 
   reloadSystem(system_id: string) {
-    axios.patch("/api/v1/systems/" + system_id, {
-      operation: "reload",
-      path: "",
-      value: "",
-    });
+    axios.patch('/api/v1/systems/' + system_id, {
+      operation: 'reload',
+      path: '',
+      value: '',
+    })
   }
 
   deleteSystem(system_id: string) {
-    axios.delete("/api/v1/systems/" + system_id);
+    axios.delete('/api/v1/systems/' + system_id)
   }
 
   getSystem(
@@ -29,42 +29,42 @@ class SystemsService {
   ) {
     return systems.find(function (system: System) {
       return (
-        system["name"] === name &&
-        system["version"] === version &&
-        system["namespace"] === namespace
-      );
-    });
+        system['name'] === name &&
+        system['version'] === version &&
+        system['namespace'] === namespace
+      )
+    })
   }
 
   sortSystemsVersion(systems: System[]) {
-    systems.sort((a, b) => (a.version > b.version ? -1 : 1));
-    return systems;
+    systems.sort((a, b) => (a.version > b.version ? -1 : 1))
+    return systems
   }
 
   filterSystems(
     systems: System[],
     params: {
-      name?: string | undefined;
-      namespace?: string | undefined;
-      version?: string | undefined;
+      name?: string | undefined
+      namespace?: string | undefined
+      version?: string | undefined
     }
   ) {
     if (params.name) {
       systems = systems.filter(function (system: System) {
-        return system["name"] === params.name;
-      });
+        return system['name'] === params.name
+      })
     }
     if (params.namespace) {
       systems = systems.filter(function (system: System) {
-        return system["namespace"] === params.namespace;
-      });
+        return system['namespace'] === params.namespace
+      })
     }
     if (params.version) {
       systems = systems.filter(function (system: System) {
-        return system["version"] === params.version;
-      });
+        return system['version'] === params.version
+      })
     }
-    return systems;
+    return systems
   }
 
   getSystemAndComand(
@@ -74,21 +74,21 @@ class SystemsService {
     command_name: string,
     version: string
   ) {
-    const system = this.getSystem(systems, namespace, system_name, version);
+    const system = this.getSystem(systems, namespace, system_name, version)
     if (system) {
-      const command = this.getCommand(system.commands, command_name);
-      return { system: system, command: command };
+      const command = this.getCommand(system.commands, command_name)
+      return { system: system, command: command }
     }
-    return { system: system, command: undefined };
+    return { system: system, command: undefined }
   }
 
   getCommand(commands: Command[], name: string) {
     return commands.find(function (command: Command) {
-      return command["name"] === name;
-    });
+      return command['name'] === name
+    })
   }
 }
 
-const item = new SystemsService();
+const item = new SystemsService()
 
-export default item;
+export default item

@@ -1,17 +1,13 @@
-import React, { FC } from "react";
-import {
-  materialCells,
-  materialRenderers,
-} from "@jsonforms/material-renderers";
-import { JsonForms } from "@jsonforms/react";
-import Button from "@material-ui/core/Button";
-import Tooltip from "@material-ui/core/Tooltip";
-import GardenService from "../services/garden_service";
+import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
+import { JsonForms } from '@jsonforms/react'
+import { Button, Tooltip } from '@mui/material'
+import { FC } from 'react'
+import GardenService from '../services/garden_service'
 
 interface GardenViewFormProps {
-  self: any;
-  schema: any;
-  uischema: any;
+  self: any
+  schema: any
+  uischema: any
 }
 
 const GardenViewForm: FC<GardenViewFormProps> = ({
@@ -29,7 +25,7 @@ const GardenViewForm: FC<GardenViewFormProps> = ({
             </Button>
           </span>
         </Tooltip>
-      );
+      )
     } else {
       return (
         <Button
@@ -43,7 +39,7 @@ const GardenViewForm: FC<GardenViewFormProps> = ({
         >
           Save Configurations
         </Button>
-      );
+      )
     }
   }
 
@@ -56,12 +52,12 @@ const GardenViewForm: FC<GardenViewFormProps> = ({
         renderers={[...materialRenderers]}
         cells={materialCells}
         onChange={({ data, errors }) => {
-          self.setState({ dataForm: data, errors: errors });
+          self.setState({ dataForm: data, errors: errors })
         }}
       />
       {makeRequest(self)}
     </div>
-  );
-};
+  )
+}
 
-export default GardenViewForm;
+export default GardenViewForm

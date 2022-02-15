@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import { Link as RouterLink } from "react-router-dom";
+import Breadcrumbs from '@mui/material/Breadcrumbs'
+import { FC } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 
 interface MyBreadcrumbsProps {
-  breadcrumbs: string[];
+  breadcrumbs: string[]
 }
 
 const myBreadcrumbs: FC<MyBreadcrumbsProps> = ({
@@ -17,19 +17,19 @@ const myBreadcrumbs: FC<MyBreadcrumbsProps> = ({
           .map((breadcrumb, index) => (
             <RouterLink
               key={breadcrumb}
-              to={["/systems"]
+              to={['/systems']
                 .concat(breadcrumbs.slice(0, index + 1))
-                .join("/")}
+                .join('/')}
             >
               {breadcrumb}
             </RouterLink>
           ))}
         <span>{breadcrumbs[breadcrumbs.length - 1]}</span>
       </Breadcrumbs>
-    );
+    )
   } else {
-    return null;
+    return null
   }
-};
+}
 
-export default myBreadcrumbs;
+export default myBreadcrumbs
