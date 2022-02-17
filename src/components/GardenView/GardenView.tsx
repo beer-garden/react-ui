@@ -10,13 +10,14 @@ import {
 import { AxiosResponse } from 'axios'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import Divider from '../components/divider'
-import InfoCard from '../components/garden_admin_info_card'
-import PageHeader from '../components/page_header'
-import Table from '../components/table'
-import { Garden, System, TableState } from '../custom_types/custom_types'
-import GardenService from '../services/garden_service'
-import { systemLink } from '../services/routing_links'
+import Divider from '../divider'
+import InfoCard from '../garden_admin_info_card'
+import GardenConnectionForm from './GardenConnection/GardenConnectionForm'
+import PageHeader from '../page_header'
+import Table from '../table'
+import { Garden, System, TableState } from '../../custom_types/custom_types'
+import GardenService from '../../services/garden_service'
+import { systemLink } from '../../services/routing_links'
 
 type FormState = {
   dataForm: any
@@ -51,7 +52,7 @@ const GardenViewApp: FC = () => {
     GardenService.getGarden(successCallback, garden_name)
   }
 
-  function formatData(systems: System[]) {
+  function formatData (systems: System[]) {
     const tempData: (string | JSX.Element | number)[][] = []
     for (const i in systems) {
       tempData[i] = [
@@ -67,11 +68,11 @@ const GardenViewApp: FC = () => {
     return tempData
   }
 
-  function successCallback(response: AxiosResponse) {
+  function successCallback (response: AxiosResponse) {
     setGarden(response.data)
   }
 
-  function getConfigSetup() {
+  function getConfigSetup () {
     if (garden) {
       if (garden.connection_type === 'LOCAL') {
         return (
@@ -82,24 +83,18 @@ const GardenViewApp: FC = () => {
           </Alert>
         )
       } else {
-        //todo fix
-        // return (
-        // <GardenForm self={this} schema={schema} uischema={uischema} />
-        // );
+        return <GardenConnectionForm garden={garden} />
       }
     }
   }
 
-  function renderComponents() {
+  function renderComponents () {
     if (garden) {
       return (
         <Box>
           <InfoCard garden={garden} />
           <Typography variant="h6">Connected Systems</Typography>
           <Table parentState={state} />
-          <Box pt={1}>
-            <Typography variant="h6">Update Connection</Typography>
-          </Box>
           {getConfigSetup()}
         </Box>
       )
