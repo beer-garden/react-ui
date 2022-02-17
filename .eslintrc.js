@@ -33,6 +33,7 @@ module.exports = {
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "plugin:prettier/recommended",
+        "plugin:react-hooks/recommended",
         "react-app",
         "react-app/jest",
         "prettier"
@@ -45,6 +46,7 @@ module.exports = {
         "react/react-in-jsx-scope": 0,
         "no-unused-vars": 1,
         "react/display-name": [0],
+        "react-hooks/rules-of-hooks": "error",
   },
   overrides: [
       {
