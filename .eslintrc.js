@@ -26,16 +26,17 @@ module.exports = {
     plugins: [
         "react",
         "react-hooks",
-        "prettier"
+        // "prettier"
     ],
     extends: [
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
-        "plugin:prettier/recommended",
+        // "plugin:prettier/recommended",
+        "plugin:react-hooks/recommended",
         "react-app",
         "react-app/jest",
-        "prettier"
+        // "prettier"
     ],
     rules: {
         "react/function-component-definition": 0,
@@ -45,6 +46,7 @@ module.exports = {
         "react/react-in-jsx-scope": 0,
         "no-unused-vars": 1,
         "react/display-name": [0],
+        "react-hooks/rules-of-hooks": "error",
   },
   overrides: [
       {
@@ -77,10 +79,10 @@ module.exports = {
             "plugin:react-hooks/recommended",
             "plugin:@typescript-eslint/eslint-recommended",
             "plugin:@typescript-eslint/recommended",
-            "plugin:prettier/recommended",
+            // "plugin:prettier/recommended",
             "react-app",
             "react-app/jest",
-            "prettier"
+            // "prettier"
         ],
         rules: {
         "react/react-in-jsx-scope": "off",
