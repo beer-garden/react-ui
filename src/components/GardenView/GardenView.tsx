@@ -10,14 +10,14 @@ import {
 import { AxiosResponse } from 'axios'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import Divider from '../divider'
-import InfoCard from '../garden_admin_info_card'
-import GardenConnectionForm from './GardenConnection/GardenConnectionForm'
-import PageHeader from '../page_header'
-import Table from '../table'
 import { Garden, System, TableState } from '../../custom_types/custom_types'
 import GardenService from '../../services/garden_service'
 import { systemLink } from '../../services/routing_links'
+import Divider from '../divider'
+import InfoCard from '../garden_admin_info_card'
+import PageHeader from '../page_header'
+import Table from '../table'
+import GardenConnectionForm from './GardenConnection/GardenConnectionForm'
 
 type FormState = {
   dataForm: any

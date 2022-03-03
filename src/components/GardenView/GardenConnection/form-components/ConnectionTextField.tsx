@@ -1,6 +1,6 @@
-import { FC } from 'react'
+import { TextField } from '@mui/material'
 import { useFormikContext } from 'formik'
-import TextField from '@mui/material/TextField'
+import { FC } from 'react'
 import { ConnectionFormFields } from './ConnectionFormFields'
 
 export type ConnectionTextFieldPropsType = {

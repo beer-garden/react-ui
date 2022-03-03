@@ -26,17 +26,14 @@ module.exports = {
     plugins: [
         "react",
         "react-hooks",
-        // "prettier"
     ],
     extends: [
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
-        // "plugin:prettier/recommended",
         "plugin:react-hooks/recommended",
         "react-app",
         "react-app/jest",
-        // "prettier"
     ],
     rules: {
         "react/function-component-definition": 0,
@@ -47,6 +44,12 @@ module.exports = {
         "no-unused-vars": 1,
         "react/display-name": [0],
         "react-hooks/rules-of-hooks": "error",
+        "no-restricted-imports": [
+            "error",
+            {
+                "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
+            }
+        ]
   },
   overrides: [
       {
@@ -79,10 +82,8 @@ module.exports = {
             "plugin:react-hooks/recommended",
             "plugin:@typescript-eslint/eslint-recommended",
             "plugin:@typescript-eslint/recommended",
-            // "plugin:prettier/recommended",
             "react-app",
             "react-app/jest",
-            // "prettier"
         ],
         rules: {
         "react/react-in-jsx-scope": "off",
