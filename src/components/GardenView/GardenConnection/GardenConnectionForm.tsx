@@ -1,6 +1,4 @@
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
+import { Box, Button, Divider } from '@mui/material'
 import { Form, Formik } from 'formik'
 import { FC, useState } from 'react'
 import { Garden } from '../garden-view-types'

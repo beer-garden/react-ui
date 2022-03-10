@@ -1,9 +1,7 @@
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import FormGroup from '@mui/material/FormGroup'
+import { Checkbox, FormControlLabel, FormGroup } from '@mui/material'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from './ConnectionFormFields'
 import { FC } from 'react'
+import { ConnectionFormFields } from './ConnectionFormFields'
 
 interface ConnectionCheckboxGroupProps {
   id: string

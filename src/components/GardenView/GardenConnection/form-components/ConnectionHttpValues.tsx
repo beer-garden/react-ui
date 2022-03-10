@@ -1,12 +1,12 @@
+import { Stack } from '@mui/material'
 import { FC, Fragment } from 'react'
-import Stack from '@mui/material/Stack'
-import {
-  ConnectionTextField,
-  getFieldValues,
-  ConnectionTextFieldPropsType,
-} from './ConnectionTextField'
 import ConnectionCheckboxGroup from './ConnectionCheckboxGroup'
 import ConnectionFormHeading from './ConnectionFormHeading'
+import {
+  ConnectionTextField,
+  ConnectionTextFieldPropsType,
+  getFieldValues,
+} from './ConnectionTextField'
 
 const ConnectionHttpValues: FC = () => {
   return (

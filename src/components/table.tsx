@@ -9,6 +9,7 @@ import {
   Box,
   CircularProgress,
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -18,6 +19,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Typography,
 } from '@mui/material'
 import { AxiosResponse } from 'axios'
 import PropTypes from 'prop-types'
@@ -32,7 +34,7 @@ const useStyles1 = makeStyles((theme) => ({
   },
 }))
 
-function TablePaginationActions(props: {
+function TablePaginationActions (props: {
   count: number
   page: number
   rowsPerPage: number
@@ -142,7 +144,10 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     parentState.includeChildren
   )
 
-  function handleChangePage(event: BaseSyntheticEvent | null, newPage: number) {
+  function handleChangePage (
+    event: BaseSyntheticEvent | null,
+    newPage: number
+  ) {
     if (parentState.setSearchApi) {
       parentState.setSearchApi('' + newPage * rowsPerPage, 'start')
     }
@@ -183,7 +188,7 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     }
   }
 
-  function formatTextField(index: number) {
+  function formatTextField (index: number) {
     if (!parentState.disableSearch) {
       if (parentState.tableHeads[index] === '') {
         return
@@ -237,7 +242,7 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     }
   }
 
-  function pageNav() {
+  function pageNav () {
     if (parentState.includePageNav) {
       let count: string = totalItemsFiltered
       if (totalItemsFiltered === '0' || !totalItemsFiltered) {
@@ -268,7 +273,7 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     }
   }
 
-  function getTableHeader() {
+  function getTableHeader () {
     if (parentState.tableHeads) {
       return (
         <TableHead>
@@ -290,7 +295,7 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     }
   }
 
-  function updateData() {
+  function updateData () {
     if (!isLoading) {
       setLoading(true)
     }
@@ -318,7 +323,7 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     }
   }
 
-  function successCallback(response: AxiosResponse) {
+  function successCallback (response: AxiosResponse) {
     setLoading(false)
     if (parentState.formatData) {
       setData(parentState.formatData(response.data))
@@ -342,7 +347,7 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
     updateData()
   }
 
-  function getCircularProgress() {
+  function getCircularProgress () {
     if (isLoading) {
       return <CircularProgress size={25} color="inherit" />
     }
@@ -373,7 +378,13 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
                     className={classes.tableCell}
                     key={'cell' + index + itemIndex}
                   >
-                    {item}
+                    {typeof item === 'string' || typeof item === 'number' ? (
+                      <Paper elevation={0}>
+                        <Typography variant="body1">{item}</Typography>
+                      </Paper>
+                    ) : (
+                      item
+                    )}
                   </TableCell>
                 ))}
               </TableRow>

@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const { useBabelRc, override } = require('customize-cra');
 
-module.exports = function override(config, env) {
+const polyFillOverride = function(config) {
   config.plugins.push(
     new NodePolyfillPlugin({
       excludeAliases: [
@@ -33,3 +35,8 @@ module.exports = function override(config, env) {
   );
   return config;
 };
+
+module.exports = override(
+  polyFillOverride,
+  useBabelRc()
+)

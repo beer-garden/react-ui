@@ -1,13 +1,12 @@
+import { Divider, Stack } from '@mui/material'
 import { FC, Fragment } from 'react'
+import ConnectionCheckboxGroup from './ConnectionCheckboxGroup'
 import ConnectionFormHeading from './ConnectionFormHeading'
-import Stack from '@mui/material/Stack'
-import Divider from '@mui/material/Divider'
+import ConnectionStompHeaders from './ConnectionStompHeaders'
 import {
   ConnectionTextField,
   ConnectionTextFieldPropsType,
 } from './ConnectionTextField'
-import ConnectionCheckboxGroup from './ConnectionCheckboxGroup'
-import ConnectionStompHeaders from './ConnectionStompHeaders'
 
 const ConnectionStompValues: FC = () => {
   return (

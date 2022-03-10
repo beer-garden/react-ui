@@ -1,13 +1,11 @@
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
+import { Button, Divider, TextField } from '@mui/material'
 import { FieldArray, getIn, useFormikContext } from 'formik'
 import { nanoid } from 'nanoid/non-secure'
 import { Fragment } from 'react'
-import ConnectionFormHeading from './ConnectionFormHeading'
 import { ConnectionFormFields } from './ConnectionFormFields'
-import Divider from '@mui/material/Divider'
+import ConnectionFormHeading from './ConnectionFormHeading'
 
 const ConnectionStompHeaders = () => {
   const context = useFormikContext<ConnectionFormFields>()

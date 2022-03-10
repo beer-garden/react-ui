@@ -1,12 +1,17 @@
+import { CssBaseline } from '@mui/material'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
+import ThemeProvider from './components/UI/Theme/ThemeProvider'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <BrowserRouter>
-    <App />
+    <ThemeProvider>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
   </BrowserRouter>,
   document.getElementById('root')
 )

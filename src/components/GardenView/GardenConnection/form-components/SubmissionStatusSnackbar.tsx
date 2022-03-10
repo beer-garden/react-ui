@@ -1,5 +1,5 @@
-import MuiAlert, { AlertProps } from '@mui/material/Alert'
-import Snackbar from '@mui/material/Snackbar'
+import { Alert as MuiAlert, Snackbar } from '@mui/material'
+import { AlertProps } from '@mui/material/Alert'
 import { FC, forwardRef, SyntheticEvent, useEffect, useState } from 'react'
 import { SubmissionStatusState } from '../GardenConnectionForm'
 
