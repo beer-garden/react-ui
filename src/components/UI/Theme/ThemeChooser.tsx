@@ -2,20 +2,18 @@ import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { FC, KeyboardEvent, MouseEvent, useContext } from 'react'
+import * as React from 'react'
+import { NavigationBarContext } from '../NavigationBar/NavigationBarContext'
 import { ThemeChoice } from './getTheme'
 import { ThemeContext } from './ThemeProvider'
 
-interface ThemeChooserProps {
-  toggleDrawer: (open: boolean) => (event: KeyboardEvent | MouseEvent) => void
-}
-
-const ThemeChooser: FC<ThemeChooserProps> = ({ toggleDrawer }) => {
+const ThemeChooser = () => {
   const theme = useTheme()
-  const { currentTheme, setTheme } = useContext(ThemeContext)
+  const { currentTheme, setTheme } = React.useContext(ThemeContext)
   const themeSetter = setTheme as (choice: ThemeChoice) => void
+  const toggleDrawer = React.useContext(NavigationBarContext)
 
-  const handleThemeChange = (event: KeyboardEvent | MouseEvent) => {
+  const handleThemeChange = (event: React.KeyboardEvent | React.MouseEvent) => {
     if (currentTheme === 'dark') {
       themeSetter('light')
     } else {

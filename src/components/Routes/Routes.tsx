@@ -1,60 +1,127 @@
-import { FC } from 'react'
-import { Navigate, Route, Routes as RRDRoutes } from 'react-router-dom'
-import CommandsApp from '../../apps/command_index_app'
-import CommandViewApp from '../../apps/command_view_app'
-import GardensAdminApp from '../../apps/garden_admin_app'
+import {
+  Navigate,
+  Route,
+  Routes as ReactRouterDomRoutes,
+} from 'react-router-dom'
+import CommandIndex from '../../pages/CommandIndex/CommandIndex'
+import CommandView from '../../pages/CommandView/CommandView'
+import GardensAdmin from '../../pages/GardenAdmin/GardenAdmin'
+import JobIndex from '../../pages/JobIndex/JobIndex'
+import JobView from '../../pages/JobView/JobView'
 import JobCreateApp from '../../apps/job_create_app'
-import JobsApp from '../../apps/job_index_app'
-import JobViewApp from '../../apps/job_view_app'
-import RequestApp from '../../apps/request_index_app'
-import RequestViewApp from '../../apps/request_view_app'
-import SystemsAdminApp from '../../apps/system_admin_app'
-import SystemsApp from '../../apps/system_index_app'
-import GardenViewApp from '../../components/GardenView/GardenView'
-import { System } from '../../custom_types/custom_types'
+import RequestsIndex from '../../pages/RequestsIndex/RequestsIndex'
+import RequestView from '../../pages/RequestView/RequestView'
+import SystemAdmin from '../../pages/SystemAdmin/SystemAdmin'
+import SystemsIndex from '../../pages/SystemIndex/SystemIndex'
+import Login from '../../pages/Login'
+import GardenAdminView from '../../pages/GardenAdminView/GardenAdminView'
+import RequireAuth from './RequireAuth'
 
-interface BGRoutesProps {
-  systems: System[]
-  namespaces: string[]
-}
-const Routes: FC<BGRoutesProps> = ({ systems, namespaces }) => {
+const Routes = () => {
   return (
-    <RRDRoutes>
+    <ReactRouterDomRoutes>
       <Route
         path={
           '/systems/:namespace/:system_name/:version/commands/:command_name/'
         }
-        element={<CommandViewApp systems={systems} />}
-      ></Route>
+        element={
+          <RequireAuth>
+            <CommandView />
+          </RequireAuth>
+        }
+      />
       <Route
         path={'/systems/:namespace/:system_name/:version/'}
-        element={<CommandsApp systems={systems} />}
-      ></Route>
+        element={
+          <RequireAuth>
+            <CommandIndex />
+          </RequireAuth>
+        }
+      />
       <Route
         path={'/systems/:namespace/:system_name/'}
-        element={<CommandsApp systems={systems} />}
+        element={
+          <RequireAuth>
+            <CommandIndex />
+          </RequireAuth>
+        }
       />
       <Route
         path={'/systems/:namespace/'}
-        element={<CommandsApp systems={systems} />}
+        element={
+          <RequireAuth>
+            <CommandIndex />
+          </RequireAuth>
+        }
       />
-      <Route path={'/systems'} element={<SystemsApp systems={systems} />} />
+      <Route path={'/systems'} element={<SystemsIndex />} />
       <Route
         path="/admin/systems"
-        element={<SystemsAdminApp namespaces={namespaces} systems={systems} />}
+        element={
+          <RequireAuth>
+            <SystemAdmin />
+          </RequireAuth>
+        }
       />
       <Route
-        path={'/admin/gardens/:garden_name/'}
-        element={<GardenViewApp />}
+        path={'/admin/gardens/:gardenName/'}
+        element={
+          <RequireAuth>
+            <GardenAdminView />
+          </RequireAuth>
+        }
       />
-      <Route path={'/admin/gardens'} element={<GardensAdminApp />} />
-      <Route path={'/requests/:id'} element={<RequestViewApp />} />
-      <Route path={'/requests'} element={<RequestApp />} />
-      <Route path={'/jobs/create'} element={<JobCreateApp location={{}} />} />
-      <Route path={'/jobs/:id'} element={<JobViewApp />} />
-      <Route path={'/jobs'} element={<JobsApp />} />
-      <Route path={'*'} element={<Navigate to={'systems'} replace />} />
-    </RRDRoutes>
+      <Route
+        path={'/admin/gardens'}
+        element={
+          <RequireAuth>
+            <GardensAdmin />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={'/requests/:id'}
+        element={
+          <RequireAuth>
+            <RequestView />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={'/requests'}
+        element={
+          <RequireAuth>
+            <RequestsIndex />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={'/jobs/create'}
+        element={
+          <RequireAuth>
+            <JobCreateApp location={{}} />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={'/jobs/:id'}
+        element={
+          <RequireAuth>
+            <JobView />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={'/jobs'}
+        element={
+          <RequireAuth>
+            <JobIndex />
+          </RequireAuth>
+        }
+      />
+      <Route path={'/login'} element={<Login />} />
+      <Route path={'*'} element={<Navigate replace to={'/systems'} />} />
+    </ReactRouterDomRoutes>
   )
 }
 

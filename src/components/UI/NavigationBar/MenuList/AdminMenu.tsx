@@ -13,14 +13,10 @@ import {
   ListItemText,
   MenuList,
 } from '@mui/material'
-import { FC, Fragment, KeyboardEvent, MouseEvent, useState } from 'react'
+import { Fragment, useState } from 'react'
 import ListItemLink from './ListItemLink'
 
-interface AdminMenuProps {
-  toggleDrawer: (open: boolean) => (event: KeyboardEvent | MouseEvent) => void
-}
-
-const AdminMenu: FC<AdminMenuProps> = ({ toggleDrawer }) => {
+const AdminMenu = () => {
   const [open, setOpen] = useState(false)
 
   const handleClick = () => setOpen(!open)
@@ -41,14 +37,12 @@ const AdminMenu: FC<AdminMenuProps> = ({ toggleDrawer }) => {
             icon={<LocalFloristIcon />}
             primary={'Gardens'}
             to={'/admin/gardens'}
-            toggleDrawer={toggleDrawer}
             sx={{ pl: 4 }}
           />
           <ListItemLink
             icon={<FactoryIcon />}
             primary={'Systems'}
             to={'/admin/systems'}
-            toggleDrawer={toggleDrawer}
             sx={{ pl: 4 }}
           />
         </MenuList>

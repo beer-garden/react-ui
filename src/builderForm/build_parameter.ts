@@ -1,6 +1,6 @@
-import { Dictionary, Parameter } from '../custom_types/custom_types'
+import { Dictionary, Parameter } from '../types/custom_types'
 
-function getTypeAndFormat(parameter: Parameter) {
+function getTypeAndFormat (parameter: Parameter) {
   let parameterType: string | string[] = parameter.type.toLowerCase()
   let parameterFormat: string | undefined
   let parameterDefualt: string | undefined
@@ -41,7 +41,7 @@ function getTypeAndFormat(parameter: Parameter) {
   }
 }
 
-export function buildParameters(
+export function buildParameters (
   parameters: Parameter[],
   parentKey: string,
   scopeKey = '#/properties/'
@@ -67,8 +67,12 @@ export function buildParameters(
     const parameter = parameters[i]
     const key = parameter.key
     const scope = scopeKey + key
-    const { parameterType, parameterFormat, paramSubType, parameterDefualt } =
-      getTypeAndFormat(parameter)
+    const {
+      parameterType,
+      parameterFormat,
+      paramSubType,
+      parameterDefualt,
+    } = getTypeAndFormat(parameter)
     const paramBuild = buildParameters(parameter.parameters, key, scopeKey)
     schema[parentKey].properties[key] = {
       type: parameterType,

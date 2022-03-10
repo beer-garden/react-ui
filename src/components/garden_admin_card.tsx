@@ -8,9 +8,8 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Garden, TableState } from '../custom_types/custom_types'
+import { Garden, TableState } from '../types/custom_types'
 import GardenService from '../services/garden_service'
 import Table from './table'
 
@@ -35,12 +34,10 @@ interface GardenAdminCardProps {
   garden: Garden
 }
 
-const GardenAdminCard: FC<GardenAdminCardProps> = ({
-  garden,
-}: GardenAdminCardProps) => {
+const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
   const classes = useStyles()
 
-  function getTableData() {
+  function getTableData () {
     return [
       ['Status', garden.status],
       ['Namespaces', garden.namespaces.length],
@@ -55,7 +52,7 @@ const GardenAdminCard: FC<GardenAdminCardProps> = ({
     disableSearch: true,
   }
 
-  function getDeleteButton(connection_type: string) {
+  function getDeleteButton (connection_type: string) {
     if (connection_type !== 'LOCAL') {
       return (
         <Button
@@ -69,7 +66,7 @@ const GardenAdminCard: FC<GardenAdminCardProps> = ({
     }
   }
 
-  function localOrRemote(connection_type: string) {
+  function localOrRemote (connection_type: string) {
     if (connection_type === 'LOCAL') {
       return '(LOCAL)'
     } else {

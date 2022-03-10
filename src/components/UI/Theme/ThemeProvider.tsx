@@ -1,5 +1,5 @@
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
-import { createContext, FC, useState } from 'react'
+import * as React from 'react'
 import { getTheme, ThemeChoice, validateThemeChoice } from './getTheme'
 
 interface ThemeContextType {
@@ -7,13 +7,15 @@ interface ThemeContextType {
   setTheme?: (choice: ThemeChoice) => void
 }
 
-export const ThemeContext = createContext<ThemeContextType>({
+export const ThemeContext = React.createContext<ThemeContextType>({
   currentTheme: 'dark',
   setTheme: undefined,
 })
 
-const ThemeProvider: FC = ({ children }) => {
-  const [themeName, _setThemeName] = useState<ThemeChoice>(currentTheme())
+const ThemeProvider = ({
+  children,
+}: React.PropsWithChildren<Record<never, never>>) => {
+  const [themeName, _setThemeName] = React.useState<ThemeChoice>(currentTheme())
   const theme = getTheme(themeName)
 
   const setThemeName = (theName: ThemeChoice) => {

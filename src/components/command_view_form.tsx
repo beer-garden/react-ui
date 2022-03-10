@@ -5,17 +5,17 @@ import Box from '@material-ui/core/Box'
 import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@mui/material/Button'
 import Ajv from 'ajv'
-import { AxiosResponse } from 'axios'
-import { FC, useState } from 'react'
+import { AxiosRequestConfig } from 'axios'
+import useAxios from 'axios-hooks'
+import { useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, Navigate } from 'react-router-dom'
 import AlertForm from '../builderForm/customFormRenders/alert_control'
 import AlertTester from '../builderForm/customFormRenders/alert_tester'
 import DictionaryControl from '../builderForm/customFormRenders/dict_any_control'
 import DictionaryTester from '../builderForm/customFormRenders/dict_any_tester'
-import { Command, Dictionary } from '../custom_types/custom_types'
+import { Command, Dictionary } from '../types/custom_types'
 import CacheService from '../services/cache_service'
-import RequestService from '../services/request_service'
 
 interface CommandViewFormProps {
   schema: Dictionary
@@ -24,12 +24,11 @@ interface CommandViewFormProps {
   command: Command
 }
 
-const CommandViewForm: FC<CommandViewFormProps> = ({
+const CommandViewForm = ({
   schema,
   uiSchema,
   initialModel,
 }: CommandViewFormProps) => {
-  const requestService = new RequestService()
   const initialData = initialModel
 
   const pourItAgainRequest = CacheService.popQueue(
@@ -47,16 +46,26 @@ const CommandViewForm: FC<CommandViewFormProps> = ({
   const [errors, setErrors] = useState<Ajv.ErrorObject[]>([])
   const [redirect, setRedirect] = useState<JSX.Element>()
 
-  function successCallback(response: AxiosResponse) {
-    setRedirect(<Navigate to={'/requests/'.concat(response.data.id)} />)
+  const useCreateRefresh = () => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/requests',
+      method: 'POST',
+      data: model,
+    }
+
+    const [{ response }] = useAxios(config)
+
+    const onClick = () => {
+      setRedirect(<Navigate to={'/requests/'.concat(response?.data.id)} />)
+    }
+
+    return onClick
   }
 
-  function submitForm() {
-    requestService.createRequest(successCallback, model)
-  }
+  const onClick = useCreateRefresh()
 
   let makeRequestElement = (
-    <Button onClick={() => submitForm()} variant="contained" color="primary">
+    <Button onClick={onClick} variant="contained" color="primary">
       Make Request
     </Button>
   )
@@ -72,19 +81,6 @@ const CommandViewForm: FC<CommandViewFormProps> = ({
     )
   }
 
-  // let createJobElement = (
-  //   <Button
-  //     component={RouterLink}
-  //     to={{
-  //       pathname: '/jobs/create',
-  //       state: { request: model },
-  //     }}
-  //     variant="contained"
-  //     color="primary"
-  //   >
-  //     Create Job
-  //   </Button>
-  // )
   let createJobElement = (
     <Button
       component={RouterLink}
@@ -108,7 +104,7 @@ const CommandViewForm: FC<CommandViewFormProps> = ({
     )
   }
 
-  function onChange(data: Dictionary, errors: Ajv.ErrorObject[] | undefined) {
+  function onChange (data: Dictionary, errors: Ajv.ErrorObject[] | undefined) {
     setErrors(errors || [])
     setModel(data)
   }

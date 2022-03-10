@@ -1,18 +1,15 @@
 import axios from 'axios'
 
-import {
-  RequestsSearchApi,
-  SuccessCallback,
-} from '../custom_types/custom_types'
+import { RequestsSearchApi, SuccessCallback } from '../types/custom_types'
 
 export default class RequestService {
-  createRequest(successCallback: SuccessCallback, model: unknown): void {
+  createRequest (successCallback: SuccessCallback, model: unknown): void {
     axios
       .post('/api/v1/requests', model)
       .then((response) => successCallback(response))
   }
 
-  getRequests(
+  getRequests (
     successCallback: SuccessCallback,
     searchApi: RequestsSearchApi
   ): void {
@@ -27,7 +24,10 @@ export default class RequestService {
             .concat('&')
         }
       } else if (key === 'search') {
-        url = url.concat(key).concat('=').concat(JSON.stringify(searchApi[key]))
+        url = url
+          .concat(key)
+          .concat('=')
+          .concat(JSON.stringify(searchApi[key]))
       } else if (
         key === 'draw' ||
         key === 'include_children' ||
@@ -49,7 +49,7 @@ export default class RequestService {
     })
   }
 
-  getRequest(successCallback: SuccessCallback, id: string): void {
+  getRequest (successCallback: SuccessCallback, id: string): void {
     const url = '/api/v1/requests/'.concat(id)
     axios.get(url).then((response) => {
       successCallback(response)

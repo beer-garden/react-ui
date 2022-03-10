@@ -3,34 +3,40 @@ import { JsonForms } from '@jsonforms/react'
 import { Box, Button, Tooltip } from '@mui/material'
 import Ajv from 'ajv'
 import { AxiosResponse } from 'axios'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Navigate } from 'react-router-dom'
 import AlertForm from '../builderForm/customFormRenders/alert_control'
 import AlertTester from '../builderForm/customFormRenders/alert_tester'
 import DictionaryControl from '../builderForm/customFormRenders/dict_any_control'
 import DictionaryTester from '../builderForm/customFormRenders/dict_any_tester'
-import { Request, SuccessCallback } from '../custom_types/custom_types'
-import JobService from '../services/job_service'
+import { Request, SuccessCallback } from '../types/custom_types'
+import { useJobServices } from '../services/job.service/job.service'
+import {
+  SCHEMA,
+  UISCHEMA,
+  MODEL,
+} from '../services/job.service/job-service-values'
 
 interface JobViewFormProps {
   request: Request
 }
 
-const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
-  const [model, setModel] = useState(JobService.MODEL)
+const JobViewForm = ({ request }: JobViewFormProps) => {
+  const [model, setModel] = useState(MODEL)
   const [errors, setErrors] = useState<Ajv.ErrorObject[]>([])
   const [redirect, setRedirect] = useState<JSX.Element>()
+  const { createJob } = useJobServices()
 
-  function submitForm(successCallback: SuccessCallback) {
-    JobService.createJob(request, model, successCallback)
+  function submitForm (successCallback: SuccessCallback) {
+    createJob(request, model, successCallback)
   }
 
-  function successCallback(response: AxiosResponse) {
+  function successCallback (response: AxiosResponse) {
     setRedirect(<Navigate to={'/jobs/'.concat(response.data.id)} />)
   }
 
-  function makeRequest() {
+  function makeRequest () {
     if (errors.length > 0) {
       return (
         <Tooltip title="Missing required properties">
@@ -59,8 +65,8 @@ const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
       <Box width={3 / 4}>
         {redirect}
         <JsonForms
-          schema={JobService.SCHEMA}
-          uischema={JobService.UISCHEMA}
+          schema={SCHEMA}
+          uischema={UISCHEMA}
           data={model}
           renderers={[
             ...materialRenderers,
@@ -78,7 +84,7 @@ const JobViewForm: FC<JobViewFormProps> = ({ request }: JobViewFormProps) => {
         />
         <Button
           variant="contained"
-          onClick={() => setModel(JobService.MODEL)}
+          onClick={() => setModel(MODEL)}
           color="secondary"
         >
           Reset
