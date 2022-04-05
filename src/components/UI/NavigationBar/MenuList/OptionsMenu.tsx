@@ -10,20 +10,16 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { FC, Fragment, KeyboardEvent, MouseEvent, useState } from 'react'
+import * as React from 'react'
 import ThemeChooser from '../../Theme/ThemeChooser'
 
-interface OptionsMenuProps {
-  toggleDrawer: (open: boolean) => (event: KeyboardEvent | MouseEvent) => void
-}
-
-const OptionsMenu: FC<OptionsMenuProps> = ({ toggleDrawer }) => {
-  const [open, setOpen] = useState(false)
+const OptionsMenu = () => {
+  const [open, setOpen] = React.useState(false)
 
   const handleClick = () => setOpen(!open)
 
   return (
-    <Fragment>
+    <React.Fragment>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
           <SettingsIcon />
@@ -33,9 +29,9 @@ const OptionsMenu: FC<OptionsMenuProps> = ({ toggleDrawer }) => {
       </ListItemButton>
       <Collapse in={open} timeout={'auto'} unmountOnExit>
         <Divider />
-        <ThemeChooser toggleDrawer={toggleDrawer} />
+        <ThemeChooser />
       </Collapse>
-    </Fragment>
+    </React.Fragment>
   )
 }
 

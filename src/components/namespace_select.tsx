@@ -8,7 +8,6 @@ import {
   MenuItem,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { FC } from 'react'
 import CacheService from '../services/cache_service'
 
 interface NamespaceSelectProps {
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const NamespaceSelect: FC<NamespaceSelectProps> = ({
+const NamespaceSelect = ({
   namespaces,
   namespacesSelected,
   setNamespacesSelected,

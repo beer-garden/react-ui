@@ -1,8 +1,8 @@
-import { FC, useContext, useEffect } from 'react'
+import { PropsWithChildren, useContext, useEffect } from 'react'
 import NavigationBar from './NavigationBar/NavigationBar'
 import { ThemeContext } from './Theme/ThemeProvider'
 
-const Layout: FC = ({ children }) => {
+const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
   const { setTheme } = useContext(ThemeContext)
   useEffect(() => {
     const theme = localStorage.getItem('bg-theme')

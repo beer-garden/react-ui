@@ -25,11 +25,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { BaseSyntheticEvent, FC, useState } from 'react'
+import { BaseSyntheticEvent, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Instance, System } from '../custom_types/custom_types'
+import { Instance, System } from '../types/custom_types'
 import InstanceService from '../services/instance_service'
-import SystemService from '../services/system_service'
+import { useSystemServices } from '../services/system.service'
 
 const useStyles = makeStyles({
   root: {
@@ -50,10 +50,9 @@ interface SystemAdminCardProps {
   namespace: string
 }
 
-const SystemAdminCard: FC<SystemAdminCardProps> = ({
-  systems,
-}: SystemAdminCardProps) => {
-  function getSeverity(status: string) {
+const SystemAdminCard = ({ systems }: SystemAdminCardProps) => {
+  const { reloadSystem, deleteSystem } = useSystemServices()
+  function getSeverity (status: string) {
     switch (status) {
       case 'RUNNING':
         return 'success'
@@ -72,7 +71,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
     }
   }
 
-  function getSystemsSeverity(systems: System[]) {
+  function getSystemsSeverity (systems: System[]) {
     let status: AlertColor = 'success'
     for (const i in systems) {
       const system = systems[i]
@@ -107,7 +106,7 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [menuId, setMenuId] = useState('')
 
-  function handleClick(event: BaseSyntheticEvent, id: string) {
+  function handleClick (event: BaseSyntheticEvent, id: string) {
     setMenuId(id)
     setAnchorEl(event.currentTarget)
   }
@@ -182,18 +181,14 @@ const SystemAdminCard: FC<SystemAdminCardProps> = ({
               </IconButton>
               <IconButton
                 size="small"
-                onClick={() =>
-                  SystemService.reloadSystem(systems[systemIndex].id)
-                }
+                onClick={() => reloadSystem(systems[systemIndex].id)}
                 aria-label="reload"
               >
                 <CachedIcon />
               </IconButton>
               <IconButton
                 size="small"
-                onClick={() =>
-                  SystemService.deleteSystem(systems[systemIndex].id)
-                }
+                onClick={() => deleteSystem(systems[systemIndex].id)}
                 aria-label="delete"
               >
                 <DeleteIcon />

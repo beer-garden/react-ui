@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Garden, SuccessCallback } from '../custom_types/custom_types'
+import { Garden, SuccessCallback } from '../types/custom_types'
 
 class GardensService {
   CONNECTION_TYPES = ['HTTP', 'STOMP']
@@ -243,14 +243,14 @@ class GardensService {
     ],
   }
 
-  getGardens(successCallback: SuccessCallback) {
+  getGardens (successCallback: SuccessCallback) {
     const url = '/api/v1/gardens'
     axios.get(url).then((response) => {
       successCallback(response)
     })
   }
 
-  getGarden(successCallback: SuccessCallback, garden_name: string) {
+  getGarden (successCallback: SuccessCallback, garden_name: string) {
     const url = '/api/v1/gardens'
     axios.get(url + '/' + garden_name).then((response) => {
       successCallback(response)
@@ -259,7 +259,7 @@ class GardensService {
 
   // syncAllGardens(gardens: Garden[]) {}
 
-  syncGarden(garden_name: string) {
+  syncGarden (garden_name: string) {
     const url = '/api/v1/gardens'
     axios.patch(url + '/' + garden_name, {
       operation: 'sync',
@@ -268,7 +268,7 @@ class GardensService {
     })
   }
 
-  updateGardenConfig(garden: Garden) {
+  updateGardenConfig (garden: Garden) {
     const url = '/api/v1/gardens'
     axios.patch(url + '/' + garden.name, {
       operation: 'config',
@@ -277,12 +277,12 @@ class GardensService {
     })
   }
 
-  deleteGarden(garden_name: string) {
+  deleteGarden (garden_name: string) {
     const url = '/api/v1/gardens'
     axios.delete(url + '/' + garden_name)
   }
 
-  serverModelToForm(model: any) {
+  serverModelToForm (model: any) {
     const values: any = {}
     const stomp_headers = []
     values['connection_type'] = model['connection_type']

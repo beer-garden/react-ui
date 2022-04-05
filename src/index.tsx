@@ -5,12 +5,15 @@ import App from './App'
 import ThemeProvider from './components/UI/Theme/ThemeProvider'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
+import { AuthContainer } from './containers/AuthContainer'
 
 ReactDOM.render(
   <BrowserRouter>
     <ThemeProvider>
       <CssBaseline />
-      <App />
+      <AuthContainer.Provider>
+        <App />
+      </AuthContainer.Provider>
     </ThemeProvider>
   </BrowserRouter>,
   document.getElementById('root')

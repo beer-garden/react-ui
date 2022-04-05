@@ -3,15 +3,12 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople'
 import FactoryIcon from '@mui/icons-material/Factory'
 import InfoIcon from '@mui/icons-material/Info'
 import { Divider, MenuList as MuiMenuList } from '@mui/material'
-import { FC, KeyboardEvent, MouseEvent } from 'react'
+import * as React from 'react'
 import AdminMenu from './AdminMenu'
 import ListItemLink from './ListItemLink'
 import OptionsMenu from './OptionsMenu'
 
-interface MenuListProps {
-  toggleDrawer: (open: boolean) => (event: KeyboardEvent | MouseEvent) => void
-}
-const MenuList: FC<MenuListProps> = ({ toggleDrawer }) => {
+const MenuList = () => {
   return (
     <MuiMenuList>
       {mainEntries.map((entry: mainEntriesType) => {
@@ -21,19 +18,13 @@ const MenuList: FC<MenuListProps> = ({ toggleDrawer }) => {
             primary={entry.displayName}
             key={entry.key}
             icon={entry.icon}
-            toggleDrawer={toggleDrawer}
           />
         )
       })}
-      <AdminMenu toggleDrawer={toggleDrawer} />
+      <AdminMenu />
       <Divider />
-      <ListItemLink
-        to={'/about'}
-        primary={'About'}
-        icon={<InfoIcon />}
-        toggleDrawer={toggleDrawer}
-      />
-      <OptionsMenu toggleDrawer={toggleDrawer} />
+      <ListItemLink to={'/about'} primary={'About'} icon={<InfoIcon />} />
+      <OptionsMenu />
     </MuiMenuList>
   )
 }

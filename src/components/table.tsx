@@ -23,8 +23,8 @@ import {
 } from '@mui/material'
 import { AxiosResponse } from 'axios'
 import PropTypes from 'prop-types'
-import { BaseSyntheticEvent, FC, useState } from 'react'
-import { TableInterface } from '../custom_types/custom_types'
+import { BaseSyntheticEvent, useState } from 'react'
+import { TableInterface } from '../types/custom_types'
 import CacheService from '../services/cache_service'
 
 const useStyles1 = makeStyles((theme) => ({
@@ -123,10 +123,17 @@ const useStyles2 = makeStyles({
   },
 })
 
-const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
+const MyTable = ({ parentState }: TableInterface) => {
   let cachedState: { rowsPerPage: number } = { rowsPerPage: 5 }
   if (parentState.cacheKey) {
-    cachedState = CacheService.getIndexLastState(parentState.cacheKey)
+    const newCachedState = CacheService.getIndexLastState(parentState.cacheKey)
+    if (
+      'rowsPerPage' in newCachedState &&
+      typeof newCachedState['rowsPerPage'] === 'string'
+    ) {
+      newCachedState['rowsPerPage'] = parseInt(newCachedState['rowsPerPage'])
+    }
+    cachedState = newCachedState
   }
   const [data, setData] = useState<(string | JSX.Element | number | null)[][]>(
     []
@@ -137,7 +144,9 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
   const [isLoading, setLoading] = useState(true)
   const classes = useStyles2()
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(cachedState.rowsPerPage)
+  const [rowsPerPage, setRowsPerPage] = useState<number>(
+    cachedState.rowsPerPage
+  )
   const [totalItemsFiltered, setTotalItemsFiltered] = useState('0')
   const [totalItems, setTotalItems] = useState('0')
   const [includeChildren, setIncludeChildren] = useState(
@@ -303,7 +312,9 @@ const MyTable: FC<TableInterface> = ({ parentState }: TableInterface) => {
       if (parentState.setSearchApi) {
         parentState.setSearchApi('' + rowsPerPage, 'length')
       }
+
       parentState.apiDataCall(page, rowsPerPage, successCallback)
+      setLoading(false)
     } else {
       if (parentState.completeDataSet && parentState.formatData) {
         setLoading(false)

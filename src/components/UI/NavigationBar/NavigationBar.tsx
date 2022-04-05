@@ -1,23 +1,24 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
-import { KeyboardEvent, MouseEvent, useState } from 'react'
+import * as React from 'react'
 import AppBar from './AppBar'
 import DrawerHeader from './DrawerHeader'
 import MenuList from './MenuList/MenuList'
+import { NavigationBarContextProvider } from './NavigationBarContext'
 
 export const drawerWidth = 200
 
 const NavigationBar = () => {
-  const [drawerIsOpen, setDrawerIsOpen] = useState(false)
+  const [drawerIsOpen, setDrawerIsOpen] = React.useState(false)
 
   const toggleDrawer = (open: boolean) => (
-    event: KeyboardEvent | MouseEvent
+    event: React.KeyboardEvent | React.MouseEvent
   ) => {
     if (
       event.type === 'keydown' &&
-      ((event as KeyboardEvent).key === 'Tab' ||
-        (event as KeyboardEvent).key === 'Shift')
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
     ) {
       return
     }
@@ -25,7 +26,7 @@ const NavigationBar = () => {
   }
 
   return (
-    <div>
+    <NavigationBarContextProvider toggleDrawer={toggleDrawer}>
       <AppBar position="static" open={drawerIsOpen}>
         <Toolbar>
           <IconButton
@@ -59,9 +60,9 @@ const NavigationBar = () => {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <MenuList toggleDrawer={toggleDrawer} /> {/* TODO: prop drilling */}
+        <MenuList /> {/* TODO: prop drilling */}
       </Drawer>
-    </div>
+    </NavigationBarContextProvider>
   )
 }
 
