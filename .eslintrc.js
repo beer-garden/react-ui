@@ -26,6 +26,7 @@ module.exports = {
     plugins: [
         "react",
         "react-hooks",
+        "prettier"
     ],
     extends: [
         "eslint:recommended",
@@ -34,6 +35,7 @@ module.exports = {
         "plugin:react-hooks/recommended",
         "react-app",
         "react-app/jest",
+        "prettier"
     ],
     rules: {
         "react/function-component-definition": 0,

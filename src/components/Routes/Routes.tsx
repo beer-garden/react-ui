@@ -120,7 +120,14 @@ const Routes = () => {
         }
       />
       <Route path={'/login'} element={<Login />} />
-      <Route path={'*'} element={<Navigate replace to={'/systems'} />} />
+      <Route
+        path={'*'}
+        element={
+          <RequireAuth>
+            <Navigate replace to={'/systems'} />
+          </RequireAuth>
+        }
+      />
     </ReactRouterDomRoutes>
   )
 }

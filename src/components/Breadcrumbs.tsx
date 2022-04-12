@@ -1,36 +1,48 @@
-import {Breadcrumbs as MUIBreadcrumbs} from '@mui/material'
+import {
+  Breadcrumbs as MUIBreadcrumbs,
+  Box,
+  Tooltip,
+  Zoom,
+} from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 
 interface MyBreadcrumbsProps {
   breadcrumbs: string[]
 }
 
-const Breadcrumbs = (
-  {
-    breadcrumbs: breadcrumbsArr
-  }: MyBreadcrumbsProps
-) => {
+const Breadcrumbs = ({ breadcrumbs: breadcrumbsArr }: MyBreadcrumbsProps) => {
   if (breadcrumbsArr) {
     return (
-      <MUIBreadcrumbs aria-label="breadcrumb">
+      <MUIBreadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        aria-label="breadcrumb"
+      >
         {breadcrumbsArr
           .slice(0, breadcrumbsArr.length - 1)
           .map((breadcrumb, index) => (
-            <RouterLink
-              key={breadcrumb}
-              to={['/systems']
-                .concat(breadcrumbsArr.slice(0, index + 1))
-                .join('/')}
+            <Tooltip
+              title={'Navigate to ' + String(breadcrumbsArr[index])}
+              key={index}
+              TransitionComponent={Zoom}
+              followCursor
             >
-              {breadcrumb}
-            </RouterLink>
+              <RouterLink
+                key={breadcrumb}
+                to={['/systems']
+                  .concat(breadcrumbsArr.slice(0, index + 1))
+                  .join('/')}
+              >
+                {breadcrumb}
+              </RouterLink>
+            </Tooltip>
           ))}
-        <span>{breadcrumbsArr[breadcrumbsArr.length - 1]}</span>
+        <Box component="span">{breadcrumbsArr[breadcrumbsArr.length - 1]}</Box>
       </MUIBreadcrumbs>
     )
-  } else {
-    return null
   }
+
+  return null
 }
 
 export default Breadcrumbs

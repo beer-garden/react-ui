@@ -54,7 +54,7 @@ const useAuth = () => {
       'storage',
       async (event: WindowEventMap['storage']) => {
         if (event.key === AuthEvents.LOGOUT && isAuthenticated()) {
-          await clearToken()
+          clearToken()
           setUser(null)
         } else if (event.key === AuthEvents.LOGIN) {
           onTokenRefreshRequired()

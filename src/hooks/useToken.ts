@@ -1,9 +1,9 @@
-import { useRef, useCallback, useEffect } from 'react'
-import { useTokenExpiration } from './useTokenExpiration'
 import { AxiosRequestConfig } from 'axios'
-import jwtDecode, { JwtPayload } from 'jwt-decode'
-import useMyAxios from './useMyAxios'
 import { configure } from 'axios-hooks'
+import jwtDecode, { JwtPayload } from 'jwt-decode'
+import { useCallback, useEffect, useRef } from 'react'
+import useMyAxios from './useMyAxios'
+import { useTokenExpiration } from './useTokenExpiration'
 
 export interface TokenResponse {
   access: string
@@ -12,19 +12,19 @@ export interface TokenResponse {
 
 export const useToken = (
   onTokenInvalid: () => void,
-  onTokenRefreshRequired: () => Promise<void>
+  onTokenRefreshRequired: () => Promise<void>,
 ) => {
   const { axiosInstance } = useMyAxios()
   const accessToken = useRef<string>()
   const { clearAutomaticTokenRefresh, setTokenExpiration } = useTokenExpiration(
-    onTokenRefreshRequired
+    onTokenRefreshRequired,
   )
 
   const setRefreshToken = useCallback((refreshToken) => {
     window.localStorage.setItem('refresh_token', refreshToken)
     console.log(
       'useToken.setRefreshToken REFRESH TOKEN SET TO: ',
-      String(window.localStorage.getItem('refresh_token'))
+      String(window.localStorage.getItem('refresh_token')),
     )
   }, [])
 
@@ -37,7 +37,7 @@ export const useToken = (
       accessToken.current = access
       console.log(
         'useToken.setToken ACCESS TOKEN REF SET TO: ',
-        accessToken.current
+        accessToken.current,
       )
 
       const exp = jwtDecode<JwtPayload>(access).exp as number
@@ -49,7 +49,7 @@ export const useToken = (
       setTokenExpiration(expirationDate)
       setRefreshToken(refresh)
     },
-    [setTokenExpiration, setRefreshToken]
+    [setTokenExpiration, setRefreshToken],
   )
 
   const isAuthenticated = useCallback(() => {
@@ -72,7 +72,7 @@ export const useToken = (
           console.log('OLD HEADER', config.headers.Authorization)
         config.headers.Authorization = `Bearer ${accessToken.current}`
         return config
-      }
+      },
     )
     axiosInstance.interceptors.response.use(
       (response) => {
@@ -85,12 +85,14 @@ export const useToken = (
           error.response.status === 401 &&
           accessToken.current
         ) {
-          console.log('RESPONSE INDICATES BAD TOKEN')
-          clearToken()
-          onTokenInvalid()
+          if (accessToken) {
+            console.log('RESPONSE INDICATES BAD TOKEN')
+            clearToken()
+            onTokenInvalid()
+          }
         }
         return Promise.reject(error)
-      }
+      },
     )
 
     configure({ axios: axiosInstance })

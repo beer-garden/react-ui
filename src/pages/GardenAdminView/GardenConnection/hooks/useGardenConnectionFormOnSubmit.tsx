@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { FormikHelpers } from 'formik'
 import { Dispatch, SetStateAction } from 'react'
@@ -19,7 +19,7 @@ const useGardenConnectionFormOnSubmit = (
   garden: Garden,
   setSubmissionStatus: Dispatch<
     SetStateAction<SubmissionStatusState | undefined>
-  >
+  >,
 ) => {
   const axiosConfig: AxiosRequestConfig = {
     url: '/api/v1/gardens/' + encodeURIComponent(garden.name),
@@ -37,7 +37,7 @@ const useGardenConnectionFormOnSubmit = (
   const [response, execute] = useAxios(axiosConfig, axiosOptions)
   return (
     connectionParams: ConnectionFormFields,
-    formikActions: FormikHelpers<ConnectionFormFields>
+    formikActions: FormikHelpers<ConnectionFormFields>,
   ) => {
     const patchData = {
       operation: 'config',
@@ -71,7 +71,7 @@ export default useGardenConnectionFormOnSubmit
  */
 const updateConnection = (
   connectionParams: ConnectionFormFields,
-  garden: Garden
+  garden: Garden,
 ) => {
   const { connectionType, ...params } = connectionParams
 
@@ -88,7 +88,7 @@ const updateConnection = (
  * @returns Connection parameters for beergarden
  */
 const getConnectionParams = (
-  methodParams: Omit<ConnectionFormFields, 'connectionType'>
+  methodParams: Omit<ConnectionFormFields, 'connectionType'>,
 ) => {
   return {
     http: {
