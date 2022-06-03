@@ -1,9 +1,8 @@
+import { Box, Button, Stack, TextField } from '@mui/material'
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik'
-import { Box, TextField, Button, Stack } from '@mui/material'
+import { useLocation, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import { AuthContainer } from '../containers/AuthContainer'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { replace } from 'lodash'
 interface LoginFormValues {
   [index: string]: string
   username: string

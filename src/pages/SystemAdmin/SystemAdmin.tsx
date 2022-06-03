@@ -10,16 +10,15 @@ import {
 } from '@mui/material'
 import { AxiosError } from 'axios'
 import useAxios from 'axios-hooks'
-import { isNull } from 'lodash'
 import { useEffect, useState } from 'react'
 import Divider from '../../components/divider'
 import NamespaceSelect from '../../components/namespace_select'
 import PageHeader from '../../components/PageHeader'
 import SystemCard from '../../components/system_admin_card'
-import { System } from '../../types/custom_types'
 import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
 import AdminService from '../../services/admin_service'
 import CacheService from '../../services/cache_service'
+import { System } from '../../types/custom_types'
 import formatSystems from './system-admin-helpers'
 
 function getSelectMessage (namespacesSelected: string[]): JSX.Element | void {

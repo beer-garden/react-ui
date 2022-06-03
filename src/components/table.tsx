@@ -125,8 +125,10 @@ const useStyles2 = makeStyles({
 
 const MyTable = ({ parentState }: TableInterface) => {
   let cachedState: { rowsPerPage: number } = { rowsPerPage: 5 }
+
   if (parentState.cacheKey) {
     const newCachedState = CacheService.getIndexLastState(parentState.cacheKey)
+
     if (
       'rowsPerPage' in newCachedState &&
       typeof newCachedState['rowsPerPage'] === 'string'
@@ -135,6 +137,7 @@ const MyTable = ({ parentState }: TableInterface) => {
     }
     cachedState = newCachedState
   }
+
   const [data, setData] = useState<(string | JSX.Element | number | null)[][]>(
     []
   )
@@ -142,7 +145,6 @@ const MyTable = ({ parentState }: TableInterface) => {
     parentState.completeDataSet
   )
   const [isLoading, setLoading] = useState(true)
-  const classes = useStyles2()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(
     cachedState.rowsPerPage
@@ -152,6 +154,7 @@ const MyTable = ({ parentState }: TableInterface) => {
   const [includeChildren, setIncludeChildren] = useState(
     parentState.includeChildren
   )
+  const classes = useStyles2()
 
   function handleChangePage (
     event: BaseSyntheticEvent | null,
