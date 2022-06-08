@@ -19,8 +19,8 @@ import { Link as RouterLink, useParams } from 'react-router-dom'
 import Breadcrumbs from '../../components/Breadcrumbs'
 import PageHeader from '../../components/PageHeader'
 import RequestsTable from '../../components/table'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 import { Request, TableState } from '../../types/custom_types'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
 import CacheService from '../../services/cache_service'
 import { formatData, outputFormatted } from './requestViewHelpers'
 
@@ -39,17 +39,17 @@ const defaultVariables: RequestVariables = {
 }
 
 const RequestView = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [request, setRequest] = useState<Request>()
   const [variables, setVariables] = useState<RequestVariables>(defaultVariables)
   const [expandOutput, setExpandOutput] = useState(false)
   const [expandParameter, setExpandParameter] = useState(false)
-  const { authIsEnabled } = useIsAuthEnabled()
   const { id } = useParams()
 
   const [{ data, error }] = useAxios({
     url: '/api/v1/requests/' + id,
     method: 'get',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
   useEffect(() => {
     if (data && !error) {

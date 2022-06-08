@@ -2,17 +2,17 @@ import { Divider } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { useEffect, useState } from 'react'
 import PageHeader from '../../components/PageHeader'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 import { Job } from '../../types/custom_types'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
 import { getFormattedTable } from './jobIndexHelpers'
 
 const JobIndex = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [jobs, setJobs] = useState<Job[]>([])
-  const { authIsEnabled } = useIsAuthEnabled()
   const [{ data, error }] = useAxios({
     url: '/api/v1/jobs',
     method: 'get',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
 
   useEffect(() => {

@@ -1,9 +1,9 @@
 import useAxios from 'axios-hooks'
 import { useEffect, useMemo, useState } from 'react'
 import { Column } from 'react-table'
-import { useIsAuthEnabled } from '../../../hooks/useIsAuthEnabled'
 import { System } from '../../../types/custom_types'
 import ExploreButton from '../ExploreButton'
+import { ServerConfigContainer } from '../../../containers/ConfigContainer'
 
 export type SystemIndexTableData = {
   namespace: string
@@ -28,12 +28,12 @@ const systemMapper = (system: System): SystemIndexTableData => {
 }
 
 const useSystems = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [systems, setSystems] = useState<SystemIndexTableData[]>([])
-  const { authIsEnabled } = useIsAuthEnabled()
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'GET',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
 
   useEffect(() => {

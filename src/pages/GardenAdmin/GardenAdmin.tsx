@@ -4,16 +4,16 @@ import { useEffect, useState } from 'react'
 import Divider from '../../components/divider'
 import GardenCard from '../../components/garden_admin_card'
 import PageHeader from '../../components/PageHeader'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 import { Garden } from '../../types/custom_types'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
 
 const GardensAdmin = (): JSX.Element => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [gardens, setGardens] = useState<Garden[]>([])
-  const { authIsEnabled } = useIsAuthEnabled()
   const [{ data, error }] = useAxios({
     url: '/api/v1/gardens',
     method: 'get',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
 
   useEffect(() => {

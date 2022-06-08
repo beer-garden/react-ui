@@ -1,12 +1,10 @@
-import { Alert, Link } from '@mui/material'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Alert } from '@mui/material'
 import JobViewForm from '../components/job_create_form'
 
-type MyProps = {
-  location: any
-}
-
-const JobCreateApp = ({ location }: MyProps) => {
-  const { request } = location.state || {}
+const JobCreateApp = () => {
+  const location = useLocation()
+  const request: any = location?.state
 
   let formElement: JSX.Element
 
@@ -16,7 +14,7 @@ const JobCreateApp = ({ location }: MyProps) => {
     formElement = (
       <Alert severity="error">
         Need to choose a command before creating a job.{' '}
-        <Link href="/systems">Systems</Link>
+        <RouterLink to="/systems">Systems</RouterLink>
       </Alert>
     )
   }

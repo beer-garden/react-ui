@@ -10,7 +10,6 @@ import useAxios from 'axios-hooks'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Garden, System, TableState } from '../../types/custom_types'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
 import GardenService from '../../services/garden_service'
 import Divider from '../../components/divider'
 import InfoCard from '../../components/garden_admin_info_card'
@@ -20,6 +19,8 @@ import GardenConnectionForm from './GardenConnection/GardenConnectionForm'
 import GardenSyncButton from './GardenSyncButton'
 import SubmissionStatusSnackbar from './GardenConnection/form-components/SubmissionStatusSnackbar'
 import { SubmissionStatusState } from './GardenConnection/GardenConnectionForm'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
+
 
 type FormState = {
   dataForm: any
@@ -31,6 +32,7 @@ const SystemLink = (text: string, params: string[]) => {
 }
 
 const GardenAdminView = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const schema = GardenService.SCHEMA
   const uischema = GardenService.UISCHEMA
   const initialModel = {}
@@ -39,7 +41,6 @@ const GardenAdminView = () => {
     SubmissionStatusState | undefined
   >(undefined)
   const [garden, setGarden] = useState<Garden>()
-  const { authIsEnabled } = useIsAuthEnabled()
   const params = useParams()
 
   const gardenName = String(params.gardenName)
@@ -47,7 +48,7 @@ const GardenAdminView = () => {
   const [{ data, error }] = useAxios({
     url: '/api/v1/gardens/' + gardenName,
     method: 'get',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
 
   useEffect(() => {

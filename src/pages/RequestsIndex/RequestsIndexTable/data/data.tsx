@@ -1,7 +1,6 @@
 import useAxios, { Options as AxiosHooksOptions } from 'axios-hooks'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Filters } from 'react-table'
-import { useIsAuthEnabled } from '../../../../hooks/useIsAuthEnabled'
 import { getUrlFromSearchApi } from './base-search-api'
 import { formatBeergardenRequests } from './dataHelpers'
 import {
@@ -13,9 +12,10 @@ import {
 } from './request-types'
 import useRequestsReducer from './requestsReducer'
 import { updateApiOrderBy, updateApiSearchBy } from './search-api-helpers'
+import { ServerConfigContainer } from '../../../../containers/ConfigContainer'
 
 const useRequests = () => {
-  const { authIsEnabled } = useIsAuthEnabled()
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [isLoading, setIsLoading] = useState(false)
   const [isErrored, setIsErrored] = useState(false)
   const [requests, setRequests] = useState<RequestsIndexTableData[]>([])
@@ -37,9 +37,9 @@ const useRequests = () => {
     updateConfig({
       url: newUrl,
       method: 'GET',
-      withCredentials: authIsEnabled,
+      withCredentials: authEnabled(),
     })
-  }, [updateUrl, updateConfig, authIsEnabled, searchApi])
+  }, [updateUrl, updateConfig, authEnabled, searchApi])
 
   const axiosOptions: AxiosHooksOptions = {
     manual: true,
