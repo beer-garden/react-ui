@@ -15,7 +15,7 @@ import Divider from '../../components/divider'
 import NamespaceSelect from '../../components/namespace_select'
 import PageHeader from '../../components/PageHeader'
 import SystemCard from '../../components/system_admin_card'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 import AdminService from '../../services/admin_service'
 import CacheService from '../../services/cache_service'
 import { System } from '../../types/custom_types'
@@ -27,8 +27,7 @@ function getSelectMessage (namespacesSelected: string[]): JSX.Element | void {
   }
 }
 
-const useGetData = (): SystemAdminData => {
-  const { authIsEnabled } = useIsAuthEnabled()
+const useGetData = (authIsEnabled : boolean): SystemAdminData => {
 
   const [{ data: systemsData, error: systemsError }] = useAxios({
     url: '/api/v1/systems',
@@ -58,6 +57,7 @@ interface SystemAdminData {
 }
 
 const SystemAdmin = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [systems, setSystems] = useState<System[]>([])
   const [namespaces, setNamespaces] = useState<string[]>([])
 
@@ -66,7 +66,7 @@ const SystemAdmin = () => {
     systemsError,
     namespaceData,
     namespaceError,
-  } = useGetData()
+  } = useGetData(authEnabled())
 
   useEffect(() => {
     if (systemsData && !systemsError) {

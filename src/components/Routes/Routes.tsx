@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
 import {
   Navigate,
   Route,
   Routes as ReactRouterDomRoutes,
 } from 'react-router-dom'
+
+
 import CommandIndex from '../../pages/CommandIndex/CommandIndex'
 import CommandView from '../../pages/CommandView/CommandView'
 import GardensAdmin from '../../pages/GardenAdmin/GardenAdmin'
@@ -16,109 +19,64 @@ import SystemsIndex from '../../pages/SystemIndex/SystemIndex'
 import Login from '../../pages/Login'
 import GardenAdminView from '../../pages/GardenAdminView/GardenAdminView'
 import RequireAuth from './RequireAuth'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 
 const Routes = () => {
+  const { getConfig } = ServerConfigContainer.useContainer()
+  const [ authIsEnabled, setAuthIsEnabled ] = useState<boolean | undefined>()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getConfig()
+  
+      setAuthIsEnabled(data?.auth_enabled);
+    }
+ 
+    fetchData();
+  }, [])
+
+  if (authIsEnabled === undefined) return null
+
   return (
     <ReactRouterDomRoutes>
-      <Route
-        path={
-          '/systems/:namespace/:system_name/:version/commands/:command_name/'
-        }
-        element={
-          <RequireAuth>
-            <CommandView />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/systems/:namespace/:system_name/:version/'}
-        element={
-          <RequireAuth>
-            <CommandIndex />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/systems/:namespace/:system_name/'}
-        element={
-          <RequireAuth>
-            <CommandIndex />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/systems/:namespace/'}
-        element={
-          <RequireAuth>
-            <CommandIndex />
-          </RequireAuth>
-        }
-      />
-      <Route path={'/systems'} element={<SystemsIndex />} />
-      <Route
-        path="/admin/systems"
-        element={
-          <RequireAuth>
-            <SystemAdmin />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/admin/gardens/:gardenName/'}
-        element={
-          <RequireAuth>
-            <GardenAdminView />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/admin/gardens'}
-        element={
-          <RequireAuth>
-            <GardensAdmin />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/requests/:id'}
-        element={
-          <RequireAuth>
-            <RequestView />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/requests'}
-        element={
-          <RequireAuth>
-            <RequestsIndex />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/jobs/create'}
-        element={
-          <RequireAuth>
-            <JobCreateApp location={{}} />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/jobs/:id'}
-        element={
-          <RequireAuth>
-            <JobView />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path={'/jobs'}
-        element={
-          <RequireAuth>
-            <JobIndex />
-          </RequireAuth>
-        }
-      />
+
+      <Route path={'systems'} element={ <RequireAuth /> }>
+        <Route index element={ <SystemsIndex /> } />
+
+        <Route path={':namespace'} >
+          <Route index element={ <CommandIndex /> } />
+
+          <Route path={':system_name'} >
+            <Route index element={ <CommandIndex /> } />
+
+            <Route path={':version'} >
+              <Route index element={ <CommandIndex /> } />
+              <Route path={'commands/:command_name'} element={ <CommandView /> } />
+            </Route>
+          </Route>
+        </Route>
+      </Route>
+
+      <Route path="admin" element={ <RequireAuth /> }>
+        <Route path="systems" element={ <SystemAdmin /> } />
+        <Route path="gardens" >
+          <Route index element={ <GardensAdmin /> } />
+          <Route path={':gardenName'} element={ <GardenAdminView /> } />
+        </Route>
+      </Route>
+
+      <Route path={'requests'} element={ <RequireAuth /> }>
+        <Route index element={ <RequestsIndex /> } />
+        <Route path={':id'} element={ <RequestView /> } />
+      </Route>
+
+      <Route path={'jobs'} element={ <RequireAuth /> }>
+        <Route index element={ <JobIndex /> } />
+        <Route path={'create'} element={ <JobCreateApp /> } />
+        <Route
+          path={':id'} element={ <JobView /> } />
+      </Route>
+
       <Route path={'/login'} element={<Login />} />
       <Route
         path={'*'}

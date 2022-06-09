@@ -6,14 +6,17 @@ import ThemeProvider from './components/UI/Theme/ThemeProvider'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import { AuthContainer } from './containers/AuthContainer'
+import { ServerConfigContainer } from './containers/ConfigContainer'
 
 ReactDOM.render(
   <BrowserRouter>
     <ThemeProvider>
       <CssBaseline />
-      <AuthContainer.Provider>
-        <App />
-      </AuthContainer.Provider>
+      <ServerConfigContainer.Provider>
+        <AuthContainer.Provider>
+          <App />
+        </AuthContainer.Provider>
+      </ServerConfigContainer.Provider>
     </ThemeProvider>
   </BrowserRouter>,
   document.getElementById('root')

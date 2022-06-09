@@ -1,30 +1,40 @@
 import { ReactElement } from 'react'
-import { Navigate, useLocation } from 'react-router'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { AuthContainer } from '../../containers/AuthContainer'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 
 interface RequireAuthProps {
-  children: ReactElement
+  children?: ReactElement
   redirectTo?: string
 }
 
 const RequireAuth = ({ children, redirectTo = '/login' }: RequireAuthProps) => {
-  const { authIsEnabled } = useIsAuthEnabled()
   const { isAuthenticated, user } = AuthContainer.useContainer()
+  const { config } = ServerConfigContainer.useContainer()
   const { pathname } = useLocation()
+  const authIsEnabled = config?.auth_enabled
 
-  if (authIsEnabled) {
+  if (authIsEnabled === false) {
+    return (
+      <>
+        {children}
+        <Outlet />
+      </>
+    )
+  } else if (authIsEnabled === true) {
     console.log('RequireAuth IS AUTHENTICATED: ', isAuthenticated())
     console.log('RequireAuth USER: ', user ?? 'No User')
 
     return isAuthenticated() ? (
-      children
+      <>
+        {children}
+        <Outlet />
+      </>
     ) : (
       <Navigate to={redirectTo} state={{ from: pathname }} />
     )
-  } else {
-    return children
   }
+  return null
 }
 
 export default RequireAuth

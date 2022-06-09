@@ -8,10 +8,12 @@ import Breadcrumbs from '../../components/Breadcrumbs'
 import CommandViewForm from '../../components/command_view_form'
 import Divider from '../../components/divider'
 import PageHeader from '../../components/PageHeader'
+import { ServerConfigContainer } from '../../containers/ConfigContainer'
 import { Command, System } from '../../types/custom_types'
-import { useIsAuthEnabled } from '../../hooks/useIsAuthEnabled'
+
 
 const CommandView = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [systems, setSystems] = useState<System[]>([])
   const {
     namespace,
@@ -19,11 +21,10 @@ const CommandView = () => {
     version,
     command_name: commandName,
   } = useParams()
-  const { authIsEnabled } = useIsAuthEnabled()
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'get',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
   useEffect(() => {
     if (data && !error) {

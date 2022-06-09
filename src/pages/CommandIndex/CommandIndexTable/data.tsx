@@ -7,12 +7,12 @@ import {
   ChangeEvent as ReactChangeEvent,
 } from 'react'
 import { Column } from 'react-table'
-import { useIsAuthEnabled } from '../../../hooks/useIsAuthEnabled'
 import { System, Command } from '../../../types/custom_types'
 import { useParams } from 'react-router-dom'
 import MakeItHappenButton from '../MakeItHappenButton'
 import { Box, IconButton, Tooltip } from '@mui/material'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { ServerConfigContainer } from '../../../containers/ConfigContainer'
 
 export type CommandIndexTableData = {
   namespace: string
@@ -119,14 +119,14 @@ const commandsFromSystems = (
 }
 
 const useCommands = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
   const { namespace, system_name: systemName, version } = useParams()
-  const { authIsEnabled } = useIsAuthEnabled()
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'get',
-    withCredentials: authIsEnabled,
+    withCredentials: authEnabled(),
   })
 
   useEffect(() => {
