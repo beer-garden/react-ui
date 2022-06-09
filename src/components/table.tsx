@@ -24,8 +24,8 @@ import {
 import { AxiosResponse } from 'axios'
 import PropTypes from 'prop-types'
 import { BaseSyntheticEvent, useState } from 'react'
-import { TableInterface } from '../types/custom_types'
-import CacheService from '../services/cache_service'
+import { TableInterface } from 'types/custom_types'
+import CacheService from 'services/cache_service'
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -34,7 +34,7 @@ const useStyles1 = makeStyles((theme) => ({
   },
 }))
 
-function TablePaginationActions (props: {
+function TablePaginationActions(props: {
   count: number
   page: number
   rowsPerPage: number
@@ -139,27 +139,24 @@ const MyTable = ({ parentState }: TableInterface) => {
   }
 
   const [data, setData] = useState<(string | JSX.Element | number | null)[][]>(
-    []
+    [],
   )
   const [completeDataSet, setCompleteDataSet] = useState(
-    parentState.completeDataSet
+    parentState.completeDataSet,
   )
   const [isLoading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(
-    cachedState.rowsPerPage
+    cachedState.rowsPerPage,
   )
   const [totalItemsFiltered, setTotalItemsFiltered] = useState('0')
   const [totalItems, setTotalItems] = useState('0')
   const [includeChildren, setIncludeChildren] = useState(
-    parentState.includeChildren
+    parentState.includeChildren,
   )
   const classes = useStyles2()
 
-  function handleChangePage (
-    event: BaseSyntheticEvent | null,
-    newPage: number
-  ) {
+  function handleChangePage(event: BaseSyntheticEvent | null, newPage: number) {
     if (parentState.setSearchApi) {
       parentState.setSearchApi('' + newPage * rowsPerPage, 'start')
     }
@@ -195,12 +192,12 @@ const MyTable = ({ parentState }: TableInterface) => {
         {
           rowsPerPage: event.target.value,
         },
-        parentState.cacheKey
+        parentState.cacheKey,
       )
     }
   }
 
-  function formatTextField (index: number) {
+  function formatTextField(index: number) {
     if (!parentState.disableSearch) {
       if (parentState.tableHeads[index] === '') {
         return
@@ -254,7 +251,7 @@ const MyTable = ({ parentState }: TableInterface) => {
     }
   }
 
-  function pageNav () {
+  function pageNav() {
     if (parentState.includePageNav) {
       let count: string = totalItemsFiltered
       if (totalItemsFiltered === '0' || !totalItemsFiltered) {
@@ -285,7 +282,7 @@ const MyTable = ({ parentState }: TableInterface) => {
     }
   }
 
-  function getTableHeader () {
+  function getTableHeader() {
     if (parentState.tableHeads) {
       return (
         <TableHead>
@@ -307,7 +304,7 @@ const MyTable = ({ parentState }: TableInterface) => {
     }
   }
 
-  function updateData () {
+  function updateData() {
     if (!isLoading) {
       setLoading(true)
     }
@@ -325,9 +322,9 @@ const MyTable = ({ parentState }: TableInterface) => {
           parentState.formatData(
             parentState.completeDataSet.slice(
               page * rowsPerPage,
-              page * rowsPerPage + rowsPerPage
-            )
-          )
+              page * rowsPerPage + rowsPerPage,
+            ),
+          ),
         )
         setTotalItems('' + parentState.completeDataSet.length)
       } else if (parentState.formatData) {
@@ -337,7 +334,7 @@ const MyTable = ({ parentState }: TableInterface) => {
     }
   }
 
-  function successCallback (response: AxiosResponse) {
+  function successCallback(response: AxiosResponse) {
     setLoading(false)
     if (parentState.formatData) {
       setData(parentState.formatData(response.data))
@@ -361,7 +358,7 @@ const MyTable = ({ parentState }: TableInterface) => {
     updateData()
   }
 
-  function getCircularProgress () {
+  function getCircularProgress() {
     if (isLoading) {
       return <CircularProgress size={25} color="inherit" />
     }

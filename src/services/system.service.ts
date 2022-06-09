@@ -1,12 +1,12 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { Command, SuccessCallback, System } from '../types/custom_types'
-import useMyAxios from '../hooks/useMyAxios'
+import { Command, SuccessCallback, System } from 'types/custom_types'
+import {useMyAxios} from 'hooks/useMyAxios'
 
 const getSystem = (
   systems: System[],
   namespace: string,
   name: string,
-  version: string
+  version: string,
 ) => {
   return systems.find(function (system: System) {
     return (
@@ -28,7 +28,7 @@ const filterSystems = (
     name?: string | undefined
     namespace?: string | undefined
     version?: string | undefined
-  }
+  },
 ) => {
   if (params.name) {
     systems = systems.filter(function (system: System) {
@@ -53,7 +53,7 @@ const getSystemAndCommand = (
   namespace: string,
   system_name: string,
   command_name: string,
-  version: string
+  version: string,
 ) => {
   const system = getSystem(systems, namespace, system_name, version)
   if (system) {

@@ -1,6 +1,7 @@
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { ThemeChoice, validateThemeChoice } from 'components/UI/Theme/getTheme'
+import { getTheme } from 'components/UI/Theme/getTheme'
 import * as React from 'react'
-import { getTheme, ThemeChoice, validateThemeChoice } from './getTheme'
 
 interface ThemeContextType {
   currentTheme: ThemeChoice
@@ -51,4 +52,4 @@ const currentTheme = (): ThemeChoice => {
   }
 }
 
-export default ThemeProvider
+export { ThemeProvider }

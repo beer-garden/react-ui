@@ -1,9 +1,8 @@
-import useAxios from 'axios-hooks'
-import { useEffect, useMemo, useState } from 'react'
+import useSystems from 'hooks/useSystems'
+import { useMemo } from 'react'
 import { Column } from 'react-table'
-import { System } from '../../../types/custom_types'
-import ExploreButton from '../ExploreButton'
-import { ServerConfigContainer } from '../../../containers/ConfigContainer'
+import { System } from 'types/custom_types'
+import { ExploreButton } from '.'
 
 export type SystemIndexTableData = {
   namespace: string
@@ -27,22 +26,8 @@ const systemMapper = (system: System): SystemIndexTableData => {
   }
 }
 
-const useSystems = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const [systems, setSystems] = useState<SystemIndexTableData[]>([])
-  const [{ data, error }] = useAxios({
-    url: '/api/v1/systems',
-    method: 'GET',
-    withCredentials: authEnabled(),
-  })
-
-  useEffect(() => {
-    if (data && !error) {
-      setSystems(data.map(systemMapper))
-    }
-  }, [data, error])
-
-  return systems
+const useSystemIndexTableData = () => {
+  return useSystems(systemMapper)
 }
 
 const useSystemIndexTableColumns = () => {
@@ -116,4 +101,4 @@ const useSystemIndexTableColumns = () => {
   )
 }
 
-export { useSystems, useSystemIndexTableColumns }
+export { useSystemIndexTableData, useSystemIndexTableColumns }

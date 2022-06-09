@@ -1,6 +1,6 @@
 import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from './ConnectionFormFields'
+import { ConnectionFormFields } from 'pages/GardenAdminView'
 
 const ConnectionMethod = () => {
   const context = useFormikContext<ConnectionFormFields>()
@@ -28,4 +28,4 @@ const ConnectionMethod = () => {
   )
 }
 
-export default ConnectionMethod
+export { ConnectionMethod }

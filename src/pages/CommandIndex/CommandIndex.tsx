@@ -1,7 +1,7 @@
-import CommandIndexTable from './CommandIndexTable/CommandIndexTable'
+import { CommandIndexTable } from 'pages/CommandIndex/CommandIndexTable'
 
 const CommandIndex = () => {
   return <CommandIndexTable />
 }
 
-export default CommandIndex
+export { CommandIndex }

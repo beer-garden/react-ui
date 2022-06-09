@@ -27,9 +27,9 @@ import {
 } from '@mui/material'
 import { BaseSyntheticEvent, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Instance, System } from '../types/custom_types'
-import InstanceService from '../services/instance_service'
-import { useSystemServices } from '../services/system.service'
+import { Instance, System } from 'types/custom_types'
+import InstanceService from 'services/instance_service'
+import { useSystemServices } from 'services/system.service'
 
 const useStyles = makeStyles({
   root: {
@@ -52,7 +52,7 @@ interface SystemAdminCardProps {
 
 const SystemAdminCard = ({ systems }: SystemAdminCardProps) => {
   const { reloadSystem, deleteSystem } = useSystemServices()
-  function getSeverity (status: string) {
+  function getSeverity(status: string) {
     switch (status) {
       case 'RUNNING':
         return 'success'
@@ -71,7 +71,7 @@ const SystemAdminCard = ({ systems }: SystemAdminCardProps) => {
     }
   }
 
-  function getSystemsSeverity (systems: System[]) {
+  function getSystemsSeverity(systems: System[]) {
     let status: AlertColor = 'success'
     for (const i in systems) {
       const system = systems[i]
@@ -106,7 +106,7 @@ const SystemAdminCard = ({ systems }: SystemAdminCardProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [menuId, setMenuId] = useState('')
 
-  function handleClick (event: BaseSyntheticEvent, id: string) {
+  function handleClick(event: BaseSyntheticEvent, id: string) {
     setMenuId(id)
     setAnchorEl(event.currentTarget)
   }

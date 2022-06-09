@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import { System } from '../../types/custom_types'
+import { System } from 'types/custom_types'
 import { Link as RouterLink } from 'react-router-dom'
 
 const ExploreButton = (system: System) => {
@@ -23,4 +23,4 @@ const ExploreButton = (system: System) => {
   )
 }
 
-export default ExploreButton
+export { ExploreButton }

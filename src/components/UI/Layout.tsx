@@ -1,6 +1,6 @@
 import { PropsWithChildren, useContext, useEffect } from 'react'
-import NavigationBar from './NavigationBar/NavigationBar'
-import { ThemeContext } from './Theme/ThemeProvider'
+import { NavigationBar } from 'components/UI/NavigationBar'
+import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 
 const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
   const { setTheme } = useContext(ThemeContext)

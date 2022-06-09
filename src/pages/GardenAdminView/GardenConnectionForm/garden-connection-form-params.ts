@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid/non-secure'
 import * as Yup from 'yup'
-import { GardenConnectionParameters } from '../garden-admin-view-types'
+import { GardenConnectionParameters } from 'pages/GardenAdminView'
 
 /**
  * Convert beergarden connection parameters into our preferred format
@@ -10,7 +10,7 @@ import { GardenConnectionParameters } from '../garden-admin-view-types'
  */
 export const connectionInitialValues = (
   conxType: string,
-  conxParms: GardenConnectionParameters
+  conxParms: GardenConnectionParameters,
 ) => {
   return {
     connectionType: conxType ?? 'HTTP',
@@ -68,6 +68,6 @@ export const connectionValidationSchema = () =>
       Yup.object().shape({
         key: Yup.string().required('Key cannot be empty'),
         value: Yup.string().required('Value cannot be empty'),
-      })
+      }),
     ),
   })

@@ -2,12 +2,12 @@ import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { FormikHelpers } from 'formik'
 import { Dispatch, SetStateAction } from 'react'
-import { Garden } from '../../garden-admin-view-types'
 import {
+  Garden,
   ConnectionFormFields,
   StompHeader,
-} from '../form-components/ConnectionFormFields'
-import { SubmissionStatusState } from '../GardenConnectionForm'
+  SubmissionStatusState,
+} from 'pages/GardenAdminView'
 
 /**
  * Return a function to use as the onSubmit for Formik
@@ -61,7 +61,7 @@ const useGardenConnectionFormOnSubmit = (
   }
 }
 
-export default useGardenConnectionFormOnSubmit
+export { useGardenConnectionFormOnSubmit }
 
 /**
  * Update a garden with new connection parameters.
@@ -84,6 +84,7 @@ const updateConnection = (
 
 /**
  * Translate Formik form's data into connection parameters for beergarden
+ *
  * @param methodParams
  * @returns Connection parameters for beergarden
  */

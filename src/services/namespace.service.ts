@@ -1,7 +1,7 @@
 // import axios from 'axios'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { SuccessCallback } from '../types/custom_types'
-import useMyAxios from '../hooks/useMyAxios'
+import { SuccessCallback } from 'types/custom_types'
+import { useMyAxios } from 'hooks/useMyAxios'
 
 // class NamespaceService {
 //   getNamespaces (successCallback: SuccessCallback) {

@@ -1,6 +1,6 @@
 import { matchSorter } from 'match-sorter'
 import { FilterValue, IdType, Row } from 'react-table'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 
 const fuzzyTextFilter = <T extends TableData>(
   rows: Array<Row<T>>,

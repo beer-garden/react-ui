@@ -1,16 +1,15 @@
 import { Box } from '@mui/material'
 import useAxios from 'axios-hooks'
+import { formBuilder } from 'builderForm/form_builder'
+import Breadcrumbs from 'components/Breadcrumbs'
+import CommandViewForm from 'components/command_view_form'
+import Divider from 'components/divider'
+import PageHeader from 'components/PageHeader'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
-import { formBuilder } from '../../builderForm/form_builder'
-import Breadcrumbs from '../../components/Breadcrumbs'
-import CommandViewForm from '../../components/command_view_form'
-import Divider from '../../components/divider'
-import PageHeader from '../../components/PageHeader'
-import { ServerConfigContainer } from '../../containers/ConfigContainer'
-import { Command, System } from '../../types/custom_types'
-
+import { Command, System } from 'types/custom_types'
 
 const CommandView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -33,7 +32,7 @@ const CommandView = () => {
   }, [data, error])
 
   const breadcrumbs = [namespace, systemName, version, commandName].filter(
-    (x) => !!x
+    (x) => !!x,
   ) as string[]
   const title = commandName ?? ''
   let description = ''
@@ -43,7 +42,7 @@ const CommandView = () => {
     (s: System) =>
       s.name === systemName &&
       s.version === version &&
-      s.namespace === namespace
+      s.namespace === namespace,
   ) as System
 
   const command = system?.commands?.find((c: Command) => {
@@ -89,4 +88,4 @@ const CommandView = () => {
   )
 }
 
-export default CommandView
+export { CommandView }

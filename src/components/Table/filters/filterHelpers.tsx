@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { IdType, Row } from 'react-table'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 const getMinAndMax = (rows: Row<TableData>[], id: IdType<TableData>) => {
   let min = rows.length ? rows[0].values[id] : 0
   let max = rows.length ? rows[0].values[id] : 0

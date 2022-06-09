@@ -1,2 +1,6 @@
 export * from './Table'
 export * from './SSRTable'
+export * from './chipbar/FilterChipBar'
+export * from './ColumnResizeHandle'
+export * from './pagination'
+export * from './toolbar'

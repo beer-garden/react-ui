@@ -1,7 +1,7 @@
 import { Box, Chip } from '@mui/material'
 import { useCallback } from 'react'
 import { ColumnInstance, FilterValue, IdType, TableInstance } from 'react-table'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 
 interface FilterChipBarProps<T extends TableData> {
   instance: TableInstance<T>

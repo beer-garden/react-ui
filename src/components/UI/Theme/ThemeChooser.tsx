@@ -2,10 +2,10 @@ import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
+import { ThemeChoice } from 'components/UI/Theme/getTheme'
+import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import * as React from 'react'
-import { NavigationBarContext } from '../NavigationBar/NavigationBarContext'
-import { ThemeChoice } from './getTheme'
-import { ThemeContext } from './ThemeProvider'
 
 const ThemeChooser = () => {
   const theme = useTheme()
@@ -42,4 +42,4 @@ const ThemeChooser = () => {
   )
 }
 
-export default ThemeChooser
+export { ThemeChooser }

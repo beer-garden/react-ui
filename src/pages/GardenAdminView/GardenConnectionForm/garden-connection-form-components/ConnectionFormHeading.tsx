@@ -14,4 +14,4 @@ const ConnectionFormHeading = ({
   </Typography>
 )
 
-export default ConnectionFormHeading
+export { ConnectionFormHeading }

@@ -1,15 +1,15 @@
 import moment from 'moment'
-import { Filters } from 'react-table'
-import { defaultColumnsData } from './base-search-api'
 import {
   ColumnData,
+  defaultColumnsData,
   OrderableColumnDirection,
   OrderableColumnIndex,
   RequestsIndexTableData,
   RequestsSearchApi,
   SearchableColumn,
   SearchableColumnData,
-} from './request-types'
+} from 'pages/RequestsIndex/RequestsIndexTable/data'
+import { Filters } from 'react-table'
 
 const getIndexBySearchTerm = (
   columns: ColumnData[],

@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, FormGroup, Tooltip } from '@mui/material'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from './ConnectionFormFields'
+import { ConnectionFormFields } from 'pages/GardenAdminView'
 
 interface ConnectionCheckboxGroupProps {
   id: string
@@ -48,4 +48,4 @@ const ConnectionCheckboxGroup = ({
   )
 }
 
-export default ConnectionCheckboxGroup
+export { ConnectionCheckboxGroup }

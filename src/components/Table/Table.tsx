@@ -1,6 +1,32 @@
 import { KeyboardArrowUp } from '@mui/icons-material'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
-import { Box, TableSortLabel, Tooltip } from '@mui/material'
+import { Box, Stack, TableSortLabel, Tooltip } from '@mui/material'
+import {
+  ColumnResizeHandle,
+  FilterChipBar,
+  TablePagination,
+  Toolbar,
+} from 'components/Table'
+import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
+import {
+  DefaultCellRenderer,
+  DefaultColumnFilter,
+  defaultColumnValues,
+  DefaultGlobalFilter,
+  DefaultHeader,
+} from 'components/Table/defaults'
+import {
+  Table as StyledTable,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
+  TableLabel,
+  TableRow,
+} from 'components/Table/TableComponentsStyled'
+import { useDebounce } from 'hooks/useDebounce'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
   Fragment,
@@ -17,6 +43,7 @@ import {
   useExpanded,
   useFilters,
   useFlexLayout,
+  useGlobalFilter,
   useGroupBy,
   usePagination,
   useResizeColumns,
@@ -24,28 +51,6 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
-import { FilterChipBar } from './chipbar/FilterChipBar'
-import ColumnResizeHandle from './ColumnResizeHandle'
-import {
-  DefaultCellRenderer,
-  DefaultColumnFilter,
-  defaultColumnValues,
-  DefaultHeader,
-} from './defaults'
-import { fuzzyTextFilter, numericTextFilter } from './filters'
-import { TablePagination } from './pagination'
-import { useDebounce, useLocalStorage } from './table-hooks'
-import {
-  Table as StyledTable,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableHeadRow,
-  TableLabel,
-  TableRow,
-} from './TableComponentsStyled'
-import { Toolbar } from './toolbar'
 
 export type TableData = Record<string, unknown>
 
@@ -65,6 +70,7 @@ const hooks = [
   useColumnOrder,
   useFilters,
   useGroupBy,
+  useGlobalFilter,
   useSortBy,
   useExpanded,
   useFlexLayout,
@@ -77,6 +83,7 @@ interface TableProps<T extends TableData> extends TableOptions<T> {
   tableName: string
   data: T[]
   columns: Column<T>[]
+  showGlobalFilter?: boolean
 }
 
 const DEBUG_INITIAL_STATE = false
@@ -84,7 +91,7 @@ const DEBUG_INITIAL_STATE = false
 const Table = <T extends TableData>(
   props: PropsWithChildren<TableProps<T>>,
 ): ReactElement => {
-  const { tableName, data, columns, ...childProps } = props
+  const { tableName, data, columns, showGlobalFilter, ...childProps } = props
   const [initialState, _setInitialState] = useLocalStorage(
     `tableState:${tableName}`,
     {} as Partial<TableState<T>>,
@@ -119,6 +126,8 @@ const Table = <T extends TableData>(
     page,
     prepareRow,
     state,
+    setGlobalFilter,
+    preGlobalFilteredRows,
   } = instance
 
   const debouncedState = useDebounce(state, 500)
@@ -162,7 +171,18 @@ const Table = <T extends TableData>(
       <Toolbar name={tableName} instance={instance} />
       <FilterChipBar<T> instance={instance} />
 
-      <Box {...childProps}>{props.children}</Box>
+      <Box {...childProps}>
+        <Stack direction="row" spacing={3}>
+          {showGlobalFilter ? (
+            <DefaultGlobalFilter<T>
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          ) : null}{' '}
+          {props.children}
+        </Stack>
+      </Box>
 
       <StyledTable {...tableProps}>
         <TableHead>

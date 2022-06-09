@@ -7,20 +7,21 @@ import {
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
+import Divider from 'components/divider'
+import InfoCard from 'components/garden_admin_info_card'
+import PageHeader from 'components/PageHeader'
+import Table from 'components/table'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
+import {
+  GardenConnectionForm,
+  GardenSyncButton,
+  SubmissionStatusSnackbar,
+  SubmissionStatusState,
+} from 'pages/GardenAdminView'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
-import { Garden, System, TableState } from '../../types/custom_types'
-import GardenService from '../../services/garden_service'
-import Divider from '../../components/divider'
-import InfoCard from '../../components/garden_admin_info_card'
-import PageHeader from '../../components/PageHeader'
-import Table from '../../components/table'
-import GardenConnectionForm from './GardenConnection/GardenConnectionForm'
-import GardenSyncButton from './GardenSyncButton'
-import SubmissionStatusSnackbar from './GardenConnection/form-components/SubmissionStatusSnackbar'
-import { SubmissionStatusState } from './GardenConnection/GardenConnectionForm'
-import { ServerConfigContainer } from '../../containers/ConfigContainer'
-
+import GardenService from 'services/garden_service'
+import { Garden, System, TableState } from 'types/custom_types'
 
 type FormState = {
   dataForm: any
@@ -75,7 +76,7 @@ const GardenAdminView = () => {
     errors: [],
   }
 
-  function formatData (systems: System[]) {
+  function formatData(systems: System[]) {
     const tempData: (string | JSX.Element | number)[][] = []
     for (const i in systems) {
       tempData[i] = [
@@ -91,7 +92,7 @@ const GardenAdminView = () => {
     return tempData
   }
 
-  function getConfigSetup () {
+  function getConfigSetup() {
     if (garden) {
       if (garden.connection_type === 'LOCAL') {
         return (
@@ -107,7 +108,7 @@ const GardenAdminView = () => {
     }
   }
 
-  function renderComponents () {
+  function renderComponents() {
     if (garden) {
       return (
         <Box>
@@ -152,4 +153,4 @@ const GardenAdminView = () => {
   )
 }
 
-export default GardenAdminView
+export { GardenAdminView }

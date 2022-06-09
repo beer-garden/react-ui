@@ -1,10 +1,10 @@
 import { UISchemaElement } from '@jsonforms/core'
-import { Command, Dictionary, System } from '../types/custom_types'
-import { buildParameters } from './build_parameter'
+import { Command, Dictionary, System } from 'types/custom_types'
+import { buildParameters } from 'builderForm/build_parameter'
 
-export function formBuilder (
+export function formBuilder(
   system: System,
-  command: Command
+  command: Command,
 ): { schema: Dictionary; uiSchema: UISchemaElement; model: Dictionary } {
   const instanceNames: (string | undefined)[] = [undefined]
   let instanceSchema

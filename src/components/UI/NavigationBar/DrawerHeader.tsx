@@ -8,4 +8,4 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }))
 
-export default DrawerHeader
+export { DrawerHeader }

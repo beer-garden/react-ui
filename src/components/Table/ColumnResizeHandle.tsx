@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { ColumnInstance } from 'react-table'
-import { TableData } from './Table'
+import { TableData } from 'components/Table'
 
 interface ColumnResizeHandleProps<T extends TableData> {
   column: ColumnInstance<T>
@@ -42,4 +42,4 @@ const ColumnResizeHandle = <T extends TableData>({
   )
 }
 
-export default ColumnResizeHandle
+export { ColumnResizeHandle }

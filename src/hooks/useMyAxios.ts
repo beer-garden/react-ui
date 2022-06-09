@@ -18,4 +18,4 @@ const useMyAxios = () => {
   return { axiosInstance, getUseAxios }
 }
 
-export default useMyAxios
+export { useMyAxios }
