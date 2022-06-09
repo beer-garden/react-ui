@@ -15,7 +15,7 @@ const PageHeader = (
     <Box>
       <Box display="flex" alignItems="flex-end">
         <Box>
-          <Typography variant="h4">{title}</Typography>
+          <Typography variant="h4"><b>{title}</b></Typography>
         </Box>
         <Box pl={1}>
           <Typography>{description}</Typography>
