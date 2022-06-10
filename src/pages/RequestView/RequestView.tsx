@@ -52,7 +52,7 @@ const RequestView = () => {
   const [{ data, error }] = useAxios({
     url: '/api/v1/requests/' + id,
     method: 'get',
-    withCredentials: authEnabled(),
+    withCredentials: authEnabled,
   })
   useEffect(() => {
     if (data && !error) {

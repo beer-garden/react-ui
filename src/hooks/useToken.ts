@@ -63,40 +63,45 @@ export const useToken = (
     clearAutomaticTokenRefresh()
   }, [setRefreshToken, clearAutomaticTokenRefresh])
 
+  const requestInterceptor = useCallback((config: AxiosRequestConfig): AxiosRequestConfig => {
+    console.log('useToken altering request interceptor')
+    if (!config.headers) config.headers = {}
+    if (config.headers.Authorization)
+      console.log(`OLD HEADER: ${config.headers.Authorization}\n vs: \n ${accessToken.current}`)
+    config.headers.Authorization = `Bearer ${accessToken.current}`
+    return config
+  }, [accessToken])
+
+  const errorHandler = useCallback((error) => {
+    console.log('useToken response interceptor received error: ', error)
+    if (
+      error.response?.status === 401 &&
+      accessToken.current
+    ) {
+      if (accessToken) {
+        console.log('RESPONSE INDICATES BAD TOKEN')
+        clearToken()
+        onTokenInvalid()
+      }
+    }
+    return Promise.reject(error)
+  }, [clearToken, onTokenInvalid])
+
   useEffect(() => {
-    axiosInstance.interceptors.request.use(
-      (config: AxiosRequestConfig): AxiosRequestConfig => {
-        console.log('useToken altering request interceptor')
-        if (!config.headers) config.headers = {}
-        if (config.headers.Authorization)
-          console.log('OLD HEADER', config.headers.Authorization)
-        config.headers.Authorization = `Bearer ${accessToken.current}`
-        return config
-      },
-    )
-    axiosInstance.interceptors.response.use(
+    const req = axiosInstance.interceptors.request.use(requestInterceptor)
+    const res = axiosInstance.interceptors.response.use(
       (response) => {
         return response
       },
-      (error) => {
-        console.log('useToken response interceptor received error: ', error)
-        if (
-          error.response &&
-          error.response.status === 401 &&
-          accessToken.current
-        ) {
-          if (accessToken) {
-            console.log('RESPONSE INDICATES BAD TOKEN')
-            clearToken()
-            onTokenInvalid()
-          }
-        }
-        return Promise.reject(error)
-      },
+      errorHandler
     )
 
+    // Remove the old interceptors when the token changes
+    if (req > 0) axiosInstance.interceptors.request.eject(0)
+    if (res > 0) axiosInstance.interceptors.response.eject(0)
+
     configure({ axios: axiosInstance })
-  }, [clearToken, onTokenInvalid, axiosInstance])
+  }, [errorHandler, requestInterceptor, axiosInstance])
 
   return {
     clearToken,

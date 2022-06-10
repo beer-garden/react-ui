@@ -32,15 +32,18 @@ const useRequests = () => {
   const { searchApi, config, updateUrl, updateConfig, updateApi } =
     useRequestsReducer()
 
+  const searchUrl = useMemo(() => {
+    return getUrlFromSearchApi(searchApi)
+  }, [searchApi])
+
   useEffect(() => {
-    const newUrl = getUrlFromSearchApi(searchApi)
-    updateUrl(newUrl)
+    updateUrl(searchUrl)
     updateConfig({
-      url: newUrl,
+      url: searchUrl,
       method: 'GET',
-      withCredentials: authEnabled(),
+      withCredentials: authEnabled,
     })
-  }, [updateUrl, updateConfig, authEnabled, searchApi])
+  }, [updateUrl, updateConfig, authEnabled, searchUrl])
 
   const axiosOptions: AxiosHooksOptions = {
     manual: true,
@@ -74,7 +77,7 @@ const useRequests = () => {
   const handleRefresh = useCallback(() => {
     execute(config, { useCache: false })
       .then((resp) =>
-        console.log('data.tsx - execute fired with response:', resp),
+        console.log('data.tsx - execute fired with response:', resp)
       )
       .catch((e) => console.log('data.tsx - error from execute:', e))
   }, [execute, config])

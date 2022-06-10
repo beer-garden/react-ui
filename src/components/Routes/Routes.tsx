@@ -29,9 +29,9 @@ const Routes = () => {
 
       setAuthIsEnabled(data?.auth_enabled)
     }
-
-    fetchData()
-  }, [])
+ 
+    fetchData();
+  }, [getConfig])
 
   if (authIsEnabled === undefined) return null
 

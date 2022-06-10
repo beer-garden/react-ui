@@ -23,7 +23,7 @@ const CommandView = () => {
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'get',
-    withCredentials: authEnabled(),
+    withCredentials: authEnabled,
   })
   useEffect(() => {
     if (data && !error) {

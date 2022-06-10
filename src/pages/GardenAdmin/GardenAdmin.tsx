@@ -13,7 +13,7 @@ const GardensAdmin = (): JSX.Element => {
   const [{ data, error }] = useAxios({
     url: '/api/v1/gardens',
     method: 'get',
-    withCredentials: authEnabled(),
+    withCredentials: authEnabled,
   })
 
   useEffect(() => {

@@ -1,17 +1,13 @@
-import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+import Axios, { AxiosInstance } from 'axios'
 import { makeUseAxios } from 'axios-hooks'
-import { useCallback } from 'react'
-
-const BASE_URL = 'http://localhost:2337/' // TODO
-const BASIC_REQUEST_CONFIG: AxiosRequestConfig = {
-  baseURL: BASE_URL,
-}
+import { useCallback, useMemo } from 'react'
 
 const useMyAxios = () => {
   // const axiosInstance: AxiosInstance = Axios.create(BASIC_REQUEST_CONFIG)
-  const axiosInstance: AxiosInstance = Axios.create()
+  const axiosInstance: AxiosInstance = useMemo(() => { return Axios.create() }, [])
 
   const getUseAxios = useCallback(() => {
+    console.log("Making new axios!")
     return makeUseAxios({ axios: axiosInstance, cache: false })
   }, [axiosInstance])
 

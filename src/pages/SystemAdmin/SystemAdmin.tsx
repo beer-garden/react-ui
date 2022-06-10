@@ -61,7 +61,7 @@ const SystemAdmin = () => {
   const [namespaces, setNamespaces] = useState<string[]>([])
 
   const { systemsData, systemsError, namespaceData, namespaceError } =
-    useGetData(authEnabled())
+    useGetData(authEnabled)
 
   useEffect(() => {
     if (systemsData && !systemsError) {

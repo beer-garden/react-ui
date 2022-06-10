@@ -23,13 +23,13 @@ const useAuth = () => {
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const [user, _setUser] = useState<string | null>(null)
-  const onTokenRefreshRequired = useCallback(refresh, [])
+  const onTokenRefreshRequired = useCallback(refresh, [refresh])
 
   const setUser = (userName: string | null) => {
     _setUser(userName)
   }
 
-  const onTokenInvalid = () => setUser(null)
+  const onTokenInvalid = useCallback(() => { setUser(null) }, [])
 
   const { clearToken, setToken, isAuthenticated, getRefreshToken } = useToken(
     onTokenInvalid,
