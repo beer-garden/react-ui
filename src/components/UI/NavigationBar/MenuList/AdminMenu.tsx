@@ -14,7 +14,7 @@ import {
   MenuList,
 } from '@mui/material'
 import { Fragment, useState } from 'react'
-import ListItemLink from './ListItemLink'
+import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 
 const AdminMenu = () => {
   const [open, setOpen] = useState(false)
@@ -51,4 +51,4 @@ const AdminMenu = () => {
   )
 }
 
-export default AdminMenu
+export { AdminMenu }

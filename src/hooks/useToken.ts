@@ -2,8 +2,8 @@ import { AxiosRequestConfig } from 'axios'
 import { configure } from 'axios-hooks'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import { useCallback, useEffect, useRef } from 'react'
-import useMyAxios from './useMyAxios'
-import { useTokenExpiration } from './useTokenExpiration'
+import { useMyAxios } from 'hooks/useMyAxios'
+import { useTokenExpiration } from 'hooks/useTokenExpiration'
 
 export interface TokenResponse {
   access: string

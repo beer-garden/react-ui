@@ -1,7 +1,7 @@
 import { Box, Button, Popover, Typography } from '@mui/material'
+import { TableData } from 'components/Table'
 import { FormEvent as ReactFormEvent, useCallback } from 'react'
 import { ColumnInstance, TableInstance } from 'react-table'
-import { TableData } from '../Table'
 
 const filterSorter = <T extends TableData>(
   x: ColumnInstance<T>,
@@ -123,4 +123,4 @@ const FilterPage = <T extends TableData>({
   )
 }
 
-export default FilterPage
+export { FilterPage }

@@ -10,12 +10,12 @@ import useAxios from 'axios-hooks'
 import { useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, Navigate } from 'react-router-dom'
-import AlertForm from '../builderForm/customFormRenders/alert_control'
-import AlertTester from '../builderForm/customFormRenders/alert_tester'
-import DictionaryControl from '../builderForm/customFormRenders/dict_any_control'
-import DictionaryTester from '../builderForm/customFormRenders/dict_any_tester'
-import { Command, Dictionary } from '../types/custom_types'
-import CacheService from '../services/cache_service'
+import AlertForm from 'builderForm/customFormRenders/alert_control'
+import AlertTester from 'builderForm/customFormRenders/alert_tester'
+import DictionaryControl from 'builderForm/customFormRenders/dict_any_control'
+import DictionaryTester from 'builderForm/customFormRenders/dict_any_tester'
+import { Command, Dictionary } from 'types/custom_types'
+import CacheService from 'services/cache_service'
 
 interface CommandViewFormProps {
   schema: Dictionary
@@ -32,7 +32,7 @@ const CommandViewForm = ({
   const initialData = initialModel
 
   const pourItAgainRequest = CacheService.popQueue(
-    `lastKnownPourItAgainRequest`
+    `lastKnownPourItAgainRequest`,
   )
   if (pourItAgainRequest) {
     initialData.parameters = pourItAgainRequest.parameters
@@ -104,7 +104,7 @@ const CommandViewForm = ({
     )
   }
 
-  function onChange (data: Dictionary, errors: Ajv.ErrorObject[] | undefined) {
+  function onChange(data: Dictionary, errors: Ajv.ErrorObject[] | undefined) {
     setErrors(errors || [])
     setModel(data)
   }

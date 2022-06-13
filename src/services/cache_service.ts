@@ -1,4 +1,4 @@
-import { Request } from '../types/custom_types'
+import { Request } from 'types/custom_types'
 
 type CachedStates = {
   rowsPerPage?: number
@@ -7,7 +7,7 @@ type CachedStates = {
   namespacesSelected?: string[]
 }
 
-function getItem (key: string): CachedStates {
+function getItem(key: string): CachedStates {
   const lastKnownState: string | null = window.localStorage.getItem(key)
   let parsedState: CachedStates = {}
   if (lastKnownState) {
@@ -17,14 +17,14 @@ function getItem (key: string): CachedStates {
 }
 
 const CacheService = {
-  getIndexLastState (key: string): { rowsPerPage: number } {
+  getIndexLastState(key: string): { rowsPerPage: number } {
     const item = getItem(key)
     return { rowsPerPage: item.rowsPerPage || 5 }
   },
 
-  getNamespacesSelected (
+  getNamespacesSelected(
     key: string,
-    defaultValue: string[] = []
+    defaultValue: string[] = [],
   ): { namespacesSelected: string[] } {
     const item = getItem(key)
     return {
@@ -32,7 +32,7 @@ const CacheService = {
     }
   },
 
-  popQueue (key: string): Request | undefined | void {
+  popQueue(key: string): Request | undefined | void {
     const requestQueue = getItem(key).requestQueue
     if (requestQueue) {
       const request = requestQueue.pop()
@@ -41,7 +41,7 @@ const CacheService = {
     }
   },
 
-  pushQueue (item: Request, key: string): void {
+  pushQueue(item: Request, key: string): void {
     const requestQueue: Request[] = getItem(key).requestQueue || []
     if (requestQueue) {
       requestQueue.push(item)
@@ -49,7 +49,7 @@ const CacheService = {
     }
   },
 
-  setItemInCache (item: unknown, key: string): void {
+  setItemInCache(item: unknown, key: string): void {
     window.localStorage.setItem(key, JSON.stringify(item))
   },
 }

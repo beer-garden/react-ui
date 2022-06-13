@@ -1,8 +1,8 @@
 import { useCallback, useState, useEffect } from 'react'
 import { createContainer } from 'unstated-next'
 import { useNavigate } from 'react-router-dom'
-import { TokenResponse, useToken } from '../hooks/useToken'
-import useMyAxios from '../hooks/useMyAxios'
+import { TokenResponse, useToken } from 'hooks/useToken'
+import { useMyAxios } from 'hooks/useMyAxios'
 
 enum AuthEvents {
   LOGOUT = 'LOGOUT',
@@ -33,10 +33,10 @@ const useAuth = () => {
 
   const { clearToken, setToken, isAuthenticated, getRefreshToken } = useToken(
     onTokenInvalid,
-    onTokenRefreshRequired
+    onTokenRefreshRequired,
   )
 
-  async function refresh () {
+  async function refresh() {
     const {
       data: { access, refresh },
     } = await axiosInstance.post<TokenResponse>('/api/v1/token/refresh', {
@@ -59,7 +59,7 @@ const useAuth = () => {
         } else if (event.key === AuthEvents.LOGIN) {
           onTokenRefreshRequired()
         }
-      }
+      },
     )
   }, [clearToken, isAuthenticated, onTokenRefreshRequired])
 
@@ -79,15 +79,15 @@ const useAuth = () => {
       })
       console.log(
         'login SETTING ACCESS TOKEN: ',
-        access ? 'yes' : String(access)
+        access ? 'yes' : String(access),
       )
       console.log(
         'login SETTING REFRESH TOKEN: ',
-        refresh ? 'yes' : String(refresh)
+        refresh ? 'yes' : String(refresh),
       )
       console.log(
         'login SETTING USER NAME: ',
-        username ? username : 'No user name'
+        username ? username : 'No user name',
       )
       setUser(username)
       setToken({ access, refresh })
@@ -95,7 +95,7 @@ const useAuth = () => {
       window.localStorage.setItem(AuthEvents.LOGIN, new Date().toISOString())
       console.log('DONE WITH LOGIN')
     },
-    [setToken, axiosInstance]
+    [setToken, axiosInstance],
   )
 
   return {

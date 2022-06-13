@@ -1,12 +1,9 @@
-import { System } from '../../types/custom_types'
-import {
-  filterSystems,
-  sortSystemsVersion,
-} from '../../services/system.service'
+import { System } from 'types/custom_types'
+import { filterSystems, sortSystemsVersion } from 'services/system.service'
 
 const formatSystems = (
   namespaces: string[],
-  allSystems: System[]
+  allSystems: System[],
 ): { [key: string]: System[][] } => {
   const sortedSystems: { [key: string]: System[][] } = {}
 
@@ -23,20 +20,19 @@ const formatSystems = (
         sortedSystems[theNamespace].push(
           filterSystems(systems, {
             name: systems[i].name,
-          })
+          }),
         )
-        sortedSystems[theNamespace][
-          sortedSystems[theNamespace].length - 1
-        ] = sortSystemsVersion(
-          sortedSystems[theNamespace][sortedSystems[theNamespace].length - 1]
-        )
+        sortedSystems[theNamespace][sortedSystems[theNamespace].length - 1] =
+          sortSystemsVersion(
+            sortedSystems[theNamespace][sortedSystems[theNamespace].length - 1],
+          )
       }
     }
     sortedSystems[theNamespace].sort((a: System[], b: System[]) =>
-      a[0].name > b[0].name ? 1 : -1
+      a[0].name > b[0].name ? 1 : -1,
     )
   }
   return sortedSystems
 }
 
-export default formatSystems
+export { formatSystems }

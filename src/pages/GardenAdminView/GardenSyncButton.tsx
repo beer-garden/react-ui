@@ -1,8 +1,8 @@
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Button } from '@mui/material'
 import useAxios from 'axios-hooks'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { SubmissionStatusState } from './GardenConnection/GardenConnectionForm'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { SubmissionStatusState } from 'pages/GardenAdminView'
 
 interface GardenSynButtonParams {
   gardenName: string
@@ -20,7 +20,7 @@ const GardenSyncButton = ({
       url: '/api/v1/gardens/' + gardenName,
       method: 'PATCH',
     },
-    { manual: true }
+    { manual: true },
   )
 
   const patchData = {
@@ -40,7 +40,7 @@ const GardenSyncButton = ({
       .then(() =>
         setSyncStatus({
           result: 'success',
-        })
+        }),
       )
       .catch((error) => {
         setSyncStatus({
@@ -68,4 +68,4 @@ const GardenSyncButton = ({
   )
 }
 
-export default GardenSyncButton
+export { GardenSyncButton }

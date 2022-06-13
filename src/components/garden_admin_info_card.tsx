@@ -9,8 +9,8 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { Garden, TableState } from '../types/custom_types'
-import Table from './table'
+import { Garden, TableState } from 'types/custom_types'
+import Table from 'components/table'
 
 const useStyles = makeStyles({
   root: {
@@ -38,7 +38,7 @@ interface GardenInfoCardProps {
 const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
   const classes = useStyles()
 
-  function getNamespaceList (garden: Garden) {
+  function getNamespaceList(garden: Garden) {
     return (
       <List className={classes.rootList}>
         {garden.namespaces.map((namespace: string) => (
@@ -50,7 +50,7 @@ const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
     )
   }
 
-  function getTableData () {
+  function getTableData() {
     return [
       ['Name', garden.name],
       ['Status', garden.status],

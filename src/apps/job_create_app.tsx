@@ -1,6 +1,6 @@
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { Alert } from '@mui/material'
-import JobViewForm from '../components/job_create_form'
+import JobViewForm from 'components/job_create_form'
 
 const JobCreateApp = () => {
   const location = useLocation()

@@ -6,17 +6,17 @@ import { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Navigate } from 'react-router-dom'
-import AlertForm from '../builderForm/customFormRenders/alert_control'
-import AlertTester from '../builderForm/customFormRenders/alert_tester'
-import DictionaryControl from '../builderForm/customFormRenders/dict_any_control'
-import DictionaryTester from '../builderForm/customFormRenders/dict_any_tester'
-import { Request, SuccessCallback } from '../types/custom_types'
-import { useJobServices } from '../services/job.service/job.service'
+import AlertForm from 'builderForm/customFormRenders/alert_control'
+import AlertTester from 'builderForm/customFormRenders/alert_tester'
+import DictionaryControl from 'builderForm/customFormRenders/dict_any_control'
+import DictionaryTester from 'builderForm/customFormRenders/dict_any_tester'
+import { Request, SuccessCallback } from 'types/custom_types'
+import { useJobServices } from 'services/job.service/job.service'
 import {
   SCHEMA,
   UISCHEMA,
   MODEL,
-} from '../services/job.service/job-service-values'
+} from 'services/job.service/job-service-values'
 
 interface JobViewFormProps {
   request: Request
@@ -28,15 +28,15 @@ const JobViewForm = ({ request }: JobViewFormProps) => {
   const [redirect, setRedirect] = useState<JSX.Element>()
   const { createJob } = useJobServices()
 
-  function submitForm (successCallback: SuccessCallback) {
+  function submitForm(successCallback: SuccessCallback) {
     createJob(request, model, successCallback)
   }
 
-  function successCallback (response: AxiosResponse) {
+  function successCallback(response: AxiosResponse) {
     setRedirect(<Navigate to={'/jobs/'.concat(response.data.id)} />)
   }
 
-  function makeRequest () {
+  function makeRequest() {
     if (errors.length > 0) {
       return (
         <Tooltip title="Missing required properties">

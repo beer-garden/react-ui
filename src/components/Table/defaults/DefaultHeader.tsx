@@ -1,5 +1,5 @@
 import { HeaderProps } from 'react-table'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 
 const isUpper = (code: number) => code >= 65 && code <= 90
 const isDigit = (code: number) => code >= 48 && code <= 57

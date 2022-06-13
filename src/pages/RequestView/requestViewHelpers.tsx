@@ -1,6 +1,6 @@
 import { CircularProgress } from '@mui/material'
 import ReactJson from 'react-json-view'
-import { Request } from '../../types/custom_types'
+import { Request } from 'types/custom_types'
 
 const formatData = (requests: Request[]) => {
   const tempData: (string | JSX.Element | number | null)[][] = []

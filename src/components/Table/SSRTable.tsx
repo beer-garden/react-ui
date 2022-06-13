@@ -7,6 +7,28 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import type { TableData } from 'components/Table'
+import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
+import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
+import {
+  DefaultCellRenderer,
+  DefaultColumnFilter,
+  defaultColumnValues,
+  DefaultHeader,
+} from 'components/Table/defaults'
+import { SSRTablePagination } from 'components/Table/ssr-pagination'
+import {
+  Table as StyledTable,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
+  TableLabel,
+  TableRow,
+} from 'components/Table/TableComponentsStyled'
+import { useDebounce } from 'hooks/useDebounce'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
   Fragment,
@@ -33,29 +55,6 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
-import { FilterChipBar } from './chipbar/FilterChipBar'
-import ColumnResizeHandle from './ColumnResizeHandle'
-import {
-  DefaultCellRenderer,
-  DefaultColumnFilter,
-  defaultColumnValues,
-  DefaultHeader,
-} from './defaults'
-import { fuzzyTextFilter, numericTextFilter } from './filters'
-import { SSRTablePagination } from './ssr-pagination'
-import type { TableData } from './Table'
-import { useDebounce, useLocalStorage } from './table-hooks'
-import {
-  Table as StyledTable,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableHeadRow,
-  TableLabel,
-  TableRow,
-} from './TableComponentsStyled'
-import { Toolbar } from './toolbar'
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,

@@ -1,7 +1,7 @@
+import { AuthContainer } from 'containers/AuthContainer'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ReactElement } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { AuthContainer } from '../../containers/AuthContainer'
-import { ServerConfigContainer } from '../../containers/ConfigContainer'
 
 interface RequireAuthProps {
   children?: ReactElement
@@ -37,4 +37,4 @@ const RequireAuth = ({ children, redirectTo = '/login' }: RequireAuthProps) => {
   return null
 }
 
-export default RequireAuth
+export { RequireAuth }

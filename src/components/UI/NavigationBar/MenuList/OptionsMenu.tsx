@@ -10,8 +10,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import { ThemeChooser } from 'components/UI/Theme/ThemeChooser'
 import * as React from 'react'
-import ThemeChooser from '../../Theme/ThemeChooser'
 
 const OptionsMenu = () => {
   const [open, setOpen] = React.useState(false)
@@ -35,4 +35,4 @@ const OptionsMenu = () => {
   )
 }
 
-export default OptionsMenu
+export { OptionsMenu }

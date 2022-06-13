@@ -4,8 +4,7 @@ import { Button, Divider, TextField } from '@mui/material'
 import { FieldArray, getIn, useFormikContext } from 'formik'
 import { nanoid } from 'nanoid/non-secure'
 import { Fragment } from 'react'
-import { ConnectionFormFields } from './ConnectionFormFields'
-import ConnectionFormHeading from './ConnectionFormHeading'
+import { ConnectionFormFields, ConnectionFormHeading } from 'pages/GardenAdminView'
 
 const ConnectionStompHeaders = () => {
   const context = useFormikContext<ConnectionFormFields>()
@@ -80,4 +79,4 @@ const ConnectionStompHeaders = () => {
   )
 }
 
-export default ConnectionStompHeaders
+export { ConnectionStompHeaders }

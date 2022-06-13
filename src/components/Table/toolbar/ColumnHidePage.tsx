@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material'
 import { TableInstance } from 'react-table'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 
 interface ColumnHidePageProps<T extends TableData> {
   instance: TableInstance<T>
@@ -91,4 +91,4 @@ const ColumnHidePage = <T extends TableData>({
   ) : null
 }
 
-export default ColumnHidePage
+export { ColumnHidePage }

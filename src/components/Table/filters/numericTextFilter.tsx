@@ -1,5 +1,5 @@
 import { FilterValue, IdType, Row } from 'react-table'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 
 const regex = /([=<>!]*)\s*((?:[0-9].?[0-9]*)+)/
 
@@ -29,17 +29,27 @@ function parseValue(filterValue: FilterValue) {
   return defaultComparator
 }
 
-const numericTextFilter = <T extends TableData>(
+// const numericTextFilter = <T extends TableData>(
+//   rows: Array<Row<T>>,
+//   id: Array<IdType<T>>,
+//   filterValue: FilterValue,
+// ): Array<Row<T>> => {
+//   const comparator = parseValue(filterValue)
+
+//   return rows.filter((row) => comparator(row.values[id[0]]))
+// }
+
+function numericTextFilter<T extends TableData>(
   rows: Array<Row<T>>,
   id: Array<IdType<T>>,
   filterValue: FilterValue,
-): Array<Row<T>> => {
+) {
   const comparator = parseValue(filterValue)
 
   return rows.filter((row) => comparator(row.values[id[0]]))
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-numericTextFilter.autoRemove = (val: any) => !val
+// numericTextFilter.autoRemove = (val: any) => !val
 
 export { numericTextFilter }

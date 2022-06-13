@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import { AxiosResponse } from 'axios'
-import { Job } from '../../types/custom_types'
-import { useJobServices } from '../../services/job.service/job.service'
+import { Job } from 'types/custom_types'
+import { useJobServices } from 'services/job.service/job.service'
 
 interface JobButtonParams {
   job: Job
@@ -38,4 +38,4 @@ const JobButton = ({ job, id, callback }: JobButtonParams) => {
   )
 }
 
-export default JobButton
+export { JobButton }

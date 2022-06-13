@@ -1,6 +1,6 @@
-import { Command, System } from '../../types/custom_types'
-import { filterSystems } from '../../services/system.service'
-import MakeItHappenButton from './MakeItHappenButton'
+import { filterSystems } from 'services/system.service'
+import { Command, System } from 'types/custom_types'
+import { MakeItHappenButton } from 'pages/CommandIndex'
 
 const formatCommands = (commands: Command[]) => {
   const formattedData: (string | JSX.Element)[][] = []
@@ -22,7 +22,7 @@ const getCommands = (
   systems: System[],
   namespace: string | undefined,
   systemName: string | undefined,
-  version: string | undefined
+  version: string | undefined,
 ) => {
   const filteredSystems = filterSystems(systems, {
     namespace: namespace,

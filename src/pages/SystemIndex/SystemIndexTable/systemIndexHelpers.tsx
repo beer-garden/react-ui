@@ -1,5 +1,5 @@
-import { System } from '../../types/custom_types'
-import ExploreButton from './ExploreButton'
+import { System } from 'types/custom_types'
+import { ExploreButton } from '.'
 
 const formatSystems = (systems: System[]) => {
   const formattedSystems: (string | JSX.Element | number)[][] = []

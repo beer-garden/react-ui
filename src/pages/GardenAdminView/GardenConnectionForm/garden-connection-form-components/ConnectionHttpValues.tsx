@@ -1,12 +1,12 @@
-import { Stack, Tooltip } from '@mui/material'
+import { Stack } from '@mui/material'
 import { Fragment } from 'react'
-import ConnectionCheckboxGroup from './ConnectionCheckboxGroup'
-import ConnectionFormHeading from './ConnectionFormHeading'
 import {
+  ConnectionCheckboxGroup,
+  ConnectionFormHeading,
   ConnectionTextField,
   ConnectionTextFieldPropsType,
   getFieldValues,
-} from './ConnectionTextField'
+} from 'pages/GardenAdminView'
 
 const ConnectionHttpValues = () => {
   return (
@@ -71,7 +71,7 @@ const ConnectionHttpValues = () => {
   )
 }
 
-export default ConnectionHttpValues
+export { ConnectionHttpValues }
 
 const mapToTextfieldComponents = (entry: {
   key: string

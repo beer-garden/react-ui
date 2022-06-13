@@ -10,25 +10,24 @@ import {
 } from '@mui/material'
 import { AxiosError } from 'axios'
 import useAxios from 'axios-hooks'
+import Divider from 'components/divider'
+import NamespaceSelect from 'components/namespace_select'
+import PageHeader from 'components/PageHeader'
+import SystemCard from 'components/system_admin_card'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useEffect, useState } from 'react'
-import Divider from '../../components/divider'
-import NamespaceSelect from '../../components/namespace_select'
-import PageHeader from '../../components/PageHeader'
-import SystemCard from '../../components/system_admin_card'
-import { ServerConfigContainer } from '../../containers/ConfigContainer'
-import AdminService from '../../services/admin_service'
-import CacheService from '../../services/cache_service'
-import { System } from '../../types/custom_types'
-import formatSystems from './system-admin-helpers'
+import AdminService from 'services/admin_service'
+import CacheService from 'services/cache_service'
+import { System } from 'types/custom_types'
+import { formatSystems } from 'pages/SystemAdmin'
 
-function getSelectMessage (namespacesSelected: string[]): JSX.Element | void {
+function getSelectMessage(namespacesSelected: string[]): JSX.Element | void {
   if (!namespacesSelected.length) {
     return <Alert severity="info">Please select a namespace</Alert>
   }
 }
 
-const useGetData = (authIsEnabled : boolean): SystemAdminData => {
-
+const useGetData = (authIsEnabled: boolean): SystemAdminData => {
   const [{ data: systemsData, error: systemsError }] = useAxios({
     url: '/api/v1/systems',
     method: 'GET',
@@ -61,12 +60,8 @@ const SystemAdmin = () => {
   const [systems, setSystems] = useState<System[]>([])
   const [namespaces, setNamespaces] = useState<string[]>([])
 
-  const {
-    systemsData,
-    systemsError,
-    namespaceData,
-    namespaceError,
-  } = useGetData(authEnabled())
+  const { systemsData, systemsError, namespaceData, namespaceError } =
+    useGetData(authEnabled())
 
   useEffect(() => {
     if (systemsData && !systemsError) {
@@ -80,8 +75,8 @@ const SystemAdmin = () => {
   const [namespacesSelected, setNamespacesSelected] = useState(
     CacheService.getNamespacesSelected(
       `lastKnown_${window.location.href}`,
-      namespaces
-    ).namespacesSelected
+      namespaces,
+    ).namespacesSelected,
   )
 
   const sortedSystems = formatSystems(namespacesSelected, systems)
@@ -151,7 +146,7 @@ const SystemAdmin = () => {
                         >
                           <SystemCard systems={systems} namespace={namespace} />
                         </Box>
-                      )
+                      ),
                     )}
                   </Box>
                 </Grid>
@@ -165,4 +160,4 @@ const SystemAdmin = () => {
   )
 }
 
-export default SystemAdmin
+export { SystemAdmin }

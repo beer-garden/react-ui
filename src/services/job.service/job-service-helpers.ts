@@ -1,5 +1,9 @@
-import { Dictionary, Request } from '../../types/custom_types'
-import { CRON_KEYS, DATE_KEYS, INTERVAL_KEYS } from './job-service-values'
+import { Dictionary, Request } from 'types/custom_types'
+import {
+  CRON_KEYS,
+  DATE_KEYS,
+  INTERVAL_KEYS,
+} from 'services/job.service/job-service-values'
 
 const getTrigger = (triggerType: string, formModel: Dictionary) => {
   if (triggerType === 'date') {

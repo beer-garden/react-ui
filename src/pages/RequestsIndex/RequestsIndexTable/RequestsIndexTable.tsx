@@ -1,6 +1,15 @@
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { LoadingButton } from '@mui/lab'
 import { Button, Checkbox, FormControlLabel } from '@mui/material'
+import { SSRTable } from 'components/Table'
+import {
+  defaultOrderingColumnIndex,
+  OrderableColumnDirection,
+  RequestsIndexTableData,
+  SearchableColumnData,
+  useRequests,
+  useRequestsIndexTableColumns,
+} from 'pages/RequestsIndex/RequestsIndexTable/data'
 import {
   ChangeEvent as ReactChangeEvent,
   useCallback,
@@ -8,14 +17,6 @@ import {
   useState,
 } from 'react'
 import { Filters, SortingRule } from 'react-table'
-import { SSRTable } from '../../../components/Table'
-import { useRequests, useRequestsIndexTableColumns } from './data'
-import { defaultOrderingColumnIndex } from './data/base-search-api'
-import type {
-  OrderableColumnDirection,
-  RequestsIndexTableData,
-  SearchableColumnData,
-} from './data/request-types'
 
 const RequestsIndexTable = () => {
   const {
@@ -148,4 +149,4 @@ const RequestsIndexTable = () => {
   )
 }
 
-export default RequestsIndexTable
+export { RequestsIndexTable }

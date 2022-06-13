@@ -1,15 +1,15 @@
 import { AxiosRequestConfig } from 'axios'
-import { useCallback, useMemo, useReducer } from 'react'
-import { baseSearchApi } from './base-search-api'
 import {
   ActionKind,
   ApiPayload,
+  baseSearchApi,
   ConfigPayload,
   RequestIndexTableState,
   RequestsAction,
+  RequestsSearchApi,
   UrlPayload,
-} from './reducer-types'
-import { RequestsSearchApi } from './request-types'
+} from 'pages/RequestsIndex/RequestsIndexTable/data'
+import { useCallback, useMemo, useReducer } from 'react'
 
 const initialRequestState: RequestIndexTableState = {
   url: '',
@@ -70,4 +70,4 @@ const useRequestsReducer = () => {
   }
 }
 
-export default useRequestsReducer
+export { useRequestsReducer }

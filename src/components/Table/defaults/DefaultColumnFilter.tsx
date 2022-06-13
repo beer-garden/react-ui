@@ -1,7 +1,7 @@
 import { ColumnInstance, FilterProps } from 'react-table'
 import { useState, ChangeEvent, useEffect } from 'react'
 import { TextField } from '@mui/material'
-import { TableData } from '../Table'
+import { TableData } from 'components/Table'
 
 const findFirstColumn = (
   columns: Array<ColumnInstance<TableData>>,

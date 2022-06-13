@@ -1,7 +1,7 @@
-import RequestsIndexTable from './RequestsIndexTable/RequestsIndexTable'
+import { RequestsIndexTable } from 'pages/RequestsIndex/RequestsIndexTable'
 
 const RequestsIndex = () => {
   return <RequestsIndexTable />
 }
 
-export default RequestsIndex
+export { RequestsIndex }

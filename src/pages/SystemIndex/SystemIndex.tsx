@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import SystemIndexTable from './SystemIndexTable/SystemIndexTable'
+import { SystemIndexTable } from 'pages/SystemIndex/SystemIndexTable'
 
 const SystemsIndex = () => {
   return (
@@ -11,4 +11,4 @@ const SystemsIndex = () => {
   )
 }
 
-export default SystemsIndex
+export { SystemsIndex }

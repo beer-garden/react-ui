@@ -1,8 +1,8 @@
-import useMyAxios from '../../hooks/useMyAxios'
-import { Dictionary, Request, SuccessCallback } from '../../types/custom_types'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { formToServerModel } from './job-service-helpers'
 import useAxios from 'axios-hooks'
+import {useMyAxios} from 'hooks/useMyAxios'
+import { Dictionary, Request, SuccessCallback } from 'types/custom_types'
+import { formToServerModel } from 'services/job.service/job-service-helpers'
 
 const JOBS_URL = '/api/v1/jobs'
 
@@ -39,7 +39,7 @@ const useJobServices = () => {
   const useCreateJob = (
     request: Request,
     data_: Dictionary,
-    successCallback: SuccessCallback
+    successCallback: SuccessCallback,
   ) => {
     const config: AxiosRequestConfig = {
       url: JOBS_URL,

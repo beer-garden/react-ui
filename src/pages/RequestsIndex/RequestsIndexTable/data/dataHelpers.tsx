@@ -1,9 +1,12 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { Box, Tooltip, Typography } from '@mui/material'
+import {
+  BeergardenRequest,
+  RequestsIndexTableData,
+} from 'pages/RequestsIndex/RequestsIndexTable/data'
 import { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { BeergardenRequest, RequestsIndexTableData } from './request-types'
 
 const RequestLink = (request: BeergardenRequest) => {
   const hasParent = !!request.parent

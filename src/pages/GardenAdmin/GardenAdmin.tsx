@@ -1,11 +1,11 @@
 import { Grid } from '@mui/material'
 import useAxios from 'axios-hooks'
+import Divider from 'components/divider'
+import GardenCard from 'components/garden_admin_card'
+import PageHeader from 'components/PageHeader'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useEffect, useState } from 'react'
-import Divider from '../../components/divider'
-import GardenCard from '../../components/garden_admin_card'
-import PageHeader from '../../components/PageHeader'
-import { ServerConfigContainer } from '../../containers/ConfigContainer'
-import { Garden } from '../../types/custom_types'
+import { Garden } from 'types/custom_types'
 
 const GardensAdmin = (): JSX.Element => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -37,4 +37,4 @@ const GardensAdmin = (): JSX.Element => {
   )
 }
 
-export default GardensAdmin
+export { GardensAdmin }

@@ -1,8 +1,8 @@
 import { TablePagination as MuiTablePagination } from '@mui/material'
+import { TableData } from 'components/Table'
+import SSRTablePaginationActions from 'components/Table/ssr-pagination/SSRTablePaginationActions'
 import { MouseEvent as ReactMouseEvent, useCallback } from 'react'
 import { TableInstance } from 'react-table'
-import { TableData } from '../Table'
-import SSRTablePaginationActions from './SSRTablePaginationActions'
 
 interface SSRPaginationProps<T extends TableData> {
   instance: TableInstance<T>

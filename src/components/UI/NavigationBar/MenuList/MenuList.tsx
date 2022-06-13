@@ -3,10 +3,10 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople'
 import FactoryIcon from '@mui/icons-material/Factory'
 import InfoIcon from '@mui/icons-material/Info'
 import { Divider, MenuList as MuiMenuList } from '@mui/material'
+import { AdminMenu } from 'components/UI/NavigationBar/MenuList/AdminMenu'
+import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
+import { OptionsMenu } from 'components/UI/NavigationBar/MenuList/OptionsMenu'
 import * as React from 'react'
-import AdminMenu from './AdminMenu'
-import ListItemLink from './ListItemLink'
-import OptionsMenu from './OptionsMenu'
 
 const MenuList = () => {
   return (
@@ -29,7 +29,7 @@ const MenuList = () => {
   )
 }
 
-export default MenuList
+export { MenuList }
 
 type mainEntriesType = {
   key: string

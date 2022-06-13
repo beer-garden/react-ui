@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { createContainer } from 'unstated-next'
-import useMyAxios from '../hooks/useMyAxios'
+import { useMyAxios } from 'hooks/useMyAxios'
 
 export interface ServerConfig {
   application_name: string
@@ -18,25 +18,22 @@ const useServerConfig = () => {
   const { axiosInstance } = useMyAxios()
   const [config, _setConfig] = useState<ServerConfig | null>(null)
 
-  async function getConfig () {
-    console.log("Calling /config!")
-    const {
-        data
-      } = await axiosInstance.get<ServerConfig>('/config', {
-        timeout: 1000,
-        headers: {
-          Accept: 'application/json',
-        },
-      })
-
+  async function getConfig() {
+    console.log('Calling /config!')
+    const { data } = await axiosInstance.get<ServerConfig>('/config', {
+      timeout: 1000,
+      headers: {
+        Accept: 'application/json',
+      },
+    })
 
     console.log(
-    'config AUTH_ENABLED: ',
-    data.auth_enabled ? 'yes' : String(data.auth_enabled)
+      'config AUTH_ENABLED: ',
+      data.auth_enabled ? 'yes' : String(data.auth_enabled),
     )
     console.log(
-    'config DEBUG_MODE: ',
-    data.debug_mode ? 'yes' : String(data.debug_mode)
+      'config DEBUG_MODE: ',
+      data.debug_mode ? 'yes' : String(data.debug_mode),
     )
     _setConfig(data)
     return data

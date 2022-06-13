@@ -2,7 +2,7 @@ import { Box, Button, Stack, TextField } from '@mui/material'
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik'
 import { useLocation, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
-import { AuthContainer } from '../containers/AuthContainer'
+import { AuthContainer } from 'containers/AuthContainer'
 interface LoginFormValues {
   [index: string]: string
   username: string
@@ -15,19 +15,21 @@ const loginValidationSchema = () =>
     password: Yup.string().required('Required'),
   })
 
-const getLoginOnSubmit = (
-  login: (username: string, password: string) => Promise<void>,
-  nextPage: VoidFunction
-) => (values: LoginFormValues, actions: FormikHelpers<LoginFormValues>) => {
-  console.log(
-    'Login.getLoginOnSubmit values: ',
-    JSON.stringify(values, null, 2)
-  )
+const getLoginOnSubmit =
+  (
+    login: (username: string, password: string) => Promise<void>,
+    nextPage: VoidFunction,
+  ) =>
+  (values: LoginFormValues, actions: FormikHelpers<LoginFormValues>) => {
+    console.log(
+      'Login.getLoginOnSubmit values: ',
+      JSON.stringify(values, null, 2),
+    )
 
-  login(values.username, values.password).then(() => nextPage())
+    login(values.username, values.password).then(() => nextPage())
 
-  actions.setSubmitting(false)
-}
+    actions.setSubmitting(false)
+  }
 
 interface LoginTextFieldProps {
   id: string
@@ -92,4 +94,4 @@ const Login = () => {
     </Box>
   )
 }
-export default Login
+export { Login }

@@ -8,18 +8,18 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { TableData } from 'components/Table'
+import { ColumnHidePage } from 'components/Table/toolbar/ColumnHidePage'
+import { FilterPage } from 'components/Table/toolbar/FilterPage'
 import {
+  Fragment,
   MouseEvent as ReactMouseEvent,
   MouseEventHandler,
   ReactElement,
   useCallback,
   useState,
-  Fragment,
 } from 'react'
 import { ColumnInstance, TableInstance } from 'react-table'
-import { TableData } from '../Table'
-import ColumnHidePage from './ColumnHidePage'
-import FilterPage from './FilterPage'
 
 interface ToolbarProps<T extends TableData> {
   name: string
@@ -82,12 +82,32 @@ const getHideableColumns = <T extends TableData>(
   return columns
 }
 
+const getFilterableColumns = <T extends TableData>(
+  columns: ColumnInstance<T>[],
+): ColumnInstance<T>[] => {
+  if (columns.length) {
+    const filterableColumns = columns.filter((column) => column.canFilter)
+
+    const filterableSubColumns = columns.map((column) => {
+      if (column.columns) {
+        return column.columns.filter((column) => column.canFilter)
+      }
+      return []
+    })
+
+    return filterableColumns.concat(filterableSubColumns.flat())
+  }
+
+  return columns
+}
+
 const Toolbar = <T extends TableData>({ name, instance }: ToolbarProps<T>) => {
   const { columns } = instance
   const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined)
   const [columnsOpen, setColumnsOpen] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
   const hideableColumns = getHideableColumns(columns)
+  const filterableColumns = getFilterableColumns(columns)
 
   const handleColumnsClick = useCallback(
     (event: ReactMouseEvent) => {
@@ -137,11 +157,13 @@ const Toolbar = <T extends TableData>({ name, instance }: ToolbarProps<T>) => {
               label="Show / hide columns"
             />
           )}
-          <SmallIconActionButton
-            icon={<FilterListIcon />}
-            onClick={handleFilterClick}
-            label="Filter by columns"
-          />
+          {filterableColumns.length > 0 && (
+            <SmallIconActionButton
+              icon={<FilterListIcon />}
+              onClick={handleFilterClick}
+              label="Filter by columns"
+            />
+          )}
         </Box>
       </MuiToolbar>
       <Divider />

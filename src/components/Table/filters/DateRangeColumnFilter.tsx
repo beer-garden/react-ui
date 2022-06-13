@@ -3,8 +3,8 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/'
 import moment from 'moment'
 import { Fragment, useState } from 'react'
 import { FilterProps } from 'react-table'
-import { TableData } from '../Table'
-import { useActiveElement } from './filterHelpers'
+import { TableData } from 'components/Table'
+import { useActiveElement } from 'components/Table/filters/filterHelpers'
 
 const isValidDateString = (input: string) =>
   moment.utc(input, 'MM/DD/YYYY HH:mm', true).isValid()

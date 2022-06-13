@@ -8,7 +8,7 @@ import {
   MenuItem,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import CacheService from '../services/cache_service'
+import CacheService from 'services/cache_service'
 
 interface NamespaceSelectProps {
   namespaces: string[]
@@ -57,7 +57,7 @@ const NamespaceSelect = ({
 
     CacheService.setItemInCache(
       { namespacesSelected: selected },
-      `lastKnown_${window.location.href}`
+      `lastKnown_${window.location.href}`,
     )
     setNamespacesSelected(selected)
   }

@@ -1,12 +1,12 @@
 import { Divider, Stack } from '@mui/material'
 import { Fragment } from 'react'
-import ConnectionCheckboxGroup from './ConnectionCheckboxGroup'
-import ConnectionFormHeading from './ConnectionFormHeading'
-import ConnectionStompHeaders from './ConnectionStompHeaders'
 import {
+  ConnectionCheckboxGroup,
+  ConnectionFormHeading,
+  ConnectionStompHeaders,
   ConnectionTextField,
   ConnectionTextFieldPropsType,
-} from './ConnectionTextField'
+} from 'pages/GardenAdminView'
 
 const ConnectionStompValues = () => {
   return (
@@ -34,7 +34,7 @@ const ConnectionStompValues = () => {
   )
 }
 
-export default ConnectionStompValues
+export { ConnectionStompValues }
 
 const mapToTextfieldComponents = (entry: {
   key: string

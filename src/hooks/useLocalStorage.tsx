@@ -1,19 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
-
-const useDebounce = <T,>(value: T, delay: number): T => {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-    return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
-
-  return debouncedValue
-}
+import { useCallback, useState } from 'react'
 
 const DEBUG_LOCAL_STORAGE = false
 
@@ -79,4 +64,4 @@ const useLocalStorage = <T,>(key: string, initialValue: T) => {
   return [storedValue, setValue] as const
 }
 
-export { useDebounce, useLocalStorage }
+export { useLocalStorage }
