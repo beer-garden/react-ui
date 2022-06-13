@@ -1,6 +1,4 @@
-import { ThemeContext } from '@emotion/react'
 import { createTheme } from '@mui/material/styles'
-import { Link as RouterLink} from 'react-router-dom'
 
 const baseTheme = createTheme({
   typography: {
@@ -137,6 +135,10 @@ const lcolor4 = '#ee6c4d';
 const lcolor5 = '#293241';
 
 const lightTheme = createTheme({
+  //theme suggestion:
+  // #3d5a80  #98c1d9  #e0fbfc  #ee6c4d #293241
+  //#ffffff // #00171f // #003459 // #007ea7 // #00a8e8
+  //#03045e // #0077b6 // #00b4d8 // #90e0ef // #caf0f8
   ...baseTheme,
   palette: {
     background: {
