@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/custom_types'
 import { ExploreButton } from '.'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 
 export type SystemIndexTableData = {
   namespace: string
@@ -27,7 +28,8 @@ const systemMapper = (system: System): SystemIndexTableData => {
 }
 
 const useSystemIndexTableData = () => {
-  return useSystems(systemMapper)
+  const { authEnabled } = ServerConfigContainer.useContainer()
+  return useSystems(systemMapper, authEnabled)
 }
 
 const useSystemIndexTableColumns = () => {

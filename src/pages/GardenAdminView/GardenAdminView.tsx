@@ -49,7 +49,7 @@ const GardenAdminView = () => {
   const [{ data, error }] = useAxios({
     url: '/api/v1/gardens/' + gardenName,
     method: 'get',
-    withCredentials: authEnabled(),
+    withCredentials: authEnabled,
   })
 
   useEffect(() => {

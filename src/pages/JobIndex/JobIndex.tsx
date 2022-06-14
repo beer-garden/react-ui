@@ -12,7 +12,7 @@ const JobIndex = () => {
   const [{ data, error }] = useAxios({
     url: '/api/v1/jobs',
     method: 'get',
-    withCredentials: authEnabled(),
+    withCredentials: authEnabled,
   })
 
   useEffect(() => {
