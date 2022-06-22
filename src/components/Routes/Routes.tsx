@@ -1,12 +1,13 @@
 import JobCreateApp from 'apps/job_create_app'
 import { RequireAuth } from 'components/Routes'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { ServerConfig, ServerConfigContainer } from 'containers/ConfigContainer'
 import { CommandIndex } from 'pages/CommandIndex'
 import { CommandView } from 'pages/CommandView'
 import { GardensAdmin } from 'pages/GardenAdmin'
 import { GardenAdminView } from 'pages/GardenAdminView'
 import { JobIndex } from 'pages/JobIndex'
 import { JobView } from 'pages/JobView'
+import { AboutView } from 'pages/AboutView'
 import { Login } from 'pages/Login'
 import { RequestsIndex } from 'pages/RequestsIndex'
 import { RequestView } from 'pages/RequestView'
@@ -22,11 +23,12 @@ import {
 const Routes = () => {
   const { getConfig } = ServerConfigContainer.useContainer()
   const [authIsEnabled, setAuthIsEnabled] = useState<boolean | undefined>()
+  const [appConfig, setAppConfig] = useState<ServerConfig>()
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await getConfig()
-
+      setAppConfig(data)
       setAuthIsEnabled(data?.auth_enabled)
     }
  
@@ -74,6 +76,9 @@ const Routes = () => {
         <Route index element={<JobIndex />} />
         <Route path={'create'} element={<JobCreateApp />} />
         <Route path={':id'} element={<JobView />} />
+      </Route>
+
+      <Route path={'about'} element={<AboutView config={appConfig} />}>
       </Route>
 
       <Route path={'/login'} element={<Login />} />
