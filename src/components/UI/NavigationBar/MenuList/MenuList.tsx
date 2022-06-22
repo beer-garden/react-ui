@@ -18,12 +18,13 @@ const MenuList = () => {
             primary={entry.displayName}
             key={entry.key}
             icon={entry.icon}
+            sx={{pl: 1}}
           />
         )
       })}
       <AdminMenu />
       <Divider />
-      <ListItemLink to={'/about'} primary={'About'} icon={<InfoIcon />} />
+      <ListItemLink to={'/about'} primary={'About'} icon={<InfoIcon fontSize="small"/>} sx={{pl: 1}} />
       <OptionsMenu />
     </MuiMenuList>
   )
@@ -43,18 +44,18 @@ const mainEntries: mainEntriesType[] = [
     key: 'bgMenuEntry0001',
     path: '/systems',
     displayName: 'Systems',
-    icon: <FactoryIcon />,
+    icon: <FactoryIcon fontSize="small" />,
   },
   {
     key: 'bgMenuEntry0002',
     path: '/requests',
     displayName: 'Requests',
-    icon: <EmojiPeopleIcon />,
+    icon: <EmojiPeopleIcon fontSize="small" />,
   },
   {
     key: 'bgMenuEntry0003',
     path: '/jobs',
     displayName: 'Scheduler',
-    icon: <AccessTimeIcon />,
+    icon: <AccessTimeIcon fontSize="small" />,
   },
 ]

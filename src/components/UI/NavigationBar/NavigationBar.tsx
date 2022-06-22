@@ -1,4 +1,3 @@
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { AppBar } from 'components/UI/NavigationBar/AppBar'
@@ -6,58 +5,65 @@ import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
 import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
 import * as React from 'react'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 
-export const drawerWidth = 200
+export const closedDrawerWidth = 37
+export const openedDrawerWidth = 200
 
-const NavigationBar = () => {
-  const [drawerIsOpen, setDrawerIsOpen] = React.useState(false)
+interface NavigationBarProps {
+    setMarginLeft: React.Dispatch<React.SetStateAction<number>>
+}
 
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return
-      }
-      setDrawerIsOpen(open)
-    }
+const NavigationBar = ({setMarginLeft}: NavigationBarProps) => {
+  const [drawerIsPinned, _setDrawerIsPinned] = useLocalStorage("drawerIsPinned", false)
+  const [drawerIsOpen, setDrawerIsOpen] = React.useState(drawerIsPinned)
 
+    const toggleDrawer =
+        (open: boolean) => () => {
+            setDrawerIsOpen(open || drawerIsPinned)
+        }
+
+    const toggleDrawerPin =
+        (value: boolean) => () => {
+            _setDrawerIsPinned(value)
+            setMarginLeft((value) ? openedDrawerWidth : closedDrawerWidth )
+            setDrawerIsOpen(value)
+        }
   return (
-    <NavigationBarContextProvider toggleDrawer={toggleDrawer}>
-      <AppBar position="static" open={drawerIsOpen}>
+    <NavigationBarContextProvider toggleDrawer={toggleDrawer} drawerIsOpen={drawerIsOpen}>
+      <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
-            onClick={toggleDrawer(true)}
-            sx={{ mr: 2, ...(drawerIsOpen && { display: 'none' }) }}
+            onClick={toggleDrawerPin(!drawerIsPinned)}
           >
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
           <Typography variant="h6">Beer Garden</Typography>
         </Toolbar>
       </AppBar>
       <Drawer
+        variant='permanent'
+        ModalProps={{
+            keepMounted: true,
+        }}
+        onMouseOver={toggleDrawer(true)}
+        onMouseLeave={toggleDrawer(false)}
         open={drawerIsOpen}
-        onClose={toggleDrawer(false)}
         sx={{
-          width: drawerWidth,
+          width: (drawerIsOpen) ? openedDrawerWidth : closedDrawerWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width: (drawerIsOpen) ? openedDrawerWidth : closedDrawerWidth,
             boxSizing: 'border-box',
+            overflowX: 'hidden',
           },
         }}
       >
-        <DrawerHeader onClick={toggleDrawer(false)}>
-          <IconButton>
-            <ChevronLeftIcon />
-          </IconButton>
-        </DrawerHeader>
+        <DrawerHeader />
         <Divider />
         <MenuList /> {/* TODO: prop drilling */}
       </Drawer>
