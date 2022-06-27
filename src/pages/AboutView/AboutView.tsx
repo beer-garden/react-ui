@@ -2,6 +2,7 @@ import { AppBar, Box, Card, CardContent, Divider, Toolbar, Typography } from '@m
 import { makeStyles } from '@material-ui/core/styles'
 import { ServerConfig } from 'containers/ConfigContainer'
 import PageHeader from 'components/PageHeader'
+import useConfig from 'hooks/useConfig'
 
 const useStyles = makeStyles({
   root: {
@@ -16,6 +17,7 @@ interface GardenAboutCardProps {
 
 const AboutView = ({ config }: GardenAboutCardProps) => {
   const classes = useStyles()
+  const versionConfig = useConfig()
 
   if (!config) return null
 
@@ -55,7 +57,7 @@ const AboutView = ({ config }: GardenAboutCardProps) => {
           </AppBar>
           <CardContent>
             <Typography variant="body2">
-              {config.application_name} is currently on version <b>{config.garden_name}</b>
+              {config.application_name} is currently on version <b>{versionConfig?.beer_garden_version}</b>
             </Typography>
           </CardContent>
         </Card>
