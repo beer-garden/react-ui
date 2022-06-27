@@ -14,6 +14,8 @@ import { RequestView } from 'pages/RequestView'
 import { SystemAdmin } from 'pages/SystemAdmin'
 import { SystemsIndex } from 'pages/SystemIndex'
 import { useEffect, useState } from 'react'
+import SwaggerUI from 'swagger-ui-react'
+import 'swagger-ui-react/swagger-ui.css'
 import {
   Navigate,
   Route,
@@ -78,7 +80,10 @@ const Routes = () => {
         <Route path={':id'} element={<JobView />} />
       </Route>
 
-      <Route path={'about'} element={<AboutView config={appConfig} />}>
+      <Route path="about" element={<RequireAuth />}>
+        <Route index element={<AboutView config={appConfig} />} />
+        <Route path=":swagger" element={<SwaggerUI url={appConfig?.url_prefix + "api/v1/spec"} />}>
+        </Route>
       </Route>
 
       <Route path={'/login'} element={<Login />} />

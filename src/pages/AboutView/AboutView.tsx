@@ -37,7 +37,7 @@ const AboutView = ({ config }: GardenAboutCardProps) => {
           <CardContent>
             <Typography variant="body2">
               <li>
-                <a href={config.url_prefix + "swagger/index.html?config=" + config.url_prefix + "config/swagger"}
+                <a href={config.url_prefix + "about/swagger"}
                   >Open API documentation</a>
                 - {config.application_name} uses OpenAPI Documentation for our ReST Interface.
               </li>
