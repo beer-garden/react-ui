@@ -106,7 +106,7 @@ const DateRangeColumnFilter = ({
           ampm={false}
           OpenPickerButtonProps={{ id: `${id}_1_button` }}
         />
-        to
+         to 
         <DesktopDateTimePicker
           disableFuture
           onChange={(

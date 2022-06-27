@@ -18,6 +18,7 @@ import {
 } from 'react'
 import { Filters, SortingRule } from 'react-table'
 
+
 const RequestsIndexTable = () => {
   const {
     requestData: { isLoading, isErrored, requests },
@@ -100,6 +101,7 @@ const RequestsIndexTable = () => {
     }),
     [searchByOnChange, orderingOnChange, handleResultCount, handleStartPage],
   )
+  
 
   return (
     <SSRTable<
@@ -121,13 +123,17 @@ const RequestsIndexTable = () => {
           <Checkbox
             checked={includeChildren}
             onChange={includeChildrenOnChange}
+            color='secondary'
           />
         }
       />
       <FormControlLabel
         label="Show hidden"
         control={
-          <Checkbox checked={showHidden} onChange={showHiddenOnChange} />
+          <Checkbox 
+          checked={showHidden} 
+          onChange={showHiddenOnChange} 
+          color = 'secondary'/>
         }
       />
       {isErrored ? (
@@ -137,6 +143,7 @@ const RequestsIndexTable = () => {
       ) : (
         <LoadingButton
           size="small"
+          color = 'secondary'
           loadingIndicator="Loading..."
           loading={isLoading}
           startIcon={<RefreshIcon />}

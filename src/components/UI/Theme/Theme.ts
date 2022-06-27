@@ -2,201 +2,127 @@ import { createTheme } from '@mui/material/styles'
 
 const baseTheme = createTheme({
   typography: {
-    fontFamily: '\'Roboto Condensed\', sans-serif',
-    fontSize: 14,
+    fontFamily: '\'Roboto Condensed\', sans-serif",
+    fontSize: 16,
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 700,
+    h4: {
+      fontSize: 32, //2x font size
+    },
   },
 })
-//Colors for dark theme
-// Current: #61892F #86C232 #222629 #474B4F #6B6E70
-const dtext = '#FFFFFF';
-const dcolor1 = '#61892F';
-const dcolor2 = '#86C232';
-const dcolor3 = '#222629';
-const dcolor4 = '#474B4F';
-const dcolor5 = '#6B6E70';
+
+//Main colors for dark theme
+const dtext = '#FFFFFF'
+const d1 = '#313B4D'
+const d2 = '#3B404A'
+const d3 = '#63abff'
+
+//one offs
+const d4 = '#2a2d34' //hover
+const d5 = '#7b7b7b' //disabled button
 
 const darkTheme = createTheme({
   ...baseTheme,
+  typography: {
+    body1: {
+      color: dtext,
+    },
+    button: {
+      color: dtext,
+    },
+  },
   palette: {
     background: {
-      default: dcolor4,
+      default: d1,
+      paper: d2,
     },
     primary: {
-       main: dcolor3,
-     },
-     secondary: {
-       main: dcolor2,
-     },
-     text: {
+      main: d2,
+    },
+    secondary: {
+      main: d3,
+    },
+    text: {
       primary: dtext,
-      secondary: dcolor1,
+      secondary: d3,
+    },
+    action: {
+      active: dtext,
+      hover: d4,
+      disabled: d5,
+      focus: dtext,
     },
   },
   components: {
-
-    MuiBreadcrumbs: {
+    MuiCssBaseline: {
       styleOverrides: {
-        li: {
-          a: {
-            color: dcolor2
-          }
-        }
-      }
-    },
-
-    MuiButton: {
-      styleOverrides: {
-        sizeSmall: {
-          color: dcolor2
-        }
-      }
-    },
-
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          backgroundColor: dcolor5
-        }
-      }
-    },
-
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: dcolor5,
-          color: dtext
-        }
-      }
-    },
-
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          color: dcolor2
+        a: {
+          color: d3,
         },
-      }
+        span: {
+          fontSize: 16,
+        },
+      },
     },
 
-    MuiListItemButton: {
+    //Current hacky fix for filter text color
+    MuiFormLabel: {
       styleOverrides: {
         root: {
-          "&:hover": {
-            backgroundColor: dcolor4
-          }
-        }
-      }
+          '&.Mui-focused': {
+            color: dtext,
+          },
+        },
+      },
     },
-
-    MuiListItemIcon: {
-      styleOverrides: {
-        root: {
-          color: dtext
-        }
-      }
-    },
-
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          color: 'black'
-        }
-      }
-    },
-
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          span: {
-            div: {
-              div: {
-                a: {
-                  color: dcolor2
-                }
-              },
-              a: {
-                color: dcolor2
-              }
-            }
-          }
-        }
-      }
-    },
-  }
+  },
 })
 
-// #3d5a80  #98c1d9  #e0fbfc  #ee6c4d #293241
-const lcolor1 = '#3d5a80';
-const lcolor2 = '#98c1d9';  
-const lcolor3 = '#e0fbfc';  
-const lcolor4 = '#ee6c4d'; 
-const lcolor5 = '#293241';
+//Main colors for light theme
+const l1 = '#ffffff'
+const l2 = '#003B6D'
+const l3 = '#0064ba'
+
+//one off for disabled link color
+const l4 = '#595959'
 
 const lightTheme = createTheme({
-  //theme suggestion:
-  // #3d5a80  #98c1d9  #e0fbfc  #ee6c4d #293241
-  //#ffffff // #00171f // #003459 // #007ea7 // #00a8e8
-  //#03045e // #0077b6 // #00b4d8 // #90e0ef // #caf0f8
   ...baseTheme,
   palette: {
+    mode: 'light',
     background: {
-      default: '#ffffff',
+      default: l1,
+      paper: l1,
     },
     primary: {
-       main: lcolor1,
-     },
-     secondary: {
-       main: lcolor2,
-     },
-     text: {
-      primary: lcolor5,
-      secondary: lcolor4,
+      main: l2,
+    },
+    secondary: {
+      main: l3,
+    },
+    text: {
+      secondary: l3,
+    },
+    action: {
+      active: l2,
+      disabled: l4,
+      focus: l2,
     },
   },
   components: {
-    MuiIconButton: {
+    MuiCssBaseline: {
       styleOverrides: {
-        root: {
-          color: lcolor2
-        }
-      }
+        a: {
+          color: l3,
+        },
+        span: {
+          fontSize: 16,
+        },
+      },
     },
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: lcolor3,
-          color: lcolor1
-        }
-      }
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          color: lcolor1
-        }
-      }
-    },
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          span: {
-            div: {
-              div: {
-                a: {
-                  color: lcolor4
-                }
-              },
-              a: {
-                color: lcolor4
-              }
-            }
-          }
-        }
-      }
-    },
-  }
+  },
 })
 
 export { darkTheme, lightTheme }
