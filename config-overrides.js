@@ -36,7 +36,13 @@ const polyFillOverride = function(config) {
   return config;
 };
 
+const ignoreWarnings = value => config => {
+  config.ignoreWarnings = value;
+  return config;
+};
+
 module.exports = override(
   polyFillOverride,
-  useBabelRc()
+  useBabelRc(),
+  ignoreWarnings([/Failed to parse source map/])
 )

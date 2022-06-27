@@ -32,7 +32,6 @@ module.exports = {
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
-        "plugin:react-hooks/recommended",
         "react-app",
         "react-app/jest",
         "prettier"
@@ -88,8 +87,8 @@ module.exports = {
             "react-app/jest",
         ],
         rules: {
-        "react/react-in-jsx-scope": "off",
-        "react/prop-types": [0],
+            "react/react-in-jsx-scope": "off",
+            "react/prop-types": [0],
         }
 
       }
