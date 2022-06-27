@@ -255,3 +255,9 @@ export interface CommandParams {
 export interface TableInterface {
   parentState: TableState
 }
+
+export interface VersionConfig {
+  beer_garden_version: string
+  current_api_version: string
+  supported_api_versions: [string]
+}
