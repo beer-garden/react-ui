@@ -26,7 +26,8 @@ module.exports = {
     plugins: [
         "react",
         "react-hooks",
-        "prettier"
+        "prettier",
+        "simple-import-sort"
     ],
     extends: [
         "eslint:recommended",
@@ -51,7 +52,11 @@ module.exports = {
             {
                 "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
             }
-        ]
+        ],
+        // increase the severity of rules so they are auto-fixable
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
+        
   },
   overrides: [
       {
