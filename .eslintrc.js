@@ -28,7 +28,6 @@ module.exports = {
         "react-hooks",
         "prettier",
         "simple-import-sort",
-        "import"
     ],
     extends: [
         "eslint:recommended",
@@ -38,7 +37,6 @@ module.exports = {
         "react-app",
         "react-app/jest",
         "prettier",
-        //"plugin:import/recommended"
     ],
     rules: {
         "react/function-component-definition": 0,
