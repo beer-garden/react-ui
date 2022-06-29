@@ -4,6 +4,7 @@ import { Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { AppBar } from 'components/UI/NavigationBar/AppBar'
 import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
+import { DrawerFooter } from 'components/UI/NavigationBar/DrawerFooter'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
 import * as React from 'react'
 
@@ -60,6 +61,7 @@ const NavigationBar = () => {
         </DrawerHeader>
         <Divider />
         <MenuList /> {/* TODO: prop drilling */}
+        <DrawerFooter />
       </Drawer>
     </NavigationBarContextProvider>
   )

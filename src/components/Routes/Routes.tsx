@@ -1,21 +1,18 @@
 import JobCreateApp from 'apps/job_create_app'
 import { RequireAuth } from 'components/Routes'
-import { ServerConfig, ServerConfigContainer } from 'containers/ConfigContainer'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { CommandIndex } from 'pages/CommandIndex'
 import { CommandView } from 'pages/CommandView'
 import { GardensAdmin } from 'pages/GardenAdmin'
 import { GardenAdminView } from 'pages/GardenAdminView'
 import { JobIndex } from 'pages/JobIndex'
 import { JobView } from 'pages/JobView'
-import { AboutView } from 'pages/AboutView'
 import { Login } from 'pages/Login'
 import { RequestsIndex } from 'pages/RequestsIndex'
 import { RequestView } from 'pages/RequestView'
 import { SystemAdmin } from 'pages/SystemAdmin'
 import { SystemsIndex } from 'pages/SystemIndex'
 import { useEffect, useState } from 'react'
-import SwaggerUI from 'swagger-ui-react'
-import 'swagger-ui-react/swagger-ui.css'
 import {
   Navigate,
   Route,
@@ -25,16 +22,14 @@ import {
 const Routes = () => {
   const { getConfig } = ServerConfigContainer.useContainer()
   const [authIsEnabled, setAuthIsEnabled] = useState<boolean | undefined>()
-  const [appConfig, setAppConfig] = useState<ServerConfig>()
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await getConfig()
-      setAppConfig(data)
       setAuthIsEnabled(data?.auth_enabled)
     }
- 
-    fetchData();
+
+    fetchData()
   }, [getConfig])
 
   if (authIsEnabled === undefined) return null
@@ -78,12 +73,6 @@ const Routes = () => {
         <Route index element={<JobIndex />} />
         <Route path={'create'} element={<JobCreateApp />} />
         <Route path={':id'} element={<JobView />} />
-      </Route>
-
-      <Route path="about" element={<RequireAuth />}>
-        <Route index element={<AboutView config={appConfig} />} />
-        <Route path=":swagger" element={<SwaggerUI url={appConfig?.url_prefix + "api/v1/spec"} />}>
-        </Route>
       </Route>
 
       <Route path={'/login'} element={<Login />} />
