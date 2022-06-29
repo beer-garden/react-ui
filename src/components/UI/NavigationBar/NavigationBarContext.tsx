@@ -6,16 +6,23 @@ type Opener = (
 
 type NavigationBarContextProviderProps = {
   toggleDrawer: Opener
+  drawerIsOpen: boolean
 } & React.PropsWithChildren<Record<never, never>>
 
-const NavigationBarContext = React.createContext<Opener>({} as Opener)
+type navigationBarContext = {
+  toggleDrawer: Opener
+  drawerIsOpen: boolean
+}
+
+const NavigationBarContext = React.createContext<navigationBarContext>({toggleDrawer: {} as Opener, drawerIsOpen: false})
 
 const NavigationBarContextProvider = ({
   toggleDrawer,
+  drawerIsOpen,
   children,
 }: NavigationBarContextProviderProps) => {
   return (
-    <NavigationBarContext.Provider value={toggleDrawer}>
+    <NavigationBarContext.Provider value={{"toggleDrawer": toggleDrawer, "drawerIsOpen": drawerIsOpen}}>
       {children}
     </NavigationBarContext.Provider>
   )

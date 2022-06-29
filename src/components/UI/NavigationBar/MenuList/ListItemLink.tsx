@@ -25,7 +25,8 @@ const ListItemLink = ({ icon, primary, to, sx }: ListItemLinkProps) => {
       }),
     [to],
   )
-  const toggleDrawer = React.useContext(NavigationBarContext)
+  const toggleDrawer = React.useContext(NavigationBarContext).toggleDrawer
+  const drawerIsOpen = React.useContext(NavigationBarContext).drawerIsOpen
 
   return (
     <ListItemButton
@@ -34,7 +35,7 @@ const ListItemLink = ({ icon, primary, to, sx }: ListItemLinkProps) => {
       sx={sx}
     >
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-      <ListItemText primary={primary} />
+      <ListItemText primary={primary} sx={{ opacity: drawerIsOpen ? 1 : 0 }} />
     </ListItemButton>
   )
 }

@@ -14,36 +14,48 @@ import {
   MenuList,
 } from '@mui/material'
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
+import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
 import { Fragment, useState } from 'react'
+import * as React from 'react'
 
 const AdminMenu = () => {
   const [open, setOpen] = useState(false)
 
   const handleClick = () => setOpen(!open)
 
+  const drawerIsOpen = React.useContext(NavigationBarContext).drawerIsOpen
+
+  if (!drawerIsOpen && open) {
+    setOpen(drawerIsOpen)
+  }
+
   return (
     <Fragment>
-      <ListItemButton onClick={handleClick}>
+      <ListItemButton sx={{ pl: 1 }} onClick={handleClick}>
         <ListItemIcon>
-          <LibraryBooksIcon />
+          <LibraryBooksIcon fontSize="small" />
         </ListItemIcon>
         <ListItemText primary={'Admin'} />
-        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        {open ? (
+          <ExpandLessIcon fontSize="small" />
+        ) : (
+          <ExpandMoreIcon fontSize="small" />
+        )}
       </ListItemButton>
-      <Collapse in={open} timeout={'auto'} unmountOnExit>
+      <Collapse in={open && drawerIsOpen} timeout={'auto'} unmountOnExit>
         <Divider />
         <MenuList>
           <ListItemLink
-            icon={<LocalFloristIcon />}
+            icon={<LocalFloristIcon fontSize="small" />}
             primary={'Gardens'}
             to={'/admin/gardens'}
-            sx={{ pl: 4 }}
+            sx={{ pl: 3 }}
           />
           <ListItemLink
-            icon={<FactoryIcon />}
+            icon={<FactoryIcon fontSize="small" />}
             primary={'Systems'}
             to={'/admin/systems'}
-            sx={{ pl: 4 }}
+            sx={{ pl: 3 }}
           />
         </MenuList>
       </Collapse>

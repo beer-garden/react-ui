@@ -13,21 +13,33 @@ import {
 import { ThemeChooser } from 'components/UI/Theme/ThemeChooser'
 import * as React from 'react'
 
+import { NavigationBarContext } from '../NavigationBarContext'
+
 const OptionsMenu = () => {
   const [open, setOpen] = React.useState(false)
 
   const handleClick = () => setOpen(!open)
 
+  const drawerIsOpen = React.useContext(NavigationBarContext).drawerIsOpen
+
+  if (!drawerIsOpen && open) {
+    setOpen(drawerIsOpen)
+  }
+
   return (
     <React.Fragment>
-      <ListItemButton onClick={handleClick}>
+      <ListItemButton sx={{ pl: 1 }} onClick={handleClick}>
         <ListItemIcon>
-          <SettingsIcon />
+          <SettingsIcon fontSize="small" />
         </ListItemIcon>
         <ListItemText primary={'Options'} />
-        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        {open ? (
+          <ExpandLessIcon fontSize="small" />
+        ) : (
+          <ExpandMoreIcon fontSize="small" />
+        )}
       </ListItemButton>
-      <Collapse in={open} timeout={'auto'} unmountOnExit>
+      <Collapse in={open && drawerIsOpen} timeout={'auto'} unmountOnExit>
         <Divider />
         <ThemeChooser />
       </Collapse>
