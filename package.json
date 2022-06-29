@@ -85,7 +85,7 @@
     "base": "main",
     "tasks": {
       "*.{ts,tsx}": [
-        "eslint"
+        "eslint --fix"
       ]
     }
   },
