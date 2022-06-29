@@ -1,8 +1,11 @@
-import { PropsWithChildren, useContext, useEffect } from 'react'
 import { NavigationBar } from 'components/UI/NavigationBar'
+import {
+  closedDrawerWidth,
+  openedDrawerWidth,
+} from 'components/UI/NavigationBar'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
-import * as React from "react";
-import { closedDrawerWidth, openedDrawerWidth } from 'components/UI/NavigationBar'
+import { PropsWithChildren, useContext, useEffect } from 'react'
+import * as React from 'react'
 
 const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
   const { setTheme } = useContext(ThemeContext)
@@ -20,16 +23,18 @@ const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
       setTheme && setTheme('dark')
     }
   }, [setTheme])
-  let drawerIsPinned = localStorage.getItem("drawerIsPinned")
-  if (drawerIsPinned){
-      drawerIsPinned = JSON.parse(drawerIsPinned)
+  let drawerIsPinned = localStorage.getItem('drawerIsPinned')
+  if (drawerIsPinned) {
+    drawerIsPinned = JSON.parse(drawerIsPinned)
   }
 
-  const [marginLeft, setMarginLeft] = React.useState((drawerIsPinned) ? openedDrawerWidth : closedDrawerWidth)
+  const [marginLeft, setMarginLeft] = React.useState(
+    drawerIsPinned ? openedDrawerWidth : closedDrawerWidth,
+  )
 
   return (
     <>
-      <NavigationBar setMarginLeft ={setMarginLeft}/>
+      <NavigationBar setMarginLeft={setMarginLeft} />
       <div
         style={{
           margin: `0 auto`,
