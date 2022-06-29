@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
 import { ServerConfig, ServerConfigContainer } from 'containers/ConfigContainer'
+import { useEffect, useState } from 'react'
 
 const useConfig = () => {
   const { getConfig } = ServerConfigContainer.useContainer()

@@ -9,7 +9,7 @@ import { useLocalStorage } from 'hooks/useLocalStorage'
 import * as React from 'react'
 
 export const closedDrawerWidth = 37
-export const openedDrawerWidth = 200
+export const openedDrawerWidth = 205
 
 interface NavigationBarProps {
   setMarginLeft: React.Dispatch<React.SetStateAction<number>>
