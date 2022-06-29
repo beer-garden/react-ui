@@ -1,5 +1,5 @@
-import { Link as RouterLink } from 'react-router-dom'
 import RequestTable from 'components/table'
+import { Link as RouterLink } from 'react-router-dom'
 import { Job } from 'types/custom_types'
 
 const tableHeads = [

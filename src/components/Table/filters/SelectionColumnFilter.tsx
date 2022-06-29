@@ -1,7 +1,7 @@
 import { MenuItem, TextField } from '@mui/material'
+import { TableData } from 'components/Table'
 import { useMemo } from 'react'
 import { FilterProps } from 'react-table'
-import { TableData } from 'components/Table'
 
 const SelectionColumnFilter = ({
   column: {

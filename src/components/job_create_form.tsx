@@ -3,20 +3,20 @@ import { JsonForms } from '@jsonforms/react'
 import { Box, Button, Tooltip } from '@mui/material'
 import Ajv from 'ajv'
 import { AxiosResponse } from 'axios'
-import { useState } from 'react'
-import ReactJson from 'react-json-view'
-import { Navigate } from 'react-router-dom'
 import AlertForm from 'builderForm/customFormRenders/alert_control'
 import AlertTester from 'builderForm/customFormRenders/alert_tester'
 import DictionaryControl from 'builderForm/customFormRenders/dict_any_control'
 import DictionaryTester from 'builderForm/customFormRenders/dict_any_tester'
-import { Request, SuccessCallback } from 'types/custom_types'
+import { useState } from 'react'
+import ReactJson from 'react-json-view'
+import { Navigate } from 'react-router-dom'
 import { useJobServices } from 'services/job.service/job.service'
 import {
+  MODEL,
   SCHEMA,
   UISCHEMA,
-  MODEL,
 } from 'services/job.service/job-service-values'
+import { Request, SuccessCallback } from 'types/custom_types'
 
 interface JobViewFormProps {
   request: Request

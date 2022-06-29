@@ -65,11 +65,12 @@
     "babel-jest": "^27.5.1",
     "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
-    "eslint": "^8.11.0",
+    "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-prepush": "^2.2.1",
@@ -84,7 +85,7 @@
     "base": "main",
     "tasks": {
       "*.{ts,tsx}": [
-        "eslint"
+        "eslint --fix"
       ]
     }
   },

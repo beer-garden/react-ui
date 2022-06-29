@@ -27,9 +27,9 @@ import {
 } from '@mui/material'
 import { BaseSyntheticEvent, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Instance, System } from 'types/custom_types'
 import InstanceService from 'services/instance_service'
 import { useSystemServices } from 'services/system.service'
+import { Instance, System } from 'types/custom_types'
 
 const useStyles = makeStyles({
   root: {

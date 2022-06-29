@@ -1,4 +1,5 @@
 import { System } from 'types/custom_types'
+
 import { ExploreButton } from '.'
 
 const formatSystems = (systems: System[]) => {

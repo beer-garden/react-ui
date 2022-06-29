@@ -1,7 +1,7 @@
 import { Backdrop, Box, CircularProgress } from '@mui/material'
+import JobTable from 'components/table'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
-import JobTable from 'components/table'
 import { Job } from 'types/custom_types'
 
 const tableHeads = [

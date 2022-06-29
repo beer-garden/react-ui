@@ -1,5 +1,5 @@
 export * from './fuzzyFilter'
-export * from './numericTextFilter'
 export * from './NumberRangeColumnFilter'
+export * from './numericTextFilter'
 export * from './SelectionColumnFilter'
 export * from './SliderColumnFilter'

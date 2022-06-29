@@ -24,10 +24,10 @@ interface RequestIndexTableState {
 }
 
 export type {
+  ApiPayload,
+  ConfigPayload,
   RequestIndexTableState,
   RequestsAction,
   UrlPayload,
-  ConfigPayload,
-  ApiPayload,
 }
 export { ActionKind }

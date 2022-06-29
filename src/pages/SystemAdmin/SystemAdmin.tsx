@@ -15,11 +15,11 @@ import NamespaceSelect from 'components/namespace_select'
 import PageHeader from 'components/PageHeader'
 import SystemCard from 'components/system_admin_card'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { formatSystems } from 'pages/SystemAdmin'
 import { useEffect, useState } from 'react'
 import AdminService from 'services/admin_service'
 import CacheService from 'services/cache_service'
 import { System } from 'types/custom_types'
-import { formatSystems } from 'pages/SystemAdmin'
 
 function getSelectMessage(namespacesSelected: string[]): JSX.Element | void {
   if (!namespacesSelected.length) {

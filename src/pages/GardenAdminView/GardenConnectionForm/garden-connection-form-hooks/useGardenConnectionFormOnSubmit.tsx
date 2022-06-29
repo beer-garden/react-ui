@@ -1,13 +1,13 @@
 import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { FormikHelpers } from 'formik'
-import { Dispatch, SetStateAction } from 'react'
 import {
-  Garden,
   ConnectionFormFields,
+  Garden,
   StompHeader,
   SubmissionStatusState,
 } from 'pages/GardenAdminView'
+import { Dispatch, SetStateAction } from 'react'
 
 /**
  * Return a function to use as the onSubmit for Formik

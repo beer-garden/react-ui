@@ -1,9 +1,10 @@
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useSystems from 'hooks/useSystems'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/custom_types'
+
 import { ExploreButton } from '.'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
 
 export type SystemIndexTableData = {
   namespace: string
@@ -103,4 +104,4 @@ const useSystemIndexTableColumns = () => {
   )
 }
 
-export { useSystemIndexTableData, useSystemIndexTableColumns }
+export { useSystemIndexTableColumns,useSystemIndexTableData }

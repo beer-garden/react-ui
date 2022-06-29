@@ -9,13 +9,13 @@ import {
 } from '@mui/material'
 import type { TableData } from 'components/Table'
 import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
-import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
 import {
   DefaultCellRenderer,
   DefaultColumnFilter,
   defaultColumnValues,
   DefaultHeader,
 } from 'components/Table/defaults'
+import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
 import { SSRTablePagination } from 'components/Table/ssr-pagination'
 import {
   Table as StyledTable,

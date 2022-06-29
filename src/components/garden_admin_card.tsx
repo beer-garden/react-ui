@@ -8,10 +8,10 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { Link as RouterLink } from 'react-router-dom'
-import { Garden, TableState } from 'types/custom_types'
-import GardenService from 'services/garden_service'
 import Table from 'components/table'
+import { Link as RouterLink } from 'react-router-dom'
+import GardenService from 'services/garden_service'
+import { Garden, TableState } from 'types/custom_types'
 
 const useStyles = makeStyles({
   root: {
