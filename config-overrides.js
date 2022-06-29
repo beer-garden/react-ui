@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { useBabelRc, override } = require('customize-cra');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const polyFillOverride = function(config) {
   config.plugins.push(
@@ -41,8 +42,18 @@ const ignoreWarnings = value => config => {
   return config;
 };
 
+const copyWebpackOverride = function(config) {
+  config.plugins.push(
+    new CopyWebpackPlugin({ patterns: [
+      {from: 'node_modules/swagger-ui-dist', to: 'swagger'}
+    ]})
+  );
+  return config;
+};
+
 module.exports = override(
   polyFillOverride,
+  copyWebpackOverride,
   useBabelRc(),
   ignoreWarnings([/Failed to parse source map/])
 )
