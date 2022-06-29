@@ -143,11 +143,11 @@ const TableLabel = ({ children, ...rest }: TableProps & BoxProps) => {
 
 export {
   Table,
-  TableHead,
-  TableHeadRow,
-  TableHeadCell,
   TableBody,
-  TableRow,
   TableCell,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
   TableLabel,
+  TableRow,
 }

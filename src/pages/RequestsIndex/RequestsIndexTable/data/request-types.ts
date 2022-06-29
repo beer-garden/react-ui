@@ -134,15 +134,15 @@ type RequestsIndexTableHeaders = {
 }
 
 export type {
-  RequestsSearchApi,
-  SearchableColumn,
-  SearchFilter,
-  SearchableColumnData,
-  ColumnData,
-  UnsearchableColumn,
-  OrderableColumnIndex,
-  OrderableColumnDirection,
   BeergardenRequest,
+  ColumnData,
+  OrderableColumnDirection,
+  OrderableColumnIndex,
   RequestsIndexTableData,
   RequestsIndexTableHeaders,
+  RequestsSearchApi,
+  SearchableColumn,
+  SearchableColumnData,
+  SearchFilter,
+  UnsearchableColumn,
 }

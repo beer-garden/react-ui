@@ -1,8 +1,8 @@
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Button } from '@mui/material'
 import useAxios from 'axios-hooks'
-import { Dispatch, SetStateAction, useState } from 'react'
 import { SubmissionStatusState } from 'pages/GardenAdminView'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 interface GardenSynButtonParams {
   gardenName: string

@@ -1,9 +1,9 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
-import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { AppBar } from 'components/UI/NavigationBar/AppBar'
 import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
+import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
 import * as React from 'react'
 

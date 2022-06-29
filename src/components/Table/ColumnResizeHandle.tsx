@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { ColumnInstance } from 'react-table'
 import { TableData } from 'components/Table'
+import { ColumnInstance } from 'react-table'
 
 interface ColumnResizeHandleProps<T extends TableData> {
   column: ColumnInstance<T>

@@ -1,9 +1,9 @@
-import { useCallback } from 'react'
-import { TableInstance } from 'react-table'
-import { TableData } from 'components/Table'
-import { MouseEvent as ReactMouseEvent } from 'react'
 import { TablePagination as MuiTablePagination } from '@mui/material'
+import { TableData } from 'components/Table'
 import TablePaginationActions from 'components/Table/pagination/TablePaginationActions'
+import { useCallback } from 'react'
+import { MouseEvent as ReactMouseEvent } from 'react'
+import { TableInstance } from 'react-table'
 
 interface PaginationProps<T extends TableData> {
   instance: TableInstance<T>

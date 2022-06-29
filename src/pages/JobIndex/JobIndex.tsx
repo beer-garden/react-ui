@@ -1,10 +1,10 @@
 import { Divider } from '@mui/material'
 import useAxios from 'axios-hooks'
-import { useEffect, useState } from 'react'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
 import PageHeader from 'components/PageHeader'
-import { Job } from 'types/custom_types'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getFormattedTable } from 'pages/JobIndex/jobIndexHelpers'
+import { useEffect, useState } from 'react'
+import { Job } from 'types/custom_types'
 
 const JobIndex = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()

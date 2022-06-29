@@ -5,6 +5,7 @@ import {
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersOptions,
 } from 'react-table'
+
 import { TableData } from '..'
 
 const DefaultGlobalFilter = <T extends TableData>({

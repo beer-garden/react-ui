@@ -203,4 +203,4 @@ const useCommandIndexTableColums = () => {
   )
 }
 
-export { useCommands, useCommandIndexTableColums }
+export { useCommandIndexTableColums,useCommands }

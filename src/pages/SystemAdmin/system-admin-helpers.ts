@@ -1,5 +1,5 @@
-import { System } from 'types/custom_types'
 import { filterSystems, sortSystemsVersion } from 'services/system.service'
+import { System } from 'types/custom_types'
 
 const formatSystems = (
   namespaces: string[],

@@ -1,6 +1,6 @@
+import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useMemo, useState } from 'react'
 import { createContainer } from 'unstated-next'
-import { useMyAxios } from 'hooks/useMyAxios'
 
 export interface ServerConfig {
   application_name: string

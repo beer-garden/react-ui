@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { Command, SuccessCallback, System } from 'types/custom_types'
 import {useMyAxios} from 'hooks/useMyAxios'
+import { Command, SuccessCallback, System } from 'types/custom_types'
 
 const getSystem = (
   systems: System[],
@@ -110,9 +110,9 @@ const useSystemServices = () => {
 
 // export default item
 export {
-  useSystemServices,
-  getSystem,
-  sortSystemsVersion,
   filterSystems,
+  getSystem,
   getSystemAndCommand,
+  sortSystemsVersion,
+  useSystemServices,
 }

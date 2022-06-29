@@ -1,7 +1,7 @@
 import { Tooltip as MuiTooltip } from '@mui/material'
+import { TableData } from 'components/Table'
 import { CSSProperties } from 'react'
 import { CellProps } from 'react-table'
-import { TableData } from 'components/Table'
 
 interface TooltipCellProps {
   text: string

@@ -100,7 +100,7 @@ const getUrlFromSearchApi = (searchApi: RequestsSearchApi) => {
 
 export {
   baseSearchApi,
-  getUrlFromSearchApi,
   defaultColumnsData,
   defaultOrderingColumnIndex,
+  getUrlFromSearchApi,
 }

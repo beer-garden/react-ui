@@ -24,8 +24,8 @@ import {
 import { AxiosResponse } from 'axios'
 import PropTypes from 'prop-types'
 import { BaseSyntheticEvent, useState } from 'react'
-import { TableInterface } from 'types/custom_types'
 import CacheService from 'services/cache_service'
+import { TableInterface } from 'types/custom_types'
 
 const useStyles1 = makeStyles((theme) => ({
   root: {

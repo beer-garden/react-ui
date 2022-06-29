@@ -1,5 +1,4 @@
 import { Divider, Stack } from '@mui/material'
-import { Fragment } from 'react'
 import {
   ConnectionCheckboxGroup,
   ConnectionFormHeading,
@@ -7,6 +6,7 @@ import {
   ConnectionTextField,
   ConnectionTextFieldPropsType,
 } from 'pages/GardenAdminView'
+import { Fragment } from 'react'
 
 const ConnectionStompValues = () => {
   return (
