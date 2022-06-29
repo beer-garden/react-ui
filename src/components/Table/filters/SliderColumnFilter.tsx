@@ -1,8 +1,8 @@
 import { Box, Button, TextField } from '@mui/material'
-import { useMemo } from 'react'
-import { FilterProps } from 'react-table'
 import { TableData } from 'components/Table'
 import { getMinAndMax } from 'components/Table/filters/filterHelpers'
+import { useMemo } from 'react'
+import { FilterProps } from 'react-table'
 
 const SliderColumnFilter = ({
   column: { render, filterValue, setFilter, preFilteredRows, id },

@@ -1,11 +1,11 @@
 import { Box, InputLabel, TextField } from '@mui/material'
-import { Fragment, useMemo } from 'react'
-import { FilterProps } from 'react-table'
 import { TableData } from 'components/Table'
 import {
   getMinAndMax,
   useActiveElement,
 } from 'components/Table/filters/filterHelpers'
+import { Fragment, useMemo } from 'react'
+import { FilterProps } from 'react-table'
 
 const NumberRangeColumnFilter = ({
   column: { filterValue = [], render, preFilteredRows, setFilter, id },

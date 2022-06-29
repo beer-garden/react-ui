@@ -16,4 +16,4 @@ const getTheme = (themeName: string) => {
   return themes[themeName]
 }
 
-export { getTheme, type ThemeChoice, validateThemeChoice }
+export { type ThemeChoice, getTheme, validateThemeChoice }

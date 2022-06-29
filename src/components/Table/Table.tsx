@@ -7,7 +7,6 @@ import {
   TablePagination,
   Toolbar,
 } from 'components/Table'
-import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
 import {
   DefaultCellRenderer,
   DefaultColumnFilter,
@@ -15,6 +14,7 @@ import {
   DefaultGlobalFilter,
   DefaultHeader,
 } from 'components/Table/defaults'
+import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
 import {
   Table as StyledTable,
   TableBody,

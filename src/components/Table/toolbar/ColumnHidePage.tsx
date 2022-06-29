@@ -5,8 +5,8 @@ import {
   Popover,
   Typography,
 } from '@mui/material'
-import { TableInstance } from 'react-table'
 import { TableData } from 'components/Table'
+import { TableInstance } from 'react-table'
 
 interface ColumnHidePageProps<T extends TableData> {
   instance: TableInstance<T>

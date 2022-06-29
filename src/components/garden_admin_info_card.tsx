@@ -9,8 +9,8 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { Garden, TableState } from 'types/custom_types'
 import Table from 'components/table'
+import { Garden, TableState } from 'types/custom_types'
 
 const useStyles = makeStyles({
   root: {

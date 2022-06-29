@@ -1,11 +1,11 @@
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
-  Breadcrumbs as MUIBreadcrumbs,
   Box,
+  Breadcrumbs as MUIBreadcrumbs,
   Tooltip,
   Zoom,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 
 interface MyBreadcrumbsProps {
   breadcrumbs: string[]

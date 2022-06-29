@@ -1,8 +1,8 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
 import {useMyAxios} from 'hooks/useMyAxios'
-import { Dictionary, Request, SuccessCallback } from 'types/custom_types'
 import { formToServerModel } from 'services/job.service/job-service-helpers'
+import { Dictionary, Request, SuccessCallback } from 'types/custom_types'
 
 const JOBS_URL = '/api/v1/jobs'
 
@@ -127,4 +127,4 @@ const useJobServices = () => {
   }
 }
 
-export { useJobServices, useGetJobs }
+export { useGetJobs,useJobServices }

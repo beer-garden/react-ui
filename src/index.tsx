@@ -1,12 +1,14 @@
-import { CssBaseline } from '@mui/material'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import App from './App'
-import { ThemeProvider } from 'components/UI/Theme/ThemeProvider'
 import './index.css'
-import reportWebVitals from './reportWebVitals'
+
+import { CssBaseline } from '@mui/material'
+import { ThemeProvider } from 'components/UI/Theme/ThemeProvider'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+
+import App from './App'
+import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <BrowserRouter>

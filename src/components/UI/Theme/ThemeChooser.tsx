@@ -1,6 +1,6 @@
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
-import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { ListItemButton, ListItemIcon,ListItemText } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
 import { ThemeChoice } from 'components/UI/Theme/getTheme'
@@ -11,7 +11,7 @@ const ThemeChooser = () => {
   const theme = useTheme()
   const { currentTheme, setTheme } = React.useContext(ThemeContext)
   const themeSetter = setTheme as (choice: ThemeChoice) => void
-  const toggleDrawer = React.useContext(NavigationBarContext)
+  const toggleDrawer = React.useContext(NavigationBarContext).toggleDrawer
 
   const handleThemeChange = (event: React.KeyboardEvent | React.MouseEvent) => {
     if (currentTheme === 'dark') {
@@ -29,12 +29,12 @@ const ThemeChooser = () => {
   }
 
   return (
-    <ListItemButton onClick={handleThemeChange} sx={{ pl: 4 }}>
+    <ListItemButton onClick={handleThemeChange} sx={{ pl: 3 }}>
       <ListItemIcon>
         {theme.palette.mode === 'dark' ? (
-          <Brightness7Icon />
+          <Brightness7Icon fontSize="small"/>
         ) : (
-          <Brightness4Icon />
+          <Brightness4Icon fontSize="small"/>
         )}
       </ListItemIcon>
       <ListItemText primary={flip(theme.palette.mode) + ' mode'} />

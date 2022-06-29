@@ -3,10 +3,10 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import LastPageIcon from '@mui/icons-material/LastPage'
 import { Box, IconButton } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 // eslint-disable-next-line no-restricted-imports
 import { TablePaginationActionsProps as MuiTablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions'
 import { ElementType, MouseEvent as ReactMouseEvent } from 'react'
-import { useTheme } from '@mui/material/styles'
 
 interface TablePaginationActionsProps extends MuiTablePaginationActionsProps {
   count: number

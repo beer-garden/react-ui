@@ -1,7 +1,7 @@
 import { Alert as MuiAlert, Snackbar } from '@mui/material'
 import { AlertProps } from '@mui/material/Alert'
-import { forwardRef, SyntheticEvent, useEffect, useState } from 'react'
 import { SubmissionStatusState } from 'pages/GardenAdminView/GardenConnectionForm'
+import { forwardRef, SyntheticEvent, useEffect, useState } from 'react'
 
 interface SubmissionStatusSnackbarProps {
   status: SubmissionStatusState

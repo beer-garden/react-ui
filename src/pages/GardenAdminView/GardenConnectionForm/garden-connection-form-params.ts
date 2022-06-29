@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid/non-secure'
-import * as Yup from 'yup'
 import { GardenConnectionParameters } from 'pages/GardenAdminView'
+import * as Yup from 'yup'
 
 /**
  * Convert beergarden connection parameters into our preferred format

@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import { AxiosResponse } from 'axios'
-import { Job } from 'types/custom_types'
 import { useJobServices } from 'services/job.service/job.service'
+import { Job } from 'types/custom_types'
 
 interface JobButtonParams {
   job: Job

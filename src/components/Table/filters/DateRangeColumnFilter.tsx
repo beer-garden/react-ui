@@ -1,10 +1,10 @@
 import { Box, InputLabel, TextField } from '@mui/material'
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/'
+import { TableData } from 'components/Table'
+import { useActiveElement } from 'components/Table/filters/filterHelpers'
 import moment from 'moment'
 import { Fragment, useState } from 'react'
 import { FilterProps } from 'react-table'
-import { TableData } from 'components/Table'
-import { useActiveElement } from 'components/Table/filters/filterHelpers'
 
 const isValidDateString = (input: string) =>
   moment.utc(input, 'MM/DD/YYYY HH:mm', true).isValid()

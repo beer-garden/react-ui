@@ -26,7 +26,8 @@ module.exports = {
     plugins: [
         "react",
         "react-hooks",
-        "prettier"
+        "prettier",
+        "simple-import-sort",
     ],
     extends: [
         "eslint:recommended",
@@ -34,7 +35,7 @@ module.exports = {
         "plugin:react-hooks/recommended",
         "react-app",
         "react-app/jest",
-        "prettier"
+        "prettier",
     ],
     rules: {
         "react/function-component-definition": 0,
@@ -50,7 +51,10 @@ module.exports = {
             {
                 "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
             }
-        ]
+        ],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
+        
   },
   overrides: [
       {
