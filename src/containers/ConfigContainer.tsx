@@ -1,18 +1,7 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useMemo, useState } from 'react'
+import { ServerConfig } from 'types/config_types'
 import { createContainer } from 'unstated-next'
-
-export interface ServerConfig {
-  application_name: string
-  auth_enabled: boolean
-  trusted_header_auth_enabled: boolean
-  icon_default: string
-  debug_mode: boolean
-  execute_javascript: boolean
-  garden_name: string
-  metrics_url: string
-  url_prefix: string
-}
 
 const useServerConfig = () => {
   const { axiosInstance } = useMyAxios()
@@ -20,12 +9,11 @@ const useServerConfig = () => {
 
   const getConfig = useCallback(async () => {
     const { data } = await axiosInstance.get<ServerConfig>('/config', {
-        timeout: 1000,
-        headers: {
-          Accept: 'application/json',
-        },
-      })
-
+      timeout: 1000,
+      headers: {
+        Accept: 'application/json',
+      },
+    })
 
     console.log(
       'config AUTH_ENABLED: ',

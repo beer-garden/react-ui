@@ -7,11 +7,11 @@ import {
   MenuItem,
   MenuList as MuiMenuList,
 } from '@mui/material'
-import useConfig from 'hooks/useConfig'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useVersion from 'hooks/useVersion'
 
 const DrawerFooter = () => {
-  const config = useConfig()
+  const { config } = ServerConfigContainer.useContainer()
   const versionConfig = useVersion()
   return (
     <MuiMenuList dense style={{ marginTop: `auto` }}>
