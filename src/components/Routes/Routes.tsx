@@ -26,11 +26,10 @@ const Routes = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getConfig()
-
       setAuthIsEnabled(data?.auth_enabled)
     }
- 
-    fetchData();
+
+    fetchData()
   }, [getConfig])
 
   if (authIsEnabled === undefined) return null

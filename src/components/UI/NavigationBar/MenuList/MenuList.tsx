@@ -1,7 +1,6 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople'
 import FactoryIcon from '@mui/icons-material/Factory'
-import InfoIcon from '@mui/icons-material/Info'
 import { Divider, MenuList as MuiMenuList } from '@mui/material'
 import { AdminMenu } from 'components/UI/NavigationBar/MenuList/AdminMenu'
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
@@ -24,7 +23,6 @@ const MenuList = () => {
       })}
       <AdminMenu />
       <Divider />
-      <ListItemLink to={'/about'} primary={'About'} icon={<InfoIcon fontSize="small"/>} sx={{pl: 1}} />
       <OptionsMenu />
     </MuiMenuList>
   )

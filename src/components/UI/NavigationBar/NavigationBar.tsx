@@ -1,6 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu'
 import { Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { AppBar } from 'components/UI/NavigationBar/AppBar'
+import { DrawerFooter } from 'components/UI/NavigationBar/DrawerFooter'
 import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
 import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
@@ -8,7 +9,7 @@ import { useLocalStorage } from 'hooks/useLocalStorage'
 import * as React from 'react'
 
 export const closedDrawerWidth = 37
-export const openedDrawerWidth = 200
+export const openedDrawerWidth = 205
 
 interface NavigationBarProps {
   setMarginLeft: React.Dispatch<React.SetStateAction<number>>
@@ -73,6 +74,7 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
         <DrawerHeader />
         <Divider />
         <MenuList /> {/* TODO: prop drilling */}
+        <DrawerFooter />
       </Drawer>
     </NavigationBarContextProvider>
   )
