@@ -8,7 +8,6 @@ import {
   Button,
   CircularProgress,
   Divider,
-  Grid,
   IconButton,
   Typography,
 } from '@mui/material'
@@ -84,32 +83,26 @@ const RequestView = () => {
 
   return (
     <Box>
-      <Grid justifyContent="space-between" container>
-        <Grid item>
-          <PageHeader title="Request View" description={String(id)} />
-        </Grid>
-        <Grid item>
-          <Typography style={{ flex: 1 }}>
-            <Button
-              component={RouterLink}
-              to={[
-                '/systems',
-                namespace,
-                system,
-                systemVersion,
-                'commands',
-                command,
-              ].join('/')}
-              variant="contained"
-              color="primary"
-              onAuxClick={pourItAgainClick}
-              onClick={pourItAgainClick}
-            >
-              Pour it Again
-            </Button>
-          </Typography>
-        </Grid>
-      </Grid>
+      <Typography style={{ flex: 1, float: 'right' }}>
+        <Button
+          component={RouterLink}
+          to={[
+            '/systems',
+            namespace,
+            system,
+            systemVersion,
+            'commands',
+            command,
+          ].join('/')}
+          variant="contained"
+          color="primary"
+          onAuxClick={pourItAgainClick}
+          onClick={pourItAgainClick}
+        >
+          Pour it Again
+        </Button>
+      </Typography>
+      <PageHeader title="Request View" description={String(id)} />
       <Divider />
       {request ? (
         <>
@@ -120,26 +113,20 @@ const RequestView = () => {
           <Box pt={4} display="flex" alignItems="flex-start">
             {!expandParameter ? (
               <Box width={1}>
-                <Grid justifyContent="space-between" container>
-                  <Grid item>
-                    <Typography variant="h6">Outputs</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography style={{ flex: 1 }}>
-                      <IconButton
-                        size="small"
-                        onClick={() => setExpandOutput(!expandOutput)}
-                        aria-label="expand"
-                      >
-                        {expandParameter || expandOutput ? (
-                          <ExpandLessIcon />
-                        ) : (
-                          <ExpandMoreIcon />
-                        )}
-                      </IconButton>
-                    </Typography>
-                  </Grid>
-                </Grid>
+                <Typography style={{ flex: 1, float: 'right' }}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setExpandOutput(!expandOutput)}
+                    aria-label="expand"
+                  >
+                    {expandParameter || expandOutput ? (
+                      <ExpandLessIcon />
+                    ) : (
+                      <ExpandMoreIcon />
+                    )}
+                  </IconButton>
+                </Typography>
+                <Typography variant="h6">Outputs</Typography>
                 <Box
                   border={1}
                   borderColor="lightgrey"
@@ -152,26 +139,20 @@ const RequestView = () => {
             ) : null}
             {!expandOutput ? (
               <Box pl={1} width={1} style={{ verticalAlign: 'top' }}>
-                <Grid justifyContent="space-between" container>
-                  <Grid item>
-                    <Typography variant="h6">Parameters</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography style={{ flex: 1 }}>
-                      <IconButton
-                        size="small"
-                        onClick={() => setExpandParameter(!expandParameter)}
-                        aria-label="start"
-                      >
-                        {expandParameter || expandOutput ? (
-                          <ExpandLessIcon />
-                        ) : (
-                          <ExpandMoreIcon />
-                        )}
-                      </IconButton>
-                    </Typography>
-                  </Grid>
-                </Grid>
+                <Typography style={{ flex: 1, float: 'right' }}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setExpandParameter(!expandParameter)}
+                    aria-label="start"
+                  >
+                    {expandParameter || expandOutput ? (
+                      <ExpandLessIcon />
+                    ) : (
+                      <ExpandMoreIcon />
+                    )}
+                  </IconButton>
+                </Typography>
+                <Typography variant="h6">Parameters</Typography>
                 <Box
                   border={1}
                   borderColor="lightgrey"
