@@ -1,4 +1,5 @@
-import { Dictionary, Parameter } from 'types/custom_types'
+import { Parameter } from 'types/command_types'
+import { Dictionary } from 'types/custom_types'
 
 function getTypeAndFormat(parameter: Parameter) {
   let parameterType: string | string[] = parameter.type.toLowerCase()

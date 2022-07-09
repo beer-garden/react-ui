@@ -12,7 +12,8 @@ import {
 } from 'react'
 import { useParams } from 'react-router-dom'
 import { Column } from 'react-table'
-import { Command, System } from 'types/custom_types'
+import { Command } from 'types/command_types'
+import { System } from 'types/custom_types'
 
 export type CommandIndexTableData = {
   namespace: string
@@ -203,4 +204,4 @@ const useCommandIndexTableColums = () => {
   )
 }
 
-export { useCommandIndexTableColums,useCommands }
+export { useCommandIndexTableColums, useCommands }

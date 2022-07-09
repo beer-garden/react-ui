@@ -15,7 +15,8 @@ import { useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, Navigate } from 'react-router-dom'
 import CacheService from 'services/cache_service'
-import { Command, Dictionary } from 'types/custom_types'
+import { Command } from 'types/command_types'
+import { Dictionary } from 'types/custom_types'
 
 interface CommandViewFormProps {
   schema: Dictionary

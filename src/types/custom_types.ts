@@ -1,50 +1,8 @@
 import { AxiosResponse } from 'axios'
+import { Command, Parameter } from 'types/command_types'
 
 export type Dictionary = {
   [key: string]: any
-}
-
-export type Command = {
-  name: string
-  description: string
-  parameters: Parameter[]
-  command_type: string
-  output_type: string
-  template: string
-  icon_name: string
-  hidden: boolean
-  systemVersion: string
-  systemName: string
-  namespace: string
-  schema: any
-  form: any
-  metadata: any
-}
-
-export type Choice = {
-  display: string
-  strict: boolean
-  type: string
-  value: any
-  details: any
-}
-
-export type Parameter = {
-  key: string
-  type: string
-  multi: boolean
-  display_name: string
-  optional: boolean
-  default: string
-  description: string
-  choices: Choice
-  parameters: Parameter[]
-  nullable: boolean
-  maximum: number
-  minimum: number
-  regex: string
-  form_input_type: string | null | undefined
-  type_info: any
 }
 
 export type Instance = {
@@ -180,13 +138,13 @@ export interface TableState {
   completeDataSet?: System[] | Command[] | Request[] | Job[]
   redirect?: JSX.Element | null
   formatData?(
-    data?: System[] | Command[] | Request[] | Job[]
+    data?: System[] | Command[] | Request[] | Job[],
   ): (string | JSX.Element | number | null)[][]
   setSearchApi?(value: string, id: string, setDateEnd?: boolean): void
   apiDataCall?(
     page: number,
     rowsPerPage: number,
-    successCallback: SuccessCallback
+    successCallback: SuccessCallback,
   ): void
   getCellButton?(system: System): JSX.Element
   includeChildren?: boolean

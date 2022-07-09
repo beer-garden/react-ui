@@ -1,6 +1,7 @@
 import { MakeItHappenButton } from 'pages/CommandIndex'
 import { filterSystems } from 'services/system.service'
-import { Command, System } from 'types/custom_types'
+import { Command } from 'types/command_types'
+import { System } from 'types/custom_types'
 
 const formatCommands = (commands: Command[]) => {
   const formattedData: (string | JSX.Element)[][] = []
