@@ -32,7 +32,7 @@ const CommandViewForm = ({
   const initialData = initialModel
 
   const pourItAgainRequest = CacheService.popQueue(
-    `lastKnownPourItAgainRequest`,
+    'lastKnownPourItAgainRequest',
   )
   if (pourItAgainRequest) {
     initialData.parameters = pourItAgainRequest.parameters

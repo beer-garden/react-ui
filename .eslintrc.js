@@ -43,6 +43,7 @@ module.exports = {
         "react/prop-types": 0,
         "react-hooks/exhaustive-deps": 1,
         "react/react-in-jsx-scope": 0,
+        "no-multi-spaces": 1,
         "no-unused-vars": 1,
         "react/display-name": [0],
         "react-hooks/rules-of-hooks": "error",
@@ -57,44 +58,54 @@ module.exports = {
         
   },
   overrides: [
-      {
-        files: ["**/*.{ts,tsx}"],
-        env: {
-            jest: true
-        },
-        globals: {
-            React: "writable"
-        },
-        settings: {
-            "import/parsers": {
-                "@typescript-eslint/parser": [".ts", ".tsx"]
-            },
-            "import/resolver": {
-                typescript: {
-                    project: "./tsconfig.json"
-                }
-            }
-          },
-        parser: "@typescript-eslint/parser",
-        parserOptions: {
-            tsconfigRootDir: __dirname,
-            project: "./tsconfig.json"
-        },
-        plugins: ["@typescript-eslint"],
-        extends: [
-            "eslint:recommended",
-            "plugin:react/recommended",
-            "plugin:react-hooks/recommended",
-            "plugin:@typescript-eslint/eslint-recommended",
-            "plugin:@typescript-eslint/recommended",
-            "react-app",
-            "react-app/jest",
-        ],
+    {
+        files: ["**/*.{js}"],
         rules: {
-            "react/react-in-jsx-scope": "off",
-            "react/prop-types": [0],
+            "quotes": ["warn", "single"],
+        }},
+    {
+    files: ["**/*.{ts,tsx}"],
+    globals: {
+        React: "writable"
+    },
+    settings: {
+        "import/parsers": {
+            "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+            typescript: {
+                project: "./tsconfig.json"
+            }
         }
+        },
+    parser: "@typescript-eslint/parser",
+    parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: "./tsconfig.json"
+    },
+    plugins: ["@typescript-eslint"],
+    extends: [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:react/jsx-runtime",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "react-app",
+        "react-app/jest",
+    ],
+    rules: {
+        "jsx-quotes": ["warn", "prefer-double"],
+        "quotes": ["warn", "single"],
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-filename-extension": [0],
+        "react/jsx-closing-tag-location": [1],
+        "react/jsx-pascal-case": [1],
+        "react/self-closing-comp": [1],
+        "react/jsx-wrap-multilines": [1],
+        "react/prop-types": [0],
+    }
 
-      }
+    }
   ]
 }

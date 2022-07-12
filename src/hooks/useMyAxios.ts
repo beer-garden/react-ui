@@ -7,7 +7,7 @@ const useMyAxios = () => {
   const axiosInstance: AxiosInstance = useMemo(() => { return Axios.create() }, [])
 
   const getUseAxios = useCallback(() => {
-    console.log("Making new axios!")
+    console.log('Making new axios!')
     return makeUseAxios({ axios: axiosInstance, cache: false })
   }, [axiosInstance])
 
