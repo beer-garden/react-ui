@@ -1,6 +1,6 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useState } from 'react'
-import { BlockedCommand, BlockedList, CommandBase } from 'types/command_types'
+import { BlockedCommand, BlockedList } from 'types/command_types'
 
 export const useBlockList = () => {
   const [blockList, setList] = useState<BlockedList>()
@@ -41,7 +41,7 @@ export const useBlockList = () => {
     return blockList?.command_publishing_blocklist
   }
 
-  const addBlockList = (command: CommandBase[]) => {
+  const addBlockList = (command: BlockedCommand[]) => {
     axiosInstance
       .post<BlockedList>(
         '/api/v1/commandpublishingblocklist/',

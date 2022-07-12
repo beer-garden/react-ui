@@ -1,125 +1,200 @@
 import AddIcon from '@mui/icons-material/Add'
-import { Box, Button, Tooltip } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { Button, Checkbox, IconButton, Tooltip } from '@mui/material'
 import Divider from 'components/divider'
+import { ModalWrapper } from 'components/ModalWrapper'
 import PageHeader from 'components/PageHeader'
 import { Table } from 'components/Table'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useBlockList } from 'hooks/useBlockList'
-import { useMemo } from 'react'
+import { generateCommandName, useCommands } from 'hooks/useCommands'
+import { useMemo, useState } from 'react'
 import { Column } from 'react-table'
-import { BlockedCommand } from 'types/command_types'
+import { BlockedCommand, CommandRow } from 'types/command_types'
 
-type BlocklistTableData = {
-  namespace: string
-  system: string
-  status: string
-  command: string
-  delete: JSX.Element
+const ModalColumns = () => {
+  return useMemo<Column<CommandRow>[]>(
+    () => [
+      {
+        Header: 'Add',
+        accessor: 'action',
+        width: 85,
+      },
+      {
+        Header: 'Namespace',
+        accessor: 'namespace',
+        filter: 'fuzzyText',
+      },
+      {
+        Header: 'System',
+        accessor: 'system',
+        filter: 'fuzzyText',
+      },
+      {
+        Header: 'Command',
+        accessor: 'name',
+      },
+    ],
+    [],
+  )
+}
+
+const TableColumns = () => {
+  return useMemo<Column<CommandRow>[]>(
+    () => [
+      {
+        Header: 'Namespace',
+        accessor: 'namespace',
+        filter: 'fuzzyText',
+      },
+      {
+        Header: 'System',
+        accessor: 'system',
+        filter: 'fuzzyText',
+      },
+      {
+        Header: 'Command',
+        accessor: 'name',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+        filter: 'fuzzyText',
+      },
+      {
+        Header: '',
+        accessor: 'action',
+        width: 85,
+      },
+    ],
+    [],
+  )
 }
 
 export const CommandBlocklistView = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
+  const [open, setOpen] = useState(false)
+  const [selectedCommands, setSelected] = useState<CommandRow[]>([])
   const listClient = useBlockList()
 
-  const systemMapper = (system: BlockedCommand): BlocklistTableData => {
+  const CommandlistData = () => {
+    const blocked = useCommands()
+    if (!blocked || !blocked.commands) {
+      return []
+    }
+    return blocked.commands.map((command: CommandRow) => {
+      return commandlistMapper(command)
+    })
+  }
+  const commandlistMapper = (command: CommandRow): CommandRow => {
     return {
-      namespace: system.namespace,
-      system: system.system,
-      status: system.status,
-      command: system.command,
-      delete: (
-        <Button
-          size="small"
-          variant="contained"
-          color="error"
-          onClick={() => delCommand(system.id)}
-        >
-          Delete
-        </Button>
+      namespace: command.namespace,
+      system: command.system,
+      command: command.command,
+      name: command.name,
+      action: (
+        <Checkbox
+          checked={selectedCommands.indexOf(command) > -1}
+          onClick={() => handleClick(command)}
+        />
       ),
     }
   }
-  const useSystemIndexTableData = () => {
+
+  const BlocklistData = () => {
     const blocked = listClient.getBlockList()
     if (!blocked) {
       return []
     }
-    return blocked.map((element: BlockedCommand) => {
-      return systemMapper(element)
+    return blocked.map((command: BlockedCommand) => {
+      return blocklistMapper(command)
     })
   }
-  const delCommand = (id: string) => {
-    listClient.deleteBlockList(id)
+  const blocklistMapper = (command: BlockedCommand): CommandRow => {
+    return {
+      namespace: command.namespace,
+      system: command.system,
+      status: command.status,
+      command: command.command,
+      name: generateCommandName(false, command.command),
+      action: (
+        <IconButton
+          size="small"
+          color="error"
+          onClick={() => delCommand(command.id)}
+          aria-label="delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
+    }
   }
-  const TableColumns = () => {
-    return useMemo<Column<BlocklistTableData>[]>(
-      () => [
-        {
-          Header: 'Namespace',
-          accessor: 'namespace',
-          filter: 'fuzzyText',
-          width: 150,
-        },
-        {
-          Header: 'System',
-          accessor: 'system',
-          filter: 'fuzzyText',
-          width: 150,
-        },
-        {
-          Header: 'Command',
-          accessor: 'command',
-          width: 150,
-        },
-        {
-          Header: 'Status',
-          accessor: 'status',
-          filter: 'fuzzyText',
-          width: 150,
-        },
-        {
-          Header: 'Delete',
-          accessor: 'delete',
-          width: 150,
-        },
-      ],
-      [],
-    )
+
+  const delCommand = (id: string | undefined) => {
+    if (id) {
+      listClient.deleteBlockList(id)
+    } else {
+      console.error('Command had no ID - cannot delete')
+    } // TODO: search for command + system + namespace combo?
+  }
+  const handleClick = (command: CommandRow) => {
+    const selectedIndex = selectedCommands.indexOf(command)
+    let newSelected: CommandRow[] = []
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedCommands, command)
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedCommands.slice(1))
+    } else if (selectedIndex === selectedCommands.length - 1) {
+      newSelected = newSelected.concat(selectedCommands.slice(0, -1))
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedCommands.slice(0, selectedIndex),
+        selectedCommands.slice(selectedIndex + 1),
+      )
+    }
+
+    setSelected(newSelected)
   }
 
   return (
-    <Box>
+    <>
       <Tooltip title="Add command">
         <Button
           style={{ float: 'right' }}
           variant="contained"
           color="primary"
           aria-label="Add command"
-          onClick={() =>
-            listClient.addBlockList([
-              {
-                namespace: 'default',
-                system: 'complex',
-                command: 'echo_dates',
-              },
-              {
-                namespace: 'default',
-                system: 'complex',
-                command: 'echo_integer',
-              },
-            ])
-          }
+          onClick={() => setOpen(true)}
         >
           <AddIcon />
         </Button>
       </Tooltip>
+      <ModalWrapper
+        open={open}
+        header="Add Commands to Blocklist"
+        onClose={() => {
+          setOpen(false)
+          setSelected([])
+        }}
+        onCancel={() => {
+          setOpen(false)
+          setSelected([])
+        }}
+        onSubmit={() => {
+          listClient.addBlockList(selectedCommands)
+          setOpen(false)
+          setSelected([])
+        }}
+        content={
+          <Table
+            tableName=""
+            data={CommandlistData()}
+            columns={ModalColumns()}
+          />
+        }
+      />
       <PageHeader title="Command Publishing Blocklist" description="" />
       <Divider />
-      <Table
-        tableName="Systems"
-        data={useSystemIndexTableData()}
-        columns={TableColumns()}
-      />
-    </Box>
+      <Table tableName="" data={BlocklistData()} columns={TableColumns()} />
+    </>
   )
 }

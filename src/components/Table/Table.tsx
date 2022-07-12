@@ -52,7 +52,7 @@ import {
 } from 'react-table'
 
 export interface TableData {
-  [key: string]: any
+  [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const filterTypes = {

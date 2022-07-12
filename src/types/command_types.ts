@@ -5,8 +5,15 @@ export interface CommandBase {
 }
 
 export interface BlockedCommand extends CommandBase {
-  status: string
-  id: string
+  status?: string
+  id?: string
+}
+
+export interface CommandRow extends BlockedCommand {
+  action: JSX.Element
+  name: string | JSX.Element
+  description?: string
+  version?: string
 }
 
 export interface BlockedList {
