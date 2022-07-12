@@ -29,7 +29,6 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
-  Fragment,
   PropsWithChildren,
   ReactElement,
   useCallback,
@@ -52,7 +51,9 @@ import {
   useTable,
 } from 'react-table'
 
-export type TableData = Record<string, unknown>
+export interface TableData {
+  [key: string]: any
+}
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,
@@ -165,9 +166,12 @@ const Table = <T extends TableData>(
   }, [setInitialState, debouncedState, columns])
 
   const { role: tableRole, ...tableProps } = getTableProps()
+  if (tableProps?.style) {
+    tableProps.style.wordBreak = 'break-word'
+  }
 
   return (
-    <Fragment>
+    <>
       <Toolbar name={tableName} instance={instance} />
       <FilterChipBar<T> instance={instance} />
 
@@ -306,7 +310,7 @@ const Table = <T extends TableData>(
         </TableBody>
       </StyledTable>
       <TablePagination instance={instance} />
-    </Fragment>
+    </>
   )
 }
 

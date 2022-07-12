@@ -3,7 +3,7 @@ import useAxios from 'axios-hooks'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getFormattedTable } from 'pages/JobIndex/jobIndexHelpers'
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Job } from 'types/custom_types'
 
 const JobIndex = () => {
@@ -22,11 +22,11 @@ const JobIndex = () => {
   }, [data, error])
 
   return (
-    <Fragment>
+    <>
       <PageHeader title="Request Scheduler" description="" />
       <Divider />
       {getFormattedTable(jobs)}
-    </Fragment>
+    </>
   )
 }
 
