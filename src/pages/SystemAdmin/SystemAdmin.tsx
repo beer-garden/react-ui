@@ -16,7 +16,7 @@ import PageHeader from 'components/PageHeader'
 import SystemCard from 'components/system_admin_card'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { formatSystems } from 'pages/SystemAdmin'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import AdminService from 'services/admin_service'
 import CacheService from 'services/cache_service'
 import { System } from 'types/custom_types'
@@ -83,7 +83,7 @@ const SystemAdmin = () => {
   const title = 'Systems Management'
 
   return (
-    <Box>
+    <Fragment>
       <Grid alignItems="flex-end" justifyContent="space-between" container>
         <Grid key={'header'} item>
           <PageHeader title={title} description={''} />
@@ -156,7 +156,7 @@ const SystemAdmin = () => {
         ))}
         {getSelectMessage(namespacesSelected)}
       </Box>
-    </Box>
+    </Fragment>
   )
 }
 

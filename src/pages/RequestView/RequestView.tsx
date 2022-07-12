@@ -20,7 +20,7 @@ import {
   formatData,
   outputFormatted,
 } from 'pages/RequestView/requestViewHelpers'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import CacheService from 'services/cache_service'
@@ -77,12 +77,12 @@ const RequestView = () => {
 
   const pourItAgainClick = () => {
     if (request) {
-      CacheService.pushQueue(request, `lastKnownPourItAgainRequest`)
+      CacheService.pushQueue(request, 'lastKnownPourItAgainRequest')
     }
   }
 
   return (
-    <Box>
+    <Fragment>
       <Typography style={{ flex: 1, float: 'right' }}>
         <Button
           component={RouterLink}
@@ -172,7 +172,7 @@ const RequestView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-    </Box>
+    </Fragment>
   )
 }
 

@@ -6,7 +6,7 @@ import CommandViewForm from 'components/command_view_form'
 import Divider from 'components/divider'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { Command } from 'types/command_types'
@@ -54,7 +54,7 @@ const CommandView = () => {
     const build = formBuilder(system, command)
     description = command.description
     formElement = (
-      <Box>
+      <Fragment>
         <CommandViewForm
           schema={build.schema}
           uiSchema={build.uiSchema}
@@ -75,17 +75,17 @@ const CommandView = () => {
             <ReactJson src={build.uiSchema} />
           </Box>
         </Box>
-      </Box>
+      </Fragment>
     )
   }
 
   return (
-    <Box>
+    <Fragment>
       <PageHeader title={title} description={description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       {formElement}
-    </Box>
+    </Fragment>
   )
 }
 

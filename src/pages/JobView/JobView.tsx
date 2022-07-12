@@ -1,8 +1,8 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { AxiosResponse } from 'axios'
 import PageHeader from 'components/PageHeader'
 import { JobButton } from 'pages/JobView'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useJobServices } from 'services/job.service/job.service'
 import { Job } from 'types/custom_types'
@@ -29,7 +29,7 @@ const JobView = () => {
   }, [getJob, params.id, id, job])
 
   return (
-    <Box>
+    <Fragment>
       <Typography style={{ flex: 1, float: 'right' }}>
         <Button
           variant="contained"
@@ -44,7 +44,7 @@ const JobView = () => {
         </Button>
       </Typography>
       <PageHeader title="Job" description={description} />
-    </Box>
+    </Fragment>
   )
 }
 
