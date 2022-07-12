@@ -18,7 +18,7 @@ import {
   SubmissionStatusSnackbar,
   SubmissionStatusState,
 } from 'pages/GardenAdminView'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import GardenService from 'services/garden_service'
 import { Garden, System, TableState } from 'types/custom_types'
@@ -98,7 +98,7 @@ const GardenAdminView = () => {
         return (
           <Alert severity="info">
             {
-              "Since this is the local Garden it's not possible to modify connection information"
+              'Since this is the local Garden it\'s not possible to modify connection information'
             }
           </Alert>
         )
@@ -111,12 +111,12 @@ const GardenAdminView = () => {
   function renderComponents() {
     if (garden) {
       return (
-        <Box>
+        <Fragment>
           <InfoCard garden={garden} />
           <Typography variant="h6">Connected Systems</Typography>
           <Table parentState={state} />
           {getConfigSetup()}
-        </Box>
+        </Fragment>
       )
     } else {
       return (

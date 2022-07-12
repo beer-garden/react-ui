@@ -1,8 +1,8 @@
-import { Box, Button, Grid, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { AxiosResponse } from 'axios'
 import PageHeader from 'components/PageHeader'
 import { JobButton } from 'pages/JobView'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useJobServices } from 'services/job.service/job.service'
 import { Job } from 'types/custom_types'
@@ -29,28 +29,22 @@ const JobView = () => {
   }, [getJob, params.id, id, job])
 
   return (
-    <Box>
-      <Grid justifyContent="space-between" container>
-        <Grid item>
-          <PageHeader title="Job" description={description} />
-        </Grid>
-        <Grid item>
-          <Typography style={{ flex: 1 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={deleteButtonCallback}
-            >
-              Delete Job
-            </Button>
-            <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
-            <Button variant="contained" color="primary">
-              Update Job
-            </Button>
-          </Typography>
-        </Grid>
-      </Grid>
-    </Box>
+    <Fragment>
+      <Typography style={{ flex: 1, float: 'right' }}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={deleteButtonCallback}
+        >
+          Delete Job
+        </Button>
+        <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
+        <Button variant="contained" color="primary">
+          Update Job
+        </Button>
+      </Typography>
+      <PageHeader title="Job" description={description} />
+    </Fragment>
   )
 }
 

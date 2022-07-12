@@ -21,7 +21,7 @@ import {
   formatData,
   outputFormatted,
 } from 'pages/RequestView/requestViewHelpers'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import CacheService from 'services/cache_service'
@@ -78,38 +78,32 @@ const RequestView = () => {
 
   const pourItAgainClick = () => {
     if (request) {
-      CacheService.pushQueue(request, `lastKnownPourItAgainRequest`)
+      CacheService.pushQueue(request, 'lastKnownPourItAgainRequest')
     }
   }
 
   return (
-    <Box>
-      <Grid justifyContent="space-between" container>
-        <Grid item>
-          <PageHeader title="Request View" description={String(id)} />
-        </Grid>
-        <Grid item>
-          <Typography style={{ flex: 1 }}>
-            <Button
-              component={RouterLink}
-              to={[
-                '/systems',
-                namespace,
-                system,
-                systemVersion,
-                'commands',
-                command,
-              ].join('/')}
-              variant="contained"
-              color="primary"
-              onAuxClick={pourItAgainClick}
-              onClick={pourItAgainClick}
-            >
-              Pour it Again
-            </Button>
-          </Typography>
-        </Grid>
-      </Grid>
+    <Fragment>
+      <Typography style={{ flex: 1, float: 'right' }}>
+        <Button
+          component={RouterLink}
+          to={[
+            '/systems',
+            namespace,
+            system,
+            systemVersion,
+            'commands',
+            command,
+          ].join('/')}
+          variant="contained"
+          color="primary"
+          onAuxClick={pourItAgainClick}
+          onClick={pourItAgainClick}
+        >
+          Pour it Again
+        </Button>
+      </Typography>
+      <PageHeader title="Request View" description={String(id)} />
       <Divider />
       {request ? (
         <>
@@ -191,7 +185,7 @@ const RequestView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-    </Box>
+    </Fragment>
   )
 }
 

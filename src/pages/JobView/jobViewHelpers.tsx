@@ -1,5 +1,6 @@
 import { Backdrop, Box, CircularProgress } from '@mui/material'
 import JobTable from 'components/table'
+import { Fragment } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
 import { Job } from 'types/custom_types'
@@ -70,7 +71,7 @@ const getFormattedTable = (jobs: Job[]) => {
     const template = job.request_template
 
     return (
-      <div>
+      <Fragment>
         <JobTable
           parentState={{
             completeDataSet: jobs,
@@ -95,7 +96,7 @@ const getFormattedTable = (jobs: Job[]) => {
             </Box>
           </Box>
         </Box>
-      </div>
+      </Fragment>
     )
   }
   return (
