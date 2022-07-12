@@ -17,7 +17,7 @@ import {
   SubmissionStatusSnackbar,
   SubmissionStatusState,
 } from 'pages/GardenAdminView'
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Garden, System, TableState } from 'types/custom_types'
 
@@ -96,12 +96,12 @@ const GardenAdminView = () => {
   function renderComponents() {
     if (garden) {
       return (
-        <Fragment>
+        <>
           <InfoCard garden={garden} />
           <Typography variant="h6">Connected Systems</Typography>
           <Table parentState={state} />
           {getConfigSetup()}
-        </Fragment>
+        </>
       )
     } else {
       return (
