@@ -10,7 +10,7 @@ import {
   SubmissionStatusSnackbar,
   useGardenConnectionFormOnSubmit,
 } from 'pages/GardenAdminView'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 
 export interface SubmissionStatusState {
   result: 'success' | 'failure'
@@ -28,7 +28,7 @@ const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
   >(undefined)
 
   return (
-    <Fragment>
+    <>
       <Formik
         initialValues={connectionInitialValues(conxType, conxParms)}
         validationSchema={connectionValidationSchema}
@@ -52,7 +52,7 @@ const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
           status={submissionStatus as SubmissionStatusState}
         />
       ) : null}
-    </Fragment>
+    </>
   )
 }
 

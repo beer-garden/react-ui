@@ -1,7 +1,6 @@
 import { Box, Button, Modal } from '@mui/material'
 import Divider from 'components/divider'
 import PageHeader from 'components/PageHeader'
-import { Fragment } from 'react'
 import { modalProps } from 'types/props_types'
 
 const style = {
@@ -17,7 +16,7 @@ const style = {
 
 export const ModalWrapper = (props: modalProps) => {
   return (
-    <Fragment>
+    <>
       <Modal
         open={props.open}
         onClose={props.onClose}
@@ -49,6 +48,6 @@ export const ModalWrapper = (props: modalProps) => {
           </Button>
         </Box>
       </Modal>
-    </Fragment>
+    </>
   )
 }

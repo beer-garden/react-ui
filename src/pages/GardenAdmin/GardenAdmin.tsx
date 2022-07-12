@@ -4,7 +4,7 @@ import Divider from 'components/divider'
 import GardenCard from 'components/garden_admin_card'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Garden } from 'types/custom_types'
 
 const GardensAdmin = (): JSX.Element => {
@@ -23,7 +23,7 @@ const GardensAdmin = (): JSX.Element => {
   }, [data, error])
 
   return (
-    <Fragment>
+    <>
       <PageHeader title={'Gardens Management'} description={''} />
       <Divider />
       <Grid container spacing={3}>
@@ -33,7 +33,7 @@ const GardensAdmin = (): JSX.Element => {
           </Grid>
         ))}
       </Grid>
-    </Fragment>
+    </>
   )
 }
 
