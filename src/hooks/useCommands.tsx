@@ -55,7 +55,7 @@ export const useCommands = () => {
   }
 }
 
-export function generateCommandName(hidden: boolean, name: string) {
+export const generateCommandName = (hidden: boolean, name: string) => {
   return hidden ? (
     <Tooltip title="hidden command" aria-label={name + ' (hidden)'}>
       <Box component="span">
