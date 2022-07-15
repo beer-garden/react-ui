@@ -53,6 +53,7 @@ module.exports = {
             }
         ]
   },
+  ignorePatterns: ['vite.config.ts'],
   overrides: [
       {
         files: ["**/*.{ts,tsx}"],
