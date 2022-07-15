@@ -16,7 +16,7 @@ const ExploreButton = (system: System) => {
       component={RouterLink}
       to={linkTo}
       variant="contained"
-      color="primary"
+      color="secondary"
     >
       Explore
     </Button>
