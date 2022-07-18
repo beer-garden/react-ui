@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { DateTime } from 'luxon'
 import {
   ColumnData,
   defaultColumnsData,
@@ -32,7 +32,7 @@ const updateSearchColumn = (
 }
 
 const formatDate = (value: number) =>
-  moment.utc(value).format('YYYY-MM-DD HH:mm:ss')
+  DateTime.fromHTTP(new Date(value).toUTCString()).toFormat('yyyy-MM-dd TT')
 
 /**
  * Update search API with search values.
@@ -41,7 +41,7 @@ const formatDate = (value: number) =>
  * default, which has no search parameters.
  *
  * @param searchApi
- * @param searchColumns
+ * @param searchFilters
  * @returns Search api updated to restrict results to those matching the
  * provided search values in the provided search filters. If search filters
  * is empty, zero out all filters.
@@ -123,4 +123,4 @@ const updateApiOrderBy = (
   }
 }
 
-export { updateApiOrderBy,updateApiSearchBy }
+export { updateApiOrderBy, updateApiSearchBy }
