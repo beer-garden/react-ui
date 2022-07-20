@@ -4,6 +4,7 @@ import { useActiveElement } from 'components/Table/filters/filterHelpers'
 import moment from 'moment-timezone'
 import { Fragment, useState } from 'react'
 import { FilterProps } from 'react-table'
+
 const DateRangeColumnFilter = ({
   state,
   gotoPage,
