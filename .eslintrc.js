@@ -61,7 +61,7 @@ module.exports = {
     {
         files: ["**/*.{js}"],
         rules: {
-            "quotes": ["warn", "single"],
+            "quotes": ["error", "single"],
         }},
     {
     files: ["**/*.{ts,tsx}"],
@@ -95,15 +95,15 @@ module.exports = {
         "react-app/jest",
     ],
     rules: {
-        "jsx-quotes": ["warn", "prefer-double"],
-        "quotes": ["warn", "single"],
+        "jsx-quotes": ["error", "prefer-double"],
+        "quotes": ["error", "single"],
         "react/react-in-jsx-scope": "off",
-        "react/jsx-filename-extension": [0],
-        "react/jsx-closing-tag-location": [1],
-        "react/jsx-pascal-case": [1],
-        "react/self-closing-comp": [1],
-        "react/jsx-wrap-multilines": [1],
-        "react/prop-types": [0],
+        "react/jsx-filename-extension": "off",
+        "react/jsx-closing-tag-location": "error",
+        "react/jsx-pascal-case": "error,
+        "react/self-closing-comp": "error,
+        "react/jsx-wrap-multilines": "error,
+        "react/prop-types": "off",
     }
 
     }
