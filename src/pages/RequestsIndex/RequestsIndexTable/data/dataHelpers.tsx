@@ -5,6 +5,7 @@ import {
   BeergardenRequest,
   RequestsIndexTableData,
 } from 'pages/RequestsIndex/RequestsIndexTable/data'
+import { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 const RequestLink = (request: BeergardenRequest) => {
@@ -36,10 +37,10 @@ const RequestLink = (request: BeergardenRequest) => {
         <RouterLink to={'/requests/' + request.parent?.id}>
           <Tooltip
             title={
-              <>
+              <Fragment>
                 <Typography color="inherit">Link to parent</Typography>
                 <em>{request.parent?.command}</em>
-              </>
+              </Fragment>
             }
             aria-label="link to parent command"
           >

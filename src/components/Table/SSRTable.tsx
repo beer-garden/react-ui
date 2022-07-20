@@ -31,6 +31,7 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
+  Fragment,
   PropsWithChildren,
   ReactElement,
   useEffect,
@@ -253,7 +254,7 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
   return isErrored ? (
     <Typography>Error...</Typography>
   ) : (
-    <>
+    <Fragment>
       <Toolbar name={tableName} instance={instance} />
       <FilterChipBar<T> instance={instance} />
 
@@ -408,7 +409,7 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
         handleStartPage={handleStartPage}
         handleResultCount={handleResultCount}
       />
-    </>
+    </Fragment>
   )
 }
 

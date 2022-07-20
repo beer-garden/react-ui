@@ -29,6 +29,7 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
+  Fragment,
   PropsWithChildren,
   ReactElement,
   useCallback,
@@ -166,12 +167,9 @@ const Table = <T extends TableData>(
   }, [setInitialState, debouncedState, columns])
 
   const { role: tableRole, ...tableProps } = getTableProps()
-  if (tableProps?.style) {
-    tableProps.style.wordBreak = 'break-word'
-  }
 
   return (
-    <>
+    <Fragment>
       <Toolbar name={tableName} instance={instance} />
       <FilterChipBar<T> instance={instance} />
 
@@ -310,7 +308,7 @@ const Table = <T extends TableData>(
         </TableBody>
       </StyledTable>
       <TablePagination instance={instance} />
-    </>
+    </Fragment>
   )
 }
 

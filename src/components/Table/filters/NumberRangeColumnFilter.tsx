@@ -4,7 +4,7 @@ import {
   getMinAndMax,
   useActiveElement,
 } from 'components/Table/filters/filterHelpers'
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { FilterProps } from 'react-table'
 
 const NumberRangeColumnFilter = ({
@@ -20,7 +20,7 @@ const NumberRangeColumnFilter = ({
     (focusedElement.id === `${id}_1` || focusedElement.id === `${id}_2`)
 
   return (
-    <>
+    <Fragment>
       <InputLabel htmlFor={id} shrink focused={!!hasFocus}>
         {render('Header')}
       </InputLabel>
@@ -69,7 +69,7 @@ const NumberRangeColumnFilter = ({
           }}
         />
       </Box>
-    </>
+    </Fragment>
   )
 }
 
