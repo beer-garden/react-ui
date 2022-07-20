@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import { AxiosResponse } from 'axios'
 import PageHeader from 'components/PageHeader'
 import { JobButton } from 'pages/JobView'
@@ -29,22 +29,28 @@ const JobView = () => {
   }, [getJob, params.id, id, job])
 
   return (
-    <>
-      <Typography style={{ flex: 1, float: 'right' }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={deleteButtonCallback}
-        >
-          Delete Job
-        </Button>
-        <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
-        <Button variant="contained" color="primary">
-          Update Job
-        </Button>
-      </Typography>
-      <PageHeader title="Job" description={description} />
-    </>
+    <Box>
+      <Grid justifyContent="space-between" container>
+        <Grid item>
+          <PageHeader title="Job" description={description} />
+        </Grid>
+        <Grid item>
+          <Typography style={{ flex: 1 }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={deleteButtonCallback}
+            >
+              Delete Job
+            </Button>
+            <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
+            <Button variant="contained" color="primary">
+              Update Job
+            </Button>
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
 

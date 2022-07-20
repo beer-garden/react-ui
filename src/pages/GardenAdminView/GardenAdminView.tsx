@@ -3,6 +3,7 @@ import {
   Backdrop,
   Box,
   CircularProgress,
+  Grid,
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
@@ -19,7 +20,13 @@ import {
 } from 'pages/GardenAdminView'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
+import GardenService from 'services/garden_service'
 import { Garden, System, TableState } from 'types/custom_types'
+
+type FormState = {
+  dataForm: any
+  errors: any[]
+}
 
 const SystemLink = (text: string, params: string[]) => {
   return <RouterLink to={'/systems/' + params.join('/')}>{text}</RouterLink>
@@ -27,6 +34,9 @@ const SystemLink = (text: string, params: string[]) => {
 
 const GardenAdminView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const schema = GardenService.SCHEMA
+  const uischema = GardenService.UISCHEMA
+  const initialModel = {}
 
   const [syncStatus, setSyncStatus] = useState<
     SubmissionStatusState | undefined
@@ -59,6 +69,11 @@ const GardenAdminView = () => {
 
   if (garden) {
     state.completeDataSet = garden.systems
+  }
+
+  const formState: FormState = {
+    dataForm: {},
+    errors: [],
   }
 
   function formatData(systems: System[]) {
@@ -114,13 +129,19 @@ const GardenAdminView = () => {
 
   return (
     <Box pb={10}>
-      <Typography style={{ flex: 1, float: 'right' }}>
-        <GardenSyncButton
-          gardenName={gardenName}
-          setSyncStatus={setSyncStatus}
-        />
-      </Typography>
-      <PageHeader title={'Garden View'} description={''} />
+      <Grid justifyContent="space-between" container>
+        <Grid item>
+          <PageHeader title={'Garden View'} description={''} />
+        </Grid>
+        <Grid item>
+          <Typography style={{ flex: 1 }}>
+            <GardenSyncButton
+              gardenName={gardenName}
+              setSyncStatus={setSyncStatus}
+            />
+          </Typography>
+        </Grid>
+      </Grid>
       <Divider />
       {renderComponents()}
       {syncStatus ? (
