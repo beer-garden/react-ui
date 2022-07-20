@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { useMyAxios } from 'hooks/useMyAxios'
+import {useMyAxios} from 'hooks/useMyAxios'
 import { Command, SuccessCallback, System } from 'types/custom_types'
 
 const getSystem = (

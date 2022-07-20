@@ -1,6 +1,6 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useMemo, useState } from 'react'
-import { ServerConfig } from 'types/custom_types'
+import { ServerConfig } from 'types/config_types'
 import { createContainer } from 'unstated-next'
 
 const useServerConfig = () => {
