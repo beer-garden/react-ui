@@ -3,8 +3,10 @@ import { SystemIndexTable } from 'pages/SystemIndex/SystemIndexTable'
 
 const SystemsIndex = () => {
   return (
-    <Box pt={1}>
-      <SystemIndexTable />
+    <Box>
+      <Box pt={1}>
+        <SystemIndexTable />
+      </Box>
     </Box>
   )
 }

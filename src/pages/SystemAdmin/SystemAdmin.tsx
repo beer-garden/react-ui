@@ -83,7 +83,7 @@ const SystemAdmin = () => {
   const title = 'Systems Management'
 
   return (
-    <>
+    <Box>
       <Grid alignItems="flex-end" justifyContent="space-between" container>
         <Grid key={'header'} item>
           <PageHeader title={title} description={''} />
@@ -156,7 +156,7 @@ const SystemAdmin = () => {
         ))}
         {getSelectMessage(namespacesSelected)}
       </Box>
-    </>
+    </Box>
   )
 }
 

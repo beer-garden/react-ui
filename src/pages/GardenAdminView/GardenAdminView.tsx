@@ -111,12 +111,12 @@ const GardenAdminView = () => {
   function renderComponents() {
     if (garden) {
       return (
-        <>
+        <Box>
           <InfoCard garden={garden} />
           <Typography variant="h6">Connected Systems</Typography>
           <Table parentState={state} />
           {getConfigSetup()}
-        </>
+        </Box>
       )
     } else {
       return (

@@ -23,7 +23,7 @@ const GardensAdmin = (): JSX.Element => {
   }, [data, error])
 
   return (
-    <>
+    <div>
       <PageHeader title={'Gardens Management'} description={''} />
       <Divider />
       <Grid container spacing={3}>
@@ -33,7 +33,7 @@ const GardensAdmin = (): JSX.Element => {
           </Grid>
         ))}
       </Grid>
-    </>
+    </div>
   )
 }
 

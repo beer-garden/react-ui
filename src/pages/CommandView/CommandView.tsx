@@ -54,7 +54,7 @@ const CommandView = () => {
     const build = formBuilder(system, command)
     description = command.description
     formElement = (
-      <>
+      <Box>
         <CommandViewForm
           schema={build.schema}
           uiSchema={build.uiSchema}
@@ -75,17 +75,17 @@ const CommandView = () => {
             <ReactJson src={build.uiSchema} />
           </Box>
         </Box>
-      </>
+      </Box>
     )
   }
 
   return (
-    <>
+    <Box>
       <PageHeader title={title} description={description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       {formElement}
-    </>
+    </Box>
   )
 }
 

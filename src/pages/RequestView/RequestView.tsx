@@ -84,32 +84,26 @@ const RequestView = () => {
 
   return (
     <Box>
-      <Grid justifyContent="space-between" container>
-        <Grid item>
-          <PageHeader title="Request View" description={String(id)} />
-        </Grid>
-        <Grid item>
-          <Typography style={{ flex: 1 }}>
-            <Button
-              component={RouterLink}
-              to={[
-                '/systems',
-                namespace,
-                system,
-                systemVersion,
-                'commands',
-                command,
-              ].join('/')}
-              variant="contained"
-              color="primary"
-              onAuxClick={pourItAgainClick}
-              onClick={pourItAgainClick}
-            >
-              Pour it Again
-            </Button>
-          </Typography>
-        </Grid>
-      </Grid>
+      <Typography style={{ flex: 1, float: 'right' }}>
+        <Button
+          component={RouterLink}
+          to={[
+            '/systems',
+            namespace,
+            system,
+            systemVersion,
+            'commands',
+            command,
+          ].join('/')}
+          variant="contained"
+          color="primary"
+          onAuxClick={pourItAgainClick}
+          onClick={pourItAgainClick}
+        >
+          Pour it Again
+        </Button>
+      </Typography>
+      <PageHeader title="Request View" description={String(id)} />
       <Divider />
       {request ? (
         <>

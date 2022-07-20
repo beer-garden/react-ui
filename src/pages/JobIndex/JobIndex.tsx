@@ -22,11 +22,11 @@ const JobIndex = () => {
   }, [data, error])
 
   return (
-    <>
+    <div>
       <PageHeader title="Request Scheduler" description="" />
       <Divider />
       {getFormattedTable(jobs)}
-    </>
+    </div>
   )
 }
 
