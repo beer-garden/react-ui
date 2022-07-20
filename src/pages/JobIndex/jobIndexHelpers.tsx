@@ -36,7 +36,10 @@ const formatJobs = (jobs: Job[]) => {
         {name}
       </RouterLink>,
       status,
-      <RouterLink key={system} to={'/systems/' + namespace + '/' + system} />,
+      <RouterLink
+        key={system}
+        to={'/systems/' + namespace + '/' + system}
+      ></RouterLink>,
       instanceName,
       command,
       new Date(nextRunTime).toString(),

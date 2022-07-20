@@ -37,10 +37,10 @@ const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
       <NavigationBar setMarginLeft={setMarginLeft} />
       <div
         style={{
-          margin: '0 auto',
+          margin: `0 auto`,
           maxWidth: 1200,
           marginLeft: `${marginLeft}px`,
-          padding: '1rem 1.0875rem 1.45rem',
+          padding: `1rem 1.0875rem 1.45rem`,
         }}
       >
         <main>{children}</main>

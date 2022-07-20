@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 type Opener = (
-  open: boolean,
+  open: boolean
 ) => (event: React.KeyboardEvent | React.MouseEvent) => void
 
 type NavigationBarContextProviderProps = {
@@ -14,10 +14,7 @@ type navigationBarContext = {
   drawerIsOpen: boolean
 }
 
-const NavigationBarContext = React.createContext<navigationBarContext>({
-  toggleDrawer: {} as Opener,
-  drawerIsOpen: false,
-})
+const NavigationBarContext = React.createContext<navigationBarContext>({toggleDrawer: {} as Opener, drawerIsOpen: false})
 
 const NavigationBarContextProvider = ({
   toggleDrawer,
@@ -25,9 +22,7 @@ const NavigationBarContextProvider = ({
   children,
 }: NavigationBarContextProviderProps) => {
   return (
-    <NavigationBarContext.Provider
-      value={{ toggleDrawer: toggleDrawer, drawerIsOpen: drawerIsOpen }}
-    >
+    <NavigationBarContext.Provider value={{"toggleDrawer": toggleDrawer, "drawerIsOpen": drawerIsOpen}}>
       {children}
     </NavigationBarContext.Provider>
   )
