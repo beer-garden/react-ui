@@ -1,8 +1,50 @@
 import { AxiosResponse } from 'axios'
-import { Command, Parameter } from 'types/command_types'
 
 export type Dictionary = {
   [key: string]: any
+}
+
+export interface Command {
+  name: string
+  description: string
+  parameters: Parameter[]
+  command_type: string
+  output_type: string
+  template: string
+  icon_name: string
+  hidden: boolean
+  systemVersion: string
+  systemName: string
+  namespace: string
+  schema: any
+  form: any
+  metadata: any
+}
+
+interface Choice {
+  display: string
+  strict: boolean
+  type: string
+  value: any
+  details: any
+}
+
+export interface Parameter {
+  key: string
+  type: string
+  multi: boolean
+  display_name: string
+  optional: boolean
+  default: string
+  description: string
+  choices: Choice
+  parameters: Parameter[]
+  nullable: boolean
+  maximum: number
+  minimum: number
+  regex: string
+  form_input_type: string | null | undefined
+  type_info: any
 }
 
 export type Instance = {
@@ -212,4 +254,53 @@ export interface CommandParams {
 
 export interface TableInterface {
   parentState: TableState
+}
+
+export interface ModalProps {
+  header: string
+  open: boolean
+  content: JSX.Element
+  onClose(): void
+  onCancel(): void
+  onSubmit(): void
+}
+
+export interface ServerConfig {
+  application_name: string
+  auth_enabled: boolean
+  trusted_header_auth_enabled: boolean
+  icon_default: string
+  debug_mode: boolean
+  execute_javascript: boolean
+  garden_name: string
+  metrics_url: string
+  url_prefix: string
+}
+
+export interface VersionConfig {
+  beer_garden_version: string
+  current_api_version: string
+  supported_api_versions: [string]
+}
+
+export interface CommandBase {
+  namespace: string
+  system: string
+  command: string
+}
+
+export interface BlockedCommand extends CommandBase {
+  status?: string
+  id?: string
+}
+
+export interface CommandRow extends BlockedCommand {
+  action: JSX.Element
+  name: string | JSX.Element
+  description?: string
+  version?: string
+}
+
+export interface BlockedList {
+  command_publishing_blocklist: BlockedCommand[]
 }

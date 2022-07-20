@@ -1,6 +1,6 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useState } from 'react'
-import { BlockedCommand, BlockedList } from 'types/command_types'
+import { BlockedCommand, BlockedList } from 'types/custom_types'
 
 export const useBlockList = () => {
   const [blockList, setList] = useState<BlockedList>()

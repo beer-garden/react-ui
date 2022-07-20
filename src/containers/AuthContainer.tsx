@@ -1,6 +1,6 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect,useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createContainer } from 'unstated-next'
 
@@ -29,9 +29,7 @@ const useAuth = () => {
     _setUser(userName)
   }
 
-  const onTokenInvalid = useCallback(() => {
-    setUser(null)
-  }, [])
+  const onTokenInvalid = useCallback(() => { setUser(null) }, [])
 
   const { clearToken, setToken, isAuthenticated, getRefreshToken } = useToken(
     onTokenInvalid,

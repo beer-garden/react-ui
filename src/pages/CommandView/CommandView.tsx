@@ -9,8 +9,7 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
-import { Command } from 'types/command_types'
-import { System } from 'types/custom_types'
+import { Command, System } from 'types/custom_types'
 
 const CommandView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()

@@ -1,7 +1,7 @@
 import { Box, Button, Modal } from '@mui/material'
 import Divider from 'components/divider'
 import PageHeader from 'components/PageHeader'
-import { modalProps } from 'types/props_types'
+import { ModalProps } from 'types/custom_types'
 
 const style = {
   position: 'absolute',
@@ -15,7 +15,7 @@ const style = {
   p: 2,
 }
 
-export const ModalWrapper = (props: modalProps) => {
+export const ModalWrapper = (props: ModalProps) => {
   return (
     <>
       <Modal

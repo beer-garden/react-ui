@@ -4,7 +4,7 @@ import { Table } from 'components/Table'
 import { useCommands } from 'hooks/useCommands'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
-import { CommandRow } from 'types/command_types'
+import { CommandRow } from 'types/custom_types'
 
 const useCommandIndexTableColums = () => {
   return useMemo<Column<CommandRow>[]>(

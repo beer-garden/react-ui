@@ -98,7 +98,7 @@ const GardenAdminView = () => {
         return (
           <Alert severity="info">
             {
-              'Since this is the local Garden it\'s not possible to modify connection information'
+              "Since this is the local Garden it's not possible to modify connection information"
             }
           </Alert>
         )

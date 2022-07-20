@@ -9,7 +9,7 @@ import { useBlockList } from 'hooks/useBlockList'
 import { generateCommandName, useCommands } from 'hooks/useCommands'
 import { useMemo, useState } from 'react'
 import { Column } from 'react-table'
-import { BlockedCommand, CommandRow } from 'types/command_types'
+import { BlockedCommand, CommandRow } from 'types/custom_types'
 
 const ModalColumns = () => {
   return useMemo<Column<CommandRow>[]>(

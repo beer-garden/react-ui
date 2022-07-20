@@ -1,7 +1,6 @@
 import { UISchemaElement } from '@jsonforms/core'
 import { buildParameters } from 'builderForm/build_parameter'
-import { Command } from 'types/command_types'
-import { Dictionary, System } from 'types/custom_types'
+import { Command, Dictionary, System } from 'types/custom_types'
 
 export function formBuilder(
   system: System,
