@@ -10,8 +10,7 @@ import {
   useState,
 } from 'react'
 import { useParams } from 'react-router-dom'
-import { Command, CommandRow } from 'types/custom_types'
-import { System } from 'types/custom_types'
+import { Command, CommandRow, System } from 'types/custom_types'
 
 export const useCommands = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()

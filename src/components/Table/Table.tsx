@@ -167,6 +167,9 @@ const Table = <T extends TableData>(
   }, [setInitialState, debouncedState, columns])
 
   const { role: tableRole, ...tableProps } = getTableProps()
+  if (tableProps?.style) {
+    tableProps.style.wordBreak = 'break-word'
+  }
 
   return (
     <Fragment>
