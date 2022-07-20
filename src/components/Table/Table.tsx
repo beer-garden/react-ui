@@ -51,9 +51,7 @@ import {
   useTable,
 } from 'react-table'
 
-export interface TableData {
-  [key: string]: any
-}
+export type TableData = Record<string, unknown>
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,
@@ -166,9 +164,6 @@ const Table = <T extends TableData>(
   }, [setInitialState, debouncedState, columns])
 
   const { role: tableRole, ...tableProps } = getTableProps()
-  if (tableProps?.style) {
-    tableProps.style.wordBreak = 'break-word'
-  }
 
   return (
     <>
