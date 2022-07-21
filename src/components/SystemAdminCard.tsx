@@ -18,6 +18,7 @@ import {
   Select,
   SelectChangeEvent,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import SystemCardInstances from 'components/SystemCardInstances'
@@ -85,50 +86,72 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
             </Grid>
             <Grid item key={`${systems[systemIndex]}Actions`}>
               <Toolbar variant="dense" disableGutters sx={{ minHeight: 36 }}>
-                <IconButton
-                  size="small"
-                  component={RouterLink}
-                  to={[
-                    '/systems',
-                    systems[systemIndex].namespace,
-                    systems[systemIndex].name,
-                    systems[systemIndex].version,
-                  ].join('/')}
+                <Tooltip arrow title="View instance commands" placement="bottom-start">
+                  <IconButton
+                    size="small"
+                    component={RouterLink}
+                    to={[
+                      '/systems',
+                      systems[systemIndex].namespace,
+                      systems[systemIndex].name,
+                      systems[systemIndex].version,
+                    ].join('/')}
+                  >
+                    <LinkIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  arrow
+                  title="Start all instances"
+                  placement="bottom-start"
                 >
-                  <LinkIcon />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => systemClient.startSystem(systems[systemIndex])}
-                  aria-label="start"
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      systemClient.startSystem(systems[systemIndex])
+                    }
+                    aria-label="start"
+                  >
+                    <PlayCircleFilledIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  arrow
+                  title="Stop all instances"
+                  placement="bottom-start"
                 >
-                  <PlayCircleFilledIcon />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => systemClient.stopSystem(systems[systemIndex])}
-                  aria-label="stop"
-                >
-                  <StopIcon />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() =>
-                    systemClient.reloadSystem(systems[systemIndex].id)
-                  }
-                  aria-label="reload"
-                >
-                  <CachedIcon />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() =>
-                    systemClient.deleteSystem(systems[systemIndex].id)
-                  }
-                  aria-label="delete"
-                >
-                  <DeleteIcon />
-                </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      systemClient.stopSystem(systems[systemIndex])
+                    }
+                    aria-label="stop"
+                  >
+                    <StopIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip arrow title="Reload system" placement="bottom-start">
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      systemClient.reloadSystem(systems[systemIndex].id)
+                    }
+                    aria-label="reload"
+                  >
+                    <CachedIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip arrow title="Delete system" placement="bottom-start">
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      systemClient.deleteSystem(systems[systemIndex].id)
+                    }
+                    aria-label="delete"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </Toolbar>
             </Grid>
             <Grid item key="description">
