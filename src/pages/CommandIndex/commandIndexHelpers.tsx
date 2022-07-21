@@ -1,6 +1,31 @@
 import { MakeItHappenButton } from 'pages/CommandIndex'
-import { filterSystems } from 'services/system.service'
 import { Command, System } from 'types/custom_types'
+
+const filterSystems = (
+  systems: System[],
+  params: {
+    name?: string | undefined
+    namespace?: string | undefined
+    version?: string | undefined
+  },
+) => {
+  if (params.name) {
+    systems = systems.filter(function (system: System) {
+      return system['name'] === params.name
+    })
+  }
+  if (params.namespace) {
+    systems = systems.filter(function (system: System) {
+      return system['namespace'] === params.namespace
+    })
+  }
+  if (params.version) {
+    systems = systems.filter(function (system: System) {
+      return system['version'] === params.version
+    })
+  }
+  return systems
+}
 
 const formatCommands = (commands: Command[]) => {
   const formattedData: (string | JSX.Element)[][] = []
