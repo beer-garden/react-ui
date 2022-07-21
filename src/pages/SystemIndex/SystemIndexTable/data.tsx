@@ -1,20 +1,8 @@
-import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useSystems from 'hooks/useSystems'
+import { ExploreButton } from 'pages/SystemIndex/SystemIndexTable'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
-import { System } from 'types/custom_types'
-
-import { ExploreButton } from '.'
-
-export type SystemIndexTableData = {
-  namespace: string
-  name: string
-  version: string
-  description: string
-  commandCount: number
-  instanceCount: number
-  exploreButton: JSX.Element
-}
+import { System, SystemIndexTableData } from 'types/custom_types'
 
 const systemMapper = (system: System): SystemIndexTableData => {
   return {
@@ -28,9 +16,10 @@ const systemMapper = (system: System): SystemIndexTableData => {
   }
 }
 
-const useSystemIndexTableData = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  return useSystems(systemMapper, authEnabled)
+const useSystemIndexTableData = (): SystemIndexTableData[] => {
+  const systemClient = useSystems()
+  const systemList = systemClient.getSystems()
+  return systemList.map(systemMapper)
 }
 
 const useSystemIndexTableColumns = () => {
@@ -104,4 +93,4 @@ const useSystemIndexTableColumns = () => {
   )
 }
 
-export { useSystemIndexTableColumns,useSystemIndexTableData }
+export { useSystemIndexTableColumns, useSystemIndexTableData }
