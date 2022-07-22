@@ -109,7 +109,7 @@ const httpTopRow = [
       label: 'URL prefix',
       tooltip:
         'URL path that will be used as a prefix when communicating with ' +
-        "Beer-garden. Useful if Beer-garden is running on a URL other than '/'",
+        'Beer-garden. Useful if Beer-garden is running on a URL other than "/"',
     },
   },
 ]
