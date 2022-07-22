@@ -29,28 +29,26 @@ const JobView = () => {
   }, [getJob, params.id, id, job])
 
   return (
-    <>
-      <Grid justifyContent="space-between" container>
-        <Grid item>
-          <PageHeader title="Job" description={description} />
-        </Grid>
-        <Grid item>
-          <Typography style={{ flex: 1 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={deleteButtonCallback}
-            >
-              Delete Job
-            </Button>
-            <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
-            <Button variant="contained" color="primary">
-              Update Job
-            </Button>
-          </Typography>
-        </Grid>
+    <Grid justifyContent="space-between" container>
+      <Grid item>
+        <PageHeader title="Job" description={description} />
       </Grid>
-    </>
+      <Grid item>
+        <Typography style={{ flex: 1 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={deleteButtonCallback}
+          >
+            Delete Job
+          </Button>
+          <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
+          <Button variant="contained" color="primary">
+            Update Job
+          </Button>
+        </Typography>
+      </Grid>
+    </Grid>
   )
 }
 

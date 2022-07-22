@@ -83,7 +83,7 @@ const RequestView = () => {
   }
 
   return (
-    <>
+    <Box>
       <Grid justifyContent="space-between" container>
         <Grid item>
           <PageHeader title="Request View" description={String(id)} />
@@ -191,7 +191,7 @@ const RequestView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-    </>
+    </Box>
   )
 }
 
