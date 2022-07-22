@@ -12,7 +12,6 @@ import { TableData } from 'components/Table'
 import { ColumnHidePage } from 'components/Table/toolbar/ColumnHidePage'
 import { FilterPage } from 'components/Table/toolbar/FilterPage'
 import {
-  Fragment,
   MouseEvent as ReactMouseEvent,
   MouseEventHandler,
   ReactElement,
@@ -132,7 +131,7 @@ const Toolbar = <T extends TableData>({ name, instance }: ToolbarProps<T>) => {
   }, [])
 
   return (
-    <Fragment>
+    <>
       <MuiToolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box ml={-3}>
           <Typography variant="h4">{name}</Typography>
@@ -167,7 +166,7 @@ const Toolbar = <T extends TableData>({ name, instance }: ToolbarProps<T>) => {
         </Box>
       </MuiToolbar>
       <Divider />
-    </Fragment>
+    </>
   )
 }
 

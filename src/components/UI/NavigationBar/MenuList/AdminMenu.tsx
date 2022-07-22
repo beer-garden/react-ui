@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import * as React from 'react'
 
 const AdminMenu = () => {
@@ -30,7 +30,7 @@ const AdminMenu = () => {
   }
 
   return (
-    <Fragment>
+    <>
       <ListItemButton sx={{ pl: 1 }} onClick={handleClick}>
         <ListItemIcon>
           <LibraryBooksIcon fontSize="small" />
@@ -59,7 +59,7 @@ const AdminMenu = () => {
           />
         </MenuList>
       </Collapse>
-    </Fragment>
+    </>
   )
 }
 

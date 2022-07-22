@@ -70,7 +70,7 @@ const getFormattedTable = (jobs: Job[]) => {
     const template = job.request_template
 
     return (
-      <div>
+      <>
         <JobTable
           parentState={{
             completeDataSet: jobs,
@@ -95,7 +95,7 @@ const getFormattedTable = (jobs: Job[]) => {
             </Box>
           </Box>
         </Box>
-      </div>
+      </>
     )
   }
   return (

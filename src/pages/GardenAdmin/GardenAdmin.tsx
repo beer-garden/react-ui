@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import useAxios from 'axios-hooks'
 import Divider from 'components/divider'
 import GardenCard from 'components/garden_admin_card'
@@ -23,7 +23,7 @@ const GardensAdmin = (): JSX.Element => {
   }, [data, error])
 
   return (
-    <div>
+    <Box>
       <PageHeader title={'Gardens Management'} description={''} />
       <Divider />
       <Grid container spacing={3}>
@@ -33,7 +33,7 @@ const GardensAdmin = (): JSX.Element => {
           </Grid>
         ))}
       </Grid>
-    </div>
+    </Box>
   )
 }
 

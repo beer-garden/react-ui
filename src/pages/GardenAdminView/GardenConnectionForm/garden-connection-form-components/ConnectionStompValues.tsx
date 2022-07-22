@@ -6,11 +6,10 @@ import {
   ConnectionTextField,
   ConnectionTextFieldPropsType,
 } from 'pages/GardenAdminView'
-import { Fragment } from 'react'
 
 const ConnectionStompValues = () => {
   return (
-    <Fragment>
+    <>
       <ConnectionFormHeading labelText={'STOMP Settings'} sx={{ mb: -3 }} />
       <Stack direction="row" spacing={3} sx={{ m: 3 }}>
         {firstRow.map(mapToTextfieldComponents)}
@@ -30,7 +29,7 @@ const ConnectionStompValues = () => {
       </Stack>
       <Divider sx={{ mt: 2, mb: 1 }} />
       <ConnectionStompHeaders />
-    </Fragment>
+    </>
   )
 }
 

@@ -28,7 +28,7 @@ const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
   >(undefined)
 
   return (
-    <Box>
+    <>
       <Formik
         initialValues={connectionInitialValues(conxType, conxParms)}
         validationSchema={connectionValidationSchema}
@@ -52,7 +52,7 @@ const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
           status={submissionStatus as SubmissionStatusState}
         />
       ) : null}
-    </Box>
+    </>
   )
 }
 

@@ -1,4 +1,4 @@
-import { Divider } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 import useAxios from 'axios-hooks'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -22,11 +22,11 @@ const JobIndex = () => {
   }, [data, error])
 
   return (
-    <div>
+    <Box>
       <PageHeader title="Request Scheduler" description="" />
       <Divider />
       {getFormattedTable(jobs)}
-    </div>
+    </Box>
   )
 }
 

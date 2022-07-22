@@ -6,11 +6,10 @@ import {
   ConnectionTextFieldPropsType,
   getFieldValues,
 } from 'pages/GardenAdminView'
-import { Fragment } from 'react'
 
 const ConnectionHttpValues = () => {
   return (
-    <Fragment>
+    <>
       <ConnectionFormHeading labelText={'HTTP Settings'} sx={{ mb: -3 }} />
       <Stack direction="row" spacing={3} sx={{ m: 3 }}>
         {httpTopRow.map(mapToTextfieldComponents)}
@@ -67,7 +66,7 @@ const ConnectionHttpValues = () => {
           }}
         />
       </Stack>
-    </Fragment>
+    </>
   )
 }
 
