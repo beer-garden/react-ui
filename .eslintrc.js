@@ -100,9 +100,9 @@ module.exports = {
         "react/react-in-jsx-scope": "off",
         "react/jsx-filename-extension": "off",
         "react/jsx-closing-tag-location": "error",
-        "react/jsx-pascal-case": "error,
-        "react/self-closing-comp": "error,
-        "react/jsx-wrap-multilines": "error,
+        "react/jsx-pascal-case": "error",
+        "react/self-closing-comp": "error",
+        "react/jsx-wrap-multilines": "error",
         "react/prop-types": "off",
     }
 
