@@ -3,6 +3,7 @@ import {
   ExpandMore as ExpandMoreIcon,
   LibraryBooks as LibraryBooksIcon,
 } from '@mui/icons-material'
+import BlockIcon from '@mui/icons-material/Block'
 import FactoryIcon from '@mui/icons-material/Factory'
 import LocalFloristIcon from '@mui/icons-material/LocalFlorist'
 import {
@@ -55,6 +56,12 @@ const AdminMenu = () => {
             icon={<FactoryIcon fontSize="small" />}
             primary={'Systems'}
             to={'/admin/systems'}
+            sx={{ pl: 3 }}
+          />
+          <ListItemLink
+            icon={<BlockIcon fontSize="small" />}
+            primary={'Command Publishing Blocklist'}
+            to={'/admin/commandblocklist'}
             sx={{ pl: 3 }}
           />
         </MenuList>

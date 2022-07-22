@@ -1,6 +1,7 @@
 import JobCreateApp from 'apps/job_create_app'
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { CommandBlocklistView } from 'pages/CommandBlocklistView'
 import { CommandIndex } from 'pages/CommandIndex'
 import { CommandView } from 'pages/CommandView'
 import { GardensAdmin } from 'pages/GardenAdmin'
@@ -62,6 +63,7 @@ const Routes = () => {
           <Route index element={<GardensAdmin />} />
           <Route path={':gardenName'} element={<GardenAdminView />} />
         </Route>
+        <Route path="commandblocklist" element={<CommandBlocklistView />} />
       </Route>
 
       <Route path={'requests'} element={<RequireAuth />}>

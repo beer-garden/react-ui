@@ -4,7 +4,7 @@ export type Dictionary = {
   [key: string]: any
 }
 
-export type Command = {
+export interface Command {
   name: string
   description: string
   parameters: Parameter[]
@@ -21,7 +21,7 @@ export type Command = {
   metadata: any
 }
 
-export type Choice = {
+interface Choice {
   display: string
   strict: boolean
   type: string
@@ -29,7 +29,7 @@ export type Choice = {
   details: any
 }
 
-export type Parameter = {
+export interface Parameter {
   key: string
   type: string
   multi: boolean
@@ -180,13 +180,13 @@ export interface TableState {
   completeDataSet?: System[] | Command[] | Request[] | Job[]
   redirect?: JSX.Element | null
   formatData?(
-    data?: System[] | Command[] | Request[] | Job[]
+    data?: System[] | Command[] | Request[] | Job[],
   ): (string | JSX.Element | number | null)[][]
   setSearchApi?(value: string, id: string, setDateEnd?: boolean): void
   apiDataCall?(
     page: number,
     rowsPerPage: number,
-    successCallback: SuccessCallback
+    successCallback: SuccessCallback,
   ): void
   getCellButton?(system: System): JSX.Element
   includeChildren?: boolean
@@ -254,4 +254,35 @@ export interface CommandParams {
 
 export interface TableInterface {
   parentState: TableState
+}
+
+export interface ModalProps {
+  header: string
+  open: boolean
+  content: JSX.Element
+  onClose(): void
+  onCancel(): void
+  onSubmit(): void
+}
+
+export interface CommandBase {
+  namespace: string
+  system: string
+  command: string
+}
+
+export interface BlockedCommand extends CommandBase {
+  status?: string
+  id?: string
+}
+
+export interface CommandRow extends BlockedCommand {
+  action: JSX.Element
+  name: string | JSX.Element
+  description?: string
+  version?: string
+}
+
+export interface BlockedList {
+  command_publishing_blocklist: BlockedCommand[]
 }
