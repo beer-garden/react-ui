@@ -3,7 +3,7 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/'
 import { TableData } from 'components/Table'
 import { useActiveElement } from 'components/Table/filters/filterHelpers'
 import moment from 'moment'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import { FilterProps } from 'react-table'
 
 const isValidDateString = (input: string) =>
@@ -52,7 +52,7 @@ const DateRangeColumnFilter = ({
   }
 
   return (
-    <Fragment>
+    <>
       <InputLabel htmlFor={id} shrink focused={!!hasFocus}>
         {render('Header')}
       </InputLabel>
@@ -149,7 +149,7 @@ const DateRangeColumnFilter = ({
           OpenPickerButtonProps={{ id: `${id}_1_button` }}
         />
       </Box>
-    </Fragment>
+    </>
   )
 }
 
