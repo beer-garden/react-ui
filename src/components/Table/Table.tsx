@@ -52,9 +52,7 @@ import {
   useTable,
 } from 'react-table'
 
-export interface TableData {
-  [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
-}
+export type TableData = Record<string, unknown>
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,

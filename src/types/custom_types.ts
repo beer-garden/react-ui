@@ -4,7 +4,7 @@ export type Dictionary = {
   [key: string]: any
 }
 
-export interface Command {
+export type Command = {
   name: string
   description: string
   parameters: Parameter[]
@@ -21,7 +21,7 @@ export interface Command {
   metadata: any
 }
 
-interface Choice {
+type Choice = {
   display: string
   strict: boolean
   type: string
@@ -29,7 +29,7 @@ interface Choice {
   details: any
 }
 
-export interface Parameter {
+export type Parameter = {
   key: string
   type: string
   multi: boolean
@@ -256,7 +256,7 @@ export interface TableInterface {
   parentState: TableState
 }
 
-export interface ModalProps {
+export type ModalProps = {
   header: string
   open: boolean
   content: JSX.Element
@@ -265,24 +265,21 @@ export interface ModalProps {
   onSubmit(): void
 }
 
-export interface CommandBase {
+export type CommandBase = {
   namespace: string
   system: string
   command: string
-}
-
-export interface BlockedCommand extends CommandBase {
   status?: string
   id?: string
 }
 
-export interface CommandRow extends BlockedCommand {
+export type CommandRow = CommandBase & {
   action: JSX.Element
   name: string | JSX.Element
   description?: string
   version?: string
 }
 
-export interface BlockedList {
-  command_publishing_blocklist: BlockedCommand[]
+export type BlockedList = {
+  command_publishing_blocklist: CommandBase[]
 }

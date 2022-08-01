@@ -1,6 +1,8 @@
 import { MakeItHappenButton } from 'pages/CommandIndex'
+import { useMemo } from 'react'
+import { Column } from 'react-table'
 import { filterSystems } from 'services/system.service'
-import { Command, System } from 'types/custom_types'
+import { Command, CommandRow, System } from 'types/custom_types'
 
 const formatCommands = (commands: Command[]) => {
   const formattedData: (string | JSX.Element)[][] = []
@@ -53,4 +55,47 @@ const getCommands = (
   return commands.flat()
 }
 
-export { formatCommands as formatData, getCommands }
+const useCommandIndexTableColums = () => {
+  return useMemo<Column<CommandRow>[]>(
+    () => [
+      {
+        Header: 'Namespace',
+        accessor: 'namespace',
+        width: 150,
+      },
+      {
+        Header: 'System',
+        accessor: 'system',
+        filter: 'fuzzyText',
+        width: 150,
+      },
+      {
+        Header: 'Version',
+        accessor: 'version',
+        width: 120,
+      },
+      {
+        Header: 'Command',
+        accessor: 'name',
+        width: 300,
+      },
+      {
+        Header: 'Description',
+        accessor: 'description',
+        width: 300,
+      },
+      {
+        Header: '',
+        accessor: 'action',
+        disableSortBy: true,
+        disableGroupBy: true,
+        disableFilters: true,
+        canHide: false,
+        width: 120,
+      },
+    ],
+    [],
+  )
+}
+
+export { formatCommands as formatData, getCommands, useCommandIndexTableColums }
