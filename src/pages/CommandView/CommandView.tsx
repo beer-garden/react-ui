@@ -35,8 +35,6 @@ const CommandView = () => {
     (x) => !!x,
   ) as string[]
   const title = commandName ?? ''
-  let description = ''
-  let formElement: JSX.Element = <div />
 
   const system = systems.find(
     (s: System) =>
@@ -48,43 +46,41 @@ const CommandView = () => {
   const command = system?.commands?.find((c: Command) => {
     return c.name === commandName
   }) as Command
-
+  let build
   if (system && command) {
-    const build = formBuilder(system, command)
-    description = command.description
-    formElement = (
-      <Box>
-        <CommandViewForm
-          schema={build.schema}
-          uiSchema={build.uiSchema}
-          initialModel={build.model}
-          command={command}
-        />
-        <Box pt={2} display="flex" alignItems="flex-start">
-          <Box width={1 / 3}>
-            <h3>Command</h3>
-            <ReactJson src={command} />
-          </Box>
-          <Box width={1 / 3}>
-            <h3>Schema</h3>
-            <ReactJson src={build.schema} />
-          </Box>
-          <Box width={1 / 3}>
-            <h3>UI Schema</h3>
-            <ReactJson src={build.uiSchema} />
-          </Box>
-        </Box>
-      </Box>
-    )
+    build = formBuilder(system, command)
   }
 
   return (
-    <Box>
-      <PageHeader title={title} description={description} />
+    <>
+      <PageHeader title={title} description={command?.description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      {formElement}
-    </Box>
+      {build && (
+        <>
+          <CommandViewForm
+            schema={build.schema}
+            uiSchema={build.uiSchema}
+            initialModel={build.model}
+            command={command}
+          />
+          <Box pt={2} display="flex" alignItems="flex-start">
+            <Box width={1 / 3}>
+              <h3>Command</h3>
+              <ReactJson src={command} />
+            </Box>
+            <Box width={1 / 3}>
+              <h3>Schema</h3>
+              <ReactJson src={build.schema} />
+            </Box>
+            <Box width={1 / 3}>
+              <h3>UI Schema</h3>
+              <ReactJson src={build.uiSchema} />
+            </Box>
+          </Box>
+        </>
+      )}
+    </>
   )
 }
 

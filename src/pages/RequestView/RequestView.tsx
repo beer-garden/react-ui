@@ -77,7 +77,7 @@ const RequestView = () => {
 
   const pourItAgainClick = () => {
     if (request) {
-      CacheService.pushQueue(request, `lastKnownPourItAgainRequest`)
+      CacheService.pushQueue(request, 'lastKnownPourItAgainRequest')
     }
   }
 
