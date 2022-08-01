@@ -11,7 +11,7 @@ interface JobButtonParams {
 
 const JobButton = ({ job, id, callback }: JobButtonParams) => {
   const { pauseJob, resumeJob } = useJobServices()
-  if (job.status === 'RUNNING') {
+  if (job && job.status === 'RUNNING') {
     return (
       <Button
         variant="contained"

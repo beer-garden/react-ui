@@ -102,6 +102,7 @@
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
     "prepare": "husky install",
     "start": "PORT=4000 BROWSER=none react-app-rewired start",
-    "test": "NODE_ENV=test jest --bail --findRelatedTests --passWithNoTests src/"
+    "test": "NODE_ENV=test CI=true react-app-rewired test",
+    "test-watch": "NODE_ENV=test react-app-rewired test"
   }
 }

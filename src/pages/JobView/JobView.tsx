@@ -38,7 +38,8 @@ const JobView = () => {
         >
           Delete Job
         </Button>
-        <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
+        (job &&
+        <JobButton job={job as Job} id={id} callback={jobButtonCallback} />)
         <Button variant="contained" color="primary">
           Update Job
         </Button>
