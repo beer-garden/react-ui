@@ -29,7 +29,6 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
-  Fragment,
   PropsWithChildren,
   ReactElement,
   useCallback,
@@ -170,7 +169,7 @@ const Table = <T extends TableData>(
   }
 
   return (
-    <Fragment>
+    <>
       <Toolbar name={tableName} instance={instance} />
       <FilterChipBar<T> instance={instance} />
 
@@ -309,7 +308,7 @@ const Table = <T extends TableData>(
         </TableBody>
       </StyledTable>
       <TablePagination instance={instance} />
-    </Fragment>
+    </>
   )
 }
 

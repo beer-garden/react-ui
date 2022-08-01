@@ -14,7 +14,7 @@ const DrawerFooter = () => {
   const { config } = ServerConfigContainer.useContainer()
   const versionConfig = useVersion()
   return (
-    <MuiMenuList dense style={{ marginTop: `auto` }}>
+    <MuiMenuList dense style={{ marginTop: 'auto' }}>
       <Divider />
       <MenuItem disabled style={{ opacity: 'unset' }} sx={{ pl: 1 }}>
         <ListItemIcon>
