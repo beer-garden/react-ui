@@ -62,22 +62,20 @@ const systemIcon = (systems: System[]) => {
  */
 const instanceIcon = (instances: Instance[]) => {
   let status = false
-  instances.forEach((instance: Instance) => {
+  const trueTriggers = [
+    'STARTING',
+    'INITIALIZING',
+    'RELOADING',
+    'STOPPING',
+    'UNRESPONSIVE',
+    'DEAD',
+    'STOPPED',
+  ]
+  trueTriggers.forEach((trigger) => {
     if (!status) {
-      switch (instance.status) {
-        case 'RUNNING':
-          status = false
-          break
-        case 'STARTING':
-        case 'INITIALIZING':
-        case 'RELOADING':
-        case 'STOPPING':
-        case 'UNRESPONSIVE':
-        case 'DEAD':
-        case 'STOPPED':
-          status = true
-          break
-      }
+      status = instances.some(
+        (instance: Instance) => instance.status === trigger,
+      )
     }
   })
   return status

@@ -1,3 +1,5 @@
-export * from './NamespcCard'
+export * from './NamespaceCard'
+export * from './system-admin-helpers'
 export * from './SystemAdmin'
-export * from './systemAdminHelpers'
+export * from './SystemAdminCard'
+export * from './SystemCardInstances'
