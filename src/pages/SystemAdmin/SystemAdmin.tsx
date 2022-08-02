@@ -1,9 +1,8 @@
-import { Alert, Button, Grid, Tooltip } from '@mui/material'
-import Divider from 'components/divider'
+import { Alert, Box, Button, Divider, Grid, Tooltip } from '@mui/material'
 import NamespaceSelect from 'components/namespace_select'
 import PageHeader from 'components/PageHeader'
 import useNamespace from 'hooks/useNamespace'
-import { NamespcCard } from 'pages/SystemAdmin/NamespcCard'
+import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { useState } from 'react'
 import AdminService from 'services/admin_service'
 import CacheService from 'services/cache_service'
@@ -24,7 +23,7 @@ const SystemAdmin = () => {
   )
 
   return (
-    <>
+    <Box>
       <Grid alignItems="flex-end" justifyContent="space-between" container>
         <Grid key="header" item>
           <PageHeader title="Systems Management" description="" />
@@ -66,12 +65,12 @@ const SystemAdmin = () => {
           </Tooltip>
         </Grid>
       </Grid>
-      <Divider />
+      <Divider sx={{ my: 2 }} />
       {namespacesSelected.map((namespace: string) => (
-        <NamespcCard namespace={namespace} key={namespace + 'card'} />
+        <NamespaceCard namespace={namespace} key={namespace + 'card'} />
       ))}
       {getSelectMessage(namespacesSelected)}
-    </>
+    </Box>
   )
 }
 
