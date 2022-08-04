@@ -20,6 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import OverflowTooltip from 'components/overflowTooltip'
 import useSystems from 'hooks/useSystems'
 import {
   alertStyle,
@@ -51,18 +52,13 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
         icon={instanceIcon(systems[systemIndex].instances) ? undefined : false}
         severity={systemsSeverity(systems)}
       >
-        <Typography
-          variant="h6"
-          sx={{
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            py: 0,
-          }}
+        <OverflowTooltip
           color="common.white"
-        >
-          {systems[systemIndex].name}
-        </Typography>
+          variant="h6"
+          tooltip={systems[systemIndex].name}
+          text={systems[systemIndex].name}
+          css={{ py: 0 }}
+        />
       </Alert>
       <CardContent>
         <Grid justifyContent="center" container>

@@ -1,4 +1,4 @@
-import { AlertColor } from '@mui/material'
+import { AlertColor, TypographyTypeMap } from '@mui/material'
 import { AxiosResponse } from 'axios'
 
 export type Dictionary = {
@@ -265,4 +265,12 @@ export interface CommandParams {
 
 export interface TableInterface {
   parentState: TableState
+}
+
+export interface OverflowTooltipProps {
+  tooltip: string
+  text: string
+  css: { [key: string]: unknown }
+  variant: TypographyTypeMap['props']['variant']
+  color?: string
 }

@@ -13,8 +13,8 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-  Typography,
 } from '@mui/material'
+import OverflowTooltip from 'components/overflowTooltip'
 import useSystems from 'hooks/useSystems'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { alertStyle, getSeverity } from 'pages/SystemAdmin'
@@ -37,15 +37,20 @@ const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
                 {...bindTrigger(popupState)}
                 variant="contained"
                 size="small"
-                sx={{ padding: 0 }}
+                sx={{ padding: 0, minWidth: '50px', maxWidth: '150px' }}
               >
-                <Tooltip arrow title={instance.status} placement="bottom-start">
+                <Tooltip arrow title={instance.status} placement="top-start">
                   <Alert
                     severity={getSeverity(instance.status)}
                     sx={alertStyle}
                     icon={false}
                   >
-                    <Typography variant="subtitle2">{instance.name}</Typography>
+                    <OverflowTooltip
+                      variant="subtitle2"
+                      tooltip={instance.name}
+                      text={instance.name}
+                      css={{ py: 0 }}
+                    />
                   </Alert>
                 </Tooltip>
               </Button>
