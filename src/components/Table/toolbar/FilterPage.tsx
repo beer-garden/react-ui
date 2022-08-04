@@ -66,7 +66,7 @@ const FilterPage = <T extends TableData>({
           </Typography>
           <form onSubmit={onSubmit}>
             <Button
-              color="primary"
+              color="secondary"
               onClick={resetFilters}
               sx={{ position: 'absolute', top: 18, right: 21 }}
             >
@@ -107,6 +107,7 @@ const FilterPage = <T extends TableData>({
                         display: 'inline-flex',
                         flexDirection: 'column',
                       }}
+
                     >
                       {column.render('Filter')}
                     </Box>

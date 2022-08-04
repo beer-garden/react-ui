@@ -25,7 +25,7 @@ const CommandIndexTable = () => {
         <FormControlLabel
           label="Include hidden"
           control={
-            <Checkbox checked={includeHidden} onChange={hiddenOnChange} />
+            <Checkbox checked={includeHidden} onChange={hiddenOnChange} color="secondary"/>
           }
         />
       </Box>
