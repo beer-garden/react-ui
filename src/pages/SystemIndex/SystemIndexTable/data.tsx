@@ -83,7 +83,7 @@ const useSystemIndexTableColumns = () => {
             disableGroupBy: true,
             disableFilters: true,
             canHide: false,
-            width: 120,
+            width: 300,
             midWidth: 90,
           },
         ],
