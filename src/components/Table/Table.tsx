@@ -51,7 +51,9 @@ import {
   useTable,
 } from 'react-table'
 
-export type TableData = Record<string, unknown>
+export interface TableData {
+  [key: string]: unknown
+}
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,

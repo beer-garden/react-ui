@@ -1,10 +1,12 @@
+import { TypographyTypeMap } from '@mui/material'
 import { AxiosResponse } from 'axios'
+import { TableData } from 'components/Table'
 
 export type Dictionary = {
   [key: string]: any
 }
 
-export type Command = {
+export interface Command {
   name: string
   description: string
   parameters: Parameter[]
@@ -21,7 +23,7 @@ export type Command = {
   metadata: any
 }
 
-type Choice = {
+interface Choice {
   display: string
   strict: boolean
   type: string
@@ -29,7 +31,7 @@ type Choice = {
   details: any
 }
 
-export type Parameter = {
+export interface Parameter {
   key: string
   type: string
   multi: boolean
@@ -256,7 +258,7 @@ export interface TableInterface {
   parentState: TableState
 }
 
-export type ModalProps = {
+export interface ModalProps {
   header: string
   open: boolean
   content: JSX.Element
@@ -265,7 +267,7 @@ export type ModalProps = {
   onSubmit(): void
 }
 
-export type CommandBase = {
+export interface CommandBase {
   namespace: string
   system: string
   command: string
@@ -273,13 +275,21 @@ export type CommandBase = {
   id?: string
 }
 
-export type CommandRow = CommandBase & {
+export interface CommandRow extends CommandBase, TableData {
   action: JSX.Element
   name: string | JSX.Element
   description?: string
   version?: string
 }
 
-export type BlockedList = {
+export interface BlockedList {
   command_publishing_blocklist: CommandBase[]
+}
+
+export interface OverflowTooltipProps {
+  tooltip: string
+  text: string
+  css: { [key: string]: unknown }
+  variant: TypographyTypeMap['props']['variant']
+  color?: string
 }
