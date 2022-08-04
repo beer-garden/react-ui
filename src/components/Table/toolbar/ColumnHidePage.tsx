@@ -77,7 +77,7 @@ const ColumnHidePage = <T extends TableData>({
                   <Checkbox
                     value={`${column.id}`}
                     disabled={column.isVisible && onlyOneOptionLeft}
-                    color = 'secondary'
+                    color = "secondary"
                   />
                 }
                 label={column.render('Header')}

@@ -123,7 +123,7 @@ const RequestsIndexTable = () => {
           <Checkbox
             checked={includeChildren}
             onChange={includeChildrenOnChange}
-            color='secondary'
+            color="secondary"
           />
         }
       />
@@ -133,7 +133,7 @@ const RequestsIndexTable = () => {
           <Checkbox 
           checked={showHidden} 
           onChange={showHiddenOnChange} 
-          color = 'secondary'/>
+          color = "secondary"/>
         }
       />
       {isErrored ? (
@@ -143,7 +143,7 @@ const RequestsIndexTable = () => {
       ) : (
         <LoadingButton
           size="small"
-          color = 'secondary'
+          color = "secondary"
           loadingIndicator="Loading..."
           loading={isLoading}
           startIcon={<RefreshIcon />}
