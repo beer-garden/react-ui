@@ -118,15 +118,20 @@ export const CommandBlocklistView = () => {
         }}
         content={
           <Table
-            tableName=""
+            tableName="All Commands"
             data={commandListData}
             columns={useModalColumns()}
+            maxRows={10}
           />
         }
       />
       <PageHeader title="Command Publishing Blocklist" description="" />
       <Divider />
-      <Table tableName="" data={blocklistData} columns={useTableColumns()} />
+      <Table
+        tableName="Blocked Commands"
+        data={blocklistData}
+        columns={useTableColumns()}
+      />
     </Box>
   )
 }

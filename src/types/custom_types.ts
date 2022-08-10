@@ -258,15 +258,6 @@ export interface TableInterface {
   parentState: TableState
 }
 
-export interface ModalProps {
-  header: string
-  open: boolean
-  content: JSX.Element
-  onClose(): void
-  onCancel(): void
-  onSubmit(): void
-}
-
 export interface CommandBase {
   namespace: string
   system: string

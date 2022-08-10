@@ -26,6 +26,7 @@ import PropTypes from 'prop-types'
 import { BaseSyntheticEvent, useState } from 'react'
 import CacheService from 'services/cache_service'
 import { TableInterface } from 'types/custom_types'
+import { getRowPageOptions } from 'utils/table-helpers'
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -257,12 +258,13 @@ const MyTable = ({ parentState }: TableInterface) => {
       if (totalItemsFiltered === '0' || !totalItemsFiltered) {
         count = totalItems
       }
+      const rowMax = parseInt(count) <= 100 ? parseInt(count) : 100
       return (
         <Table>
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 100]}
+                rowsPerPageOptions={getRowPageOptions(rowMax, parseInt(count))}
                 colSpan={3}
                 count={parseInt(count)}
                 rowsPerPage={rowsPerPage}

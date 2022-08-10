@@ -85,6 +85,7 @@ interface TableProps<T extends TableData> extends TableOptions<T> {
   data: T[]
   columns: Column<T>[]
   showGlobalFilter?: boolean
+  maxRows?: number
 }
 
 const DEBUG_INITIAL_STATE = false
@@ -309,7 +310,7 @@ const Table = <T extends TableData>(
           })}
         </TableBody>
       </StyledTable>
-      <TablePagination instance={instance} />
+      <TablePagination maxRows={props.maxRows} instance={instance} />
     </>
   )
 }

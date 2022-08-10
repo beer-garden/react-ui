@@ -1,7 +1,15 @@
 import { Box, Button, Modal } from '@mui/material'
 import Divider from 'components/divider'
 import PageHeader from 'components/PageHeader'
-import { ModalProps } from 'types/custom_types'
+
+interface ModalProps {
+  header: string
+  open: boolean
+  content: JSX.Element
+  onClose(): void
+  onCancel(): void
+  onSubmit(): void
+}
 
 const style = {
   position: 'absolute',

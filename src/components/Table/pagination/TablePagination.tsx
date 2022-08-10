@@ -4,13 +4,16 @@ import TablePaginationActions from 'components/Table/pagination/TablePaginationA
 import { useCallback } from 'react'
 import { MouseEvent as ReactMouseEvent } from 'react'
 import { TableInstance } from 'react-table'
+import { getRowPageOptions } from 'utils/table-helpers'
 
 interface PaginationProps<T extends TableData> {
   instance: TableInstance<T>
+  maxRows?: number
 }
 
 const TablePagination = <T extends TableData>({
   instance,
+  maxRows,
 }: PaginationProps<T>) => {
   const {
     state: { pageIndex, pageSize, rowCount = instance.rows.length },
@@ -19,7 +22,11 @@ const TablePagination = <T extends TableData>({
     previousPage,
     setPageSize,
   } = instance
-  const rowsPerPageOptions = [5, 10, 25, { value: rowCount, label: 'All' }]
+
+  const rowsPerPageOptions = getRowPageOptions(
+    maxRows || instance.rows.length,
+    instance.rows.length,
+  )
 
   const handleChangePage = useCallback(
     (
