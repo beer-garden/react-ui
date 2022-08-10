@@ -1,4 +1,3 @@
-import { AlertColor, TypographyTypeMap } from '@mui/material'
 import { AxiosResponse } from 'axios'
 
 export type Dictionary = {
@@ -58,10 +57,9 @@ export type Instance = {
   queue_info: any
   icon_name: string
   metadata: any
-  severity?: AlertColor | undefined
 }
 
-type SystemBase = {
+export type SystemBase = {
   name: string
   description: string
   version: string
@@ -78,12 +76,6 @@ export type System = SystemBase & {
   metadata: any
   local: boolean
   template: string
-}
-
-export type SystemIndexTableData = SystemBase & {
-  commandCount: number
-  instanceCount: number
-  exploreButton: JSX.Element
 }
 
 export interface Request {
@@ -265,12 +257,4 @@ export interface CommandParams {
 
 export interface TableInterface {
   parentState: TableState
-}
-
-export interface OverflowTooltipProps {
-  tooltip: string
-  text: string
-  css: { [key: string]: unknown }
-  variant: TypographyTypeMap['props']['variant']
-  color?: string
 }

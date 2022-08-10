@@ -2,7 +2,13 @@ import useSystems from 'hooks/useSystems'
 import { ExploreButton } from 'pages/SystemIndex/SystemIndexTable'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
-import { System, SystemIndexTableData } from 'types/custom_types'
+import { System, SystemBase } from 'types/custom_types'
+
+type SystemIndexTableData = SystemBase & {
+  commandCount: number
+  instanceCount: number
+  exploreButton: JSX.Element
+}
 
 const systemMapper = (system: System): SystemIndexTableData => {
   return {

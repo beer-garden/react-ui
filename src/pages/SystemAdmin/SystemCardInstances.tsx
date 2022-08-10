@@ -65,7 +65,8 @@ const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
                     systemClient.startInstance(instance.id).then((resp) => {
                       // TODO: eventually updates just the button, find a better way
                       instance.status = resp
-                      instance.severity = getSeverity(resp)
+                      // TODO: would need to extend instance type
+                      //instance.severity = getSeverity(resp)
                     })
                   }}
                 >
@@ -84,7 +85,8 @@ const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
                     systemClient.stopInstance(instance.id).then((resp) => {
                       // TODO: eventually updates just the button, find a better way
                       instance.status = resp
-                      instance.severity = getSeverity(resp)
+                      // TODO: would need to extend instance type
+                      //instance.severity = getSeverity(resp)
                     })
                   }}
                 >
