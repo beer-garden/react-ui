@@ -61,10 +61,14 @@ export type Instance = {
   metadata: any
 }
 
-export type System = {
+export type SystemBase = {
   name: string
   description: string
   version: string
+  namespace: string
+}
+
+export type System = SystemBase & {
   id: string
   max_instances: number
   instances: Instance[]
@@ -72,7 +76,6 @@ export type System = {
   icon_name: string
   display_name: string
   metadata: any
-  namespace: string
   local: boolean
   template: string
 }
