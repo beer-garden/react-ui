@@ -8,13 +8,9 @@ import {
   MenuItem,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import CacheService from 'services/cache_service'
+import React from 'react'
 
-interface NamespaceSelectProps {
-  namespaces: string[]
-  namespacesSelected: string[]
-  setNamespacesSelected(value: string[]): void
-}
+import { NamespacesSelectedContext } from '../pages/SystemAdmin'
 
 const useStyles = makeStyles((theme) => ({
   selectEmpty: {
@@ -33,12 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const NamespaceSelect = ({
-  namespaces,
-  namespacesSelected,
-  setNamespacesSelected,
-}: NamespaceSelectProps) => {
+const NamespaceSelect = () => {
   const classes = useStyles()
+  const { namespaces, namespacesSelected, setNamespacesSelected } =
+    React.useContext(NamespacesSelectedContext)
   const handleChange = (event: SelectChangeEvent<typeof namespaces>) => {
     const {
       target: { value },
@@ -54,11 +48,6 @@ const NamespaceSelect = ({
     } else {
       selected = theValue.sort()
     }
-
-    CacheService.setItemInCache(
-      { namespacesSelected: selected },
-      `lastKnown_${window.location.href}`,
-    )
     setNamespacesSelected(selected)
   }
 
@@ -80,12 +69,18 @@ const NamespaceSelect = ({
         )}
       >
         <MenuItem value={'showAll'} key={'select all'}>
-          <Checkbox checked={namespaces.length === namespacesSelected.length} />
+          <Checkbox
+            color="secondary"
+            checked={namespaces.length === namespacesSelected.length}
+          />
           Select All
         </MenuItem>
         {namespaces.map((namespace: string) => (
           <MenuItem value={namespace} key={namespace + 'select'}>
-            <Checkbox checked={namespacesSelected.indexOf(namespace) > -1} />
+            <Checkbox
+              color="secondary"
+              checked={namespacesSelected.indexOf(namespace) > -1}
+            />
             {namespace}
           </MenuItem>
         ))}
