@@ -8,14 +8,14 @@ import {
 } from '@mui/material'
 import { useColorScheme } from '@mui/material/styles'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
-import * as React from 'react'
+import { useContext } from 'react'
 
 import { ThemeContext } from './ThemeProvider'
 
 const ThemeChooser = () => {
-  const toggleDrawer = React.useContext(NavigationBarContext).toggleDrawer
+  const toggleDrawer = useContext(NavigationBarContext).toggleDrawer
   const { mode, setMode } = useColorScheme()
-  const setTheme = React.useContext(ThemeContext).setTheme
+  const setTheme = useContext(ThemeContext).setTheme
 
   const handleThemeChange = (event: React.KeyboardEvent | React.MouseEvent) => {
     const newMode: SupportedColorScheme = flip(mode)
