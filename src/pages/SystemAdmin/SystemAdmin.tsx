@@ -1,11 +1,11 @@
 import { Alert, Box, Button, Divider, Grid, Tooltip } from '@mui/material'
-import NamespaceSelect from 'components/namespace_select'
 import PageHeader from 'components/PageHeader'
 import useAdmin from 'hooks/useAdmin'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import useNamespace from 'hooks/useNamespace'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
-import React from 'react'
+import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
+import { createContext } from 'react'
 
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   if (!namespacesSelected.length) {
@@ -20,7 +20,7 @@ interface NamespacesSelectedContextType {
 }
 
 export const NamespacesSelectedContext =
-  React.createContext<NamespacesSelectedContextType>({
+  createContext<NamespacesSelectedContextType>({
     namespaces: [],
     namespacesSelected: [],
     setNamespacesSelected: () => {

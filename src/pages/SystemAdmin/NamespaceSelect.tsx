@@ -8,9 +8,8 @@ import {
   MenuItem,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import React from 'react'
-
-import { NamespacesSelectedContext } from '../pages/SystemAdmin'
+import { NamespacesSelectedContext } from 'pages/SystemAdmin'
+import { useContext } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   selectEmpty: {
@@ -31,8 +30,9 @@ const useStyles = makeStyles((theme) => ({
 
 const NamespaceSelect = () => {
   const classes = useStyles()
-  const { namespaces, namespacesSelected, setNamespacesSelected } =
-    React.useContext(NamespacesSelectedContext)
+  const { namespaces, namespacesSelected, setNamespacesSelected } = useContext(
+    NamespacesSelectedContext,
+  )
   const handleChange = (event: SelectChangeEvent<typeof namespaces>) => {
     const {
       target: { value },
@@ -89,4 +89,4 @@ const NamespaceSelect = () => {
   )
 }
 
-export default NamespaceSelect
+export { NamespaceSelect }
