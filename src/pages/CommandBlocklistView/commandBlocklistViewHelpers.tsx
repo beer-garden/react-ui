@@ -1,18 +1,89 @@
-import { useMemo } from 'react'
-import { Column } from 'react-table'
+import { Box } from '@mui/material'
+import {
+  ChangeEvent,
+  forwardRef,
+  MutableRefObject,
+  Ref,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
+import { Column, Row } from 'react-table'
 import { CommandRow } from 'types/custom_types'
 
+interface IndeterminateInputProps {
+  indeterminate?: boolean
+  changeCB?: (event: ChangeEvent<HTMLInputElement>) => void
+}
+
+/**
+ * Takes in multiple useRefs and combines them into one
+ * @param refs
+ * @returns
+ */
+const useCombinedRefs = (
+  ...refs: Array<Ref<HTMLInputElement> | MutableRefObject<null>>
+): MutableRefObject<HTMLInputElement | null> => {
+  const targetRef = useRef(null)
+
+  useEffect(() => {
+    refs.forEach((ref: Ref<HTMLInputElement> | MutableRefObject<null>) => {
+      if (!ref) return
+
+      if (typeof ref === 'function') {
+        ref(targetRef.current)
+      } else {
+        ref.current = targetRef.current
+      }
+    })
+  }, [refs])
+
+  return targetRef
+}
+
+const IndeterminateCheckbox = forwardRef<
+  HTMLInputElement,
+  IndeterminateInputProps
+>(({ indeterminate, changeCB, ...rest }, ref: Ref<HTMLInputElement>) => {
+  const defaultRef = useRef(null)
+  const combinedRef = useCombinedRefs(ref, defaultRef)
+
+  useEffect(() => {
+    if (combinedRef.current) {
+      combinedRef.current.indeterminate = indeterminate ?? false
+    }
+  }, [combinedRef, indeterminate])
+
+  return (
+    <Box sx={{ margin: '1px 0 0 -6px' }}>
+      <input type="checkbox" ref={combinedRef} {...rest} />
+    </Box>
+  )
+})
+IndeterminateCheckbox.displayName = 'IndeterminateCheckBox'
+
+/**
+ *  Supply column info for Modal table, add checkbox as first column
+ * @param handleClick CB for checkbox onClick
+ * @returns
+ */
 const useModalColumns = () => {
   return useMemo<Column<CommandRow>[]>(
     () => [
       {
-        Header: 'Add',
-        accessor: 'action',
+        id: '_selector',
+        disableResizing: true,
         disableSortBy: true,
         disableGroupBy: true,
         disableFilters: true,
         canHide: false,
-        width: 60,
+        width: 40,
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+        ),
+        Cell: ({ row }: { row: Row<CommandRow> }) => (
+          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+        ),
       },
       {
         Header: 'Namespace',

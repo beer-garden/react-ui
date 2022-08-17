@@ -1,9 +1,11 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useState } from 'react'
-import { BlockedList,CommandBase } from 'types/custom_types'
+import { BlockedList, CommandBase } from 'types/custom_types'
 
 export const useBlockList = () => {
-  const [blockList, setList] = useState<BlockedList>()
+  const [blockList, setList] = useState<BlockedList>({
+    command_publishing_blocklist: [],
+  })
   const { axiosInstance } = useMyAxios()
 
   const getList = useCallback(async () => {
@@ -15,12 +17,11 @@ export const useBlockList = () => {
   }, [setList, axiosInstance])
 
   const getBlockList = () => {
-    if (blockList) {
+    if (blockList.command_publishing_blocklist.length > 0) {
       return blockList.command_publishing_blocklist
     } else {
-      getList().then((bList) => {
-        return bList.command_publishing_blocklist
-      })
+      getList()
+      return []
     }
   }
 
@@ -38,7 +39,7 @@ export const useBlockList = () => {
       .then((resolved) => {
         if (resolved) getList()
       })
-    return blockList?.command_publishing_blocklist
+    return blockList.command_publishing_blocklist
   }
 
   const addBlockList = (command: CommandBase[]) => {
@@ -57,11 +58,12 @@ export const useBlockList = () => {
       .then((resolved) => {
         if (resolved) getList()
       })
+      .catch((e) => console.error('Error adding to Blocklist: ', e))
     return blockList
   }
 
   return {
-    list: blockList?.command_publishing_blocklist,
+    list: blockList.command_publishing_blocklist,
     getBlockList,
     deleteBlockList,
     addBlockList,

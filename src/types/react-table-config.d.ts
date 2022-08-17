@@ -101,6 +101,7 @@ declare module 'react-table' {
       UseRowStateState<D>,
       UseSortByState<D> {
     rowCount: number
+    rowsPerPageOptions: (number | { value: number; label: string })[]
   }
 
   export interface ColumnInterface<

@@ -2,7 +2,7 @@ import { TablePagination as MuiTablePagination } from '@mui/material'
 import { TableData } from 'components/Table'
 import TablePaginationActions from 'components/Table/pagination/TablePaginationActions'
 import { useCallback } from 'react'
-import { MouseEvent as ReactMouseEvent } from 'react'
+import { MouseEvent as ReactMouseEvent, useEffect } from 'react'
 import { TableInstance } from 'react-table'
 import { getRowPageOptions } from 'utils/table-helpers'
 
@@ -27,6 +27,16 @@ const TablePagination = <T extends TableData>({
     maxRows || instance.rows.length,
     instance.rows.length,
   )
+
+  useEffect(() => {
+    const maxVal = rowsPerPageOptions[rowsPerPageOptions.length - 1] as {
+      value: number
+      label: string
+    }
+    if (maxVal && pageSize > maxVal.value) {
+      setPageSize(maxVal.value)
+    }
+  }, [pageSize, rowsPerPageOptions, setPageSize])
 
   const handleChangePage = useCallback(
     (

@@ -29,8 +29,10 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
+  Dispatch,
   PropsWithChildren,
   ReactElement,
+  SetStateAction,
   useCallback,
   useEffect,
 } from 'react'
@@ -84,6 +86,7 @@ interface TableProps<T extends TableData> extends TableOptions<T> {
   tableName: string
   data: T[]
   columns: Column<T>[]
+  setSelection?: Dispatch<SetStateAction<T[]>>
   showGlobalFilter?: boolean
   maxRows?: number
 }
@@ -93,7 +96,15 @@ const DEBUG_INITIAL_STATE = false
 const Table = <T extends TableData>(
   props: PropsWithChildren<TableProps<T>>,
 ): ReactElement => {
-  const { tableName, data, columns, showGlobalFilter, ...childProps } = props
+  const {
+    tableName,
+    data,
+    columns,
+    showGlobalFilter,
+    setSelection,
+    ...childProps
+  } = props
+
   const [initialState, _setInitialState] = useLocalStorage(
     `tableState:${tableName}`,
     {} as Partial<TableState<T>>,
@@ -128,11 +139,18 @@ const Table = <T extends TableData>(
     page,
     prepareRow,
     state,
+    selectedFlatRows,
     setGlobalFilter,
     preGlobalFilteredRows,
   } = instance
 
   const debouncedState = useDebounce(state, 500)
+
+  useEffect(() => {
+    if (setSelection) {
+      setSelection(selectedFlatRows.map((row) => row.original))
+    }
+  }, [selectedFlatRows, setSelection])
 
   useEffect(() => {
     const { filters, pageSize, hiddenColumns } = debouncedState

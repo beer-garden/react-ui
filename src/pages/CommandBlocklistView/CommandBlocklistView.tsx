@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Box, Button, Checkbox, IconButton, Tooltip } from '@mui/material'
+import { Box, Button, IconButton, Tooltip } from '@mui/material'
 import Divider from 'components/divider'
 import { generateCommandName } from 'components/generateCommandName'
 import { ModalWrapper } from 'components/ModalWrapper'
@@ -8,53 +8,38 @@ import PageHeader from 'components/PageHeader'
 import { Table } from 'components/Table'
 import { useBlockList } from 'hooks/useBlockList'
 import { useCommands } from 'hooks/useCommands'
+import { differenceWith } from 'lodash'
 import { useModalColumns, useTableColumns } from 'pages/CommandBlocklistView'
 import { useMemo, useState } from 'react'
 import { CommandBase, CommandRow } from 'types/custom_types'
 
 export const CommandBlocklistView = () => {
   const [open, setOpen] = useState(false)
-  const [selectedCommands, setSelected] = useState<CommandRow[]>([])
+  const [selection, setSelection] = useState<CommandRow[]>([])
   const { getBlockList, deleteBlockList, addBlockList } = useBlockList()
   const { commands } = useCommands()
   const blocked = getBlockList()
 
+  // populate data for modal All Commands list table
   const commandListData = useMemo(() => {
-    const handleClick = (command: CommandRow) => {
-      const selectedIndex = selectedCommands.indexOf(command)
-      let newSelected: CommandRow[] = []
-
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selectedCommands, command)
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selectedCommands.slice(1))
-      } else if (selectedIndex === selectedCommands.length - 1) {
-        newSelected = newSelected.concat(selectedCommands.slice(0, -1))
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          selectedCommands.slice(0, selectedIndex),
-          selectedCommands.slice(selectedIndex + 1),
-        )
-      }
-
-      setSelected(newSelected)
-    }
-    return commands.map((command: CommandRow): CommandRow => {
+    // Filter out blocked commands first
+    return differenceWith(commands, blocked, (commandItem, blockItem) => {
+      return (
+        commandItem.namespace === blockItem.namespace &&
+        commandItem.system === blockItem.system &&
+        commandItem.command === blockItem.command
+      )
+    }).map((command: CommandRow): CommandRow => {
       return {
         namespace: command.namespace,
         system: command.system,
         command: command.command,
         name: command.name,
-        action: (
-          <Checkbox
-            checked={selectedCommands.indexOf(command) > -1}
-            onClick={() => handleClick(command)}
-          />
-        ),
       }
     })
-  }, [commands, selectedCommands])
+  }, [blocked, commands])
 
+  // populate data for main Blocked Commands list table
   const blocklistData = useMemo(() => {
     const delCommand = (id: string | undefined) => {
       if (id) {
@@ -105,16 +90,16 @@ export const CommandBlocklistView = () => {
         header="Add Commands to Blocklist"
         onClose={() => {
           setOpen(false)
-          setSelected([])
+          setSelection([])
         }}
         onCancel={() => {
           setOpen(false)
-          setSelected([])
+          setSelection([])
         }}
         onSubmit={() => {
-          addBlockList(selectedCommands)
+          addBlockList(selection)
           setOpen(false)
-          setSelected([])
+          setSelection([])
         }}
         content={
           <Table
@@ -122,6 +107,7 @@ export const CommandBlocklistView = () => {
             data={commandListData}
             columns={useModalColumns()}
             maxRows={10}
+            setSelection={setSelection}
           />
         }
       />

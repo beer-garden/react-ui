@@ -270,8 +270,8 @@ export interface CommandBase {
 }
 
 export interface CommandRow extends CommandBase, TableData {
-  action: JSX.Element
   name: string | JSX.Element
+  action?: JSX.Element
   description?: string
   version?: string
 }

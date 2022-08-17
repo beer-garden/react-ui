@@ -1,7 +1,7 @@
 import { TablePagination as MuiTablePagination } from '@mui/material'
 import { TableData } from 'components/Table'
 import SSRTablePaginationActions from 'components/Table/ssr-pagination/SSRTablePaginationActions'
-import { MouseEvent as ReactMouseEvent, useCallback } from 'react'
+import { MouseEvent as ReactMouseEvent, useCallback, useEffect } from 'react'
 import { TableInstance } from 'react-table'
 import { getRowPageOptions } from 'utils/table-helpers'
 
@@ -28,8 +28,18 @@ const SSRTablePagination = <T extends TableData>({
     setPageSize,
   } = instance
 
-  const rowMax = instance.rows.length <= 100 ? instance.rows.length : 100
-  const rowsPerPageOptions = getRowPageOptions(rowMax, instance.rows.length)
+  const rowMax = recordsFiltered <= 100 ? recordsFiltered : 100
+  const rowsPerPageOptions = getRowPageOptions(rowMax, recordsFiltered)
+
+  useEffect(() => {
+    const maxVal = rowsPerPageOptions[rowsPerPageOptions.length - 1] as {
+      value: number
+      label: string
+    }
+    if (maxVal && pageSize > maxVal.value) {
+      setPageSize(maxVal.value)
+    }
+  }, [pageSize, rowsPerPageOptions, setPageSize])
 
   const handleChangePage = useCallback(
     (

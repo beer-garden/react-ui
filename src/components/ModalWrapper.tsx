@@ -19,7 +19,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '1px solid #000',
   boxShadow: 24,
-  width: '50%',
+  width: '60%',
   p: 2,
 }
 
@@ -38,22 +38,22 @@ export const ModalWrapper = (props: ModalProps) => {
           {props.content}
           <Divider />
           <Button
-            style={{ float: 'right' }}
-            variant="contained"
-            color="primary"
-            aria-label="cancel"
-            onClick={() => props.onCancel()}
-          >
-            Cancel
-          </Button>
-          <Button
-            style={{ float: 'right' }}
+            style={{ float: 'right', marginRight: '5px' }}
             variant="contained"
             color="primary"
             aria-label="Submit"
             onClick={() => props.onSubmit()}
           >
             Submit
+          </Button>
+          <Button
+            style={{ float: 'right', marginRight: '5px' }}
+            variant="contained"
+            color="secondary"
+            aria-label="cancel"
+            onClick={() => props.onCancel()}
+          >
+            Cancel
           </Button>
         </Box>
       </Modal>
