@@ -11,7 +11,8 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useVersion from 'hooks/useVersion'
 
 const DrawerFooter = () => {
-  const { config } = ServerConfigContainer.useContainer()
+  const { config, getConfig } = ServerConfigContainer.useContainer()
+  if (!config) getConfig()
   const versionConfig = useVersion()
   return (
     <MuiMenuList dense style={{ marginTop: 'auto' }}>
@@ -27,6 +28,7 @@ const DrawerFooter = () => {
       <MenuItem
         sx={{ pl: 1 }}
         component="a"
+        data-testid="apiLink"
         href={`${config?.url_prefix}swagger/index.html?config=${config?.url_prefix}config/swagger`}
       >
         <ListItemIcon>

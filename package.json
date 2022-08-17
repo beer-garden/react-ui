@@ -22,6 +22,7 @@
     "@mui/lab": "^5.0.0-alpha.75",
     "@mui/material": "^5.8.6",
     "@mui/x-date-pickers": "^5.0.0-alpha.7",
+    "@types/luxon": "^3.0.0",
     "@types/react": "^17.0.47",
     "@types/react-dom": "^17.0.17",
     "axios": "^0.26.1",
@@ -29,9 +30,9 @@
     "formik": "^2.2.9",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
+    "luxon": "^2.5.0",
     "match-sorter": "^6.3.1",
     "material-ui-popup-state": "^4.0.1",
-    "moment": "^2.29.3",
     "nanoid": "^3.3.1",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "react": "^17.0.2",
@@ -58,6 +59,7 @@
     "@types/react-table": "^7.7.12",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
+    "axios-mock-adapter": "^1.21.1",
     "babel-plugin-import": "^1.13.3",
     "copy-webpack-plugin": "^11.0.0",
     "customize-cra": "^1.0.0",
@@ -72,7 +74,6 @@
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-prepush": "^2.2.1",
-    "lint-staged": "^12.3.7",
     "prettier": "^2.7.1",
     "react-app-rewired": "^2.2.1"
   },
@@ -86,13 +87,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-push": "lint-prepush"
     }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix"
-    ]
   },
   "proxy": "http://localhost:2337",
   "scripts": {
@@ -103,6 +99,7 @@
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
     "prepare": "husky install",
     "start": "PORT=4000 BROWSER=none react-app-rewired start",
-    "test": "NODE_ENV=test jest --bail --findRelatedTests --passWithNoTests src/"
+    "test": "NODE_ENV=test CI=true react-app-rewired test",
+    "test-watch": "NODE_ENV=test react-app-rewired test"
   }
 }

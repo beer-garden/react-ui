@@ -119,7 +119,7 @@ interface CronTrigger {
   jitter: number
 }
 
-interface DateTrigger {
+export interface DateTrigger {
   run_date: number
   timezone: string
 }

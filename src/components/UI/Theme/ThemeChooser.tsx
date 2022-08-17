@@ -1,43 +1,47 @@
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
-import { ListItemButton, ListItemIcon,ListItemText } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import {
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  SupportedColorScheme,
+} from '@mui/material'
+import { useColorScheme } from '@mui/material/styles'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
-import { ThemeChoice } from 'components/UI/Theme/getTheme'
-import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
-import * as React from 'react'
+import { useContext } from 'react'
+
+import { ThemeContext } from './ThemeProvider'
 
 const ThemeChooser = () => {
-  const theme = useTheme()
-  const { currentTheme, setTheme } = React.useContext(ThemeContext)
-  const themeSetter = setTheme as (choice: ThemeChoice) => void
-  const toggleDrawer = React.useContext(NavigationBarContext).toggleDrawer
+  const toggleDrawer = useContext(NavigationBarContext).toggleDrawer
+  const { mode, setMode } = useColorScheme()
+  const setTheme = useContext(ThemeContext).setTheme
 
   const handleThemeChange = (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (currentTheme === 'dark') {
-      themeSetter('light')
-    } else {
-      themeSetter('dark')
-    }
-
+    const newMode: SupportedColorScheme = flip(mode)
+    setMode(newMode)
+    setTheme(newMode)
     toggleDrawer(false)(event)
   }
 
-  const flip = (value: ThemeChoice): string => {
-    if (value === 'dark') return 'Light'
-    return 'Dark'
+  const flip = (value: SupportedColorScheme): SupportedColorScheme => {
+    return value === 'dark' ? 'light' : 'dark'
   }
 
   return (
     <ListItemButton onClick={handleThemeChange} sx={{ pl: 3 }}>
       <ListItemIcon>
-        {theme.palette.mode === 'dark' ? (
-          <Brightness7Icon fontSize="small"/>
+        {mode === 'dark' ? (
+          <Brightness7Icon fontSize="small" />
         ) : (
-          <Brightness4Icon fontSize="small"/>
+          <Brightness4Icon fontSize="small" />
         )}
       </ListItemIcon>
-      <ListItemText primary={flip(theme.palette.mode) + ' mode'} />
+      <ListItemText
+        primary={
+          flip(mode).charAt(0).toUpperCase() + flip(mode).slice(1) + ' mode'
+        }
+      />
     </ListItemButton>
   )
 }

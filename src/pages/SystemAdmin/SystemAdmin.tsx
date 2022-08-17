@@ -1,11 +1,11 @@
 import { Alert, Box, Button, Divider, Grid, Tooltip } from '@mui/material'
-import NamespaceSelect from 'components/namespace_select'
 import PageHeader from 'components/PageHeader'
+import useAdmin from 'hooks/useAdmin'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import useNamespace from 'hooks/useNamespace'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
-import { useState } from 'react'
-import AdminService from 'services/admin_service'
-import CacheService from 'services/cache_service'
+import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
+import { createContext } from 'react'
 
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   if (!namespacesSelected.length) {
@@ -13,14 +13,34 @@ const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   }
 }
 
+interface NamespacesSelectedContextType {
+  namespaces: string[]
+  namespacesSelected: string[]
+  setNamespacesSelected: (value: string[]) => void
+}
+
+export const NamespacesSelectedContext =
+  createContext<NamespacesSelectedContextType>({
+    namespaces: [],
+    namespacesSelected: [],
+    setNamespacesSelected: () => {
+      return
+    },
+  })
+
 const SystemAdmin = () => {
-  const namespaces = useNamespace()
-  const [namespacesSelected, setNamespacesSelected] = useState(
-    CacheService.getNamespacesSelected(
-      `lastKnown_${window.location.href}`,
-      namespaces,
-    ).namespacesSelected,
+  const [namespacesSelected, setNamespacesSelected] = useLocalStorage<string[]>(
+    'namespacesSelected',
+    [],
   )
+
+  const contextValue = {
+    namespaces: useNamespace(),
+    namespacesSelected: namespacesSelected,
+    setNamespacesSelected: setNamespacesSelected,
+  }
+
+  const adminClient = useAdmin()
 
   return (
     <Box>
@@ -35,11 +55,9 @@ const SystemAdmin = () => {
           alignItems="center"
           flexDirection="row"
         >
-          <NamespaceSelect
-            namespaces={namespaces}
-            namespacesSelected={namespacesSelected}
-            setNamespacesSelected={setNamespacesSelected}
-          />
+          <NamespacesSelectedContext.Provider value={contextValue}>
+            <NamespaceSelect />
+          </NamespacesSelectedContext.Provider>
         </Grid>
         <Grid
           key="actions"
@@ -55,7 +73,7 @@ const SystemAdmin = () => {
           </Tooltip>
           <Tooltip arrow title="Rescan Plugin Directory">
             <Button
-              onClick={() => AdminService.rescan()}
+              onClick={() => adminClient.rescanPluginDirectory()}
               variant="contained"
               color="primary"
               sx={{ m: 1 }}

@@ -1,55 +1,38 @@
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
-import { ThemeChoice, validateThemeChoice } from 'components/UI/Theme/getTheme'
-import { getTheme } from 'components/UI/Theme/getTheme'
-import * as React from 'react'
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  SupportedColorScheme,
+} from '@mui/material/styles'
+import { getTheme } from 'components/UI/Theme/Theme'
+import { createContext, useState } from 'react'
 
-interface ThemeContextType {
-  currentTheme: ThemeChoice
-  setTheme?: (choice: ThemeChoice) => void
+type ThemeProviderContext = {
+  theme: SupportedColorScheme
+  setTheme: (choice: SupportedColorScheme) => void
 }
 
-export const ThemeContext = React.createContext<ThemeContextType>({
-  currentTheme: 'dark',
-  setTheme: undefined,
+const ThemeContext = createContext<ThemeProviderContext>({
+  theme: 'dark',
+  setTheme: () => {
+    return
+  },
 })
 
 const ThemeProvider = ({
   children,
 }: React.PropsWithChildren<Record<never, never>>) => {
-  const [themeName, _setThemeName] = React.useState<ThemeChoice>(currentTheme())
-  const theme = getTheme(themeName)
-
-  const setThemeName = (theName: ThemeChoice) => {
-    localStorage.setItem('bg-theme', theName)
-    _setThemeName(theName)
+  const currentTheme = localStorage.getItem('bg-theme')
+  const [theme, _setTheme] = useState<SupportedColorScheme>(
+    currentTheme === 'dark' ? 'dark' : 'light',
+  )
+  const setTheme = (theme: SupportedColorScheme) => {
+    localStorage.setItem('bg-theme', theme)
+    _setTheme(theme)
   }
-
-  const contextValue = {
-    currentTheme: themeName,
-    setTheme: setThemeName,
-  }
-
   return (
-    <ThemeContext.Provider value={contextValue}>
-      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+    <ThemeContext.Provider value={{ theme: theme, setTheme: setTheme }}>
+      <CssVarsProvider theme={getTheme(theme)}>{children}</CssVarsProvider>
     </ThemeContext.Provider>
   )
 }
 
-const currentTheme = (): ThemeChoice => {
-  const themeName = localStorage.getItem('bg-theme')
-
-  if (themeName) {
-    try {
-      validateThemeChoice(themeName)
-      return themeName
-    } catch (error) {
-      console.error(error)
-      return 'light'
-    }
-  } else {
-    return 'light'
-  }
-}
-
-export { ThemeProvider }
+export { ThemeContext, ThemeProvider }

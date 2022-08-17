@@ -3,26 +3,10 @@ import {
   closedDrawerWidth,
   openedDrawerWidth,
 } from 'components/UI/NavigationBar'
-import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
-import { PropsWithChildren, useContext, useEffect } from 'react'
+import { PropsWithChildren } from 'react'
 import * as React from 'react'
 
 const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
-  const { setTheme } = useContext(ThemeContext)
-  useEffect(() => {
-    const theme = localStorage.getItem('bg-theme')
-    if (theme) {
-      const themePreference = localStorage.getItem('bg-theme')
-      if (themePreference === 'dark') {
-        setTheme && setTheme(themePreference)
-      } else {
-        setTheme && setTheme('light')
-      }
-    } else {
-      localStorage.setItem('bg-theme', 'dark')
-      setTheme && setTheme('dark')
-    }
-  }, [setTheme])
   let drawerIsPinned = localStorage.getItem('drawerIsPinned')
   if (drawerIsPinned) {
     drawerIsPinned = JSON.parse(drawerIsPinned)
