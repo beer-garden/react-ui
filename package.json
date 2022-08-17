@@ -74,7 +74,6 @@
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-prepush": "^2.2.1",
-    "lint-staged": "^12.3.7",
     "prettier": "^2.7.1",
     "react-app-rewired": "^2.2.1"
   },
@@ -88,13 +87,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-push": "lint-prepush"
     }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix"
-    ]
   },
   "proxy": "http://localhost:2337",
   "scripts": {
