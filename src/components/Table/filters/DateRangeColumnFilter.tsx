@@ -2,7 +2,7 @@ import { Box, InputLabel, TextField } from '@mui/material'
 import { TableData } from 'components/Table'
 import { useActiveElement } from 'components/Table/filters/filterHelpers'
 import { DateTime } from 'luxon'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import { FilterProps } from 'react-table'
 
 const DateRangeColumnFilter = ({
@@ -54,7 +54,7 @@ const DateRangeColumnFilter = ({
   }
 
   return (
-    <Fragment>
+    <>
       <InputLabel htmlFor={id} shrink focused={hasFocus}>
         {render('Header')} (UTC)
       </InputLabel>
@@ -93,7 +93,7 @@ const DateRangeColumnFilter = ({
           }}
         />
       </Box>
-    </Fragment>
+    </>
   )
 }
 

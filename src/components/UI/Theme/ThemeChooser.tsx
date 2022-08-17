@@ -15,22 +15,17 @@ import { ThemeContext } from './ThemeProvider'
 const ThemeChooser = () => {
   const toggleDrawer = React.useContext(NavigationBarContext).toggleDrawer
   const { mode, setMode } = useColorScheme()
-  const setTheme = React.useContext(ThemeContext).setTheme as (
-    choice: SupportedColorScheme,
-  ) => void
+  const setTheme = React.useContext(ThemeContext).setTheme
 
   const handleThemeChange = (event: React.KeyboardEvent | React.MouseEvent) => {
     const newMode: SupportedColorScheme = flip(mode)
-    // validateThemeChoice(newMode)
     setMode(newMode)
     setTheme(newMode)
     toggleDrawer(false)(event)
   }
 
   const flip = (value: SupportedColorScheme): SupportedColorScheme => {
-    let newMode: SupportedColorScheme
-    value === 'dark' ? (newMode = 'light') : (newMode = 'dark')
-    return newMode
+    return value === 'dark' ? 'light' : 'dark'
   }
 
   return (

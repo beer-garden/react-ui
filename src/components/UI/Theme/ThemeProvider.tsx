@@ -5,14 +5,16 @@ import {
 import { getTheme } from 'components/UI/Theme/Theme'
 import * as React from 'react'
 
-type themeProviderContext = {
+type ThemeProviderContext = {
   theme: SupportedColorScheme
-  setTheme?: (choice: SupportedColorScheme) => void
+  setTheme: (choice: SupportedColorScheme) => void
 }
 
-const ThemeContext = React.createContext<themeProviderContext>({
+const ThemeContext = React.createContext<ThemeProviderContext>({
   theme: 'dark',
-  setTheme: undefined,
+  setTheme: () => {
+    return
+  },
 })
 
 const ThemeProvider = ({
