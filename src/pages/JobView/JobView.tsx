@@ -4,29 +4,30 @@ import PageHeader from 'components/PageHeader'
 import { JobButton } from 'pages/JobView'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useJobServices } from 'services/job.service/job.service'
+// import { useJobServices } from 'services/job.service/job.service'
 import { Job } from 'types/backend-types'
 
 const JobView = () => {
   const [job, setJob] = useState<Job | null>(null)
   const [description, setDescription] = useState('')
   const params = useParams()
-  const { getJob, deleteJob } = useJobServices()
+  // const { getJob, deleteJob } = useJobServices()
   const navigate = useNavigate()
 
   const id = params.id as string
   const jobButtonCallback = (response: AxiosResponse) => setJob(response.data)
-  const deleteButtonCallback = () => deleteJob(() => navigate('/jobs'), id)
+  // const deleteButtonCallback = () => deleteJob(() => navigate('/jobs'), id)
   useEffect(() => {
     if (id) {
-      getJob((response: AxiosResponse) => setJob(response.data), id)
+      // getJob((response: AxiosResponse) => setJob(response.data), id)
       if (job) {
         setDescription(job.name + id)
       } else {
         setDescription(id)
       }
     }
-  }, [getJob, params.id, id, job])
+    // }, [getJob, params.id, id, job])
+  }, [params.id, id, job])
 
   return (
     <Box>
@@ -34,7 +35,7 @@ const JobView = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={deleteButtonCallback}
+          // onClick={deleteButtonCallback}
         >
           Delete Job
         </Button>
