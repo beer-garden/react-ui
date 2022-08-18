@@ -525,3 +525,17 @@ export const selfReferringCommand: Command = {
   hidden: false,
   metadata: {},
 }
+
+export const dynamicCommandsList = [
+  dictWithDynamicInstanceKeyCommand,
+  dictWithDynamicNonInstanceKeyCommand,
+  dynamicCommandWithMultipleParameters,
+  dynamicCommandWithSingleParameter,
+  dynamicUrlWithSingleParameter,
+  simpleDynamicCommand,
+  simpleDynamicCommandFullySpecified,
+  simpleDynamicCommandWithTypeahead,
+  simpleDynamicUrl,
+  simpleDynamicUrlNullable,
+  selfReferringCommand,
+]

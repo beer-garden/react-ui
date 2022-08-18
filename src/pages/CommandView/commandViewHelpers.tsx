@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
+import { isDictionaryChoice } from 'pages/CommandView/dynamic-form'
 import { useNavigate } from 'react-router-dom'
-import { Parameter } from 'types/backend-types'
+import { Command, Parameter } from 'types/backend-types'
 import {
   AugmentedCommand,
   ObjectWithStringKeys,
@@ -14,8 +15,6 @@ import {
   CommandViewModelParametersValueType,
   CommandViewRequestModel,
 } from 'types/form-model-types'
-
-import { parameterHasDynamicChoiceProperties } from './dynamic-form-data'
 
 interface NavigatorProps {
   message: string
@@ -131,6 +130,25 @@ const isDynamicChoiceParameter = (parameter: Parameter): boolean => {
  */
 const hasDynamicChoices = (parameters: Parameter[]) => {
   return parameters.map(isDynamicChoiceParameter).some((x) => x)
+}
+
+const parameterHasDynamicChoiceProperties = (parameter: Parameter) => {
+  return (
+    Boolean(parameter.choices) &&
+    typeof parameter.choices !== 'undefined' &&
+    (parameter.choices.type !== 'static' ||
+      isDictionaryChoice(parameter.choices))
+  )
+}
+
+/* This is a shortcut function that determines whether a command has
+   dynamic choices in the most lightweight way possible. */
+const commandIsDynamic = <T extends Command>(command: T): boolean => {
+  return (
+    command.parameters &&
+    command.parameters.length > 0 &&
+    command.parameters.map(isDynamicChoiceParameter).some((x) => x)
+  )
 }
 
 /**
@@ -364,9 +382,10 @@ const fixReplayAny = (
 export {
   checkContext,
   cleanModelForDisplay,
+  commandIsDynamic,
   dataUrlToFile,
   fixReplayAny,
   handleByteParametersReset,
-  hasDynamicChoices,
   isByteCommand,
+  parameterHasDynamicChoiceProperties,
 }

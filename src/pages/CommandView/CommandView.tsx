@@ -12,11 +12,13 @@ import {
   getUiSchema,
   getValidator,
 } from 'formHelpers'
-import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
 import {
   checkContext,
+  commandIsDynamic,
   fixReplayAny,
 } from 'pages/CommandView/commandViewHelpers'
+import { DynamicForm } from 'pages/CommandView/dynamic-form'
+import { CommandViewForm } from 'pages/CommandView/plain-form'
 import { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
@@ -67,6 +69,17 @@ const CommandView = () => {
   // 'checkedParams'
   const theSystem = system as StrippedSystem
   const theCommand = command as AugmentedCommand
+
+  if (commandIsDynamic(theCommand)) {
+    return (
+      <DynamicForm
+        system={theSystem}
+        command={theCommand}
+        isJob={isJob}
+        debugEnabled={debugEnabled}
+      />
+    )
+  }
 
   const breadcrumbs = [namespace, systemName, version, commandName].filter(
     (x) => !!x,

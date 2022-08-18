@@ -6,11 +6,13 @@ import useAxios from 'axios-hooks'
 import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { CommandBasicSchema, JobPropertiesSchema } from 'formHelpers'
 import {
   getSubmitArgument,
   prepareModelForSubmit,
 } from 'formHelpers/get-submit-argument'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { JSONSchema7 } from 'json-schema'
 import {
   cleanModelForDisplay,
   CustomFileWidget,
@@ -27,19 +29,15 @@ import {
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Job, Request, RequestTemplate } from 'types/backend-types'
-import {
-  AugmentedCommand,
-  ObjectWithStringKeys,
-  SnackbarState,
-} from 'types/custom-types'
+import { Job, RequestTemplate } from 'types/backend-types'
+import { AugmentedCommand, SnackbarState } from 'types/custom-types'
 import {
   CommandViewModel,
   CommandViewRequestModel,
 } from 'types/form-model-types'
 
 interface CommandViewFormProps {
-  schema: ObjectWithStringKeys
+  schema: CommandBasicSchema | JobPropertiesSchema
   uiSchema: Record<string, unknown>
   initialModel: CommandViewModel
   command: AugmentedCommand
@@ -171,16 +169,16 @@ const CommandViewForm = ({
         data.append(fileData.parameterName as string, file, file.name)
       }
 
-      const config = {
+      const config: AxiosRequestConfig<FormData> = {
         url: '/api/v1/requests',
         method: 'post',
         data: data,
         headers: { 'Content-type': 'multipart/form-data' },
         withCredentials: authEnabled,
-      } as AxiosRequestConfig<FormData>
+      }
 
       execute(config)
-        .then((response: AxiosResponse<Request>) => {
+        .then((response) => {
           navigate(forwardPath + response.data.id)
         })
         .catch((error) => {
@@ -259,7 +257,7 @@ const CommandViewForm = ({
           value={{ fileMetaData, setFileMetaData }}
         >
           <Form
-            schema={schema}
+            schema={schema as unknown as JSONSchema7}
             uiSchema={uiSchema}
             formData={model}
             onChange={onFormUpdated}

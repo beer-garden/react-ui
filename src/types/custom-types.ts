@@ -128,7 +128,7 @@ export interface SyncUser extends User {
   fullySynced: boolean
 }
 
-export type SystemCommandPair = {
+export interface SystemCommandPair {
   system: StrippedSystem
   command: AugmentedCommand
 }

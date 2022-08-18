@@ -1,18 +1,32 @@
-import { Instance, Parameter, ParameterType } from 'types/backend-types'
-import { ObjectWithStringKeys } from 'types/custom-types'
-
 import {
   ChoiceType,
+  CommandBasicSchema,
+  CommonSchema,
+  Format,
   getParameterType,
+  InstanceNamesTitleType,
   lookupChoiceType,
   lookupType,
-} from '../getter-helpers'
+  ParameterAsProperty,
+  ParameterBasicCommonSchema,
+  ParameterEmptySchema,
+  ParameterSchema,
+  ParameterSchemaDefault,
+  ParametersPlain,
+  ParametersWithMultiSchema,
+  ParameterWithChoicesSchema,
+  ParameterWithMultiDefault,
+  ParameterWithMultiItemsType,
+  ParameterWithSubParametersMultiSchema,
+  ParameterWithSubParametersNoMultiSchema,
+  ParameterWithSubParametersSchema,
+  SchemaInstanceType,
+} from 'formHelpers'
+import { Instance, Parameter, ParameterType } from 'types/backend-types'
 
 type StrippedParameter = Omit<Parameter, 'key'>
-type instanceList = (string | undefined)[]
-type enumType = { enum: instanceList } | { default: string }
 
-const getFormat = (arg: ParameterType) => {
+const getFormat = (arg: ParameterType): Format | null => {
   if (arg === 'Date') return { format: 'date' }
   if (arg === 'DateTime') return { format: 'date-time' }
   if (arg === 'Bytes') return { format: 'data-url' }
@@ -20,12 +34,20 @@ const getFormat = (arg: ParameterType) => {
   return null
 }
 
-const getCommonResult = (parameter: StrippedParameter) => {
-  let theDefault: {
-    default: string | number | boolean | object | null
-  } | null = parameter.choices
+const getCommonResult = (
+  parameter: StrippedParameter,
+): ParameterBasicCommonSchema => {
+  let theDefault: ParameterSchemaDefault | null = parameter.choices
     ? {
-        default: '',
+        default:
+          'default' in parameter && parameter.default
+            ? (parameter.default as
+                | string[]
+                | string
+                | boolean
+                | number
+                | object)
+            : '',
       }
     : null
 
@@ -87,35 +109,47 @@ const getCommonResult = (parameter: StrippedParameter) => {
         }
       }
     }
+  } else {
+    if (parameter.type === 'Dictionary') {
+      theDefault = {
+        default: '',
+      }
+    }
   }
 
   return {
     type: getParameterType(parameter.type, parameter.nullable, parameter.multi),
     title: parameter.display_name,
     description: parameter.description ?? '',
-    ...theDefault,
+    ...(theDefault as ParameterSchemaDefault),
   }
 }
 
-const extractSubParameters = (parameter: StrippedParameter) => {
+const extractSubParameters = (
+  parameter: StrippedParameter,
+): ParameterWithSubParametersSchema => {
   /* 'multi' can be true or not; we ignore 'choices' */
   const baseResult = getCommonResult(parameter)
 
   if (parameter.multi) {
-    return {
+    const withMulti: ParameterWithSubParametersMultiSchema = {
       ...baseResult,
       type: 'array',
       items: { ...getParameterSchema(parameter.parameters) },
     }
+    return withMulti
   } else {
-    return {
+    const withoutMulti: ParameterWithSubParametersNoMultiSchema = {
       ...baseResult,
       ...getParameterSchema(parameter.parameters),
     }
+    return withoutMulti
   }
 }
 
-const extractChoices = (parameter: StrippedParameter) => {
+const extractChoices = (
+  parameter: StrippedParameter,
+): ParameterWithChoicesSchema => {
   /* 'multi' can be true or not; we ignore subparameters */
   const choiceType = lookupChoiceType[parameter.type as ChoiceType]
   // TODO: this only handles arrays; need objects and strings too (?)
@@ -148,10 +182,12 @@ const extractChoices = (parameter: StrippedParameter) => {
   }
 }
 
-const extractMulti = (parameter: StrippedParameter) => {
+const extractMulti = (
+  parameter: StrippedParameter,
+): ParametersWithMultiSchema => {
   /* this assumes 'choices' in undefined and there are no subparameters */
   const baseResult = getCommonResult(parameter)
-  let derivedDefault = null
+  let derivedDefault: ParameterWithMultiDefault | null = null
 
   if (parameter.type === 'String' && parameter.nullable) {
     derivedDefault = { default: '' }
@@ -163,7 +199,7 @@ const extractMulti = (parameter: StrippedParameter) => {
   } else if (parameter.type === 'Boolean') {
     derivedDefault = { default: false }
   }
-  const subType = parameter.nullable
+  const subType: ParameterWithMultiItemsType = parameter.nullable
     ? ['null', lookupType[parameter.type]]
     : lookupType[parameter.type]
 
@@ -173,7 +209,7 @@ const extractMulti = (parameter: StrippedParameter) => {
     items: {
       type: subType,
       title: parameter.display_name,
-      ...derivedDefault,
+      ...(derivedDefault as ParameterWithMultiDefault),
     },
     /*
        maximum and minimum in this context mean the greatest or smallest
@@ -184,11 +220,11 @@ const extractMulti = (parameter: StrippedParameter) => {
   }
 }
 
-const extractPlain = (parameter: StrippedParameter) => {
+const extractPlain = (parameter: StrippedParameter): ParametersPlain => {
   // this assumes no 'choices', no 'multi' and no subparameters
   const baseResult = getCommonResult(parameter)
 
-  return {
+  const plain: ParametersPlain = {
     ...baseResult,
     /*
        maximum and minimum in this context mean the greatest or smallest
@@ -211,6 +247,8 @@ const extractPlain = (parameter: StrippedParameter) => {
       : null),
     ...getFormat(parameter.type),
   }
+
+  return plain
 }
 
 const extractProperties = (parameter: StrippedParameter) => {
@@ -222,7 +260,9 @@ const extractProperties = (parameter: StrippedParameter) => {
 
   /* blow up if some assumed properties are not satisfied */
   if (hasSubParameters && hasChoices) {
-    throw new Error('hasSubParameters AND hasChoices is not allowed')
+    throw new Error(
+      'Plugin implementation error: cannot have both sub-parameters and choices',
+    )
   }
 
   let extractedProperties: object
@@ -242,7 +282,9 @@ const extractProperties = (parameter: StrippedParameter) => {
   return extractedProperties
 }
 
-const parametersToProperties = (parameters: Array<Parameter>) => {
+const parametersToProperties = (
+  parameters: Array<Parameter>,
+): ParameterAsProperty => {
   /*
        From an array of Parameters, create an object by hoisting up each
        Parameter's 'key' value  to be a key in the resulting object. then set
@@ -259,7 +301,7 @@ const getRequired = (parameters: Parameter[]) => {
   return parameters.filter((x) => !x.optional).map((x) => x.key)
 }
 
-const getParameterSchema = (parameters: Array<Parameter>) => {
+const getParameterSchema = (parameters: Array<Parameter>): ParameterSchema => {
   /*
     Derive parameter schema -- factored into a function so that it can be
     reused by subparameters.
@@ -271,31 +313,19 @@ const getParameterSchema = (parameters: Array<Parameter>) => {
   }
 }
 
-const getJobParameterSchema = (parameters: ObjectWithStringKeys) => {
-  const properties: ObjectWithStringKeys = {}
-  for (const paramKey in parameters) {
-    properties[paramKey] = {
-      title: paramKey,
-      type: 'string',
-      default: parameters[paramKey],
-    }
-  }
-  return properties
-}
-
 const getSchema = (
   instances: Array<Instance>,
-  parameters?: Array<Parameter>,
-  jobParams?: ObjectWithStringKeys,
+  parameters: Array<Parameter>,
 ) => {
-  let instancesData: enumType | null = null
+  let instancesData: SchemaInstanceType | null = null
+
   if (instances.length > 1) {
     instancesData = { enum: instances.map((x) => x.name) }
-  } else if (instances.length === 1) {
+  } else {
     instancesData = { default: instances[0].name }
   }
 
-  const commonSchema = {
+  const commonSchema: CommonSchema = {
     comment: {
       title: 'Comment',
       type: 'object',
@@ -309,7 +339,8 @@ const getSchema = (
       },
     },
     instance_names: {
-      title: 'Instance' + (instances.length > 1 ? 's' : ''),
+      title: ('Instance' +
+        (instances.length > 1 ? 's' : '')) as InstanceNamesTitleType,
       type: 'object',
       properties: {
         instance_name: {
@@ -322,24 +353,16 @@ const getSchema = (
     },
   }
 
-  let computedParameters
-  if (parameters) {
-    computedParameters =
-      parameters.length === 0
-        ? {
-            type: 'object',
-            properties: {},
-            required: [],
-          }
-        : getParameterSchema(parameters)
-  } else if (jobParams) {
-    computedParameters = {
-      type: 'object',
-      properties: getJobParameterSchema(jobParams),
-      required: [],
-    }
-  }
-  const schema = {
+  const computedParameters =
+    parameters.length === 0
+      ? ({
+          type: 'object',
+          properties: {},
+          required: [],
+        } as ParameterEmptySchema)
+      : getParameterSchema(parameters)
+
+  const schema: CommandBasicSchema = {
     type: 'object',
     properties: {
       ...commonSchema,

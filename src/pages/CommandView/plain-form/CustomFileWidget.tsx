@@ -9,6 +9,7 @@ import {
 } from '@mui/material'
 import { WidgetProps } from '@rjsf/core'
 import { dataURItoBlob } from '@rjsf/core/lib/utils'
+import { BytesParameterContext } from 'pages/CommandView/plain-form/CommandViewForm'
 import {
   ChangeEvent,
   useCallback,
@@ -17,8 +18,6 @@ import {
   useRef,
   useState,
 } from 'react'
-
-import { BytesParameterContext } from './CommandViewForm'
 
 interface FileMetaData {
   dataUrl: string
