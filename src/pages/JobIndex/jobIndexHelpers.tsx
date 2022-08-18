@@ -13,7 +13,8 @@ const tableHeads = [
   'Error Count',
 ]
 const formatJobs = (jobs: Job[]) => {
-  const formattedJobs: (string | JSX.Element | number | null)[][] = []
+  const formattedJobs: (string | JSX.Element | number | null | undefined)[][] =
+    []
 
   for (const job of jobs) {
     const {
@@ -39,7 +40,7 @@ const formatJobs = (jobs: Job[]) => {
       <RouterLink key={system} to={'/systems/' + namespace + '/' + system} />,
       instanceName,
       command,
-      new Date(nextRunTime).toString(),
+      new Date(nextRunTime as number).toString(),
       successes || 0,
       errors || 0,
     ]

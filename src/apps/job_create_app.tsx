@@ -1,11 +1,10 @@
 import { Alert } from '@mui/material'
 import JobViewForm from 'components/job_create_form'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
-import { Request } from 'types/backend-types'
 
 const JobCreateApp = () => {
   const location = useLocation()
-  const request = location?.state as Request
+  const request: any = location?.state
 
   let formElement: JSX.Element
 

@@ -1,86 +1,91 @@
-// import { Box } from '@mui/material'
-import useAxios from 'axios-hooks'
-// import { formBuilder } from 'builderForm/form_builder'
+import { Box } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
-// import CommandViewForm from 'components/command_view_form'
 import Divider from 'components/divider'
+import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { useEffect, useState } from 'react'
-// import ReactJson from 'react-json-view'
+import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
+import { checkContext } from 'pages/CommandView/commandViewHelpers'
+import {
+  getJobSchema,
+  getModel,
+  getSchema,
+  getUiSchema,
+  getValidator,
+} from 'pages/CommandView/form-data'
+import { useContext } from 'react'
+import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
-import { Command, System } from 'types/backend-types'
+import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 const CommandView = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const [systems, setSystems] = useState<System[]>([])
-  const {
+  const { debugEnabled } = ServerConfigContainer.useContainer()
+  const { namespace, systemName, version, commandName } = useParams()
+  const context = useContext(JobRequestCreationContext)
+  const { system, command, isJob } = context
+
+  const checkedParams = checkContext(
     namespace,
-    system_name: systemName,
+    systemName,
     version,
-    command_name: commandName,
-  } = useParams()
-  const [{ data, error }] = useAxios({
-    url: '/api/v1/systems',
-    method: 'get',
-    withCredentials: authEnabled,
-  })
-  useEffect(() => {
-    if (data && !error) {
-      setSystems(data)
-    }
-  }, [data, error])
+    commandName,
+    system,
+    command,
+  )
+
+  if (checkedParams) return checkedParams
+
+  // we know that neither of these are undefined because of the call to
+  // 'checkedParams'
+  const theSystem = system as StrippedSystem
+  const theCommand = command as AugmentedCommand
 
   const breadcrumbs = [namespace, systemName, version, commandName].filter(
     (x) => !!x,
   ) as string[]
+  const description = theCommand.description || ''
   const title = commandName ?? ''
-
-  const system = systems.find(
-    (s: System) =>
-      s.name === systemName &&
-      s.version === version &&
-      s.namespace === namespace,
-  ) as System
-
-  const command = system?.commands?.find((c: Command) => {
-    return c.name === commandName
-  }) as Command
-  // let build
-  // if (system && command) {
-  //   build = formBuilder(system, command)
-  // }
+  const instances = theSystem.instances
+  const parameters = theCommand.parameters
+  const schema = isJob
+    ? getJobSchema(getSchema(instances, parameters))
+    : getSchema(instances, parameters)
+  const uiSchema = getUiSchema(instances, parameters)
+  const model = getModel(parameters)
+  const validator = getValidator(parameters)
 
   return (
-    <>
-      <PageHeader title={title} description={command?.description} />
+    <Box>
+      <PageHeader title={title} description={description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      {/* {build && (
-        <>
-          <CommandViewForm
-            schema={build.schema}
-            uiSchema={build.uiSchema}
-            initialModel={build.model}
-            command={command}
-          />
-          <Box pt={2} display="flex" alignItems="flex-start">
-            <Box width={1 / 3}>
-              <h3>Command</h3>
-              <ReactJson src={command} />
-            </Box>
-            <Box width={1 / 3}>
-              <h3>Schema</h3>
-              <ReactJson src={build.schema} />
-            </Box>
-            <Box width={1 / 3}>
-              <h3>UI Schema</h3>
-              <ReactJson src={build.uiSchema} />
-            </Box>
+      <Box>
+        <CommandViewForm
+          schema={schema}
+          uiSchema={uiSchema}
+          initialModel={model}
+          command={theCommand}
+          isJob={isJob}
+          validator={validator}
+        />
+      </Box>
+      {debugEnabled && (
+        <Box pt={2} display="flex" alignItems="flex-start">
+          <Box width={1 / 3}>
+            <h3>Command</h3>
+            <ReactJson src={theCommand} />
           </Box>
-        </>
-      )} */}
-    </>
+          <Box width={1 / 3}>
+            <h3>Schema</h3>
+            <ReactJson src={schema} />
+          </Box>
+          <Box width={1 / 3}>
+            <h3>UI Schema</h3>
+            <ReactJson src={uiSchema} />
+          </Box>
+        </Box>
+      )}
+    </Box>
   )
 }
 

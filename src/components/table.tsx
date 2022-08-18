@@ -127,9 +127,9 @@ const MyTable = ({ parentState }: TableInterface) => {
     cachedState = newCachedState
   }
 
-  const [data, setData] = useState<(string | JSX.Element | number | null)[][]>(
-    [],
-  )
+  const [data, setData] = useState<
+    (string | JSX.Element | number | null | undefined)[][]
+  >([])
   const [completeDataSet, setCompleteDataSet] = useState(
     parentState.completeDataSet,
   )
