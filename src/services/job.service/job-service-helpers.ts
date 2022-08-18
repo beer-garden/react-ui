@@ -20,15 +20,15 @@ const getTrigger = (triggerType: string, formModel: ObjectWithStringKeys) => {
     let days = 0
 
     if (formModel['interval'] === 'weeks') {
-      weeks = formModel['interval_num']
+      weeks = formModel['interval_num'] as number
     } else if (formModel['interval'] === 'minutes') {
-      minutes = formModel['interval_num']
+      minutes = formModel['interval_num'] as number
     } else if (formModel['interval'] === 'hours') {
-      hours = formModel['interval_num']
+      hours = formModel['interval_num'] as number
     } else if (formModel['interval'] === 'seconds') {
-      seconds = formModel['interval_num']
+      seconds = formModel['interval_num'] as number
     } else if (formModel['interval'] === 'days') {
-      days = formModel['interval_num']
+      days = formModel['interval_num'] as number
     }
 
     return {
@@ -76,7 +76,10 @@ const formToServerModel = (
   serviceModel['name'] = formModel['name']
   serviceModel['misfire_grace_time'] = formModel['misfire_grace_time']
   serviceModel['trigger_type'] = formModel['trigger_type']
-  serviceModel['trigger'] = getTrigger(formModel['trigger_type'], formModel)
+  serviceModel['trigger'] = getTrigger(
+    formModel['trigger_type'] as string,
+    formModel,
+  )
   serviceModel['request_template'] = requestTemplate
   serviceModel['coalesce'] = formModel['coalesce']
   serviceModel['max_instances'] = formModel['max_instances']

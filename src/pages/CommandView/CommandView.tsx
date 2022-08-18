@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import useAxios from 'axios-hooks'
-import { formBuilder } from 'builderForm/form_builder'
+// import { formBuilder } from 'builderForm/form_builder'
 import Breadcrumbs from 'components/Breadcrumbs'
 import CommandViewForm from 'components/command_view_form'
 import Divider from 'components/divider'
@@ -46,17 +46,17 @@ const CommandView = () => {
   const command = system?.commands?.find((c: Command) => {
     return c.name === commandName
   }) as Command
-  let build
-  if (system && command) {
-    build = formBuilder(system, command)
-  }
+  // let build
+  // if (system && command) {
+  //   build = formBuilder(system, command)
+  // }
 
   return (
     <>
       <PageHeader title={title} description={command?.description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      {build && (
+      {/* {build && (
         <>
           <CommandViewForm
             schema={build.schema}
@@ -79,7 +79,7 @@ const CommandView = () => {
             </Box>
           </Box>
         </>
-      )}
+      )} */}
     </>
   )
 }

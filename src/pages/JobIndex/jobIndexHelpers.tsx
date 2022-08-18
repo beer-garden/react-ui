@@ -15,7 +15,7 @@ const tableHeads = [
 const formatJobs = (jobs: Job[]) => {
   const formattedJobs: (string | JSX.Element | number | null)[][] = []
 
-  for (const job in jobs) {
+  for (const job of jobs) {
     const {
       name,
       id,
@@ -29,19 +29,19 @@ const formatJobs = (jobs: Job[]) => {
       next_run_time: nextRunTime,
       success_count: successes,
       error_count: errors,
-    } = jobs[job]
+    } = job
 
     const formattedJob = [
       <RouterLink key={name} to={'/jobs/' + id}>
         {name}
       </RouterLink>,
-      status,
+      status as string,
       <RouterLink key={system} to={'/systems/' + namespace + '/' + system} />,
       instanceName,
       command,
       new Date(nextRunTime).toString(),
-      successes,
-      errors,
+      successes || 0,
+      errors || 0,
     ]
 
     formattedJobs.push(formattedJob)

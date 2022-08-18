@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 
-import { Command, Job, System } from './backend-types'
+import { Command, Job, Request, System } from './backend-types'
 
 export interface ObjectWithStringKeys {
   [key: string]: unknown
@@ -92,3 +92,12 @@ export interface CommandParams {
 export interface TableInterface {
   parentState: TableState
 }
+
+export type AugmentedCommand = Command & {
+  namespace: string
+  systemName: string
+  systemVersion: string
+  systemId: string
+}
+
+export type StrippedSystem = Omit<System, 'commands'>

@@ -9,8 +9,9 @@ export type Command = {
   schema: EmptyObject
   form: EmptyObject
   hidden: boolean
-  metadata: object
+  metadata: ObjectWithStringKeys | EmptyObject | null
   template?: string
+  icon_name?: string
 }
 
 export type CommandType = 'ACTION' | 'INFO'
@@ -74,7 +75,7 @@ export interface Request {
   command: string
   command_type: string
   comment: string | null
-  created_at?: number
+  created_at: number
   error_class: Error | null
   has_parent?: boolean
   hidden?: boolean
@@ -91,7 +92,7 @@ export interface Request {
   status_updated_at?: number
   system: string
   system_version: string
-  updated_at?: number
+  updated_at: number
 }
 
 export interface RequestTemplate {
@@ -177,7 +178,7 @@ export interface Job {
   max_instances?: number
   misfire_grace_time?: null | number
   name: string
-  next_run_time?: number
+  next_run_time: number
   request_template: RequestTemplate
   status?: string
   success_count?: number

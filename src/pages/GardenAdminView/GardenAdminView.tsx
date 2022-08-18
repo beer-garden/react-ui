@@ -79,15 +79,11 @@ const GardenAdminView = () => {
   }
 
   function getConfigSetup() {
+    const localGardenAlert =
+      'Since this is the local Garden it is not possible to modify connection information'
     if (garden) {
       if (garden.connection_type === 'LOCAL') {
-        return (
-          <Alert severity="info">
-            {
-              "Since this is the local Garden it's not possible to modify connection information"
-            }
-          </Alert>
-        )
+        return <Alert severity="info">{localGardenAlert}</Alert>
       } else {
         return <GardenConnectionForm garden={garden} />
       }

@@ -12,7 +12,7 @@ export interface Garden {
 }
 
 interface Status {
-  heartbeat?: string
+  heartbeat?: number
 }
 
 export interface GardenConnectionParameters {
