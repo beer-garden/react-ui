@@ -14,6 +14,10 @@ import {
   useCallback,
   useContext,
   useEffect,
+<<<<<<< HEAD
+=======
+  useMemo,
+>>>>>>> ab8768c (#61 - Job/Request creation)
   useRef,
   useState,
 } from 'react'
@@ -118,6 +122,10 @@ const CustomFileWidget = (props: WidgetProps) => {
     onChange,
   } = props
 
+<<<<<<< HEAD
+=======
+  const parameterName = useMemo(() => schema.title, [schema.title])
+>>>>>>> ab8768c (#61 - Job/Request creation)
   const inputRef = useRef()
   const { setFileMetaData } = useContext(BytesParameterContext)
   const [localFileMetaData, setLocalFileMetaData] = useState<FileMetaData[]>([])
@@ -183,7 +191,11 @@ const CustomFileWidget = (props: WidgetProps) => {
 
         return {
           dataUrl: value,
+<<<<<<< HEAD
           parameterName: schema.title,
+=======
+          parameterName,
+>>>>>>> ab8768c (#61 - Job/Request creation)
           name: name,
           size: blob.size,
           type: blob.type,
@@ -191,7 +203,11 @@ const CustomFileWidget = (props: WidgetProps) => {
       })
 
     setLocalFileMetaData(newValues)
+<<<<<<< HEAD
   }, [schema.title, value])
+=======
+  }, [parameterName, value])
+>>>>>>> ab8768c (#61 - Job/Request creation)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -207,7 +223,11 @@ const CustomFileWidget = (props: WidgetProps) => {
   return (
     <>
       <FormLabel required={required} htmlFor={id}>
+<<<<<<< HEAD
         {label || schema.title}
+=======
+        {label || parameterName}
+>>>>>>> ab8768c (#61 - Job/Request creation)
       </FormLabel>
       <Input
         ref={inputRef.current}
