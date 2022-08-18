@@ -18,10 +18,12 @@ const ThemeChooser = () => {
   const setTheme = useContext(ThemeContext).setTheme
 
   const handleThemeChange = (event: React.KeyboardEvent | React.MouseEvent) => {
-    const newMode: SupportedColorScheme = flip(mode)
-    setMode(newMode)
-    setTheme(newMode)
-    toggleDrawer(false)(event)
+    if (mode) {
+      const newMode: SupportedColorScheme = flip(mode as SupportedColorScheme)
+      setMode(newMode)
+      setTheme(newMode)
+      toggleDrawer(false)(event)
+    }
   }
 
   const flip = (value: SupportedColorScheme): SupportedColorScheme => {
@@ -39,7 +41,11 @@ const ThemeChooser = () => {
       </ListItemIcon>
       <ListItemText
         primary={
-          flip(mode).charAt(0).toUpperCase() + flip(mode).slice(1) + ' mode'
+          flip(mode as SupportedColorScheme)
+            .charAt(0)
+            .toUpperCase() +
+          flip(mode as SupportedColorScheme).slice(1) +
+          ' mode'
         }
       />
     </ListItemButton>
