@@ -8,19 +8,6 @@ export interface ObjectWithStringKeys {
 
 export type EmptyObject = Record<string, never>
 
-export type SystemBase = Omit<
-  System,
-  | 'id'
-  | 'max_instances'
-  | 'instances'
-  | 'commands'
-  | 'icon_name'
-  | 'display_name'
-  | 'metadata'
-  | 'local'
-  | 'template'
->
-
 export interface SuccessCallback {
   (response: AxiosResponse): void
 }

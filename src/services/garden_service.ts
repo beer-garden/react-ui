@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { Garden, SuccessCallback } from 'types/custom_types'
+import { Garden } from 'types/backend-types'
+import { SuccessCallback } from 'types/custom-types'
 
 class GardensService {
   CONNECTION_TYPES = ['HTTP', 'STOMP']
@@ -39,7 +40,7 @@ class GardensService {
           url_prefix: {
             title: 'URL Prefix',
             description:
-              'URL path that will be used as a prefix when communicating with Beer-garden. Useful if Beer-garden is running on a URL other than \'/\'.',
+              "URL path that will be used as a prefix when communicating with Beer-garden. Useful if Beer-garden is running on a URL other than '/'.",
             type: 'string',
           },
           ca_cert: {

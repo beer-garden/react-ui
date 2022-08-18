@@ -1,11 +1,16 @@
 import { UISchemaElement } from '@jsonforms/core'
 import { buildParameters } from 'builderForm/build_parameter'
-import { Command, Dictionary, System } from 'types/custom_types'
+import { Command, System } from 'types/backend-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 export function formBuilder(
   system: System,
   command: Command,
-): { schema: Dictionary; uiSchema: UISchemaElement; model: Dictionary } {
+): {
+  schema: ObjectWithStringKeys
+  uiSchema: UISchemaElement
+  model: ObjectWithStringKeys
+} {
   const instanceNames: (string | undefined)[] = [undefined]
   let instanceSchema
 

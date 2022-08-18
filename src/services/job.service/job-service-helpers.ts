@@ -3,9 +3,10 @@ import {
   DATE_KEYS,
   INTERVAL_KEYS,
 } from 'services/job.service/job-service-values'
-import { Dictionary, Request } from 'types/custom_types'
+import { Request } from 'types/backend-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-const getTrigger = (triggerType: string, formModel: Dictionary) => {
+const getTrigger = (triggerType: string, formModel: ObjectWithStringKeys) => {
   if (triggerType === 'date') {
     return {
       run_date: formModel['run_date'],
@@ -67,8 +68,11 @@ const getTrigger = (triggerType: string, formModel: Dictionary) => {
   }
 }
 
-const formToServerModel = (formModel: Dictionary, requestTemplate: Request) => {
-  const serviceModel: Dictionary = {}
+const formToServerModel = (
+  formModel: ObjectWithStringKeys,
+  requestTemplate: Request,
+) => {
+  const serviceModel: ObjectWithStringKeys = {}
   serviceModel['name'] = formModel['name']
   serviceModel['misfire_grace_time'] = formModel['misfire_grace_time']
   serviceModel['trigger_type'] = formModel['trigger_type']

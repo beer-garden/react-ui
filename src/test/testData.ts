@@ -1,4 +1,4 @@
-import { DateTrigger, Request } from 'types/custom_types'
+import { DateTrigger, Request } from 'types/backend-types'
 
 export const serverConfig = {
   application_name: 'testApp',

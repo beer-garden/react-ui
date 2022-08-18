@@ -16,7 +16,8 @@ import {
   SCHEMA,
   UISCHEMA,
 } from 'services/job.service/job-service-values'
-import { Request, SuccessCallback } from 'types/custom_types'
+import { Request } from 'types/backend-types'
+import { SuccessCallback } from 'types/custom-types'
 
 interface JobViewFormProps {
   request: Request

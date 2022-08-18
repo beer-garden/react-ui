@@ -1,4 +1,5 @@
-import { Dictionary, Parameter } from 'types/custom_types'
+import { Parameter } from 'types/backend-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 function getTypeAndFormat(parameter: Parameter) {
   let parameterType: string | string[] = parameter.type.toLowerCase()
@@ -46,22 +47,22 @@ export function buildParameters(
   parentKey: string,
   scopeKey = '#/properties/',
 ): {
-  schema: Dictionary
-  model: Dictionary
-  requiredUiSchema: Dictionary[]
-  optionalUiSchema: Dictionary[]
+  schema: ObjectWithStringKeys
+  model: ObjectWithStringKeys
+  requiredUiSchema: ObjectWithStringKeys[]
+  optionalUiSchema: ObjectWithStringKeys[]
 } {
   scopeKey = scopeKey + parentKey + '/properties/'
-  const schema: Dictionary = {}
+  const schema: ObjectWithStringKeys = {}
   schema[parentKey] = {
     type: 'object',
     properties: {},
     required: [],
   }
-  const model: Dictionary = {}
+  const model: ObjectWithStringKeys = {}
   model[parentKey] = {}
-  const requiredUiSchema: Dictionary[] = []
-  const optionalUiSchema: Dictionary[] = []
+  const requiredUiSchema: ObjectWithStringKeys[] = []
+  const optionalUiSchema: ObjectWithStringKeys[] = []
 
   for (const i in parameters) {
     const parameter = parameters[i]

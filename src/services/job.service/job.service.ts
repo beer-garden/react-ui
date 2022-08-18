@@ -1,8 +1,9 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
-import {useMyAxios} from 'hooks/useMyAxios'
+import { useMyAxios } from 'hooks/useMyAxios'
 import { formToServerModel } from 'services/job.service/job-service-helpers'
-import { Dictionary, Request, SuccessCallback } from 'types/custom_types'
+import { Request } from 'types/backend-types'
+import { ObjectWithStringKeys, SuccessCallback } from 'types/custom-types'
 
 const JOBS_URL = '/api/v1/jobs'
 
@@ -38,7 +39,7 @@ const useJobServices = () => {
 
   const useCreateJob = (
     request: Request,
-    data_: Dictionary,
+    data_: ObjectWithStringKeys,
     successCallback: SuccessCallback,
   ) => {
     const config: AxiosRequestConfig = {
@@ -127,4 +128,4 @@ const useJobServices = () => {
   }
 }
 
-export { useGetJobs,useJobServices }
+export { useGetJobs, useJobServices }

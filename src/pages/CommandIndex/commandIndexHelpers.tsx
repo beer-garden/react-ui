@@ -1,5 +1,5 @@
 import { MakeItHappenButton } from 'pages/CommandIndex'
-import { Command, System } from 'types/custom_types'
+import { Command, System } from 'types/backend-types'
 
 const filterSystems = (
   systems: System[],

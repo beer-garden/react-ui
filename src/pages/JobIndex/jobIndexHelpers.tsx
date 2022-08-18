@@ -1,6 +1,6 @@
 import RequestTable from 'components/table'
 import { Link as RouterLink } from 'react-router-dom'
-import { Job } from 'types/custom_types'
+import { Job } from 'types/backend-types'
 
 const tableHeads = [
   'Job Name',
