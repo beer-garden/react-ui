@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+=======
+import { Box, Button } from '@mui/material'
+import { AxiosError, AxiosRequestConfig } from 'axios'
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
 import useAxios from 'axios-hooks'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -9,16 +14,26 @@ import { useMyAxios } from 'hooks/useMyAxios'
 import {
   extractModel,
   getOnChangeFunctions,
+<<<<<<< HEAD
   JobRequestFormModelPreview,
+=======
+  ModelPreview,
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
   OnChangeFunctionMap,
   SystemProperties,
   useChoicesState,
 } from 'pages/CommandView/dynamic-form'
 import { SubmitButton } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs'
 import { getFormComponents } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs/form-components/getFormComponents'
+<<<<<<< HEAD
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Request, RequestTemplate } from 'types/backend-types'
+=======
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { RequestTemplate } from 'types/backend-types'
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
 import {
   AugmentedCommand,
   SnackbarState,
@@ -54,10 +69,13 @@ const CommandChoiceWithArgsForm = (
 
   const model = extractModel(parametersSchema, instancesSchema)
   const [stateManager, resetAll] = useChoicesState(system, command)
+<<<<<<< HEAD
   const previewModel = useMemo(
     () => stateManager.model.get(),
     [stateManager.model],
   )
+=======
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
 
   const onChangeFunctions: OnChangeFunctionMap = getOnChangeFunctions(
     parameters,
@@ -87,7 +105,11 @@ const CommandChoiceWithArgsForm = (
     }
 
     execute(config)
+<<<<<<< HEAD
       .then((response: AxiosResponse<Request>) => {
+=======
+      .then((response) => {
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
         navigate('/requests/' + response.data.id)
       })
       .catch((error: AxiosError) => {
@@ -104,10 +126,17 @@ const CommandChoiceWithArgsForm = (
   }
 
   return (
+<<<<<<< HEAD
     <Box p={2} display="flex" alignItems="flex-start">
       <Formik onSubmit={onSubmit} initialValues={model}>
         <>
           <Box width={3 / 5}>
+=======
+    <>
+      <Formik onSubmit={onSubmit} initialValues={model}>
+        <Box pt={2} display="flex" alignItems="flex-start">
+          <Box pr={2} width={1 / 2}>
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
             <Form>
               {getFormComponents(
                 parametersSchema,
@@ -116,6 +145,7 @@ const CommandChoiceWithArgsForm = (
                 execute,
                 stateManager,
               )}
+<<<<<<< HEAD
               <ButtonGroup variant="contained" size="large">
                 <Button onClick={resetAll}>Reset</Button>
                 <SubmitButton
@@ -130,6 +160,24 @@ const CommandChoiceWithArgsForm = (
       </Formik>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
     </Box>
+=======
+              <Button color="secondary" variant="contained" onClick={resetAll}>
+                Reset
+              </Button>
+              <SubmitButton
+                schemaProperties={schema.properties}
+                stateManager={stateManager}
+              />
+            </Form>
+          </Box>
+          <Box width={1 / 2}>
+            <ModelPreview getData={stateManager.model.get} />
+          </Box>
+        </Box>
+      </Formik>
+      {submitStatus ? <Snackbar status={submitStatus} /> : null}
+    </>
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
   )
 }
 

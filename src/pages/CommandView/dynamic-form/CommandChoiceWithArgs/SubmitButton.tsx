@@ -27,7 +27,13 @@ const SubmitButton = ({
     if (parametersRequired.length > 0) {
       const params = stateManager.model.get().parameters
       mustChoose = mustChoose.concat(parametersRequired)
+<<<<<<< HEAD
       canSubmit &&= parametersRequired.every((p) => params[p] !== '')
+=======
+      canSubmit &&= parametersRequired
+        .map((p) => params[p] !== '')
+        .every((r) => r)
+>>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
     }
 
     return [canSubmit, mustChoose]
