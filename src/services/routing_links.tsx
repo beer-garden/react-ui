@@ -1,7 +1,7 @@
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight'
 import Box from '@mui/material/Box'
 import { Link as RouterLink } from 'react-router-dom'
-import { Request } from 'types/custom_types'
+import { Request } from 'types/backend-types'
 
 export function systemLink(text: string, params: string[]): JSX.Element {
   return <RouterLink to={'/systems/' + params.join('/')}>{text}</RouterLink>

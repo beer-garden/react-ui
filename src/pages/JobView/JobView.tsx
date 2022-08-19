@@ -5,7 +5,7 @@ import { JobButton } from 'pages/JobView'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useJobServices } from 'services/job.service/job.service'
-import { Job } from 'types/custom_types'
+import { Job } from 'types/backend-types'
 
 const JobView = () => {
   const [job, setJob] = useState<Job | null>(null)

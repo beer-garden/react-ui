@@ -5,7 +5,7 @@ import GardenCard from 'components/garden_admin_card'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useEffect, useState } from 'react'
-import { Garden } from 'types/custom_types'
+import { Garden } from 'types/backend-types'
 
 const GardensAdmin = (): JSX.Element => {
   const { authEnabled } = ServerConfigContainer.useContainer()

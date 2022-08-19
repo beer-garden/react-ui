@@ -12,7 +12,8 @@ import {
 } from 'react'
 import { useParams } from 'react-router-dom'
 import { Column } from 'react-table'
-import { Command, System } from 'types/custom_types'
+import { Command, System } from 'types/backend-types'
+import { AugmentedCommand } from 'types/custom-types'
 
 export type CommandIndexTableData = {
   namespace: string
@@ -23,7 +24,7 @@ export type CommandIndexTableData = {
   executeButton: JSX.Element
 }
 
-const commandMapper = (command: Command): CommandIndexTableData => {
+const commandMapper = (command: AugmentedCommand): CommandIndexTableData => {
   return {
     namespace: command.namespace,
     system: command.systemName,
@@ -67,13 +68,14 @@ const filtersToFilter = <T,>(
  * @returns - The commands associated with the system, each augmented with the
  * namespace, system name and system version of its parent
  */
-const commandsAugmenter = (system: System): Command[] => {
+const commandsAugmenter = (system: System): AugmentedCommand[] => {
   return system.commands.map(
-    (cmd: Command): Command => ({
+    (cmd: Command): AugmentedCommand => ({
       ...cmd,
       namespace: system.namespace,
       systemName: system.name,
       systemVersion: system.version,
+      systemId: system.id,
     }),
   )
 }
@@ -203,4 +205,4 @@ const useCommandIndexTableColums = () => {
   )
 }
 
-export { useCommandIndexTableColums,useCommands }
+export { useCommandIndexTableColums, useCommands }

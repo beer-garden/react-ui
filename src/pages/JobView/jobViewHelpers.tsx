@@ -2,7 +2,7 @@ import { Backdrop, Box, CircularProgress } from '@mui/material'
 import JobTable from 'components/table'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
-import { Job } from 'types/custom_types'
+import { Job } from 'types/backend-types'
 
 const tableHeads = [
   'Job Name',
@@ -55,9 +55,9 @@ const formatJob = (jobs: Job[]) => {
       </RouterLink>,
       instance,
       command,
-      status,
-      successes,
-      errors,
+      status as string,
+      successes || 0,
+      errors || 0,
       nextRunTime,
     ],
   ]

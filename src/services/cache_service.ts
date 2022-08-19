@@ -1,4 +1,4 @@
-import { Request } from 'types/custom_types'
+import { Request } from 'types/backend-types'
 
 type CachedStates = {
   rowsPerPage?: number

@@ -1,4 +1,4 @@
-import { System } from 'types/custom_types'
+import { System } from 'types/backend-types'
 
 import { ExploreButton } from '.'
 

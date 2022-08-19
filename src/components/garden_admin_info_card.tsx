@@ -10,7 +10,8 @@ import {
   Typography,
 } from '@mui/material'
 import Table from 'components/table'
-import { Garden, TableState } from 'types/custom_types'
+import { Garden } from 'types/backend-types'
+import { TableState } from 'types/custom-types'
 
 const useStyles = makeStyles({
   root: {
