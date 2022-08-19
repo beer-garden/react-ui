@@ -1,45 +1,44 @@
+import useAxios from 'axios-hooks'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { useCallback, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BlockedList, CommandBase } from 'types/custom_types'
 
 export const useBlockList = () => {
-  const [blockList, setList] = useState<BlockedList>({
-    command_publishing_blocklist: [],
-  })
+  const { authEnabled } = ServerConfigContainer.useContainer()
+  const [blockList, setList] = useState<CommandBase[]>([])
   const { axiosInstance } = useMyAxios()
 
-  const getList = useCallback(async () => {
-    const { data } = await axiosInstance.get<BlockedList>(
-      '/api/v1/commandpublishingblocklist',
-    )
-    setList(data)
-    return data
-  }, [setList, axiosInstance])
-
-  const getBlockList = () => {
-    if (blockList.command_publishing_blocklist.length > 0) {
-      return blockList.command_publishing_blocklist
-    } else {
-      getList()
-      return []
-    }
+  const getList = () => {
+    axiosInstance
+      .get<BlockedList>('/api/v1/commandpublishingblocklist/')
+      .then((resolved) => {
+        if (resolved) setList(resolved.data.command_publishing_blocklist)
+      })
   }
+
+  const [{ data, error }] = useAxios({
+    url: '/api/v1/commandpublishingblocklist',
+    method: 'get',
+    withCredentials: authEnabled,
+  })
+
+  useEffect(() => {
+    if (data && !error) setList(data.command_publishing_blocklist)
+  }, [data, error, setList])
 
   const deleteBlockList = (id: string) => {
     if (blockList) {
-      const indx = (
-        blockList.command_publishing_blocklist as CommandBase[]
-      ).findIndex((elem) => {
-        return elem.id === id
-      })
-      blockList.command_publishing_blocklist.splice(indx, 1)
+      const indx = blockList.findIndex((elem) => elem.id === id)
+      blockList.splice(indx, 1)
     }
     axiosInstance
       .delete<BlockedList>(`/api/v1/commandpublishingblocklist/${id}`)
       .then((resolved) => {
         if (resolved) getList()
       })
-    return blockList.command_publishing_blocklist
+      .catch((e) => console.error('Error removing from Blocklist: ', e))
+    return blockList
   }
 
   const addBlockList = (command: CommandBase[]) => {
@@ -63,8 +62,7 @@ export const useBlockList = () => {
   }
 
   return {
-    list: blockList.command_publishing_blocklist,
-    getBlockList,
+    blockList,
     deleteBlockList,
     addBlockList,
   }
