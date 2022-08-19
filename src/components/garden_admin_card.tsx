@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles' // TODO
 import {
   AppBar,
   Button,
@@ -14,30 +13,11 @@ import GardenService from 'services/garden_service'
 import { Garden } from 'types/backend-types'
 import { TableState } from 'types/custom-types'
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-})
-
 interface GardenAdminCardProps {
   garden: Garden
 }
 
 const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
-  const classes = useStyles()
-
   function getTableData() {
     return [
       ['Status', garden.status],
@@ -76,7 +56,7 @@ const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
   }
 
   return (
-    <Card className={classes.root}>
+    <Card sx={{ minWidth: 275 }}>
       <AppBar
         color="inherit"
         style={{ background: 'lightgray' }}
