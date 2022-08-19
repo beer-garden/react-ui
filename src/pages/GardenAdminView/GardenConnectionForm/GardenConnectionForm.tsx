@@ -7,7 +7,6 @@ import {
   ConnectionStompValues,
   connectionValidationSchema,
   GardenConnectionParameters,
-  // Garden,
   SubmissionStatusSnackbar,
   useGardenConnectionFormOnSubmit,
 } from 'pages/GardenAdminView'
