@@ -33,7 +33,7 @@ const useCommandIndexTableColumns = () => {
       },
       {
         Header: '',
-        accessor: 'executeButton',
+        accessor: 'action',
         disableSortBy: true,
         disableGroupBy: true,
         disableFilters: true,
