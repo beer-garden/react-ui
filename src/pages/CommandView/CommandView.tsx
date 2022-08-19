@@ -1,15 +1,15 @@
-import { Box } from '@mui/material'
+// import { Box } from '@mui/material'
 import useAxios from 'axios-hooks'
-import { formBuilder } from 'builderForm/form_builder'
+// import { formBuilder } from 'builderForm/form_builder'
 import Breadcrumbs from 'components/Breadcrumbs'
-import CommandViewForm from 'components/command_view_form'
+// import CommandViewForm from 'components/command_view_form'
 import Divider from 'components/divider'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useEffect, useState } from 'react'
-import ReactJson from 'react-json-view'
+// import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
-import { Command, System } from 'types/custom_types'
+import { Command, System } from 'types/backend-types'
 
 const CommandView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -46,17 +46,17 @@ const CommandView = () => {
   const command = system?.commands?.find((c: Command) => {
     return c.name === commandName
   }) as Command
-  let build
-  if (system && command) {
-    build = formBuilder(system, command)
-  }
+  // let build
+  // if (system && command) {
+  //   build = formBuilder(system, command)
+  // }
 
   return (
     <>
       <PageHeader title={title} description={command?.description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      {build && (
+      {/* {build && (
         <>
           <CommandViewForm
             schema={build.schema}
@@ -79,7 +79,7 @@ const CommandView = () => {
             </Box>
           </Box>
         </>
-      )}
+      )} */}
     </>
   )
 }

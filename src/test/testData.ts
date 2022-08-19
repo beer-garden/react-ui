@@ -1,4 +1,4 @@
-import { DateTrigger, Request } from 'types/custom_types'
+import { DateTrigger, Job, RequestTemplate } from 'types/backend-types'
 
 export const serverConfig = {
   application_name: 'testApp',
@@ -18,7 +18,7 @@ export const versionConfig = {
   supported_api_versions: ['1.0.0', '1.0.1'],
 }
 
-export const job = {
+export const job: Job = {
   coalesce: false,
   error_count: 0,
   id: '123test',
@@ -26,10 +26,10 @@ export const job = {
   misfire_grace_time: null,
   name: 'testjob',
   next_run_time: 1,
-  request_template: {} as Request,
+  request_template: {} as RequestTemplate,
   status: 'RUNNING',
   success_count: 1,
   timeout: null,
   trigger: {} as DateTrigger,
-  trigger_type: 'DateTrigger',
+  trigger_type: 'date',
 }

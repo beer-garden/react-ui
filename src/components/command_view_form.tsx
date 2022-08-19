@@ -15,12 +15,13 @@ import { useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, Navigate } from 'react-router-dom'
 import CacheService from 'services/cache_service'
-import { Command, Dictionary } from 'types/custom_types'
+import { Command } from 'types/backend-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 interface CommandViewFormProps {
-  schema: Dictionary
+  schema: ObjectWithStringKeys
   uiSchema: UISchemaElement
-  initialModel: Dictionary
+  initialModel: ObjectWithStringKeys
   command: Command
 }
 
@@ -104,7 +105,10 @@ const CommandViewForm = ({
     )
   }
 
-  function onChange(data: Dictionary, errors: Ajv.ErrorObject[] | undefined) {
+  function onChange(
+    data: ObjectWithStringKeys,
+    errors: Ajv.ErrorObject[] | undefined,
+  ) {
     setErrors(errors || [])
     setModel(data)
   }

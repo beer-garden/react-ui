@@ -1,15 +1,15 @@
 import { Box, InputLabel, TextField } from '@mui/material'
-import { TableData } from 'components/Table'
 import { useActiveElement } from 'components/Table/filters/filterHelpers'
 import { DateTime } from 'luxon'
 import { useState } from 'react'
 import { FilterProps } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const DateRangeColumnFilter = ({
   state,
   gotoPage,
   column: { filterValue = [], render, setFilter, id },
-}: FilterProps<TableData>) => {
+}: FilterProps<ObjectWithStringKeys>) => {
   const [startDate, setStartDate] = useState<string>(
     filterValue[0]
       ? () => {

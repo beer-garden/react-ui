@@ -1,15 +1,15 @@
 import { Box, InputLabel, TextField } from '@mui/material'
-import { TableData } from 'components/Table'
 import {
   getMinAndMax,
   useActiveElement,
 } from 'components/Table/filters/filterHelpers'
 import { useMemo } from 'react'
 import { FilterProps } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const NumberRangeColumnFilter = ({
   column: { filterValue = [], render, preFilteredRows, setFilter, id },
-}: FilterProps<TableData>) => {
+}: FilterProps<ObjectWithStringKeys>) => {
   const [min, max] = useMemo(
     () => getMinAndMax(preFilteredRows, id),
     [preFilteredRows, id],

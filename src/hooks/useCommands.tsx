@@ -1,7 +1,7 @@
 import useAxios from 'axios-hooks'
 import { generateCommandName } from 'components/generateCommandName'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { MakeItHappenButton } from 'pages/CommandIndex'
+import { ExecuteButton } from 'pages/CommandIndex'
 import {
   ChangeEvent as ReactChangeEvent,
   useCallback,
@@ -9,11 +9,12 @@ import {
   useState,
 } from 'react'
 import { useParams } from 'react-router-dom'
-import { Command, CommandRow, System } from 'types/custom_types'
+import { Command, System } from 'types/backend-types'
+import { AugmentedCommand, CommandIndexTableData } from 'types/custom-types'
 
 export const useCommands = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const [commands, setCommands] = useState<CommandRow[]>([])
+  const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
   const { namespace, system_name: systemName, version } = useParams()
   const [{ data, error }] = useAxios({
@@ -53,7 +54,7 @@ export const useCommands = () => {
   }
 }
 
-const commandMapper = (command: Command): CommandRow => {
+const commandMapper = (command: AugmentedCommand): CommandIndexTableData => {
   return {
     namespace: command.namespace,
     system: command.systemName,
@@ -61,7 +62,7 @@ const commandMapper = (command: Command): CommandRow => {
     command: command.name,
     name: generateCommandName(command.hidden, command.name),
     description: command.description ?? 'No description',
-    action: MakeItHappenButton(command),
+    action: ExecuteButton(command),
   }
 }
 
@@ -87,13 +88,14 @@ const filtersToFilter = <T,>(
  * @returns - The commands associated with the system, each augmented with the
  * namespace, system name and system version of its parent
  */
-const commandsAugmenter = (system: System): Command[] => {
+const commandsAugmenter = (system: System): AugmentedCommand[] => {
   return system.commands.map(
-    (cmd: Command): Command => ({
+    (cmd: Command): AugmentedCommand => ({
       ...cmd,
       namespace: system.namespace,
       systemName: system.name,
       systemVersion: system.version,
+      systemId: system.id,
     }),
   )
 }

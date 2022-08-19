@@ -11,16 +11,17 @@ import { useCommands } from 'hooks/useCommands'
 import { differenceWith } from 'lodash'
 import { useModalColumns, useTableColumns } from 'pages/CommandBlocklistView'
 import { useMemo, useState } from 'react'
-import { CommandBase, CommandRow } from 'types/custom_types'
+import { BlockedCommand } from 'types/backend-types'
+import { CommandIndexTableData } from 'types/custom-types'
 
 export const CommandBlocklistView = () => {
   const [open, setOpen] = useState(false)
-  const [selection, setSelection] = useState<CommandRow[]>([])
+  const [selection, setSelection] = useState<CommandIndexTableData[]>([])
   const { blockList, deleteBlockList, addBlockList } = useBlockList()
   const { commands } = useCommands()
 
   // populate data for modal All Commands list table
-  const commandListData = useMemo(() => {
+  const commandListData = useMemo((): CommandIndexTableData[] => {
     // Filter out blocked commands first
     return differenceWith(commands, blockList, (commandItem, blockItem) => {
       return (
@@ -28,7 +29,7 @@ export const CommandBlocklistView = () => {
         commandItem.system === blockItem.system &&
         commandItem.command === blockItem.command
       )
-    }).map((command: CommandRow): CommandRow => {
+    }).map((command: CommandIndexTableData): CommandIndexTableData => {
       return {
         namespace: command.namespace,
         system: command.system,
@@ -48,7 +49,7 @@ export const CommandBlocklistView = () => {
       } // TODO: search for command + system + namespace combo?
     }
 
-    return blockList.map((command: CommandBase): CommandRow => {
+    return blockList.map((command: BlockedCommand): CommandIndexTableData => {
       return {
         namespace: command.namespace,
         system: command.system,
@@ -103,7 +104,7 @@ export const CommandBlocklistView = () => {
             tableName="All Commands"
             data={commandListData}
             columns={useModalColumns()}
-            maxRows={10}
+            maxrows={10}
             setSelection={setSelection}
           />
         }

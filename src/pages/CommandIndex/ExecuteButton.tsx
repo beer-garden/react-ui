@@ -1,8 +1,8 @@
 import { Button } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { Command } from 'types/custom_types'
+import { AugmentedCommand } from 'types/custom-types'
 
-const MakeItHappenButton = (command: Command) => {
+const ExecuteButton = (command: AugmentedCommand) => {
   const { namespace, systemName, systemVersion, name } = command
 
   return (
@@ -25,4 +25,4 @@ const MakeItHappenButton = (command: Command) => {
   )
 }
 
-export { MakeItHappenButton }
+export { ExecuteButton }

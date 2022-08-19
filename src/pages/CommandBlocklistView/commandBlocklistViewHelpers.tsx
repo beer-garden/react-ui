@@ -9,7 +9,7 @@ import {
   useRef,
 } from 'react'
 import { Column, Row } from 'react-table'
-import { CommandRow } from 'types/custom_types'
+import { CommandIndexTableData } from 'types/custom-types'
 
 interface IndeterminateInputProps {
   indeterminate?: boolean
@@ -68,7 +68,7 @@ IndeterminateCheckbox.displayName = 'IndeterminateCheckBox'
  * @returns
  */
 const useModalColumns = () => {
-  return useMemo<Column<CommandRow>[]>(
+  return useMemo<Column<CommandIndexTableData>[]>(
     () => [
       {
         id: '_selector',
@@ -81,7 +81,7 @@ const useModalColumns = () => {
         Header: ({ getToggleAllPageRowsSelectedProps }) => (
           <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
         ),
-        Cell: ({ row }: { row: Row<CommandRow> }) => (
+        Cell: ({ row }: { row: Row<CommandIndexTableData> }) => (
           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
         ),
       },
@@ -107,7 +107,7 @@ const useModalColumns = () => {
 }
 
 const useTableColumns = () => {
-  return useMemo<Column<CommandRow>[]>(
+  return useMemo<Column<CommandIndexTableData>[]>(
     () => [
       {
         Header: 'Namespace',

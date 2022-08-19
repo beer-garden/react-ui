@@ -52,10 +52,7 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
-
-export interface TableData {
-  [key: string]: unknown
-}
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,
@@ -82,18 +79,18 @@ const hooks = [
   useRowSelect,
 ]
 
-interface TableProps<T extends TableData> extends TableOptions<T> {
+interface TableProps<T extends ObjectWithStringKeys> extends TableOptions<T> {
   tableName: string
   data: T[]
   columns: Column<T>[]
   setSelection?: Dispatch<SetStateAction<T[]>>
   showGlobalFilter?: boolean
-  maxRows?: number
+  maxrows?: number
 }
 
 const DEBUG_INITIAL_STATE = false
 
-const Table = <T extends TableData>(
+const Table = <T extends ObjectWithStringKeys>(
   props: PropsWithChildren<TableProps<T>>,
 ): ReactElement => {
   const {
@@ -328,7 +325,7 @@ const Table = <T extends TableData>(
           })}
         </TableBody>
       </StyledTable>
-      <TablePagination maxRows={props.maxRows} instance={instance} />
+      <TablePagination maxRows={props.maxrows} instance={instance} />
     </>
   )
 }

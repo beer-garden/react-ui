@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import Router from 'react-router-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { job as mockJob } from 'test/testData'
-import { Job } from 'types/custom_types'
+import { Job } from 'types/backend-types'
 
 import { JobView } from './JobView'
 

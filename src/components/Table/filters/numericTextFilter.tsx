@@ -1,5 +1,5 @@
-import { TableData } from 'components/Table'
 import { FilterValue, IdType, Row } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const regex = /([=<>!]*)\s*((?:[0-9].?[0-9]*)+)/
 
@@ -29,7 +29,7 @@ function parseValue(filterValue: FilterValue) {
   return defaultComparator
 }
 
-// const numericTextFilter = <T extends TableData>(
+// const numericTextFilter = <T extends ObjectWithStringKeys>(
 //   rows: Array<Row<T>>,
 //   id: Array<IdType<T>>,
 //   filterValue: FilterValue,
@@ -39,7 +39,7 @@ function parseValue(filterValue: FilterValue) {
 //   return rows.filter((row) => comparator(row.values[id[0]]))
 // }
 
-function numericTextFilter<T extends TableData>(
+function numericTextFilter<T extends ObjectWithStringKeys>(
   rows: Array<Row<T>>,
   id: Array<IdType<T>>,
   filterValue: FilterValue,

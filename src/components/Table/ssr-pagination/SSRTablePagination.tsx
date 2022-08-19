@@ -1,11 +1,11 @@
 import { TablePagination as MuiTablePagination } from '@mui/material'
-import { TableData } from 'components/Table'
 import SSRTablePaginationActions from 'components/Table/ssr-pagination/SSRTablePaginationActions'
 import { MouseEvent as ReactMouseEvent, useCallback, useEffect } from 'react'
 import { TableInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 import { getRowPageOptions } from 'utils/table-helpers'
 
-interface SSRPaginationProps<T extends TableData> {
+interface SSRPaginationProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
   recordsFiltered: number
   recordsTotal: number
@@ -13,7 +13,7 @@ interface SSRPaginationProps<T extends TableData> {
   handleResultCount: (resultCount: number) => void
 }
 
-const SSRTablePagination = <T extends TableData>({
+const SSRTablePagination = <T extends ObjectWithStringKeys>({
   instance,
   recordsFiltered,
   recordsTotal,

@@ -2,9 +2,13 @@ import useSystems from 'hooks/useSystems'
 import { ExploreButton } from 'pages/SystemIndex/SystemIndexTable'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
-import { System, SystemBase } from 'types/custom_types'
+import { System } from 'types/backend-types'
 
-type SystemIndexTableData = SystemBase & {
+type SystemIndexTableData = {
+  name: string
+  description: string
+  version: string
+  namespace: string
   commandCount: number
   instanceCount: number
   exploreButton: JSX.Element

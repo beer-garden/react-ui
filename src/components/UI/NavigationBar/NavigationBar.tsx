@@ -1,5 +1,12 @@
 import MenuIcon from '@mui/icons-material/Menu'
-import { Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
+import {
+  Divider,
+  Drawer,
+  IconButton,
+  Theme,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 import { AppBar } from 'components/UI/NavigationBar/AppBar'
 import { DrawerFooter } from 'components/UI/NavigationBar/DrawerFooter'
 import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
@@ -38,7 +45,7 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
     >
       <AppBar
         position="sticky"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ zIndex: (theme: Theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
           <IconButton

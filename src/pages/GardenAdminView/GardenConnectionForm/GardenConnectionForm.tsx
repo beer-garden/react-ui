@@ -6,11 +6,12 @@ import {
   ConnectionMethod,
   ConnectionStompValues,
   connectionValidationSchema,
-  Garden,
+  GardenConnectionParameters,
   SubmissionStatusSnackbar,
   useGardenConnectionFormOnSubmit,
 } from 'pages/GardenAdminView'
 import { useState } from 'react'
+import { Garden } from 'types/backend-types'
 
 export interface SubmissionStatusState {
   result: 'success' | 'failure'
@@ -30,7 +31,10 @@ const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
   return (
     <>
       <Formik
-        initialValues={connectionInitialValues(conxType, conxParms)}
+        initialValues={connectionInitialValues(
+          conxType,
+          conxParms as GardenConnectionParameters,
+        )}
         validationSchema={connectionValidationSchema}
         onSubmit={useGardenConnectionFormOnSubmit(garden, setSubmissionStatus)}
       >

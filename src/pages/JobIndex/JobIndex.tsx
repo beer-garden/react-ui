@@ -4,7 +4,7 @@ import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getFormattedTable } from 'pages/JobIndex/jobIndexHelpers'
 import { useEffect, useState } from 'react'
-import { Job } from 'types/custom_types'
+import { Job } from 'types/backend-types'
 
 const JobIndex = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()

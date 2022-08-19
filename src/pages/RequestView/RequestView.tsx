@@ -24,7 +24,8 @@ import { useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import CacheService from 'services/cache_service'
-import { Request, TableState } from 'types/custom_types'
+import { Request } from 'types/backend-types'
+import { TableState } from 'types/custom-types'
 
 interface RequestVariables {
   namespace: string

@@ -2,11 +2,12 @@ import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useEffect, useState } from 'react'
-import { BlockedList, CommandBase } from 'types/custom_types'
+import { BlockedCommand, BlockedList } from 'types/backend-types'
+import { CommandIndexTableData } from 'types/custom-types'
 
 export const useBlockList = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const [blockList, setList] = useState<CommandBase[]>([])
+  const [blockList, setList] = useState<BlockedCommand[]>([])
   const { axiosInstance } = useMyAxios()
 
   const getList = () => {
@@ -41,7 +42,7 @@ export const useBlockList = () => {
     return blockList
   }
 
-  const addBlockList = (command: CommandBase[]) => {
+  const addBlockList = (command: CommandIndexTableData[]) => {
     axiosInstance
       .post<BlockedList>(
         '/api/v1/commandpublishingblocklist/',
