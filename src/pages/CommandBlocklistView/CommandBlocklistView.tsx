@@ -16,14 +16,13 @@ import { CommandBase, CommandRow } from 'types/custom_types'
 export const CommandBlocklistView = () => {
   const [open, setOpen] = useState(false)
   const [selection, setSelection] = useState<CommandRow[]>([])
-  const { getBlockList, deleteBlockList, addBlockList } = useBlockList()
+  const { blockList, deleteBlockList, addBlockList } = useBlockList()
   const { commands } = useCommands()
-  const blocked = getBlockList()
 
   // populate data for modal All Commands list table
   const commandListData = useMemo(() => {
     // Filter out blocked commands first
-    return differenceWith(commands, blocked, (commandItem, blockItem) => {
+    return differenceWith(commands, blockList, (commandItem, blockItem) => {
       return (
         commandItem.namespace === blockItem.namespace &&
         commandItem.system === blockItem.system &&
@@ -37,7 +36,7 @@ export const CommandBlocklistView = () => {
         name: command.name,
       }
     })
-  }, [blocked, commands])
+  }, [blockList, commands])
 
   // populate data for main Blocked Commands list table
   const blocklistData = useMemo(() => {
@@ -49,28 +48,26 @@ export const CommandBlocklistView = () => {
       } // TODO: search for command + system + namespace combo?
     }
 
-    return (
-      blocked?.map((command: CommandBase): CommandRow => {
-        return {
-          namespace: command.namespace,
-          system: command.system,
-          status: command.status,
-          command: command.command,
-          name: generateCommandName(false, command.command),
-          action: (
-            <IconButton
-              size="small"
-              color="error"
-              onClick={() => delCommand(command.id)}
-              aria-label="delete"
-            >
-              <DeleteIcon />
-            </IconButton>
-          ),
-        }
-      }) ?? []
-    )
-  }, [blocked, deleteBlockList])
+    return blockList.map((command: CommandBase): CommandRow => {
+      return {
+        namespace: command.namespace,
+        system: command.system,
+        status: command.status,
+        command: command.command,
+        name: generateCommandName(false, command.command),
+        action: (
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() => delCommand(command.id)}
+            aria-label="delete"
+          >
+            <DeleteIcon />
+          </IconButton>
+        ),
+      }
+    })
+  }, [blockList, deleteBlockList])
 
   return (
     <Box>
