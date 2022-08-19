@@ -31,7 +31,7 @@ import {
 import SystemCardInstances from 'pages/SystemAdmin/SystemCardInstances'
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { System } from 'types/custom_types'
+import { System } from 'types/backend-types'
 
 const SystemAdminCard = ({ systems }: { systems: System[] }) => {
   const systemClient = useSystems()

@@ -15,7 +15,7 @@ import {
 } from 'pages/SystemAdmin'
 import SystemCard from 'pages/SystemAdmin/SystemAdminCard'
 import { useState } from 'react'
-import { System } from 'types/custom_types'
+import { System } from 'types/backend-types'
 
 const NamespaceCard = ({ namespace }: { namespace: string }) => {
   const systemClient = useSystems()

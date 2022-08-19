@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { job as mockJob } from 'test/testData'
-import { Job } from 'types/custom_types'
+import { Job } from 'types/backend-types'
 
 import { JobButton } from './JobButton'
 

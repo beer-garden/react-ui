@@ -18,7 +18,7 @@ import OverflowTooltip from 'components/overflowTooltip'
 import useSystems from 'hooks/useSystems'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { alertStyle, getSeverity } from 'pages/SystemAdmin'
-import { Instance } from 'types/custom_types'
+import { Instance } from 'types/backend-types'
 
 const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
   const systemClient = useSystems()

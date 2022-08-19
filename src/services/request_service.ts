@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { RequestsSearchApi, SuccessCallback } from 'types/custom_types'
+import { RequestsSearchApi, SuccessCallback } from 'types/custom-types'
 
 export default class RequestService {
   createRequest(successCallback: SuccessCallback, model: unknown): void {

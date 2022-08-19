@@ -1,7 +1,7 @@
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useState } from 'react'
-import { Instance, System } from 'types/custom_types'
+import { Instance, System } from 'types/backend-types'
 
 const useSystems = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()

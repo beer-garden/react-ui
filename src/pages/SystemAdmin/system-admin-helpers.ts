@@ -1,5 +1,5 @@
 import { AlertColor } from '@mui/material'
-import { Instance, System } from 'types/custom_types'
+import { Instance, System } from 'types/backend-types'
 
 const alertStyle = {
   '& .MuiAlert-message': {
