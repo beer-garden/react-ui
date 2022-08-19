@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { System } from 'types/custom_types'
+import { System } from 'types/backend-types'
 
 const ExploreButton = (system: System) => {
   const linkTo = [

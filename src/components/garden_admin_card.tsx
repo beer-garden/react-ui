@@ -11,7 +11,8 @@ import {
 import Table from 'components/table'
 import { Link as RouterLink } from 'react-router-dom'
 import GardenService from 'services/garden_service'
-import { Garden, TableState } from 'types/custom_types'
+import { Garden } from 'types/backend-types'
+import { TableState } from 'types/custom-types'
 
 const useStyles = makeStyles({
   root: {

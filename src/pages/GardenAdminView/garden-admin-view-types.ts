@@ -1,4 +1,4 @@
-import { System } from 'types/custom_types'
+import { System } from 'types/backend-types'
 
 export interface Garden {
   id?: string
@@ -12,7 +12,7 @@ export interface Garden {
 }
 
 interface Status {
-  heartbeat?: string
+  heartbeat?: number
 }
 
 export interface GardenConnectionParameters {
