@@ -3,7 +3,6 @@ import useAxios from 'axios-hooks'
 import { FormikHelpers } from 'formik'
 import {
   ConnectionFormFields,
-  // Garden,
   StompHeader,
   SubmissionStatusState,
 } from 'pages/GardenAdminView'
