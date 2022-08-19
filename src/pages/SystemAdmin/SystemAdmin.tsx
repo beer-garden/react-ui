@@ -95,7 +95,7 @@ const SystemAdmin = () => {
       </Grid>
       <ModalWrapper
         open={open}
-        header="Clear All Queues?"
+        header="Clear All Local Queues?"
         onClose={() => setOpen(false)}
         onCancel={() => setOpen(false)}
         onSubmit={() => {
@@ -104,8 +104,9 @@ const SystemAdmin = () => {
         }}
         content={
           <Typography my={2}>
-            All outstanding requests for the system will be deleted. This cannot
-            be undone.
+            All outstanding request messages will be deleted for all systems of
+            the local garden. Remote gardens will not be affected. This action
+            cannot be undone.
           </Typography>
         }
         styleOverrides={{ width: '35%' }}
