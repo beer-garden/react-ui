@@ -2,7 +2,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { Box, IconButton, Tooltip } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { MakeItHappenButton } from 'pages/CommandIndex/MakeItHappenButton'
+import { ExecuteButton } from 'pages/CommandIndex/CommandIndexTable/ExecuteButton'
 import {
   ChangeEvent as ReactChangeEvent,
   useCallback,
@@ -42,7 +42,7 @@ const commandMapper = (command: AugmentedCommand): CommandIndexTableData => {
       command.name
     ),
     description: command.description ?? 'No description',
-    executeButton: MakeItHappenButton(command),
+    executeButton: ExecuteButton(command),
   }
 }
 
