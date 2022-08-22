@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles' // TODO
 import {
   AppBar,
   Box,
@@ -13,35 +12,20 @@ import Table from 'components/table'
 import { Garden } from 'types/backend-types'
 import { TableState } from 'types/custom-types'
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  rootList: {
-    width: '100%',
-    maxHeight: 400,
-    maxWidth: 300,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-})
-
 interface GardenInfoCardProps {
   garden: Garden
 }
 
 const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
-  const classes = useStyles()
-
   function getNamespaceList(garden: Garden) {
     return (
-      <List className={classes.rootList}>
+      <List
+        sx={{
+          width: '100%',
+          maxHeight: 400,
+          maxWidth: 300,
+        }}
+      >
         {garden.namespaces.map((namespace: string) => (
           <ListItem key={namespace}>
             {'\u25CF'} {namespace}
@@ -69,7 +53,7 @@ const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
 
   return (
     <Box width={1 / 3} pb={1}>
-      <Card className={classes.root}>
+      <Card sx={{ minWidth: 275 }}>
         <AppBar
           color="inherit"
           style={{ background: 'lightgray' }}
