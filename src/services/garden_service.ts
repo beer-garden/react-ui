@@ -282,45 +282,6 @@ class GardensService {
     const url = '/api/v1/gardens'
     axios.delete(url + '/' + garden_name)
   }
-
-  serverModelToForm(model: any) {
-    const values: any = {}
-    const stomp_headers = []
-    values['connection_type'] = model['connection_type']
-    for (const parameter of Object.keys(model['connection_params'])) {
-      if (parameter === 'stomp_headers') {
-        for (const key in model['connection_params'][parameter]) {
-          stomp_headers[stomp_headers.length] = {
-            key: key,
-            value: model['connection_params'][parameter][key],
-          }
-        }
-        values[parameter] = stomp_headers
-      } else {
-        values[parameter] = model['connection_params'][parameter]
-      }
-    }
-
-    return values
-  }
-
-  formToServerModel = function (model: any, form: any) {
-    model['connection_type'] = form['connection_type']
-    model['connection_params'] = {}
-    const stomp_headers: any = {}
-    for (const field of Object.keys(form)) {
-      if (field === 'stomp_headers') {
-        for (const i in form[field]) {
-          stomp_headers[form[field][i]['key']] = form[field][i]['value']
-        }
-        model['connection_params'][field] = stomp_headers
-      } else if (field !== 'connection_type') {
-        model['connection_params'][field] = form[field]
-      }
-    }
-
-    return model
-  }
 }
 
 const item = new GardensService()

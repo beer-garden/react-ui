@@ -1,4 +1,3 @@
-import { makeStyles, useTheme } from '@material-ui/core/styles' // TODO
 import {
   FirstPage as FirstPageIcon,
   KeyboardArrowLeft,
@@ -21,18 +20,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { AxiosResponse } from 'axios'
 import PropTypes from 'prop-types'
 import { BaseSyntheticEvent, useState } from 'react'
 import CacheService from 'services/cache_service'
 import { TableInterface } from 'types/custom-types'
 
-const useStyles1 = makeStyles((theme) => ({
-  root: {
-    flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
-  },
-}))
+const tableCellStyle = {
+  borderWidth: 0.5,
+  borderColor: 'lightgrey',
+  borderStyle: 'solid',
+}
 
 function TablePaginationActions(props: {
   count: number
@@ -40,7 +39,6 @@ function TablePaginationActions(props: {
   rowsPerPage: number
   onPageChange(event: BaseSyntheticEvent | null, value: number): void
 }) {
-  const classes = useStyles1()
   const theme = useTheme()
   const { count, page, rowsPerPage, onPageChange } = props
 
@@ -61,7 +59,12 @@ function TablePaginationActions(props: {
   }
 
   return (
-    <div className={classes.root}>
+    <div
+      style={{
+        flexShrink: 0,
+        marginLeft: theme.spacing(2.5),
+      }}
+    >
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -109,21 +112,8 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 }
 
-const useStyles2 = makeStyles({
-  table: {
-    minWidth: 500,
-  },
-  tableCell: {
-    borderWidth: 0.5,
-    borderColor: 'lightgrey',
-    borderStyle: 'solid',
-  },
-  container: {
-    maxHeight: '75vh',
-  },
-})
-
 const MyTable = ({ parentState }: TableInterface) => {
+  console.log('TABLE HERE thx')
   let cachedState: { rowsPerPage: number } = { rowsPerPage: 5 }
 
   if (parentState.cacheKey) {
@@ -154,7 +144,6 @@ const MyTable = ({ parentState }: TableInterface) => {
   const [includeChildren, setIncludeChildren] = useState(
     parentState.includeChildren,
   )
-  const classes = useStyles2()
 
   function handleChangePage(event: BaseSyntheticEvent | null, newPage: number) {
     if (parentState.setSearchApi) {
@@ -289,11 +278,7 @@ const MyTable = ({ parentState }: TableInterface) => {
         <TableHead>
           <TableRow>
             {parentState.tableHeads.map((tableHead: string, index: number) => (
-              <TableCell
-                key={tableHead}
-                className={classes.tableCell}
-                size="small"
-              >
+              <TableCell key={tableHead} sx={tableCellStyle} size="small">
                 {tableHead}
                 <br />
                 {formatTextField(index)}
@@ -367,10 +352,10 @@ const MyTable = ({ parentState }: TableInterface) => {
 
   return (
     <Box>
-      <TableContainer className={classes.container}>
+      <TableContainer sx={{ maxHeight: '75vh' }}>
         <Table
           stickyHeader
-          className={classes.table}
+          sx={{ minWidth: 500 }}
           aria-label="custom pagination table"
         >
           {getTableHeader()}
@@ -387,7 +372,7 @@ const MyTable = ({ parentState }: TableInterface) => {
                 {items.map((item, itemIndex: number) => (
                   <TableCell
                     size="small"
-                    className={classes.tableCell}
+                    sx={tableCellStyle}
                     key={'cell' + index + itemIndex}
                   >
                     {typeof item === 'string' || typeof item === 'number' ? (

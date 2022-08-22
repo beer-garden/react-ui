@@ -62,56 +62,6 @@ interface RequestsSearchApi {
   start: number
 }
 
-type BeergardenRequestParameterChoice = {
-  display: string
-  strict: boolean
-  type: string
-  value: any // TODO
-  details: any // TODO
-}
-
-type BeergardenRequestParameter = {
-  key: string
-  type: string
-  multi: boolean
-  display_name: string
-  optional: boolean
-  default: string
-  description: string
-  choices: BeergardenRequestParameterChoice
-  parameters: BeergardenRequestParameter[]
-  nullable: boolean
-  maximum: number
-  minimum: number
-  regex: string
-  form_input_type: string | null | undefined
-  type_info: any // TODO
-}
-
-interface BeergardenRequest {
-  children: BeergardenRequest[]
-  command: string
-  command_type: string
-  comment: string | null
-  created_at: number
-  error_class: Error | null
-  has_parent: boolean
-  hidden: boolean
-  id: string
-  instance_name: string
-  metadata: any // TODO
-  namespace: string
-  output: string
-  output_type: string
-  parameters: BeergardenRequestParameter[]
-  parent: BeergardenRequest | null
-  requester: string
-  status: string
-  system: string
-  system_version: string
-  updated_at: number
-}
-
 type RequestsIndexTableData = {
   command: JSX.Element
   namespace: string
@@ -134,7 +84,6 @@ type RequestsIndexTableHeaders = {
 }
 
 export type {
-  BeergardenRequest,
   ColumnData,
   OrderableColumnDirection,
   OrderableColumnIndex,

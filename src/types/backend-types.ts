@@ -83,6 +83,7 @@ export type Instance = {
 export interface StatusInfo {
   heartbeat: number
 }
+
 export interface Request {
   children: Request[]
   command: string
