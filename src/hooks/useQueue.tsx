@@ -1,7 +1,6 @@
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { Queue } from 'types/backend-types'
-import { System } from 'types/custom_types'
+import { Queue, System } from 'types/backend-types'
 
 const useQueue = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
