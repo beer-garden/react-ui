@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles' // TODO
 import {
   Checkbox,
   Chip,
@@ -8,28 +7,12 @@ import {
   MenuItem,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { useTheme } from '@mui/material/styles'
 import { NamespacesSelectedContext } from 'pages/SystemAdmin'
 import { useContext } from 'react'
 
-const useStyles = makeStyles((theme) => ({
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  chips: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chip: {
-    margin: 2,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 255,
-  },
-}))
-
 const NamespaceSelect = () => {
-  const classes = useStyles()
+  const theme = useTheme()
   const { namespaces, namespacesSelected, setNamespacesSelected } = useContext(
     NamespacesSelectedContext,
   )
@@ -52,7 +35,13 @@ const NamespaceSelect = () => {
   }
 
   return (
-    <FormControl size="small" className={classes.formControl}>
+    <FormControl
+      size="small"
+      sx={{
+        margin: theme.spacing(1),
+        minWidth: 255,
+      }}
+    >
       <InputLabel id="namespaceSelectLabel">Namespaces:</InputLabel>
       <Select
         labelId="namespaceSelectLabel"
@@ -61,9 +50,14 @@ const NamespaceSelect = () => {
         onChange={handleChange}
         input={<Input />}
         renderValue={(selected) => (
-          <div className={classes.chips}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+            }}
+          >
             {(selected as string[]).map((value: string) => (
-              <Chip key={value} label={value} className={classes.chip} />
+              <Chip key={value} label={value} sx={{ margin: 2 }} />
             ))}
           </div>
         )}
