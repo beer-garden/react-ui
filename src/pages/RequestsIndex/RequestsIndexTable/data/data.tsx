@@ -1,7 +1,6 @@
 import useAxios, { Options as AxiosHooksOptions } from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
-  BeergardenRequest,
   formatBeergardenRequests,
   getUrlFromSearchApi,
   OrderableColumnDirection,
@@ -14,6 +13,7 @@ import {
 } from 'pages/RequestsIndex/RequestsIndexTable/data'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Filters } from 'react-table'
+import { Request } from 'types/backend-types'
 
 const useRequests = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -57,9 +57,10 @@ const useRequests = () => {
    * library takes care of its own state updates so that we just have to
    * monitor them.
    */
-  const [{ data, loading, error, response }, execute] = useAxios<
-    BeergardenRequest[]
-  >(config, axiosOptions)
+  const [{ data, loading, error, response }, execute] = useAxios<Request[]>(
+    config,
+    axiosOptions,
+  )
 
   useEffect(() => {
     setIsLoading(loading)
@@ -77,7 +78,7 @@ const useRequests = () => {
   const handleRefresh = useCallback(() => {
     execute(config, { useCache: false })
       .then((resp) =>
-        console.log('data.tsx - execute fired with response:', resp)
+        console.log('data.tsx - execute fired with response:', resp),
       )
       .catch((e) => console.log('data.tsx - error from execute:', e))
   }, [execute, config])

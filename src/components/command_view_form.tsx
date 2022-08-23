@@ -1,10 +1,8 @@
 import { UISchemaElement } from '@jsonforms/core'
 import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
 import { JsonForms } from '@jsonforms/react'
-import Box from '@material-ui/core/Box'
-import Tooltip from '@material-ui/core/Tooltip'
-import Button from '@mui/material/Button'
-import Ajv from 'ajv'
+import { Box, Button, Tooltip } from '@mui/material'
+import { ErrorObject } from 'ajv'
 import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import AlertForm from 'builderForm/customFormRenders/alert_control'
@@ -44,7 +42,8 @@ const CommandViewForm = ({
   }
 
   const [model, setModel] = useState(initialData)
-  const [errors, setErrors] = useState<Ajv.ErrorObject[]>([])
+  // for some reason, error does not have `instancePath` which is required on ErrorObject
+  const [errors, setErrors] = useState<Partial<ErrorObject>[]>([])
   const [redirect, setRedirect] = useState<JSX.Element>()
 
   const useCreateRefresh = () => {
@@ -107,9 +106,9 @@ const CommandViewForm = ({
 
   function onChange(
     data: ObjectWithStringKeys,
-    errors: Ajv.ErrorObject[] | undefined,
+    errors: Partial<ErrorObject>[],
   ) {
-    setErrors(errors || [])
+    setErrors(errors)
     setModel(data)
   }
 
@@ -131,7 +130,7 @@ const CommandViewForm = ({
           ]}
           cells={materialCells}
           onChange={({ data, errors }) => {
-            onChange(data, errors)
+            onChange(data, (errors || []) as Partial<ErrorObject>[])
           }}
         />
         <Button

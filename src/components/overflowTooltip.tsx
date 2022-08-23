@@ -1,5 +1,4 @@
-import Tooltip from '@material-ui/core/Tooltip'
-import { Typography, TypographyTypeMap } from '@mui/material'
+import { Tooltip, Typography, TypographyTypeMap } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 
 interface OverflowTooltipProps {

@@ -2,7 +2,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { Box, IconButton, Tooltip } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { ExecuteButton } from 'pages/CommandIndex/CommandIndexTable/ExecuteButton'
+import { ExecuteButton } from 'pages/CommandIndex/CommandIndexTable'
 import {
   ChangeEvent as ReactChangeEvent,
   useCallback,

@@ -70,6 +70,7 @@ export type Instance = {
 export interface StatusInfo {
   heartbeat: number
 }
+
 export interface Request {
   children: Request[]
   command: string
@@ -196,4 +197,14 @@ export interface Garden {
   systems: System[]
   connection_type: string
   connection_params?: ObjectWithStringKeys | EmptyObject | null
+}
+
+export interface Queue {
+  version: string
+  system: string
+  size: number
+  instance: string
+  system_id: string
+  display: string
+  name: string
 }
