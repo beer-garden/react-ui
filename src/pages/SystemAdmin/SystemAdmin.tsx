@@ -109,7 +109,7 @@ const SystemAdmin = () => {
             cannot be undone.
           </Typography>
         }
-        styleOverrides={{ width: '35%' }}
+        styleOverrides={{ width: '35%', top: '25%' }}
       />
       <Divider sx={{ my: 2 }} />
       {namespacesSelected.map((namespace: string) => (
