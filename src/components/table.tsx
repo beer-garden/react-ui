@@ -113,7 +113,6 @@ TablePaginationActions.propTypes = {
 }
 
 const MyTable = ({ parentState }: TableInterface) => {
-  console.log('TABLE HERE thx')
   let cachedState: { rowsPerPage: number } = { rowsPerPage: 5 }
 
   if (parentState.cacheKey) {

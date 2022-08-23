@@ -6,6 +6,7 @@ interface ModalProps {
   header: string
   open: boolean
   content: JSX.Element
+  styleOverrides: { [key: string]: string | number }
   onClose(): void
   onCancel(): void
   onSubmit(): void
@@ -16,7 +17,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
+  bgcolor: 'background.default',
   border: '1px solid #000',
   boxShadow: 24,
   width: '60%',
@@ -32,13 +33,13 @@ export const ModalWrapper = (props: ModalProps) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={Object.assign(style, props.styleOverrides)}>
           <PageHeader title={props.header} description="" />
           <Divider />
           {props.content}
           <Divider />
           <Button
-            style={{ float: 'right', marginRight: '5px' }}
+            style={{ float: 'right', margin: '5px 5px 0 0' }}
             variant="contained"
             color="primary"
             aria-label="Submit"
@@ -47,7 +48,7 @@ export const ModalWrapper = (props: ModalProps) => {
             Submit
           </Button>
           <Button
-            style={{ float: 'right', marginRight: '5px' }}
+            style={{ float: 'right', margin: '5px 5px 0 0' }}
             variant="contained"
             color="secondary"
             aria-label="cancel"

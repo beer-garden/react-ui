@@ -1,7 +1,7 @@
 import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
 import { JsonForms } from '@jsonforms/react'
 import { Box, Button, Tooltip } from '@mui/material'
-import Ajv from 'ajv'
+import { ErrorObject } from 'ajv'
 import { AxiosResponse } from 'axios'
 import AlertForm from 'builderForm/customFormRenders/alert_control'
 import AlertTester from 'builderForm/customFormRenders/alert_tester'
@@ -25,7 +25,8 @@ interface JobViewFormProps {
 
 const JobViewForm = ({ request }: JobViewFormProps) => {
   const [model, setModel] = useState(MODEL)
-  const [errors, setErrors] = useState<Ajv.ErrorObject[]>([])
+  // for some reason, error does not have `instancePath` which is required on ErrorObject
+  const [errors, setErrors] = useState<Partial<ErrorObject>[]>([])
   const [redirect, setRedirect] = useState<JSX.Element>()
   const { createJob } = useJobServices()
 
@@ -80,7 +81,7 @@ const JobViewForm = ({ request }: JobViewFormProps) => {
           cells={materialCells}
           onChange={({ data, errors }) => {
             setModel(data)
-            setErrors(errors || [])
+            setErrors((errors || []) as Partial<ErrorObject>[])
           }}
         />
         <Button
