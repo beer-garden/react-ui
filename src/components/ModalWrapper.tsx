@@ -6,10 +6,10 @@ interface ModalProps {
   header: string
   open: boolean
   content: JSX.Element
-  styleOverrides: { [key: string]: string | number }
   onClose(): void
   onCancel(): void
   onSubmit(): void
+  styleOverrides?: { [key: string]: string | number }
 }
 
 const style = {
