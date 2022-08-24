@@ -42,7 +42,7 @@ export const useInstances = () => {
     startLine?: number,
     endLine?: number,
   ) => {
-    return axiosInstance.get<Instance>(`/api/v1/instances/${id}/logs`, {
+    return axiosInstance.get(`/api/v1/instances/${id}/logs`, {
       params: {
         start_line: startLine,
         end_line: endLine,
@@ -52,10 +52,18 @@ export const useInstances = () => {
     })
   }
 
+  const downloadLogs = (id: string) => {
+    return axiosInstance.get(`api/v1/instances/${id}/logs/`, {
+      responseType: 'blob',
+      withCredentials: authEnabled,
+    })
+  }
+
   return {
     startInstance,
     stopInstance,
     getInstance,
     getInstanceLogs,
+    downloadLogs,
   }
 }

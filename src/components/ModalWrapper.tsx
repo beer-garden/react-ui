@@ -1,6 +1,12 @@
-import { Box, Button, Modal } from '@mui/material'
-import Divider from 'components/divider'
-import PageHeader from 'components/PageHeader'
+import {
+  Button,
+  ButtonProps,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogProps,
+  DialogTitle,
+} from '@mui/material'
 
 interface ModalProps {
   header: string
@@ -10,32 +16,20 @@ interface ModalProps {
   onSubmit?: () => void
   onCancel?: () => void
   customButton?: ModalButtonProps
-  styleOverrides?: { [key: string]: string | number }
+  styleOverrides?: { size: DialogProps['maxWidth']; top: string }
 }
 
 interface ModalButtonProps {
   label: string
   cb: () => void
-}
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.default',
-  border: '1px solid #000',
-  boxShadow: 24,
-  width: '60%',
-  p: 2,
+  color?: ButtonProps['color']
 }
 
 const ModalButton = (props: ModalButtonProps) => {
   return (
     <Button
-      style={{ float: 'right', margin: '5px 5px 0 0' }}
       variant="contained"
-      color="primary"
+      color={props.color || 'secondary'}
       aria-label={props.label}
       onClick={() => props.cb()}
     >
@@ -45,25 +39,28 @@ const ModalButton = (props: ModalButtonProps) => {
 }
 
 export const ModalWrapper = (props: ModalProps) => {
-  const { onCancel, onSubmit, customButton } = props
+  const { onCancel, onSubmit, customButton, styleOverrides } = props
   return (
     <>
-      <Modal
+      <Dialog
         open={props.open}
         onClose={props.onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        fullWidth={true}
+        maxWidth={styleOverrides?.size || 'lg'}
+        sx={{ top: styleOverrides?.top || '-25%' }}
       >
-        <Box sx={Object.assign(style, props.styleOverrides)}>
-          <PageHeader title={props.header} description="" />
-          <Divider />
-          {props.content}
-          <Divider />
-          {onSubmit && <ModalButton label="Submit" cb={onSubmit} />}
-          {onCancel && <ModalButton label="Cancel" cb={onCancel} />}
+        <DialogTitle>{props.header}</DialogTitle>
+        <DialogContent dividers>{props.content}</DialogContent>
+        <DialogActions>
           {customButton && <ModalButton {...customButton} />}
-        </Box>
-      </Modal>
+          {onCancel && <ModalButton label="Cancel" cb={onCancel} />}
+          {onSubmit && (
+            <ModalButton label="Submit" color="primary" cb={onSubmit} />
+          )}
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

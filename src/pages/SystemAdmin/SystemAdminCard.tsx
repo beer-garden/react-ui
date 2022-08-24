@@ -168,7 +168,10 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
         </Grid>
       </CardContent>
       <Divider variant="middle" />
-      <SystemCardInstances instances={systems[systemIndex].instances} />
+      <SystemCardInstances
+        instances={systems[systemIndex].instances}
+        fileHeader={`${systems[systemIndex].name}[${systems[systemIndex].version}]-`}
+      />
     </Card>
   )
 }
