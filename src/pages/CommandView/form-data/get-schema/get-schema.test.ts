@@ -1,3 +1,4 @@
+import { schemaHasRules } from 'ajv/dist/compile/util'
 import { Instance, Parameter } from 'types/backend-types'
 
 import { getSchema } from './get-schema'
