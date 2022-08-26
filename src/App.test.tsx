@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 
 describe('App', () => {
-  test.skip('main app renders', async () => {
+  test('main app renders', async () => {
     const { container } = render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
