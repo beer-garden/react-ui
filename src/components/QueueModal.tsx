@@ -83,18 +83,18 @@ const QueueModal = ({ instance }: IQueueModal) => {
         name: queue.name,
         size: queue.size,
         action: (
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              onClick={() => {
-                selectedQueue.current = queue.name
-                setOpen(true)
-              }}
-              aria-label="delete"
-            >
-              Clear
-            </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            onClick={() => {
+              selectedQueue.current = queue.name
+              setOpen(true)
+            }}
+            aria-label="delete"
+          >
+            Clear
+          </Button>
         ),
       }
     })
