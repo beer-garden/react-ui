@@ -1,3 +1,4 @@
+import { schemaHasRules } from 'ajv/dist/compile/util'
 import { Instance, Parameter } from 'types/backend-types'
 
 import { getSchema } from './get-schema'
@@ -151,7 +152,7 @@ describe('common properties', () => {
 })
 
 describe('types', () => {
-  test('Integer type is integer', () => {
+  test('Integer type is number', () => {
     const schema = getSchema(singleInstanceArray, [
       {
         ...simpleParameter,
@@ -164,7 +165,7 @@ describe('types', () => {
         parameters: {
           properties: {
             aKey: {
-              type: 'integer',
+              type: 'number',
             },
           },
         },
@@ -172,7 +173,7 @@ describe('types', () => {
     })
   })
 
-  test('Float type is integer', () => {
+  test('Float type is number', () => {
     const schema = getSchema(singleInstanceArray, [
       {
         ...simpleParameter,
@@ -251,7 +252,7 @@ describe('types', () => {
     })
   })
 
-  test('Dictionary type is object', () => {
+  test('(raw) Dictionary type is string', () => {
     const schema = getSchema(singleInstanceArray, [
       {
         ...simpleParameter,
@@ -264,7 +265,7 @@ describe('types', () => {
         parameters: {
           properties: {
             aKey: {
-              type: 'object',
+              type: 'string',
             },
           },
         },
@@ -290,8 +291,9 @@ describe('parameter with subparameters and multi but no choices', () => {
   let schema: object, basicParameter: Parameter
 
   beforeAll(() => {
+    const { default: theDefault, ...withoutDefault } = simpleParameter
     basicParameter = {
-      ...simpleParameter,
+      ...withoutDefault,
       multi: true,
       parameters: [anotherSimpleParameter],
       choices: undefined,
@@ -334,16 +336,21 @@ describe('parameter with subparameters and multi but no choices', () => {
   })
 
   test('only parameter type Dictionary creates raw_dict default', () => {
-    const dictSchema = getSchema(singleInstanceArray, [
-      {
-        ...basicParameter,
-        type: 'Dictionary',
-      },
-    ])
+    const rawDictParameter: Parameter = {
+      ...basicParameter,
+      type: 'Dictionary',
+      multi: false,
+      parameters: [],
+      optional: false,
+      default: undefined,
+    }
+
+    const dictSchema = getSchema(singleInstanceArray, [rawDictParameter])
 
     expect(dictSchema).toHaveProperty(
       'properties.parameters.properties.aKey.default',
     )
+
     expect(schema).not.toHaveProperty(
       'properties.parameters.properties.aKey.default',
     )
@@ -352,7 +359,7 @@ describe('parameter with subparameters and multi but no choices', () => {
         parameters: {
           properties: {
             aKey: {
-              default: 'raw_dict',
+              default: '{}',
             },
           },
         },
@@ -409,26 +416,25 @@ describe('parameter with subparameters but no choices or multi', () => {
     })
   })
 
-  test('only parameter type Dictionary creates raw_dict default', () => {
+  test('parameter type Dictionary creates raw_dict default', () => {
     const dictSchema = getSchema(singleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
+        default: undefined,
       },
     ])
 
     expect(dictSchema).toHaveProperty(
       'properties.parameters.properties.aKey.default',
     )
-    expect(schema).not.toHaveProperty(
-      'properties.parameters.properties.aKey.default',
-    )
+
     expect(dictSchema).toMatchObject({
       properties: {
         parameters: {
           properties: {
             aKey: {
-              default: 'raw_dict',
+              default: '{}',
             },
           },
         },
@@ -457,7 +463,6 @@ describe('parameter with choices and multi but no subparameters', () => {
   })
 
   test('type is array', () => {
-    // console.log(JSON.stringify(schema, undefined, 2))
     expect(schema).toHaveProperty('properties.parameters.properties.aKey.type')
     expect(schema).toMatchObject({
       properties: {
@@ -509,12 +514,17 @@ describe('parameter with choices and multi but no subparameters', () => {
       },
     ])
 
-    expect(dictSchema).not.toHaveProperty(
-      'properties.parameters.properties.aKey.default',
-    )
-    expect(schema).not.toHaveProperty(
-      'properties.parameters.properties.aKey.default',
-    )
+    expect(dictSchema).toMatchObject({
+      properties: {
+        parameters: {
+          properties: {
+            aKey: {
+              default: '',
+            },
+          },
+        },
+      },
+    })
   })
 })
 
@@ -538,7 +548,6 @@ describe('parameter with choices but no multi and no subparameters', () => {
   })
 
   test('type of choices matches parameter type', () => {
-    // console.log(JSON.stringify(schema, undefined, 2))
     expect(schema).toHaveProperty('properties.parameters.properties.aKey.type')
     expect(schema).toMatchObject({
       properties: {
@@ -576,12 +585,17 @@ describe('parameter with choices but no multi and no subparameters', () => {
       },
     ])
 
-    expect(dictSchema).not.toHaveProperty(
-      'properties.parameters.properties.aKey.default',
-    )
-    expect(schema).not.toHaveProperty(
-      'properties.parameters.properties.aKey.default',
-    )
+    expect(dictSchema).toMatchObject({
+      properties: {
+        parameters: {
+          properties: {
+            aKey: {
+              default: '',
+            },
+          },
+        },
+      },
+    })
   })
 })
 
@@ -599,7 +613,6 @@ describe('parameter with multi but no choices and no subparameters', () => {
   })
 
   test('type of parameter is array', () => {
-    // console.log(JSON.stringify(schema, undefined, 2))
     expect(schema).toHaveProperty('properties.parameters.properties.aKey.type')
     expect(schema).toMatchObject({
       properties: {
@@ -629,20 +642,31 @@ describe('parameter with multi but no choices and no subparameters', () => {
     })
   })
 
-  test('raw_dict default is not created with multi', () => {
+  test('raw_dict default is created with multi', () => {
     const dictSchema = getSchema(singleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
+        multi: true,
+        default: undefined,
       },
     ])
 
-    expect(dictSchema).not.toHaveProperty(
+    expect(dictSchema).toHaveProperty(
       'properties.parameters.properties.aKey.default',
     )
-    expect(schema).not.toHaveProperty(
-      'properties.parameters.properties.aKey.default',
-    )
+
+    expect(dictSchema).toMatchObject({
+      properties: {
+        parameters: {
+          properties: {
+            aKey: {
+              default: expect.any(Array),
+            },
+          },
+        },
+      },
+    })
   })
 
   test('parameter maximum creates maxItem key', () => {
@@ -701,6 +725,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
       multi: false,
       choices: undefined,
       parameters: [],
+      default: undefined,
     }
     schema = getSchema(singleInstanceArray, [basicParameter])
     otherSchema = getSchema(singleInstanceArray, [
@@ -732,7 +757,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
         parameters: {
           properties: {
             aKey: {
-              type: 'integer',
+              type: 'number',
             },
           },
         },
@@ -759,7 +784,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
         parameters: {
           properties: {
             aKey: {
-              default: 'raw_dict',
+              default: '{}',
             },
           },
         },
@@ -909,7 +934,6 @@ describe('parameter with no multi, no choices and no subparameters', () => {
           type: 'Any',
         },
       ])
-      // console.log(JSON.stringify(nullableSchema, undefined, 2))
 
       expect(nullableSchema).toHaveProperty(
         'properties.parameters.properties.aKey.type',

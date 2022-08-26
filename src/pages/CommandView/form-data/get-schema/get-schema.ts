@@ -26,7 +26,7 @@ const getCommonResult = (parameter: StrippedParameter) => {
       }
     : null
 
-  if ('default' in parameter && parameter.default) {
+  if (!parameter.choices) {
     if (parameter.type === 'Any' || parameter.type === 'Dictionary') {
       if (parameter.default) {
         if (Array.isArray(parameter.default)) {
@@ -53,20 +53,35 @@ const getCommonResult = (parameter: StrippedParameter) => {
             theDefault = { default: '{}' }
           }
         }
-      }
-    } else if (parameter.type === 'Boolean') {
-      if (parameter.optional) {
-        const maybeDefault = parameter.default as boolean | undefined
-
-        if (maybeDefault) {
-          theDefault = {
-            default: Boolean(parameter.default),
-          }
+      } else {
+        if (parameter.multi) {
+          theDefault = { default: [] }
+        } else {
+          theDefault = { default: '{}' }
         }
       }
-    } else if (parameter.type !== 'Bytes') {
-      theDefault = {
-        default: parameter.default as string | number | object,
+    } else if (
+      'default' in parameter &&
+      (parameter.default || parameter.type === 'Boolean')
+    ) {
+      if (parameter.type === 'Boolean') {
+        if (parameter.optional) {
+          const maybeDefault = parameter.default as boolean | undefined
+
+          if (typeof maybeDefault !== 'undefined') {
+            theDefault = {
+              default: Boolean(parameter.default),
+            }
+          }
+        }
+      } else if (parameter.type !== 'Bytes') {
+        theDefault = {
+          default: parameter.default as string | number | object,
+        }
+      } else {
+        theDefault = {
+          default: parameter.default as string | number | boolean | object,
+        }
       }
     }
   }
@@ -315,8 +330,6 @@ const getSchema = (
       },
     },
   }
-
-  console.log('schema', schema)
 
   return schema
 }

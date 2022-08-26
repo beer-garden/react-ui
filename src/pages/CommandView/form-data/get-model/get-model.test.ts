@@ -11,14 +11,8 @@ describe('basics', () => {
 
   test('with nullable and no default', () => {
     const model = getModel([parameterNullableNoDefault()])
-    console.log(JSON.stringify(model, undefined, 2))
 
-    expect(model).toHaveProperty('parameters.aKey')
-    expect(model).toMatchObject({
-      parameters: {
-        aKey: null,
-      },
-    })
+    expect(model).not.toHaveProperty('parameters.aKey')
   })
 
   test('with subparameters and no default', () => {
