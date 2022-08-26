@@ -14,14 +14,24 @@ import {
   MenuItem,
   Tooltip,
 } from '@mui/material'
+import { ModalWrapper } from 'components/ModalWrapper'
 import OverflowTooltip from 'components/overflowTooltip'
+import QueueModal from 'components/QueueModal'
 import useSystems from 'hooks/useSystems'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { alertStyle, getSeverity } from 'pages/SystemAdmin'
+import { useState } from 'react'
 import { Instance } from 'types/backend-types'
 
-const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
+interface ISystemCard {
+  instances: Instance[]
+  fileHeader: string
+}
+
+const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
   const systemClient = useSystems()
+
+  const [queueModal, setQueueModal] = useState<boolean>(false)
 
   return (
     <CardActions sx={{ justifyContent: 'center' }}>
@@ -114,6 +124,7 @@ const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
                   sx={{ fontSize: '13px' }}
                   onClick={() => {
                     popupState.close()
+                    setQueueModal(true)
                   }}
                 >
                   <ListItemIcon>
@@ -122,6 +133,19 @@ const SystemCardInstances = ({ instances }: { instances: Instance[] }) => {
                   <ListItemText>Manage Queue</ListItemText>
                 </MenuItem>
               </Menu>
+              <ModalWrapper
+                open={queueModal}
+                header={`Queue Manager: ${fileHeader}${instance.name}`}
+                onClose={() => setQueueModal(false)}
+                customButton={{
+                  label: 'Close',
+                  cb: () => {
+                    setQueueModal(false)
+                  },
+                  color: 'primary',
+                }}
+                content={<QueueModal instance={instance} />}
+              />
             </>
           )}
         </PopupState>
