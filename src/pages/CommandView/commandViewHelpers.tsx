@@ -216,7 +216,8 @@ const cleanModelForDisplay = (
 
 const dataUrlToFile = (dataUrl: string) => {
   const [preface, base64] = dataUrl.split(',')
-  const [dataMimeType, filename, ..._] = preface.split(';')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [dataMimeType, filename, ...rest] = preface.split(';')
   const mimeMatch = dataMimeType.match(new RegExp(':(.*?)$'))
 
   if (!base64 || !dataMimeType || !filename || !mimeMatch) {

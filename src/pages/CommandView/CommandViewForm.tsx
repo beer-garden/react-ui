@@ -1,15 +1,9 @@
-import { Box, Button, Tooltip } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import Form from '@rjsf/material-ui'
 import { AxiosRequestConfig } from 'axios'
 import { useMyAxios } from 'hooks/useMyAxios'
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, Dispatch, SetStateAction, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { useNavigate } from 'react-router-dom'
 import { AugmentedCommand, ObjectWithStringKeys } from 'types/custom-types'
