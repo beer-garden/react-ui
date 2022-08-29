@@ -22,7 +22,7 @@ const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
       <div
         style={{
           margin: '0 auto',
-          maxWidth: 1200,
+          maxWidth: '95%',
           marginLeft: `${marginLeft}px`,
           padding: '1rem 1.0875rem 1.45rem',
         }}

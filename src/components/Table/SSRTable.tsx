@@ -60,10 +60,19 @@ const filterTypes = {
   numeric: numericTextFilter,
 }
 
+const columnStyle = {
+  style: {
+    flex: '1 0 auto',
+  },
+}
+
 const defaultColumn = {
   Filter: DefaultColumnFilter,
   Cell: DefaultCellRenderer,
   Header: DefaultHeader,
+  minWidth: 90, // minWidth is only used as a limit for resizing
+  width: 150, // width is used for both the flex-basis and flex-grow
+  maxWidth: 200, // maxWidth is only used as a limit for resizing
   ...defaultColumnValues,
 }
 
@@ -256,9 +265,7 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
     <>
       <Toolbar name={tableName} instance={instance} />
       <FilterChipBar<T> instance={instance} />
-
       <Box {...childProps}>{props.children}</Box>
-
       <StyledTable {...tableProps}>
         <TableHead>
           {headerGroups.map((headerGroup) => {
@@ -267,7 +274,6 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
               role: headerGroupRole,
               ...headerGroupProps
             } = headerGroup.getHeaderGroupProps()
-
             return (
               <TableHeadRow key={headerGroupKey} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {
@@ -278,7 +284,7 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
                     key: headerKey,
                     role: headerRole,
                     ...headerProps
-                  } = column.getHeaderProps()
+                  } = column.getHeaderProps(columnStyle)
                   const {
                     title: sortTitle = '',
                     onClick: sortOnClick,
@@ -373,7 +379,7 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
                       key: cellKey,
                       role: cellRole,
                       ...cellProps
-                    } = cell.getCellProps()
+                    } = cell.getCellProps(columnStyle)
                     return (
                       <TableCell key={cellKey} {...cellProps}>
                         {cell.isGrouped ? (

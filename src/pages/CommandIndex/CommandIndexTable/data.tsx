@@ -162,33 +162,43 @@ const useCommands = () => {
   }
 }
 
-const useCommandIndexTableColums = () => {
+const useCommandIndexTableColumns = () => {
   return useMemo<Column<CommandIndexTableData>[]>(
     () => [
       {
         Header: 'Namespace',
         accessor: 'namespace',
-        width: 150,
+        minWidth: 120,
+        maxWidth: 180,
+        width: 130,
       },
       {
         Header: 'System',
         accessor: 'system',
         filter: 'fuzzyText',
-        width: 150,
+        minWidth: 90,
+        maxWidth: 150,
+        width: 110,
       },
       {
         Header: 'Version',
         accessor: 'version',
-        width: 120,
+        minWidth: 90,
+        maxWidth: 120,
+        width: 100,
       },
       {
         Header: 'Command',
         accessor: 'name',
+        minWidth: 90,
+        maxWidth: 350,
         width: 300,
       },
       {
         Header: 'Description',
         accessor: 'description',
+        minWidth: 90,
+        maxWidth: 500,
         width: 300,
       },
       {
@@ -198,11 +208,13 @@ const useCommandIndexTableColums = () => {
         disableGroupBy: true,
         disableFilters: true,
         canHide: false,
-        width: 120,
+        width: 95,
+        minWidth: 75,
+        maxWidth: 120,
       },
     ],
     [],
   )
 }
 
-export { useCommandIndexTableColums, useCommands }
+export { useCommandIndexTableColumns, useCommands }

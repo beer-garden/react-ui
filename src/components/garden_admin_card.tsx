@@ -57,11 +57,7 @@ const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
 
   return (
     <Card sx={{ minWidth: 275 }}>
-      <AppBar
-        color="inherit"
-        style={{ background: 'lightgray' }}
-        position="static"
-      >
+      <AppBar color="inherit" position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit">
             {garden.name} {localOrRemote(garden.connection_type)}

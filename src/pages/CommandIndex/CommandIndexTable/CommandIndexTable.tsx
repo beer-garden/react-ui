@@ -2,7 +2,7 @@ import { Box, Checkbox, FormControlLabel } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Table } from 'components/Table'
 import {
-  useCommandIndexTableColums,
+  useCommandIndexTableColumns,
   useCommands,
 } from 'pages/CommandIndex/CommandIndexTable'
 
@@ -15,7 +15,7 @@ const CommandIndexTable = () => {
     includeHidden,
     hiddenOnChange,
   } = useCommands()
-  const columns = useCommandIndexTableColums()
+  const columns = useCommandIndexTableColumns()
   const breadcrumbs = [namespace, systemName, version]
     .filter((x) => !!x)
     .map((x) => String(x))
@@ -27,7 +27,11 @@ const CommandIndexTable = () => {
         <FormControlLabel
           label="Include hidden"
           control={
-            <Checkbox checked={includeHidden} onChange={hiddenOnChange} color="secondary"/>
+            <Checkbox
+              checked={includeHidden}
+              onChange={hiddenOnChange}
+              color="secondary"
+            />
           }
         />
       </Box>
