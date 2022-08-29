@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { job as mockJob } from 'test/testData'
+import { TJob } from 'test/testData'
 import { Job } from 'types/backend-types'
 
 import { JobButton } from './JobButton'
@@ -18,7 +18,7 @@ describe('JobButton', () => {
   afterAll(() => jest.unmock('services/job.service/job.service'))
 
   beforeEach(() => {
-    jData = Object.assign({}, mockJob)
+    jData = Object.assign({}, TJob)
   })
 
   test('pause job on click', async () => {
