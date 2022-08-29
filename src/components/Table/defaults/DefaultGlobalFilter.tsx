@@ -5,10 +5,9 @@ import {
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersOptions,
 } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-import { TableData } from '..'
-
-const DefaultGlobalFilter = <T extends TableData>({
+const DefaultGlobalFilter = <T extends ObjectWithStringKeys>({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,

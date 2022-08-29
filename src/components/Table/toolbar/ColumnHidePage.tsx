@@ -5,10 +5,10 @@ import {
   Popover,
   Typography,
 } from '@mui/material'
-import { TableData } from 'components/Table'
 import { TableInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-interface ColumnHidePageProps<T extends TableData> {
+interface ColumnHidePageProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
   anchorEl?: Element
   onClose: VoidFunction
@@ -17,7 +17,7 @@ interface ColumnHidePageProps<T extends TableData> {
 
 const id = 'popover-column-hide'
 
-const ColumnHidePage = <T extends TableData>({
+const ColumnHidePage = <T extends ObjectWithStringKeys>({
   instance,
   anchorEl,
   onClose,
@@ -77,7 +77,7 @@ const ColumnHidePage = <T extends TableData>({
                   <Checkbox
                     value={`${column.id}`}
                     disabled={column.isVisible && onlyOneOptionLeft}
-                    color = "secondary"
+                    color="secondary"
                   />
                 }
                 label={column.render('Header')}

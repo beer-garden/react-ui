@@ -6,15 +6,17 @@ interface ModalProps {
   header: string
   open: boolean
   content: JSX.Element
-  styleOverrides: { [key: string]: string | number }
   onClose(): void
   onCancel(): void
   onSubmit(): void
+  styleOverrides?: { [key: string]: string | number }
 }
 
 const style = {
   position: 'absolute',
-  transform: 'translate(100%, 100%)',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   bgcolor: 'background.default',
   border: '1px solid #000',
   boxShadow: 24,

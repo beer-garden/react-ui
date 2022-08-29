@@ -7,7 +7,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import type { TableData } from 'components/Table'
 import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
 import {
   DefaultCellRenderer,
@@ -54,6 +53,7 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
+import type { ObjectWithStringKeys } from 'types/custom-types'
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,
@@ -88,8 +88,11 @@ const hooks = [
   useRowSelect,
 ]
 
-interface TableProps<T extends TableData, R extends string, S extends string>
-  extends TableOptions<T> {
+interface TableProps<
+  T extends ObjectWithStringKeys,
+  R extends string,
+  S extends string,
+> extends TableOptions<T> {
   tableName: string
   data: T[]
   columns: Column<T>[]
@@ -113,7 +116,11 @@ interface TableProps<T extends TableData, R extends string, S extends string>
   }
 }
 
-const SSRTable = <T extends TableData, R extends string, S extends string>(
+const SSRTable = <
+  T extends ObjectWithStringKeys,
+  R extends string,
+  S extends string,
+>(
   props: PropsWithChildren<TableProps<T, R, S>>,
 ): ReactElement => {
   const {

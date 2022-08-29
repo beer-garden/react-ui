@@ -29,8 +29,10 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
+  Dispatch,
   PropsWithChildren,
   ReactElement,
+  SetStateAction,
   useCallback,
   useEffect,
 } from 'react'
@@ -50,8 +52,7 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
-
-export type TableData = Record<string, unknown>
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,
@@ -87,19 +88,29 @@ const hooks = [
   useRowSelect,
 ]
 
-interface TableProps<T extends TableData> extends TableOptions<T> {
+interface TableProps<T extends ObjectWithStringKeys> extends TableOptions<T> {
   tableName: string
   data: T[]
   columns: Column<T>[]
+  setSelection?: Dispatch<SetStateAction<T[]>>
   showGlobalFilter?: boolean
+  maxrows?: number
 }
 
 const DEBUG_INITIAL_STATE = false
 
-const Table = <T extends TableData>(
+const Table = <T extends ObjectWithStringKeys>(
   props: PropsWithChildren<TableProps<T>>,
 ): ReactElement => {
-  const { tableName, data, columns, showGlobalFilter, ...childProps } = props
+  const {
+    tableName,
+    data,
+    columns,
+    showGlobalFilter,
+    setSelection,
+    ...childProps
+  } = props
+
   const [initialState, _setInitialState] = useLocalStorage(
     `tableState:${tableName}`,
     {} as Partial<TableState<T>>,
@@ -134,11 +145,18 @@ const Table = <T extends TableData>(
     page,
     prepareRow,
     state,
+    selectedFlatRows,
     setGlobalFilter,
     preGlobalFilteredRows,
   } = instance
 
   const debouncedState = useDebounce(state, 500)
+
+  useEffect(() => {
+    if (setSelection) {
+      setSelection(selectedFlatRows.map((row) => row.original))
+    }
+  }, [selectedFlatRows, setSelection])
 
   useEffect(() => {
     const { filters, pageSize, hiddenColumns } = debouncedState
@@ -173,6 +191,9 @@ const Table = <T extends TableData>(
   }, [setInitialState, debouncedState, columns])
 
   const { role: tableRole, ...tableProps } = getTableProps()
+  if (tableProps?.style) {
+    tableProps.style.wordBreak = 'break-word'
+  }
 
   return (
     <>
@@ -311,7 +332,7 @@ const Table = <T extends TableData>(
           })}
         </TableBody>
       </StyledTable>
-      <TablePagination instance={instance} />
+      <TablePagination maxRows={props.maxrows} instance={instance} />
     </>
   )
 }
