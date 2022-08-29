@@ -1,6 +1,6 @@
 import { EmptyObject, ObjectWithStringKeys } from './custom-types'
 
-export type Command = {
+export interface Command {
   name: string
   description: string
   parameters: Parameter[]
@@ -14,10 +14,23 @@ export type Command = {
   icon_name?: string
 }
 
+export interface BlockedCommand {
+  namespace: string
+  system: string
+  command: string
+  status: StatusType
+  id: string
+}
+
+export interface BlockedList {
+  command_publishing_blocklist: BlockedCommand[]
+}
+
+export type StatusType = 'CONFIRMED' | 'ADD_REQUESTED' | 'REMOVE_REQUESTED'
 export type CommandType = 'ACTION' | 'INFO'
 export type OutputType = 'STRING' | 'JSON' | 'HTML' | 'JS'
 
-export type Choice = {
+export interface Choice {
   display: 'select' | 'typeahead'
   strict: boolean
   type: 'static' | 'command' | 'url'
@@ -37,7 +50,7 @@ export type ParameterType =
   | 'Float'
   | 'Dictionary'
 
-export type Parameter = {
+export interface Parameter {
   key: string
   type: ParameterType
   multi: boolean

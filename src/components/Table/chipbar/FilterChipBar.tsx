@@ -1,9 +1,9 @@
 import { Box, Chip } from '@mui/material'
-import { TableData } from 'components/Table'
 import { useCallback } from 'react'
 import { ColumnInstance, FilterValue, IdType, TableInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-interface FilterChipBarProps<T extends TableData> {
+interface FilterChipBarProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
 }
 
@@ -12,7 +12,7 @@ const parseDate = (date: number) => {
   return newDate.toISOString()
 }
 
-const FilterChipBar = <T extends TableData>({
+const FilterChipBar = <T extends ObjectWithStringKeys>({
   instance,
 }: FilterChipBarProps<T>) => {
   const getFilterValue = (

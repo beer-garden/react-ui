@@ -1,16 +1,19 @@
 import { TablePagination as MuiTablePagination } from '@mui/material'
-import { TableData } from 'components/Table'
 import TablePaginationActions from 'components/Table/pagination/TablePaginationActions'
 import { useCallback } from 'react'
-import { MouseEvent as ReactMouseEvent } from 'react'
+import { MouseEvent as ReactMouseEvent, useEffect } from 'react'
 import { TableInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
+import { getRowPageOptions } from 'utils/table-helpers'
 
-interface PaginationProps<T extends TableData> {
+interface PaginationProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
+  maxRows?: number
 }
 
-const TablePagination = <T extends TableData>({
+const TablePagination = <T extends ObjectWithStringKeys>({
   instance,
+  maxRows,
 }: PaginationProps<T>) => {
   const {
     state: { pageIndex, pageSize, rowCount = instance.rows.length },
@@ -19,7 +22,21 @@ const TablePagination = <T extends TableData>({
     previousPage,
     setPageSize,
   } = instance
-  const rowsPerPageOptions = [5, 10, 25, { value: rowCount, label: 'All' }]
+
+  const rowsPerPageOptions = getRowPageOptions(
+    maxRows || instance.rows.length,
+    instance.rows.length,
+  )
+
+  useEffect(() => {
+    const maxVal = rowsPerPageOptions[rowsPerPageOptions.length - 1] as {
+      value: number
+      label: string
+    }
+    if (maxVal && pageSize > maxVal.value) {
+      setPageSize(maxVal.value)
+    }
+  }, [pageSize, rowsPerPageOptions, setPageSize])
 
   const handleChangePage = useCallback(
     (
