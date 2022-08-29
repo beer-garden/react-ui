@@ -78,7 +78,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
           type: 'error',
           msg:
             'Something went wrong on the backend: ' +
-            get(e, 'data.message', 'Please check the server logs'),
+            get(e, 'response.data.message', 'Please check the server logs'),
         }
         setAlerts([...alerts, newAlert])
         setIsLoading(false)
