@@ -87,10 +87,6 @@ const CommandViewForm = ({
   }
 
   const onSubmit = () => {
-    console.log('hasByteParameters', hasByteParameters)
-    console.log('fileMetaData', fileMetaData)
-    console.log('model', model)
-
     if (hasByteParameters && isJob) {
       raiseError('Bytes parameters are not supported for scheduled jobs')
       return

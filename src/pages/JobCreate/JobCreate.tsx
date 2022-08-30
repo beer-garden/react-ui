@@ -8,17 +8,19 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Command, System } from 'types/backend-types'
 
+const DEBUG_DISPATCH_FUNCTIONS = false
+
 const JobCreate = () => {
   const [system, _setSystem] = useState<System | undefined>(undefined)
   const [command, _setCommand] = useState<Command | undefined>(undefined)
   const navigate = useNavigate()
 
   const setSystem = (system: System) => {
-    console.log('Setting system:', system)
+    if (DEBUG_DISPATCH_FUNCTIONS) console.log('Setting system:', system)
     _setSystem(system)
   }
   const setCommand = (command: Command) => {
-    console.log('Setting command:', command)
+    if (DEBUG_DISPATCH_FUNCTIONS) console.log('Setting command:', command)
     _setCommand(command)
   }
   const cancelJob = () => {

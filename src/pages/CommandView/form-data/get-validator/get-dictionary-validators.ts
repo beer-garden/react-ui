@@ -49,7 +49,6 @@ const getDictionaryValidators = (
                   }
                 }
               } catch {
-                console.log('threw from', value)
                 errorField.addError('Invalid object')
               }
             }

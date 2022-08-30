@@ -15,14 +15,6 @@ const useServerConfig = () => {
       },
     })
 
-    console.log(
-      'config AUTH_ENABLED: ',
-      data.auth_enabled ? 'yes' : String(data.auth_enabled),
-    )
-    console.log(
-      'config DEBUG_MODE: ',
-      data.debug_mode ? 'yes' : String(data.debug_mode),
-    )
     setConfig(data)
     return data
   }, [setConfig, axiosInstance])

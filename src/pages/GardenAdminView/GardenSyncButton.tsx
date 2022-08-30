@@ -47,7 +47,7 @@ const GardenSyncButton = ({
           result: 'failure',
           msg: `${error.response.status} ${error.response.statusText}`,
         })
-        console.log('ERROR', error)
+        console.error('ERROR', error)
       })
     setIsLoading(loading)
   }

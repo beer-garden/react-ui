@@ -22,9 +22,6 @@ const RequireAuth = ({ children, redirectTo = '/login' }: RequireAuthProps) => {
       </>
     )
   } else if (authIsEnabled === true) {
-    console.log('RequireAuth IS AUTHENTICATED: ', isAuthenticated())
-    console.log('RequireAuth USER: ', user ?? 'No User')
-
     return isAuthenticated() ? (
       <>
         {children}
