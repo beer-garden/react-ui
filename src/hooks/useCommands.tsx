@@ -20,7 +20,7 @@ export const useCommands = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
-  const { namespace, system_name: systemName, version } = useParams()
+  const { namespace, systemName, version } = useParams()
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'get',
@@ -139,7 +139,7 @@ const commandsFromSystems = (
 
   /* 
     this array holds the filters that will essentially be ANDed together
-    -- is prepopulated with an identity filter so the array can't be empty 
+    -- is pre-populated with an identity filter so the array can't be empty 
   */
   const systemMatcher = [(x: System) => true]
   if (version) {

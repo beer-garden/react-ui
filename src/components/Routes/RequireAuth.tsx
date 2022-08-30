@@ -9,7 +9,7 @@ interface RequireAuthProps {
 }
 
 const RequireAuth = ({ children, redirectTo = '/login' }: RequireAuthProps) => {
-  const { isAuthenticated, user } = AuthContainer.useContainer()
+  const { isAuthenticated } = AuthContainer.useContainer()
   const { config } = ServerConfigContainer.useContainer()
   const { pathname } = useLocation()
   const authIsEnabled = config?.auth_enabled
