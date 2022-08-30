@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import useAxios from 'axios-hooks'
-import Divider from 'components/divider'
+import { Divider } from 'components/Divider'
 import GardenCard from 'components/garden_admin_card'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'

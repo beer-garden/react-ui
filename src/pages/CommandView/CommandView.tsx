@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
-import Divider from 'components/divider'
+import { Divider } from 'components/Divider'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'

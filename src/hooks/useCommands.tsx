@@ -1,5 +1,4 @@
 import useAxios from 'axios-hooks'
-import { generateCommandName } from 'components/generateCommandName'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ExecuteButton } from 'pages/CommandIndex'
 import {
@@ -15,6 +14,7 @@ import {
   CommandIndexTableData,
   StrippedSystem,
 } from 'types/custom-types'
+import { generateCommandName } from 'utils/generateCommandName'
 
 export const useCommands = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
