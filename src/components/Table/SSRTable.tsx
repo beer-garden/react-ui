@@ -84,7 +84,6 @@ interface TableProps<
   R extends string,
   S extends string,
 > extends TableOptions<T> {
-  tableName: string
   data: T[]
   columns: Column<T>[]
   fetchStatus: { isLoading: boolean; isErrored: boolean }
@@ -105,6 +104,8 @@ interface TableProps<
     handleResultCount: (resultCount: number) => void
     handleStartPage: (page: number) => void
   }
+  tableName?: string
+  tableKey?: string
 }
 
 const SSRTable = <
@@ -116,6 +117,7 @@ const SSRTable = <
 ): ReactElement => {
   const {
     tableName,
+    tableKey,
     data,
     columns,
     fetchStatus: { isLoading, isErrored },
@@ -136,7 +138,7 @@ const SSRTable = <
   } = props
 
   const [initialState, setInitialState] = useLocalStorage(
-    `tableState:${tableName}`,
+    `tableState:${tableKey || tableName}`,
     {} as Partial<TableState<T>>,
   )
 
@@ -261,11 +263,9 @@ const SSRTable = <
     <Typography>Error...</Typography>
   ) : (
     <>
-      <Toolbar name={tableName} instance={instance} />
+      <Toolbar name={tableName || ''} instance={instance} />
       <FilterChipBar<T> instance={instance} />
-
       <Box {...childProps}>{props.children}</Box>
-
       <StyledTable {...tableProps}>
         <TableHead>
           {headerGroups.map((headerGroup) => {
@@ -274,7 +274,6 @@ const SSRTable = <
               role: headerGroupRole,
               ...headerGroupProps
             } = headerGroup.getHeaderGroupProps()
-
             return (
               <TableHeadRow key={headerGroupKey} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {

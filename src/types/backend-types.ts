@@ -56,11 +56,11 @@ export interface Parameter {
   multi: boolean
   display_name: string
   optional: boolean
+  parameters: Parameter[]
+  nullable: boolean
   default?: string | boolean | number | object
   description?: string
   choices?: Choice
-  parameters: Parameter[]
-  nullable: boolean
   maximum?: number
   minimum?: number
   regex?: string
@@ -133,9 +133,9 @@ export interface System {
   commands: Command[]
   icon_name: string
   display_name: string
-  metadata?: ObjectWithStringKeys | EmptyObject
   local: boolean
   template: string
+  metadata?: ObjectWithStringKeys | EmptyObject
 }
 
 export type TriggerType = 'cron' | 'interval' | 'date'
