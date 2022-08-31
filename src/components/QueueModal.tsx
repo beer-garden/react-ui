@@ -65,7 +65,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
           type: 'error',
           msg:
             'Error fetching Queue list: ' +
-            get(e, 'data.message', 'Please check the server logs'),
+            get(e, 'response.data.message', 'Please check the server logs'),
         }
         setAlerts((alerts) => [...alerts, newAlert])
       })
@@ -91,7 +91,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
               selectedQueue.current = queue.name
               setOpen(true)
             }}
-            aria-label="delete"
+            aria-label="Clear"
           >
             Clear
           </Button>
