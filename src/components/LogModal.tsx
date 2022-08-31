@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { useInstances } from 'hooks/useInstances'
 import { get } from 'lodash'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Instance } from 'types/backend-types'
 
 interface ILogAlert {
@@ -60,6 +60,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
   const [endLine, setEndLine] = useState<number>(20)
   const [alerts, setAlerts] = useState<ILogAlert[]>([])
   const [displayLogs, setDisplayLogs] = useState<string>('')
+  const logID = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     setAlerts([initialAlert])
@@ -67,13 +68,17 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
 
   const { getInstanceLogs, downloadLogs } = useInstances()
 
-  const getLogs = (id: string, start?: number, end?: number) =>
+  const getLogs = (id: string, start?: number, end?: number) => {
+    setIsLoading(true)
+    setDisplayLogs('')
     getInstanceLogs(id, wait, start, end)
       .then((response) => {
-        setDisplayLogs(response.data.toString())
+        setDisplayLogs(response.data)
         setIsLoading(false)
+        logID.current = response.headers.request_id
       })
       .catch((e) => {
+        logID.current = undefined
         const newAlert: ILogAlert = {
           type: 'error',
           msg:
@@ -83,6 +88,34 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
         setAlerts([...alerts, newAlert])
         setIsLoading(false)
       })
+  }
+
+  const downloadLogFile = () => {
+    if (logID.current) {
+      downloadLogs(logID.current)
+        .then((res) => {
+          const url = window.URL.createObjectURL(res.data)
+          const link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.download = `${fileHeader}-${instance.name}.log`
+          document.body.appendChild(link)
+          // Start download
+          link.click()
+          link.parentNode?.removeChild(link)
+          window.URL.revokeObjectURL(url)
+        })
+        .catch((e) => {
+          const newAlert: ILogAlert = {
+            type: 'error',
+            msg:
+              'Error downloading file: ' +
+              get(e, 'response.data.message', 'Please check the server logs'),
+          }
+          setAlerts([...alerts, newAlert])
+        })
+    }
+  }
 
   return (
     <>
@@ -106,11 +139,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
             loadingPosition="start"
             startIcon={<FileCopy />}
             loading={isLoading}
-            onClick={() => {
-              setIsLoading(true)
-              setDisplayLogs('')
-              getLogs(instance.id, tailLines * -1)
-            }}
+            onClick={() => getLogs(instance.id, tailLines * -1)}
           >
             Get Tail Logs
           </LoadingButton>
@@ -137,11 +166,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
             loadingPosition="start"
             startIcon={<InsertDriveFile />}
             loading={isLoading}
-            onClick={() => {
-              setIsLoading(true)
-              setDisplayLogs('')
-              getLogs(instance.id, startLine, endLine)
-            }}
+            onClick={() => getLogs(instance.id, startLine, endLine)}
           >
             Get Line Logs
           </LoadingButton>
@@ -178,30 +203,24 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
           color="secondary"
           variant="outlined"
           loadingPosition="start"
+          disabled={displayLogs.length === 0}
           startIcon={<FileDownload />}
           loading={isLoading}
-          sx={{ width: 'fit-content' }}
-          onClick={() =>
-            downloadLogs(instance.id).then((res) => {
-              const url = window.URL.createObjectURL(res.data)
-              const link = document.createElement('a')
-              link.style.display = 'none'
-              link.href = url
-              link.download = `${fileHeader}${instance.name}.log`
-              document.body.appendChild(link)
-              // Start download
-              link.click()
-              link.parentNode?.removeChild(link)
-              window.URL.revokeObjectURL(url)
-            })
-          }
+          title={displayLogs.length === 0 ? 'Please fetch logs first' : ''}
+          sx={{
+            width: 'fit-content',
+            '&.MuiButtonBase-root:disabled': { pointerEvents: 'auto' },
+          }}
+          onClick={downloadLogFile}
         >
           Download Logs
         </LoadingButton>
         {isLoading ? (
           <CircularProgress color="inherit" />
         ) : (
-          <Typography>{displayLogs}</Typography>
+          <Typography style={{ whiteSpace: 'pre-line' }}>
+            {displayLogs.split('<br/>').join('\n')}
+          </Typography>
         )}
       </Stack>
     </>

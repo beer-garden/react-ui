@@ -53,7 +53,7 @@ export const useInstances = () => {
   }
 
   const downloadLogs = (id: string) => {
-    return axiosInstance.get(`api/v1/instances/${id}/logs/`, {
+    return axiosInstance.get(`/api/v1/requests/output/${id}`, {
       responseType: 'blob',
       withCredentials: authEnabled,
     })

@@ -136,7 +136,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                 </Menu>
                 <ModalWrapper
                   open={logModal}
-                  header={`Logs for ${instance.name}`}
+                  header={`Logs for ${fileHeader}-${instance.name}`}
                   onClose={() => setLogModal(false)}
                   customButton={{
                     label: 'Close',
