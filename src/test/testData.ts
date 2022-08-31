@@ -1,11 +1,16 @@
 import {
+  BlockedCommand,
+  BlockedList,
+  Command,
   DateTrigger,
   Instance,
   Job,
+  Parameter,
   RequestTemplate,
+  System,
 } from 'types/backend-types'
 
-export const serverConfig = {
+export const TServerConfig = {
   application_name: 'testApp',
   auth_enabled: false,
   trusted_header_auth_enabled: false,
@@ -17,13 +22,13 @@ export const serverConfig = {
   url_prefix: '/',
 }
 
-export const versionConfig = {
+export const TVersionConfig = {
   beer_garden_version: '1.0.0',
   current_api_version: '1.0.1',
   supported_api_versions: ['1.0.0', '1.0.1'],
 }
 
-export const job: Job = {
+export const TJob: Job = {
   coalesce: false,
   error_count: 0,
   id: '123test',
@@ -40,15 +45,62 @@ export const job: Job = {
 }
 
 export const TInstance: Instance = {
-  description: 'This is a test',
-  id: '123',
+  description: 'testing an instance',
+  id: 'testinst',
   name: 'testInstance',
   status: 'RUNNING',
-  status_info: {
-    heartbeat: 67,
-  },
-  queue_type: 'testing',
+  status_info: { heartbeat: 67 },
+  queue_type: 'queued',
 }
 
 export const TLog =
   'This is a test log\nMultiples line items\nJust to test with'
+
+export const TParameter: Parameter = {
+  key: 'testParam',
+  type: 'String',
+  multi: false,
+  display_name: 'test param',
+  optional: true,
+  parameters: [],
+  nullable: false,
+}
+
+export const TCommand: Command = {
+  name: 'testCommand',
+  description: 'test not blocked',
+  parameters: [TParameter],
+  command_type: 'INFO',
+  output_type: 'JSON',
+  schema: {},
+  form: {},
+  hidden: false,
+  metadata: null,
+}
+
+export const TSystem: System = {
+  name: 'testSystem',
+  description: 'testing a system',
+  version: '1.0.0',
+  namespace: 'test',
+  id: 'testsys',
+  max_instances: 5,
+  instances: [TInstance],
+  commands: [TCommand],
+  icon_name: 'trashcan',
+  display_name: 'Test System',
+  local: false,
+  template: 'template',
+}
+
+export const TBlockedCommand: BlockedCommand = {
+  namespace: 'testNamespace',
+  system: 'testSystem',
+  command: 'testCommand',
+  status: 'CONFIRMED',
+  id: 'testBlocked',
+}
+
+export const TBlocklist: BlockedList = {
+  command_publishing_blocklist: [TBlockedCommand],
+}

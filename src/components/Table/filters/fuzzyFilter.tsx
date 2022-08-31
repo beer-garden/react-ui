@@ -1,8 +1,8 @@
-import { TableData } from 'components/Table'
 import { matchSorter } from 'match-sorter'
 import { FilterValue, IdType, Row } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-const fuzzyTextFilter = <T extends TableData>(
+const fuzzyTextFilter = <T extends ObjectWithStringKeys>(
   rows: Array<Row<T>>,
   id: Array<IdType<T>>,
   filterValue: FilterValue,

@@ -1,7 +1,7 @@
 import { Tooltip as MuiTooltip } from '@mui/material'
-import { TableData } from 'components/Table'
 import { CSSProperties } from 'react'
 import { CellProps } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 interface TooltipCellProps {
   text: string
@@ -17,7 +17,9 @@ const TooltipCell = ({ text, tooltip = text, align }: TooltipCellProps) => {
   ) : null
 }
 
-const TooltipCellRenderer = ({ cell: { value } }: CellProps<TableData>) => (
+const TooltipCellRenderer = ({
+  cell: { value },
+}: CellProps<ObjectWithStringKeys>) => (
   <TooltipCell text={value} align={'left'} />
 )
 

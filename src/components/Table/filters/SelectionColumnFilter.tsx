@@ -1,7 +1,7 @@
 import { MenuItem, TextField } from '@mui/material'
-import { TableData } from 'components/Table'
 import { useMemo } from 'react'
 import { FilterProps } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const SelectionColumnFilter = ({
   column: {
@@ -12,7 +12,7 @@ const SelectionColumnFilter = ({
     id,
     selectionOptions,
   },
-}: FilterProps<TableData>) => {
+}: FilterProps<ObjectWithStringKeys>) => {
   const options = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let options: Set<any>

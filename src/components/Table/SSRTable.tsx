@@ -7,7 +7,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import type { TableData } from 'components/Table'
 import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
 import {
   DefaultCellRenderer,
@@ -54,6 +53,7 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
+import type { ObjectWithStringKeys } from 'types/custom-types'
 
 const filterTypes = {
   fuzzyText: fuzzyTextFilter,
@@ -79,9 +79,11 @@ const hooks = [
   useRowSelect,
 ]
 
-interface TableProps<T extends TableData, R extends string, S extends string>
-  extends TableOptions<T> {
-  tableName: string
+interface TableProps<
+  T extends ObjectWithStringKeys,
+  R extends string,
+  S extends string,
+> extends TableOptions<T> {
   data: T[]
   columns: Column<T>[]
   fetchStatus: { isLoading: boolean; isErrored: boolean }
@@ -102,13 +104,20 @@ interface TableProps<T extends TableData, R extends string, S extends string>
     handleResultCount: (resultCount: number) => void
     handleStartPage: (page: number) => void
   }
+  tableName?: string
+  tableKey?: string
 }
 
-const SSRTable = <T extends TableData, R extends string, S extends string>(
+const SSRTable = <
+  T extends ObjectWithStringKeys,
+  R extends string,
+  S extends string,
+>(
   props: PropsWithChildren<TableProps<T, R, S>>,
 ): ReactElement => {
   const {
     tableName,
+    tableKey,
     data,
     columns,
     fetchStatus: { isLoading, isErrored },
@@ -129,7 +138,7 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
   } = props
 
   const [initialState, setInitialState] = useLocalStorage(
-    `tableState:${tableName}`,
+    `tableState:${tableKey || tableName}`,
     {} as Partial<TableState<T>>,
   )
 
@@ -254,11 +263,9 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
     <Typography>Error...</Typography>
   ) : (
     <>
-      <Toolbar name={tableName} instance={instance} />
+      <Toolbar name={tableName || ''} instance={instance} />
       <FilterChipBar<T> instance={instance} />
-
       <Box {...childProps}>{props.children}</Box>
-
       <StyledTable {...tableProps}>
         <TableHead>
           {headerGroups.map((headerGroup) => {
@@ -267,7 +274,6 @@ const SSRTable = <T extends TableData, R extends string, S extends string>(
               role: headerGroupRole,
               ...headerGroupProps
             } = headerGroup.getHeaderGroupProps()
-
             return (
               <TableHeadRow key={headerGroupKey} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {

@@ -8,7 +8,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { TableData } from 'components/Table'
 import { ColumnHidePage } from 'components/Table/toolbar/ColumnHidePage'
 import { FilterPage } from 'components/Table/toolbar/FilterPage'
 import {
@@ -19,8 +18,9 @@ import {
   useState,
 } from 'react'
 import { ColumnInstance, TableInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-interface ToolbarProps<T extends TableData> {
+interface ToolbarProps<T extends ObjectWithStringKeys> {
   name: string
   instance: TableInstance<T>
 }
@@ -62,7 +62,7 @@ const SmallIconActionButton = ({
   )
 }
 
-const getHideableColumns = <T extends TableData>(
+const getHideableColumns = <T extends ObjectWithStringKeys>(
   columns: ColumnInstance<T>[],
 ): ColumnInstance<T>[] => {
   if (columns.length) {
@@ -81,7 +81,7 @@ const getHideableColumns = <T extends TableData>(
   return columns
 }
 
-const getFilterableColumns = <T extends TableData>(
+const getFilterableColumns = <T extends ObjectWithStringKeys>(
   columns: ColumnInstance<T>[],
 ): ColumnInstance<T>[] => {
   if (columns.length) {
@@ -100,7 +100,10 @@ const getFilterableColumns = <T extends TableData>(
   return columns
 }
 
-const Toolbar = <T extends TableData>({ name, instance }: ToolbarProps<T>) => {
+const Toolbar = <T extends ObjectWithStringKeys>({
+  name,
+  instance,
+}: ToolbarProps<T>) => {
   const { columns } = instance
   const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined)
   const [columnsOpen, setColumnsOpen] = useState(false)
