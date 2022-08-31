@@ -1,9 +1,9 @@
 import { Box, Button, Popover, Typography } from '@mui/material'
-import { TableData } from 'components/Table'
 import { FormEvent as ReactFormEvent, useCallback } from 'react'
 import { ColumnInstance, TableInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-const filterSorter = <T extends TableData>(
+const filterSorter = <T extends ObjectWithStringKeys>(
   x: ColumnInstance<T>,
   y: ColumnInstance<T>,
 ) => {
@@ -11,14 +11,14 @@ const filterSorter = <T extends TableData>(
   else return 0
 }
 
-interface FilterPageProps<T extends TableData> {
+interface FilterPageProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
   anchorEl?: Element
   onClose: VoidFunction
   show: boolean
 }
 
-const FilterPage = <T extends TableData>({
+const FilterPage = <T extends ObjectWithStringKeys>({
   instance,
   anchorEl,
   onClose,
@@ -107,7 +107,6 @@ const FilterPage = <T extends TableData>({
                         display: 'inline-flex',
                         flexDirection: 'column',
                       }}
-
                     >
                       {column.render('Filter')}
                     </Box>

@@ -1,13 +1,13 @@
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { TableData } from 'components/Table'
 import { ColumnInstance } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-interface ColumnResizeHandleProps<T extends TableData> {
+interface ColumnResizeHandleProps<T extends ObjectWithStringKeys> {
   column: ColumnInstance<T>
 }
 
-const ColumnResizeHandle = <T extends TableData>({
+const ColumnResizeHandle = <T extends ObjectWithStringKeys>({
   column,
 }: ColumnResizeHandleProps<T>) => {
   const theme = useTheme()

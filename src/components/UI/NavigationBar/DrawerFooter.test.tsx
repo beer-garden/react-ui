@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { BrowserRouter } from 'react-router-dom'
-import { serverConfig, versionConfig } from 'test/testData'
+import { TServerConfig, TVersionConfig } from 'test/testData'
 
 import { DrawerFooter } from './DrawerFooter'
 
@@ -16,7 +16,7 @@ describe('DrawerFooter', () => {
     )
     await waitFor(() => {
       expect(container).toContainHTML(
-        `Beer Garden <b>${versionConfig.beer_garden_version}</b>`,
+        `Beer Garden <b>${TVersionConfig.beer_garden_version}</b>`,
       )
     })
   })
@@ -33,7 +33,7 @@ describe('DrawerFooter', () => {
     await waitFor(() => {
       expect(screen.getByTestId('apiLink')).toHaveAttribute(
         'href',
-        `${serverConfig.url_prefix}swagger/index.html?config=${serverConfig.url_prefix}config/swagger`,
+        `${TServerConfig.url_prefix}swagger/index.html?config=${TServerConfig.url_prefix}config/swagger`,
       )
     })
   })

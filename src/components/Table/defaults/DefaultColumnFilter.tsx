@@ -1,14 +1,17 @@
 import { TextField } from '@mui/material'
-import { TableData } from 'components/Table'
-import { ChangeEvent, useEffect,useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { ColumnInstance, FilterProps } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const findFirstColumn = (
-  columns: Array<ColumnInstance<TableData>>,
-): ColumnInstance<TableData> =>
+  columns: Array<ColumnInstance<ObjectWithStringKeys>>,
+): ColumnInstance<ObjectWithStringKeys> =>
   columns[0].columns ? findFirstColumn(columns[0].columns) : columns[0]
 
-const DefaultColumnFilter = ({ columns, column }: FilterProps<TableData>) => {
+const DefaultColumnFilter = ({
+  columns,
+  column,
+}: FilterProps<ObjectWithStringKeys>) => {
   const { id, filterValue, setFilter, render } = column
   const [value, setValue] = useState(filterValue || '')
 

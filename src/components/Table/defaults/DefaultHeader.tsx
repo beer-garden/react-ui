@@ -1,5 +1,5 @@
-import { TableData } from 'components/Table'
 import { HeaderProps } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const isUpper = (code: number) => code >= 65 && code <= 90
 const isDigit = (code: number) => code >= 48 && code <= 57
@@ -33,7 +33,7 @@ const convertCamelCase = (camel: string) => {
   return newKey
 }
 
-const DefaultHeader = ({ column }: HeaderProps<TableData>) => (
+const DefaultHeader = ({ column }: HeaderProps<ObjectWithStringKeys>) => (
   <>{column.id.startsWith('_') ? null : convertCamelCase(column.id)}</>
 )
 

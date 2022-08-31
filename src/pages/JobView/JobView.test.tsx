@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Router from 'react-router-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { job as mockJob } from 'test/testData'
+import { TJob } from 'test/testData'
 import { Job } from 'types/backend-types'
 
 import { JobView } from './JobView'
@@ -28,7 +28,7 @@ describe('JobView', () => {
   })
 
   beforeAll(() => {
-    mockJobResponse = { data: Object.assign({}, mockJob) }
+    mockJobResponse = { data: Object.assign({}, TJob) }
   })
 
   test('renders Delete button', () => {

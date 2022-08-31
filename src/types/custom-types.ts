@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 
-import { Command, Job, Request, System } from './backend-types'
+import { BlockedCommand, Command, Job, Request, System } from './backend-types'
 
 export interface ObjectWithStringKeys {
   [key: string]: unknown
@@ -93,11 +93,20 @@ export interface TableInterface {
   parentState: TableState
 }
 
-export type AugmentedCommand = Command & {
+export interface AugmentedCommand extends Command {
   namespace: string
   systemName: string
   systemVersion: string
   systemId: string
+}
+
+export interface CommandIndexTableData
+  extends Omit<BlockedCommand, 'id' | 'status'>,
+    ObjectWithStringKeys {
+  name: string | JSX.Element
+  action?: JSX.Element
+  description?: string
+  version?: string
 }
 
 export type StrippedSystem = Omit<System, 'commands'>

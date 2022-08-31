@@ -245,6 +245,7 @@ const MyTable = ({ parentState }: TableInterface) => {
       if (totalItemsFiltered === '0' || !totalItemsFiltered) {
         count = totalItems
       }
+      // Can't use getRowPageOptions here as can't call useEffect
       return (
         <Table>
           <TableFooter>
