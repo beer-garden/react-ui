@@ -1,4 +1,9 @@
-import { DateTrigger, Job, RequestTemplate } from 'types/backend-types'
+import {
+  DateTrigger,
+  Instance,
+  Job,
+  RequestTemplate,
+} from 'types/backend-types'
 
 export const serverConfig = {
   application_name: 'testApp',
@@ -33,3 +38,17 @@ export const job: Job = {
   trigger: {} as DateTrigger,
   trigger_type: 'date',
 }
+
+export const TInstance: Instance = {
+  description: 'This is a test',
+  id: '123',
+  name: 'testInstance',
+  status: 'RUNNING',
+  status_info: {
+    heartbeat: 67,
+  },
+  queue_type: 'testing',
+}
+
+export const TLog =
+  'This is a test log\nMultiples line items\nJust to test with'
