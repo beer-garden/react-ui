@@ -7,6 +7,8 @@ import {
   StrippedSystem,
 } from 'types/custom-types'
 
+import { parameterHasDynamicChoiceProperties } from './dynamic-form-data'
+
 interface NavigatorProps {
   message: string
   link: string
@@ -81,6 +83,33 @@ const isByte = (parameter: Parameter): boolean => {
  */
 const isByteCommand = (parameters: Parameter[]) => {
   return parameters.map(isByte).some((x) => x)
+}
+
+/**
+ * Determine if a Parameter, or any of its sub-parameters, have dynamic choices
+ *
+ * Distinct from hasDynamicChoiceProperties to enable recursion
+ *
+ * @param parameter  - the parameter array to check
+ * @returns true or false
+ */
+const isDynamicChoiceParameter = (parameter: Parameter): boolean => {
+  return (
+    parameterHasDynamicChoiceProperties(parameter) ||
+    hasDynamicChoices(parameter.parameters)
+  )
+}
+
+/**
+ * Determine if any of a commands parameters or sub-parameters have dynamic
+ * choices, in which case the form will be generated in an entirely
+ * different manner
+ *
+ * @param parameters
+ * @returns
+ */
+const hasDynamicChoices = (parameters: Parameter[]) => {
+  return parameters.map(isDynamicChoiceParameter).some((x) => x)
 }
 
 /**
@@ -213,8 +242,7 @@ const cleanModelForDisplay = (
 
 const dataUrlToFile = (dataUrl: string) => {
   const [preface, base64] = dataUrl.split(',')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [dataMimeType, filename, ...rest] = preface.split(';')
+  const [dataMimeType, filename] = preface.split(';')
   const mimeMatch = dataMimeType.match(new RegExp(':(.*?)$'))
 
   if (!base64 || !dataMimeType || !filename || !mimeMatch) {
@@ -237,5 +265,6 @@ export {
   cleanModelForDisplay,
   dataUrlToFile,
   handleByteParametersReset,
+  hasDynamicChoices,
   isByteCommand,
 }

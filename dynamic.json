@@ -1,0 +1,905 @@
+{
+    "name": "dynamic",
+    "commands": [
+      {
+        "name": "_get_attribute",
+        "parameters": [
+          {
+            "key": "attribute",
+            "type": "Any",
+            "multi": false,
+            "display_name": "attribute",
+            "optional": false,
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "days_filter",
+        "description": "Basic 'filter' - will return subset of days that contain the given string",
+        "parameters": [
+          {
+            "key": "filter_param",
+            "type": "String",
+            "multi": false,
+            "display_name": "filter_param",
+            "optional": false,
+            "default": "",
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "get_choices",
+        "description": "Returns a basic list: [\"a\", \"b\", \"c\"]",
+        "parameters": [],
+        "command_type": "INFO",
+        "output_type": "JSON",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "get_choices_dictionary",
+        "description": "Returns a dictionary: {\"a\": [\"r\", \"s\", \"t\"], \"b\": [\"u\", \"v\", \"w\"], ...}",
+        "parameters": [],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "get_choices_from_instance_name",
+        "description": "Returns a list based on instance name (d1 or d2)",
+        "parameters": [],
+        "command_type": "INFO",
+        "output_type": "JSON",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "get_choices_renamed",
+        "description": "Returns a renamed list: [{\"value\": \"a\", \"text\": \"A\"}, ...]",
+        "parameters": [],
+        "command_type": "INFO",
+        "output_type": "JSON",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "get_choices_with_argument",
+        "description": "Returns a list by using the 'key' param as the key to the choices dict",
+        "parameters": [
+          {
+            "key": "key",
+            "type": "String",
+            "multi": false,
+            "display_name": "key",
+            "optional": false,
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "INFO",
+        "output_type": "JSON",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "get_choices_with_arguments",
+        "description": "Returns a list by using the 'key' param as the key to the choices dict",
+        "parameters": [
+          {
+            "key": "p1",
+            "type": "String",
+            "multi": false,
+            "display_name": "p1",
+            "optional": false,
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          },
+          {
+            "key": "p2",
+            "type": "String",
+            "multi": false,
+            "display_name": "p2",
+            "optional": false,
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "INFO",
+        "output_type": "JSON",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_day",
+        "description": "Demonstrates self-referring choices",
+        "parameters": [
+          {
+            "key": "day",
+            "type": "String",
+            "multi": false,
+            "display_name": "day",
+            "optional": false,
+            "choices": {
+              "display": "typeahead",
+              "strict": true,
+              "type": "command",
+              "value": "days_filter(filter_param=${day})",
+              "details": {
+                "name": "days_filter",
+                "args": [
+                  [
+                    "filter_param",
+                    "day"
+                  ]
+                ]
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific",
+        "description": "Choices param is the static list: [\"a\", \"b\", \"c\"]",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_deferred",
+        "description": "Choices param comes from deferred choices",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say something else",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "x",
+                "y",
+                "z"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_dictionary_with_instance_name_key",
+        "description": "Uses the instance name as the key_reference for the choices dictionary",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "I depend on the instance",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": {
+                "d1": [
+                  "100",
+                  "101",
+                  "111"
+                ],
+                "d2": [
+                  "200",
+                  "202",
+                  "222"
+                ]
+              },
+              "details": {
+                "key_reference": "instance_name"
+              }
+            },
+            "nullable": true,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_dictionary_with_key_reference",
+        "description": "Uses the dict_key param as the key_reference for the choices dictionary",
+        "parameters": [
+          {
+            "key": "dict_key",
+            "type": "String",
+            "multi": false,
+            "display_name": "dict_key",
+            "optional": true,
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c",
+                null
+              ],
+              "details": {}
+            },
+            "nullable": true,
+            "type_info": {},
+            "parameters": []
+          },
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "I depend on 'dict_key'",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": {
+                "a": [
+                  "r",
+                  "s",
+                  "t"
+                ],
+                "b": [
+                  "u",
+                  "v",
+                  "w"
+                ],
+                "c": [
+                  "x",
+                  "y",
+                  "z"
+                ],
+                "null": [
+                  "r",
+                  "s",
+                  "t",
+                  "u",
+                  "v",
+                  "w",
+                  "x",
+                  "y",
+                  "z",
+                  "r",
+                  "s",
+                  "t",
+                  "u",
+                  "v",
+                  "w",
+                  "x",
+                  "y",
+                  "z"
+                ]
+              },
+              "details": {
+                "key_reference": "dict_key"
+              }
+            },
+            "nullable": true,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_from_command",
+        "description": "Uses the 'get_choices' command to populate choices",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "typeahead",
+              "strict": true,
+              "type": "command",
+              "value": "get_choices",
+              "details": {
+                "name": "get_choices",
+                "args": []
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_from_command_fully_specified",
+        "description": "Choices param is the fully-specified dictionary",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "command",
+              "value": {
+                "command": "get_choices",
+                "system": "dynamic",
+                "version": "1.0.0.dev",
+                "instance_name": "default"
+              },
+              "details": {
+                "name": "get_choices",
+                "args": []
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_from_command_nullable",
+        "description": "Uses the 'get_choices' command to populate choices",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "typeahead",
+              "strict": true,
+              "type": "command",
+              "value": "get_choices",
+              "details": {
+                "name": "get_choices",
+                "args": []
+              }
+            },
+            "nullable": true,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_from_url",
+        "description": "Uses a URL pointing to a JSON file to populate choices",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "typeahead",
+              "strict": true,
+              "type": "url",
+              "value": "http://example.com/api/choices.json",
+              "details": {
+                "address": "http://example.com/api/choices.json",
+                "args": []
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_from_url_nullable",
+        "description": "Uses a URL pointing to a JSON file to populate choices",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "typeahead",
+              "strict": true,
+              "type": "url",
+              "value": "http://example.com/api/choices.json",
+              "details": {
+                "address": "http://example.com/api/choices.json",
+                "args": []
+              }
+            },
+            "nullable": true,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_from_url_with_parameter",
+        "description": "Uses URL and query parameter to populate choices",
+        "parameters": [
+          {
+            "key": "file",
+            "type": "String",
+            "multi": false,
+            "display_name": "file",
+            "optional": true,
+            "default": "a",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          },
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "url",
+              "value": "http://example.com/api?file=${file}",
+              "details": {
+                "address": "http://example.com/api",
+                "args": [
+                  [
+                    "file",
+                    "file"
+                  ]
+                ]
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_non_strict_typeahead",
+        "description": "Non-strict typeahead display",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "typeahead",
+              "strict": false,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_renamed",
+        "description": "Choices param is the renamed list: [{\"value\": \"a\", \"text\": \"A\"}, ...]",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                {
+                  "value": "a",
+                  "text": "A"
+                },
+                {
+                  "value": "b",
+                  "text": "B"
+                },
+                {
+                  "value": "c",
+                  "text": "C"
+                }
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_strict_typeahead",
+        "description": "Strict typeahead display",
+        "parameters": [
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "typeahead",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_with_choices_argument",
+        "description": "Calls 'get_choices_with_argument' with 'index' param to populate choices",
+        "parameters": [
+          {
+            "key": "index",
+            "type": "String",
+            "multi": false,
+            "display_name": "index",
+            "optional": true,
+            "default": "a",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          },
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "command",
+              "value": "get_choices_with_argument(key=${index})",
+              "details": {
+                "name": "get_choices_with_argument",
+                "args": [
+                  [
+                    "key",
+                    "index"
+                  ]
+                ]
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      },
+      {
+        "name": "say_specific_with_choices_arguments",
+        "description": "Calls 'get_choices_with_arguments' with 'p1' and 'p2' params",
+        "parameters": [
+          {
+            "key": "p1",
+            "type": "String",
+            "multi": false,
+            "display_name": "p1",
+            "optional": true,
+            "default": "a",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          },
+          {
+            "key": "p2",
+            "type": "String",
+            "multi": false,
+            "display_name": "p2",
+            "optional": true,
+            "default": "a",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "static",
+              "value": [
+                "a",
+                "b",
+                "c"
+              ],
+              "details": {}
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          },
+          {
+            "key": "message",
+            "type": "String",
+            "multi": false,
+            "display_name": "message",
+            "optional": false,
+            "description": "Say what we want",
+            "choices": {
+              "display": "select",
+              "strict": true,
+              "type": "command",
+              "value": "get_choices_with_arguments(p1=${p1}, p2=${p2})",
+              "details": {
+                "name": "get_choices_with_arguments",
+                "args": [
+                  [
+                    "p1",
+                    "p1"
+                  ],
+                  [
+                    "p2",
+                    "p2"
+                  ]
+                ]
+              }
+            },
+            "nullable": false,
+            "type_info": {},
+            "parameters": []
+          }
+        ],
+        "command_type": "ACTION",
+        "output_type": "STRING",
+        "schema": {},
+        "form": {},
+        "hidden": false,
+        "metadata": {}
+      }
+    ]
+  }

@@ -318,17 +318,6 @@ const getJobPayload = (
   return job
 }
 
-<<<<<<< HEAD
-=======
-const getRequestPayload = (
-  model: ObjectWithStringKeys,
-  command: AugmentedCommand,
-  hasBytes = false,
-): RequestTemplate => {
-  return extractRequestTemplate(model, command, hasBytes)
-}
-
->>>>>>> ab8768c (#61 - Job/Request creation)
 const getSubmitArgument = (
   model: ObjectWithStringKeys,
   command: AugmentedCommand,
@@ -338,11 +327,7 @@ const getSubmitArgument = (
   if (isJob) {
     return getJobPayload(model, command)
   } else {
-<<<<<<< HEAD
     return extractRequestTemplate(model, command, hasBytes)
-=======
-    return getRequestPayload(model, command, hasBytes)
->>>>>>> ab8768c (#61 - Job/Request creation)
   }
 }
 

@@ -30,12 +30,51 @@ export type StatusType = 'CONFIRMED' | 'ADD_REQUESTED' | 'REMOVE_REQUESTED'
 export type CommandType = 'ACTION' | 'INFO'
 export type OutputType = 'STRING' | 'JSON' | 'HTML' | 'JS'
 
+export interface ChoiceValueMap {
+  value: string | number | boolean
+  text: string
+}
+
+export interface DynamicChoiceDictionaryValue {
+  [key: string]: Array<string>
+}
+
+export interface DynamicChoiceCommandValue {
+  command: string
+  system: string
+  version: string
+  instance_name: string
+}
+
+export interface DynamicChoiceDictionaryDetails {
+  key_reference: string
+}
+
+export interface DynamicChoiceCommandDetails {
+  name: string
+  args: Array<string> | Array<Array<string>>
+}
+
+export interface DynamicChoiceUrlDetails {
+  address: string
+  args: Array<Array<string>>
+}
+
 export interface Choice {
   display: 'select' | 'typeahead'
   strict: boolean
   type: 'static' | 'command' | 'url'
-  value: Array<string | number | object | null> | string | object
-  details: object
+  value:
+    | Array<string | number | boolean | object | null>
+    | Array<ChoiceValueMap>
+    | DynamicChoiceDictionaryValue
+    | DynamicChoiceCommandValue
+    | string
+  details:
+    | DynamicChoiceDictionaryDetails
+    | DynamicChoiceCommandDetails
+    | DynamicChoiceUrlDetails
+    | EmptyObject
 }
 
 export type ParameterType =
