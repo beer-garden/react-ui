@@ -33,15 +33,15 @@ const JobCreate = () => {
     _setCommand(undefined)
   }
 
-  const cancelButton = (
+  const cancelAllSchedulingButton = (
     <Button size="small" onClick={cancelJob} startIcon={<CancelIcon />}>
-      Cancel
+      Cancel Scheduling
     </Button>
   )
 
   return !system ? (
     <JobCreateSystemsTable systemSetter={setSystem}>
-      {cancelButton}
+      {cancelAllSchedulingButton}
     </JobCreateSystemsTable>
   ) : !command ? (
     <JobCreateCommandsTable
@@ -51,7 +51,7 @@ const JobCreate = () => {
       <Button size="small" onClick={backToSystem} startIcon={<ArrowBackIcon />}>
         Back
       </Button>
-      {cancelButton}
+      {cancelAllSchedulingButton}
     </JobCreateCommandsTable>
   ) : (
     <JobCreateForwarder

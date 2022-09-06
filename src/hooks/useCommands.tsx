@@ -58,7 +58,7 @@ export const useCommands = () => {
   }
 }
 
-export type SystemCommandPair = {
+type SystemCommandPair = {
   system: StrippedSystem
   command: AugmentedCommand
 }

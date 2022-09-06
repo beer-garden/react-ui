@@ -8,9 +8,11 @@ import {
 } from 'react'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
-type JobRequestCreationProviderProps = { children: ReactNode }
+interface JobRequestCreationProviderProps {
+  children: ReactNode
+}
 
-type JobRequestCreationProviderState = {
+interface JobRequestCreationProviderState {
   system: StrippedSystem | undefined
   setSystem: Dispatch<SetStateAction<StrippedSystem | undefined>> | undefined
   command: AugmentedCommand | undefined

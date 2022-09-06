@@ -98,13 +98,10 @@ const handleByteParametersReset = (
   parameters: Parameter[],
 ) => {
   if ('parameters' in model) {
-    const updatedInitialData = { ...initialData }
-    const { parameters: updatedParameters } = updatedInitialData as {
+    const { parameters: updatedParameters } = initialData as {
       parameters: ObjectWithStringKeys
     }
-    const modelParameters = model['parameters'] as
-      | ObjectWithStringKeys
-      | undefined
+    const modelParameters = model.parameters as ObjectWithStringKeys | undefined
 
     if (modelParameters) {
       for (const parameter of parameters) {

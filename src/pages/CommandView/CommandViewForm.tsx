@@ -1,9 +1,15 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import Form from '@rjsf/material-ui'
 import { AxiosRequestConfig } from 'axios'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { createContext, Dispatch, SetStateAction, useState } from 'react'
+import {
+  createContext,
+  createRef,
+  Dispatch,
+  SetStateAction,
+  useState,
+} from 'react'
 import ReactJson from 'react-json-view'
 import { useNavigate } from 'react-router-dom'
 import { AugmentedCommand, ObjectWithStringKeys } from 'types/custom-types'
@@ -15,8 +21,10 @@ import {
   isByteCommand,
 } from './commandViewHelpers'
 import { CustomFileWidget, FileMetaData } from './CustomFileWidget'
-import { getSubmitArgument } from './form-data/get-submit-argument/get-submit-argument'
-import { prepareModelForSubmit } from './form-data/get-submit-argument/prepare-model-for-submit'
+import {
+  getSubmitArgument,
+  prepareModelForSubmit,
+} from './form-data/get-submit-argument'
 
 interface CommandViewFormProps {
   schema: ObjectWithStringKeys
@@ -50,9 +58,7 @@ const CommandViewForm = ({
   isJob,
   validator,
 }: CommandViewFormProps) => {
-  const initialData = initialModel
-
-  const [model, setModel] = useState(initialData)
+  const [model, setModel] = useState(initialModel)
   const [displayModel, setDisplayModel] = useState(model)
   const [fileMetaData, setFileMetaData] = useState<FileMetaData[]>([])
   const { axiosInstance } = useMyAxios()
@@ -60,7 +66,7 @@ const CommandViewForm = ({
   const hasByteParameters = isByteCommand(command.parameters)
 
   const onResetForm = () => {
-    setModel(handleByteParametersReset(initialData, model, command.parameters))
+    setModel(handleByteParametersReset(initialModel, model, command.parameters))
   }
 
   const onFormUpdated = (
@@ -146,6 +152,8 @@ const CommandViewForm = ({
     FileWidget: CustomFileWidget,
   }
 
+  const submitFormRef = createRef<HTMLButtonElement>()
+
   return (
     <Box pt={2} display="flex" alignItems="flex-start">
       <Box width={3 / 5}>
@@ -162,14 +170,21 @@ const CommandViewForm = ({
             validate={validator}
             widgets={widgets}
           >
-            <Button variant="contained" onClick={onResetForm} color="secondary">
-              Reset
-            </Button>
-            &nbsp;&nbsp;
-            <Button variant="contained" type="submit" onClick={onSubmit}>
+            <Button
+              ref={submitFormRef}
+              type="submit"
+              sx={{ display: 'none' }}
+            />
+          </Form>
+          <ButtonGroup variant="contained" size="large">
+            <Button onClick={onResetForm}>Reset</Button>
+            <Button
+              type="submit"
+              onClick={() => submitFormRef.current?.click()}
+            >
               {isJob ? 'Schedule' : 'Execute'}
             </Button>
-          </Form>
+          </ButtonGroup>
         </BytesParameterContext.Provider>
       </Box>
       <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>

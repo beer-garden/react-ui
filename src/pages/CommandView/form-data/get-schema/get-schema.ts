@@ -8,6 +8,8 @@ import {
 } from '../getter-helpers'
 
 type StrippedParameter = Omit<Parameter, 'key'>
+type instanceList = (string | undefined)[]
+type enumType = { enum: instanceList } | { default: string }
 
 const getFormat = (arg: ParameterType) => {
   if (arg === 'Date') return { format: 'date' }
@@ -272,14 +274,10 @@ const getSchema = (
   instances: Array<Instance>,
   parameters: Array<Parameter>,
 ) => {
-  type instanceList = (string | undefined)[]
-  type enumType = { enum: instanceList } | { default: string }
-
   let instancesData: enumType | null = null
 
   if (instances.length > 1) {
-    const enumArray: instanceList = [''].concat(instances.map((x) => x.name))
-    instancesData = { enum: enumArray }
+    instancesData = { enum: instances.map((x) => x.name) }
   } else {
     instancesData = { default: instances[0].name }
   }
