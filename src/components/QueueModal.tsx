@@ -115,7 +115,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
           )
         })}
         <Table
-          tableName="Queues"
+          tableKey="Queues"
           data={queueData}
           columns={useTableColumns()}
           maxrows={10}
