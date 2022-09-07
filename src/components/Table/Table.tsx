@@ -89,12 +89,13 @@ const hooks = [
 ]
 
 interface TableProps<T extends ObjectWithStringKeys> extends TableOptions<T> {
-  tableName: string
   data: T[]
   columns: Column<T>[]
   setSelection?: Dispatch<SetStateAction<T[]>>
   showGlobalFilter?: boolean
   maxrows?: number
+  tableName?: string
+  tableKey?: string
 }
 
 const DEBUG_INITIAL_STATE = false
@@ -104,6 +105,7 @@ const Table = <T extends ObjectWithStringKeys>(
 ): ReactElement => {
   const {
     tableName,
+    tableKey,
     data,
     columns,
     showGlobalFilter,
@@ -112,7 +114,7 @@ const Table = <T extends ObjectWithStringKeys>(
   } = props
 
   const [initialState, _setInitialState] = useLocalStorage(
-    `tableState:${tableName}`,
+    `tableState:${tableKey || tableName}`,
     {} as Partial<TableState<T>>,
   )
 
@@ -197,7 +199,7 @@ const Table = <T extends ObjectWithStringKeys>(
 
   return (
     <>
-      <Toolbar name={tableName} instance={instance} />
+      <Toolbar name={tableName || ''} instance={instance} />
       <FilterChipBar<T> instance={instance} />
       <Box {...childProps}>
         <Stack direction="row" spacing={3}>
@@ -219,7 +221,6 @@ const Table = <T extends ObjectWithStringKeys>(
               role: headerGroupRole,
               ...headerGroupProps
             } = headerGroup.getHeaderGroupProps()
-
             return (
               <TableHeadRow key={headerGroupKey} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {

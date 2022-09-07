@@ -12,7 +12,7 @@ export const useBlockList = () => {
 
   const getList = () => {
     axiosInstance
-      .get<BlockedList>('/api/v1/commandpublishingblocklist/')
+      .get<BlockedList>('/api/v1/commandpublishingblocklist')
       .then((resolved) => {
         if (resolved) setList(resolved.data.command_publishing_blocklist)
       })
@@ -45,7 +45,7 @@ export const useBlockList = () => {
   const addBlockList = (command: CommandIndexTableData[]) => {
     axiosInstance
       .post<BlockedList>(
-        '/api/v1/commandpublishingblocklist/',
+        '/api/v1/commandpublishingblocklist',
         {
           command_publishing_blocklist: command,
         },
