@@ -64,7 +64,9 @@ describe('CommandBlocklistView', () => {
       expect(screen.getByText('Cancel')).toBeInTheDocument()
     })
     fireEvent.click(screen.getByText('Cancel'))
-    expect(screen.queryByText('Cancel')).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.queryByText('Cancel')).not.toBeInTheDocument()
+    })
   })
 
   test('adds command to blocklist', async () => {

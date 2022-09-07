@@ -1,6 +1,6 @@
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { Queue, System } from 'types/backend-types'
+import { Queue } from 'types/backend-types'
 
 const useQueue = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -16,19 +16,19 @@ const useQueue = () => {
   }
 
   const clearQueue = (name: string) => {
-    return axiosInstance.delete<System[]>(`/api/v1/queues/${name}`, {
+    return axiosInstance.delete<Queue[]>(`/api/v1/queues/${name}`, {
       withCredentials: authEnabled,
     })
   }
 
   const clearQueues = () => {
-    return axiosInstance.delete<System[]>('/api/v1/queues/', {
+    return axiosInstance.delete<Queue[]>('/api/v1/queues/', {
       withCredentials: authEnabled,
     })
   }
 
   const getQueues = () => {
-    return axiosInstance.get<System[]>('/api/v1/queues/', {
+    return axiosInstance.get<Queue[]>('/api/v1/queues/', {
       withCredentials: authEnabled,
     })
   }
