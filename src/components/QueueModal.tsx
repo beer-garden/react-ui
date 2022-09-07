@@ -186,7 +186,7 @@ const useTableColumns = () => {
         disableGroupBy: true,
         disableFilters: true,
         canHide: false,
-        width: 85,
+        width: 100,
       },
     ],
     [],
