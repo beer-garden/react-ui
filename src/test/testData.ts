@@ -6,6 +6,7 @@ import {
   Instance,
   Job,
   Parameter,
+  Queue,
   RequestTemplate,
   System,
 } from 'types/backend-types'
@@ -88,6 +89,16 @@ export const TSystem: System = {
   display_name: 'Test System',
   local: false,
   template: 'template',
+}
+
+export const TQueue: Queue = {
+  version: '1.0.2',
+  system: 'default',
+  size: 568,
+  instance: TInstance.id,
+  system_id: TSystem.id,
+  display: 'Test Queue',
+  name: 'testQ',
 }
 
 export const TBlockedCommand: BlockedCommand = {
