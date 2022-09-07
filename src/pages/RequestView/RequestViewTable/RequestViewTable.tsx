@@ -4,12 +4,11 @@ import {
   KeyboardArrowRight as KeyboardArrowRightIcon,
 } from '@mui/icons-material'
 import { Card, Divider, IconButton, Tooltip, Typography } from '@mui/material'
-import { Table, TableData } from 'components/Table'
+import { Table } from 'components/Table'
+import { SelectionColumnFilter } from 'components/Table/filters'
 import { useState } from 'react'
-import { Column } from 'react-table'
+import { Request } from 'types/backend-types'
 
-import { SelectionColumnFilter } from '../../../components/Table/filters'
-import { Request } from '../../../types/custom_types'
 import {
   formatBeergardenRequests,
   SystemLink,
@@ -118,9 +117,9 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
     },
   ]
 
-  const childColumns = useRequestsIndexTableColumns() as Column<TableData>[]
+  const childColumns = useRequestsIndexTableColumns()
 
-  const childData: TableData[] = formatBeergardenRequests(request.children)
+  const childData = formatBeergardenRequests(request.children)
 
   const data = [
     {

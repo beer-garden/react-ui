@@ -84,7 +84,7 @@ const RequestView = () => {
   }
 
   const downloadUrl = window.URL.createObjectURL(
-    new Blob([request ? request.output : '']),
+    new Blob([request?.output || '']),
   )
 
   return (
