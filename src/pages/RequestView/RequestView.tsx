@@ -1,4 +1,5 @@
 import {
+  Download as DownloadIcon,
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
@@ -6,8 +7,14 @@ import {
   Backdrop,
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
   CircularProgress,
+  FormControlLabel,
   IconButton,
+  Link,
+  Switch,
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
@@ -17,15 +24,16 @@ import { PageHeader } from 'components/PageHeader'
 import RequestsTable from 'components/table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
-  formatData,
+  getParentLinks,
   outputFormatted,
 } from 'pages/RequestView/requestViewHelpers'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
-import CacheService from 'services/cache_service'
 import { Request } from 'types/backend-types'
-import { TableState } from 'types/custom-types'
+
+import { ThemeContext } from '../../components/UI/Theme/ThemeProvider'
+import { RequestViewTable } from './RequestViewTable/RequestViewTable'
 
 interface RequestVariables {
   namespace: string
@@ -43,6 +51,7 @@ const defaultVariables: RequestVariables = {
 
 const RequestView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const theme = useContext(ThemeContext).theme
   const [request, setRequest] = useState<Request>()
   const [variables, setVariables] = useState<RequestVariables>(defaultVariables)
   const [expandOutput, setExpandOutput] = useState(false)
@@ -68,53 +77,77 @@ const RequestView = () => {
 
   const { namespace, system, systemVersion, command } = variables
 
-  const state: TableState = {
-    completeDataSet: [request as Request],
-    formatData: formatData,
-    includePageNav: false,
-    disableSearch: true,
-    tableHeads: ['Instance Name', 'Status', 'Created', 'Updated', 'Comment'],
-  }
+  const [showAsRawData, setShowAsRawData] = useState(false)
 
   const pourItAgainClick = () => {
-    if (request) {
-      CacheService.pushQueue(request, 'lastKnownPourItAgainRequest')
-    }
+    // todo restore functionality of pass request data once command page has been refactored
   }
 
+  const downloadUrl = window.URL.createObjectURL(
+    new Blob([request ? request.output : '']),
+  )
+
   return (
-    <Box>
-      <Typography style={{ flex: 1, float: 'right' }}>
-        <Button
-          component={RouterLink}
-          to={[
-            '/systems',
-            namespace,
-            system,
-            systemVersion,
-            'commands',
-            command,
-          ].join('/')}
-          variant="contained"
-          color="primary"
-          onAuxClick={pourItAgainClick}
-          onClick={pourItAgainClick}
-        >
-          Pour it Again
-        </Button>
-      </Typography>
+    <>
+      <Button
+        style={{ float: 'right' }}
+        component={RouterLink}
+        to={[
+          '/systems',
+          namespace,
+          system,
+          systemVersion,
+          'commands',
+          command,
+        ].join('/')}
+        variant="contained"
+        color="secondary"
+        onAuxClick={pourItAgainClick}
+        onClick={pourItAgainClick}
+      >
+        remake request
+      </Button>
       <PageHeader title="Request View" description={String(id)} />
       <Divider />
       {request ? (
         <>
-          <Breadcrumbs
-            breadcrumbs={[namespace, system, systemVersion, command, '']}
-          />
-          <RequestsTable parentState={state} />
+          <Divider />
+          {request.parent ? getParentLinks(request) : null}
+          <RequestViewTable request={request} />
           <Box pt={4} display="flex" alignItems="flex-start">
             {!expandParameter ? (
-              <Box width={1}>
-                <Typography style={{ flex: 1, float: 'right' }}>
+              <Card sx={{ width: 1 }}>
+                <CardActions>
+                  <Typography style={{ flex: 1 }} variant="h6">
+                    Output
+                  </Typography>
+                  {request.output_type === 'STRING' ? null : (
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="secondary"
+                          checked={!showAsRawData}
+                          onChange={() => {
+                            setShowAsRawData(!showAsRawData)
+                          }}
+                          inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                      }
+                      label="Formatted"
+                    />
+                  )}
+                  <Link
+                    href={downloadUrl}
+                    download={`${request.id}.${
+                      request.output_type === 'STRING'
+                        ? 'txt'
+                        : request.output_type.toLowerCase()
+                    }`}
+                  >
+                    <IconButton size="small" aria-label="expand">
+                      <DownloadIcon />
+                    </IconButton>
+                  </Link>
                   <IconButton
                     size="small"
                     onClick={() => setExpandOutput(!expandOutput)}
@@ -126,45 +159,42 @@ const RequestView = () => {
                       <ExpandMoreIcon />
                     )}
                   </IconButton>
-                </Typography>
-                <Typography variant="h6">Outputs</Typography>
-                <Box
-                  border={1}
-                  borderColor="lightgrey"
-                  bgcolor="whitesmoke"
-                  borderRadius="borderRadius"
-                >
-                  <Box p={2}>{outputFormatted(request)}</Box>
-                </Box>
-              </Box>
+                </CardActions>
+                <Divider />
+                <CardContent>
+                  {outputFormatted(request, theme, showAsRawData)}
+                </CardContent>
+              </Card>
             ) : null}
             {!expandOutput ? (
-              <Box pl={1} width={1} style={{ verticalAlign: 'top' }}>
-                <Typography style={{ flex: 1, float: 'right' }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => setExpandParameter(!expandParameter)}
-                    aria-label="start"
-                  >
-                    {expandParameter || expandOutput ? (
-                      <ExpandLessIcon />
-                    ) : (
-                      <ExpandMoreIcon />
-                    )}
-                  </IconButton>
-                </Typography>
-                <Typography variant="h6">Parameters</Typography>
-                <Box
-                  border={1}
-                  borderColor="lightgrey"
-                  bgcolor="whitesmoke"
-                  borderRadius="borderRadius"
-                >
-                  <Box p={2}>
-                    <ReactJson src={request.parameters} />
-                  </Box>
-                </Box>
-              </Box>
+              <Card sx={{ width: 1 }}>
+                <CardActions>
+                  <Typography style={{ flex: 1, float: 'right' }} variant="h6">
+                    Parameters
+                  </Typography>
+                  <Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => setExpandParameter(!expandParameter)}
+                      aria-label="start"
+                    >
+                      {expandParameter || expandOutput ? (
+                        <ExpandLessIcon />
+                      ) : (
+                        <ExpandMoreIcon />
+                      )}
+                    </IconButton>
+                  </Typography>
+                </CardActions>
+                <Divider />
+                <CardContent>
+                  <ReactJson
+                    src={request.parameters}
+                    theme={theme === 'dark' ? 'bright' : 'rjv-default'}
+                    style={{ backgroundColor: 'primary' }}
+                  />
+                </CardContent>
+              </Card>
             ) : null}
           </Box>
         </>
@@ -173,7 +203,7 @@ const RequestView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-    </Box>
+    </>
   )
 }
 
