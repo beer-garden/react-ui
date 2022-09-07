@@ -40,7 +40,6 @@ const ModalButton = (props: ModalButtonProps) => {
 
 export const ModalWrapper = (props: ModalProps) => {
   const { onCancel, onSubmit, customButton, styleOverrides } = props
-
   return (
     <>
       <Dialog
@@ -50,7 +49,8 @@ export const ModalWrapper = (props: ModalProps) => {
         aria-describedby="modal-modal-description"
         fullWidth={true}
         maxWidth={styleOverrides?.size || 'lg'}
-        sx={{ top: styleOverrides?.top || '-25%' }}
+        sx={{ top: styleOverrides?.top || '0%' }}
+        PaperProps={{ style: { maxHeight: '90%' } }}
       >
         <DialogTitle>{props.header}</DialogTitle>
         <DialogContent dividers>{props.content}</DialogContent>
