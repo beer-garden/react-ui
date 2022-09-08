@@ -17,6 +17,7 @@ import {
 import LogModal from 'components/LogModal'
 import { ModalWrapper } from 'components/ModalWrapper'
 import OverflowTooltip from 'components/overflowTooltip'
+import QueueModal from 'components/QueueModal'
 import useSystems from 'hooks/useSystems'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { alertStyle, getSeverity } from 'pages/SystemAdmin'
@@ -32,6 +33,8 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
   const { startInstance, stopInstance } = useSystems()
 
   const [logModal, setLogModal] = useState<boolean>(false)
+
+  const [queueModal, setQueueModal] = useState<boolean>(false)
 
   return (
     <>
@@ -126,6 +129,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                     sx={{ fontSize: '13px' }}
                     onClick={() => {
                       popupState.close()
+                      setQueueModal(true)
                     }}
                   >
                     <ListItemIcon>
@@ -148,6 +152,19 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                   content={
                     <LogModal instance={instance} fileHeader={fileHeader} />
                   }
+                />
+                <ModalWrapper
+                  open={queueModal}
+                  header={`Queue Manager: ${fileHeader}${instance.name}`}
+                  onClose={() => setQueueModal(false)}
+                  customButton={{
+                    label: 'Close',
+                    cb: () => {
+                      setQueueModal(false)
+                    },
+                    color: 'primary',
+                  }}
+                  content={<QueueModal instance={instance} />}
                 />
               </>
             )}

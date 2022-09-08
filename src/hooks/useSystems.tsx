@@ -17,7 +17,7 @@ const useSystems = () => {
   }, [setSystems, axiosInstance, authEnabled])
 
   const getSystems = () => {
-    if (systems.length > 0) {
+    if (systems && systems.length > 0) {
       return systems
     } else {
       fetchSystems()
