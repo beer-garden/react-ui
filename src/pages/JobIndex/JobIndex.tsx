@@ -1,9 +1,10 @@
-import { Box, Divider } from '@mui/material'
+import { Box, Button, Divider } from '@mui/material'
 import useAxios from 'axios-hooks'
 import PageHeader from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getFormattedTable } from 'pages/JobIndex/jobIndexHelpers'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 
 const JobIndex = () => {
@@ -14,6 +15,7 @@ const JobIndex = () => {
     method: 'get',
     withCredentials: authEnabled,
   })
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (data && !error) {
@@ -21,9 +23,15 @@ const JobIndex = () => {
     }
   }, [data, error])
 
+  // temporary for demo
+  const createRequestOnClick = () => {
+    navigate('/jobs/create')
+  }
+
   return (
     <Box>
       <PageHeader title="Request Scheduler" description="" />
+      <Button onClick={createRequestOnClick}>Create</Button>
       <Divider />
       {getFormattedTable(jobs)}
     </Box>

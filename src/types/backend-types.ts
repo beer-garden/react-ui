@@ -192,7 +192,7 @@ export interface Job {
   max_instances?: number
   misfire_grace_time?: null | number
   name: string
-  next_run_time: number
+  next_run_time?: number
   request_template: RequestTemplate
   status?: string
   success_count?: number

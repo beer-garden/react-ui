@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from '@mui/material'
 import { ModalWrapper } from 'components/ModalWrapper'
-import OverflowTooltip from 'components/overflowTooltip'
+import OverflowTooltip from 'components/OverflowTooltip'
 import QueueModal from 'components/QueueModal'
 import useSystems from 'hooks/useSystems'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'

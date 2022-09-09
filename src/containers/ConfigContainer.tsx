@@ -1,6 +1,6 @@
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useCallback, useMemo, useState } from 'react'
-import { ServerConfig } from 'types/config_types'
+import { ServerConfig } from 'types/config-types'
 import { createContainer } from 'unstated-next'
 
 const useServerConfig = () => {
@@ -15,14 +15,6 @@ const useServerConfig = () => {
       },
     })
 
-    console.log(
-      'config AUTH_ENABLED: ',
-      data.auth_enabled ? 'yes' : String(data.auth_enabled),
-    )
-    console.log(
-      'config DEBUG_MODE: ',
-      data.debug_mode ? 'yes' : String(data.debug_mode),
-    )
     setConfig(data)
     return data
   }, [setConfig, axiosInstance])

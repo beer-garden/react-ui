@@ -1,6 +1,6 @@
 import useAxios from 'axios-hooks'
 import { useEffect, useState } from 'react'
-import { VersionConfig } from 'types/config_types'
+import { VersionConfig } from 'types/config-types'
 
 const useVersion = () => {
   const [config, setConfig] = useState<VersionConfig>()

@@ -1,5 +1,4 @@
 import useAxios from 'axios-hooks'
-import { generateCommandName } from 'components/generateCommandName'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ExecuteButton } from 'pages/CommandIndex'
 import {
@@ -10,13 +9,18 @@ import {
 } from 'react'
 import { useParams } from 'react-router-dom'
 import { Command, System } from 'types/backend-types'
-import { AugmentedCommand, CommandIndexTableData } from 'types/custom-types'
+import {
+  AugmentedCommand,
+  CommandIndexTableData,
+  StrippedSystem,
+} from 'types/custom-types'
+import { generateCommandName } from 'utils/generateCommandName'
 
 export const useCommands = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
-  const { namespace, system_name: systemName, version } = useParams()
+  const { namespace, systemName, version } = useParams()
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'get',
@@ -54,7 +58,14 @@ export const useCommands = () => {
   }
 }
 
-const commandMapper = (command: AugmentedCommand): CommandIndexTableData => {
+type SystemCommandPair = {
+  system: StrippedSystem
+  command: AugmentedCommand
+}
+
+const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
+  const { system, command } = pair
+
   return {
     namespace: command.namespace,
     system: command.systemName,
@@ -62,7 +73,7 @@ const commandMapper = (command: AugmentedCommand): CommandIndexTableData => {
     command: command.name,
     name: generateCommandName(command.hidden, command.name),
     description: command.description ?? 'No description',
-    action: ExecuteButton(command),
+    executeButton: ExecuteButton(system, command),
   }
 }
 
@@ -85,21 +96,34 @@ const filtersToFilter = <T,>(
 /**
  *
  * @param system - A System object
- * @returns - The commands associated with the system, each augmented with the
- * namespace, system name and system version of its parent
+ * @returns - An array of pairs of the system without its commands and a command
+ * augmented with the system details.
  */
-const commandsAugmenter = (system: System): AugmentedCommand[] => {
-  return system.commands.map(
-    (cmd: Command): AugmentedCommand => ({
-      ...cmd,
-      namespace: system.namespace,
-      systemName: system.name,
-      systemVersion: system.version,
-      systemId: system.id,
-    }),
-  )
+const commandsPairer = (system: System): Array<SystemCommandPair> => {
+  return system.commands.map((cmd: Command): SystemCommandPair => {
+    const { commands, ...withoutCommands } = system
+    return {
+      system: withoutCommands,
+      command: {
+        ...cmd,
+        namespace: system.namespace,
+        systemName: system.name,
+        systemVersion: system.version,
+        systemId: system.id,
+      },
+    }
+  })
 }
 
+/**
+ *
+ * @param systems
+ * @param includeHidden
+ * @param namespace
+ * @param systemName
+ * @param version
+ * @returns
+ */
 const commandsFromSystems = (
   systems: System[],
   includeHidden = false,
@@ -107,10 +131,17 @@ const commandsFromSystems = (
   systemName?: string,
   version?: string,
 ) => {
+  /* we only care about systems that have commands */
   const hasCommands = (x: System) => !!x.commands && x.commands.length > 0
-  const systemMatcher = [(x: System) => true]
-  const filterHidden = (x: Command) => !x.hidden || includeHidden
+  /* we only provide hidden commands if told to */
+  const filterHidden = (x: SystemCommandPair) =>
+    !x.command.hidden || includeHidden
 
+  /* 
+    this array holds the filters that will essentially be ANDed together
+    -- is pre-populated with an identity filter so the array can't be empty 
+  */
+  const systemMatcher = [(x: System) => true]
   if (version) {
     systemMatcher.push((x: System) => x.version === version)
   }
@@ -121,21 +152,27 @@ const commandsFromSystems = (
     systemMatcher.push((x: System) => x.namespace === namespace)
   }
 
-  let commands = systems
+  const goodSystems = systems
     .filter(filtersToFilter(systemMatcher))
     .filter(hasCommands)
-    .map(commandsAugmenter)
+
+  let systemCommandPairs = goodSystems
+    .map(commandsPairer)
     .flat()
     .filter(filterHidden)
 
   if (includeHidden) {
     /* make the hidden appear at the top of the list */
-    commands = commands
+    systemCommandPairs = systemCommandPairs
       .slice()
-      .sort((a: Command, b: Command) =>
-        a.hidden && !b.hidden ? -1 : !a.hidden && b.hidden ? 1 : 0,
+      .sort((a: SystemCommandPair, b: SystemCommandPair) =>
+        a.command.hidden && !b.command.hidden
+          ? -1
+          : !a.command.hidden && b.command.hidden
+          ? 1
+          : 0,
       )
   }
 
-  return commands.map(commandMapper)
+  return systemCommandPairs.map(commandMapper)
 }

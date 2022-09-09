@@ -21,11 +21,6 @@ const getLoginOnSubmit =
     nextPage: VoidFunction,
   ) =>
   (values: LoginFormValues, actions: FormikHelpers<LoginFormValues>) => {
-    console.log(
-      'Login.getLoginOnSubmit values: ',
-      JSON.stringify(values, null, 2),
-    )
-
     login(values.username, values.password).then(() => nextPage())
 
     actions.setSubmitting(false)
@@ -68,11 +63,8 @@ const Login = () => {
   }
 
   const nextPage = () => {
-    console.log('Login FORWARDING TO', from)
     navigate(from, { replace: true })
   }
-
-  // const loginAndForward
 
   const loginOnSubmit = getLoginOnSubmit(login, nextPage)
 

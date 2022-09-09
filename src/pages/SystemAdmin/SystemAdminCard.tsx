@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import OverflowTooltip from 'components/overflowTooltip'
+import OverflowTooltip from 'components/OverflowTooltip'
 import useSystems from 'hooks/useSystems'
 import {
   alertStyle,
