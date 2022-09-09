@@ -170,7 +170,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
       <Divider variant="middle" />
       <SystemCardInstances
         instances={systems[systemIndex].instances}
-        fileHeader={`${systems[systemIndex].name}[${systems[systemIndex].version}]-`}
+        fileHeader={`${systems[systemIndex].name}[${systems[systemIndex].version}]`}
       />
     </Card>
   )
