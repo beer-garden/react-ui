@@ -59,10 +59,19 @@ const filterTypes = {
   numeric: numericTextFilter,
 }
 
+const columnStyle = {
+  style: {
+    flex: '1 0 auto',
+  },
+}
+
 const defaultColumn = {
   Filter: DefaultColumnFilter,
   Cell: DefaultCellRenderer,
   Header: DefaultHeader,
+  minWidth: 90, // minWidth is only used as a limit for resizing
+  width: 150, // width is used for both the flex-basis and flex-grow
+  maxWidth: 200, // maxWidth is only used as a limit for resizing
   ...defaultColumnValues,
 }
 
@@ -222,7 +231,7 @@ const Table = <T extends ObjectWithStringKeys>(
                     key: headerKey,
                     role: headerRole,
                     ...headerProps
-                  } = column.getHeaderProps()
+                  } = column.getHeaderProps(columnStyle)
                   const { title: sortTitle = '', ...columnSortByProps } =
                     column.getSortByToggleProps()
                   const { title: groupTitle = '', ...columnGroupByProps } =
@@ -297,7 +306,7 @@ const Table = <T extends ObjectWithStringKeys>(
                     key: cellKey,
                     role: cellRole,
                     ...cellProps
-                  } = cell.getCellProps()
+                  } = cell.getCellProps(columnStyle)
                   return (
                     <TableCell key={cellKey} {...cellProps}>
                       {cell.isGrouped ? (

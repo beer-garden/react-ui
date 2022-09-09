@@ -8,7 +8,6 @@ import {
   Box,
   CircularProgress,
   IconButton,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -354,20 +353,13 @@ const MyTable = ({ parentState }: TableInterface) => {
       <TableContainer sx={{ maxHeight: '75vh' }}>
         <Table
           stickyHeader
-          sx={{ minWidth: 500 }}
+          sx={{ minWidth: 200 }}
           aria-label="custom pagination table"
         >
           {getTableHeader()}
           <TableBody>
             {data.map((items, index: number) => (
-              <TableRow
-                style={
-                  index % 2
-                    ? { background: 'whitesmoke' }
-                    : { background: 'white' }
-                }
-                key={'row' + index}
-              >
+              <TableRow key={'row' + index}>
                 {items.map((item, itemIndex: number) => (
                   <TableCell
                     size="small"
@@ -375,9 +367,7 @@ const MyTable = ({ parentState }: TableInterface) => {
                     key={'cell' + index + itemIndex}
                   >
                     {typeof item === 'string' || typeof item === 'number' ? (
-                      <Paper elevation={0}>
-                        <Typography variant="body1">{item}</Typography>
-                      </Paper>
+                      <Typography variant="body1">{item}</Typography>
                     ) : (
                       item
                     )}
