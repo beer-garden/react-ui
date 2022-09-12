@@ -80,7 +80,7 @@ const useRequests = () => {
       .then((resp) =>
         console.log('data.tsx - execute fired with response:', resp),
       )
-      .catch((e) => console.log('data.tsx - error from execute:', e))
+      .catch((e) => console.error('data.tsx - error from execute:', e))
   }, [execute, config])
 
   /**

@@ -1,6 +1,6 @@
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { VersionConfig } from 'types/config_types'
+import { VersionConfig } from 'types/config-types'
 
 const useVersion = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()

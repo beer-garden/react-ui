@@ -1,8 +1,7 @@
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Box, Button, IconButton, Tooltip } from '@mui/material'
-import Divider from 'components/divider'
-import { generateCommandName } from 'components/generateCommandName'
+import { Divider } from 'components/Divider'
 import { ModalWrapper } from 'components/ModalWrapper'
 import PageHeader from 'components/PageHeader'
 import { Table } from 'components/Table'
@@ -13,6 +12,7 @@ import { useModalColumns, useTableColumns } from 'pages/CommandBlocklistView'
 import { useMemo, useState } from 'react'
 import { BlockedCommand } from 'types/backend-types'
 import { CommandIndexTableData } from 'types/custom-types'
+import { generateCommandName } from 'utils/generateCommandName'
 
 export const CommandBlocklistView = () => {
   const [open, setOpen] = useState(false)

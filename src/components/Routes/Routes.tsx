@@ -1,4 +1,3 @@
-import JobCreateApp from 'apps/job_create_app'
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { CommandBlocklistView } from 'pages/CommandBlocklistView'
@@ -6,6 +5,7 @@ import { CommandIndex } from 'pages/CommandIndex'
 import { CommandView } from 'pages/CommandView'
 import { GardensAdmin } from 'pages/GardenAdmin'
 import { GardenAdminView } from 'pages/GardenAdminView'
+import { JobCreate } from 'pages/JobCreate'
 import { JobIndex } from 'pages/JobIndex'
 import { JobView } from 'pages/JobView'
 import { Login } from 'pages/Login'
@@ -43,15 +43,12 @@ const Routes = () => {
         <Route path={':namespace'}>
           <Route index element={<CommandIndex />} />
 
-          <Route path={':system_name'}>
+          <Route path={':systemName'}>
             <Route index element={<CommandIndex />} />
 
             <Route path={':version'}>
               <Route index element={<CommandIndex />} />
-              <Route
-                path={'commands/:command_name'}
-                element={<CommandView />}
-              />
+              <Route path={'commands/:commandName'} element={<CommandView />} />
             </Route>
           </Route>
         </Route>
@@ -73,7 +70,7 @@ const Routes = () => {
 
       <Route path={'jobs'} element={<RequireAuth />}>
         <Route index element={<JobIndex />} />
-        <Route path={'create'} element={<JobCreateApp />} />
+        <Route path={'create'} element={<JobCreate />} />
         <Route path={':id'} element={<JobView />} />
       </Route>
 

@@ -20,7 +20,7 @@ import { System } from 'types/backend-types'
 const NamespaceCard = ({ namespace }: { namespace: string }) => {
   const systemClient = useSystems()
   const systems = systemClient.getSystems()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
@@ -45,6 +45,7 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
         icon={systemIcon(filteredSystem) ? undefined : false}
         severity={systemsSeverity(filteredSystem)}
         onClick={handleExpandClick}
+        title="Click to collapse"
       >
         <Typography variant="h6" color="common.white" p={0.25}>
           {namespace}

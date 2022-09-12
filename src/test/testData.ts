@@ -46,13 +46,16 @@ export const TJob: Job = {
 }
 
 export const TInstance: Instance = {
-  name: 'testInstance',
   description: 'testing an instance',
   id: 'testinst',
+  name: 'testInstance',
   status: 'RUNNING',
-  status_info: { heartbeat: 25 },
+  status_info: { heartbeat: 67 },
   queue_type: 'queued',
 }
+
+export const TLog =
+  'This is a test log\nMultiples line items\nJust to test with'
 
 export const TParameter: Parameter = {
   key: 'testParam',

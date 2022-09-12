@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
-import Divider from 'components/divider'
+import { Divider } from 'components/Divider'
 import InfoCard from 'components/garden_admin_info_card'
 import PageHeader from 'components/PageHeader'
 import Table from 'components/table'

@@ -1,90 +1,90 @@
 module.exports = {
-    root: true,
-    env: {
-        browser: true,
-        es2021: true,
-        node: true,
-        jest: true
+  root: true,
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+    jest: true
+  },
+  settings: {
+    react: {
+      version: "detect"
     },
-    settings: {
-        react: {
-            version: "detect"
-        },
-        "import/resolver" : {
-            typescript: {}
-        }
-    },
-    parser: "@babel/eslint-parser",
-    parserOptions: {
-        requireConfigFile: false,
-        ecmaVersion: "latest",
-        sourceType: "module",
-        ecmaFeatures: {
-            jsx: true
-        }
-    },
-    plugins: [
-        "react",
-        "react-hooks",
-        "prettier",
-        "simple-import-sort",
+    "import/resolver" : {
+      typescript: {}
+    }
+  },
+  ignorePatterns: ['build/**'],
+  parser: "@babel/eslint-parser",
+  parserOptions: {
+    requireConfigFile: false,
+    ecmaVersion: "latest",
+    sourceType: "module",
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
+  plugins: [
+    "react",
+    "react-hooks",
+    "prettier",
+    "simple-import-sort",
+  ],
+  extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "react-app",
+    "react-app/jest",
+    "prettier",
+  ],
+  rules: {
+    "react/function-component-definition": 0,
+    "react/boolean-prop-naming": 0,
+    "react/prop-types": 0,
+    "react-hooks/exhaustive-deps": 1,
+    "react/react-in-jsx-scope": 0,
+    "no-multi-spaces": 1,
+    "no-unused-vars": 1,
+    "react/display-name": [0],
+    "react-hooks/rules-of-hooks": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
+      }
     ],
-    extends: [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "react-app",
-        "react-app/jest",
-        "prettier",
-    ],
-    rules: {
-        "react/function-component-definition": 0,
-        "react/boolean-prop-naming": 0,
-        "react/prop-types": 0,
-        "react-hooks/exhaustive-deps": 1,
-        "react/react-in-jsx-scope": 0,
-        "no-multi-spaces": 1,
-        "no-unused-vars": 1,
-        "react/display-name": [0],
-        "react-hooks/rules-of-hooks": "error",
-        "no-restricted-imports": [
-            "error",
-            {
-                "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
-            }
-        ],
-        "simple-import-sort/imports": "error",
-        "simple-import-sort/exports": "error"
-        
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   },
   overrides: [
     {
-        files: ["**/*.{js}"],
-        rules: {
-            "quotes": ["error", "single"],
-        }},
-    {
-    files: ["**/*.{ts,tsx}"],
-    globals: {
+      files: ["**/*.{js}"],
+      rules: {
+        "quotes": ["error", "single"],
+      }
+    }, {
+      files: ["**/*.{ts,tsx}"],
+      globals: {
         React: "writable"
-    },
-    settings: {
+      },
+      settings: {
         "import/parsers": {
-            "@typescript-eslint/parser": [".ts", ".tsx"]
+          "@typescript-eslint/parser": [".ts", ".tsx"]
         },
         "import/resolver": {
-            typescript: {
-                project: "./tsconfig.json"
-            }
+          typescript: {
+            project: "./tsconfig.json"
+          }
         }
-        },
-    parser: "@typescript-eslint/parser",
-    parserOptions: {
+      },
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
         tsconfigRootDir: __dirname,
         project: "./tsconfig.json"
-    },
-    plugins: ["@typescript-eslint"],
-    extends: [
+      },
+      plugins: ["@typescript-eslint"],
+      extends: [
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
@@ -93,8 +93,8 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "react-app",
         "react-app/jest",
-    ],
-    rules: {
+      ],
+      rules: {
         "jsx-quotes": ["error", "prefer-double"],
         "quotes": ["error", "single"],
         "react/react-in-jsx-scope": "off",
@@ -104,8 +104,7 @@ module.exports = {
         "react/self-closing-comp": "error",
         "react/jsx-wrap-multilines": "error",
         "react/prop-types": "off",
-    }
-
+      }
     }
   ]
 }

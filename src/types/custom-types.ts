@@ -18,7 +18,7 @@ export interface TableState {
   redirect?: JSX.Element | null
   formatData?(
     data?: System[] | Command[] | Request[] | Job[],
-  ): (string | JSX.Element | number | null)[][]
+  ): (string | JSX.Element | number | null | undefined)[][]
   setSearchApi?(value: string, id: string, setDateEnd?: boolean): void
   apiDataCall?(
     page: number,

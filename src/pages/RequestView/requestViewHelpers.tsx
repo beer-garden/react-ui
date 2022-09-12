@@ -22,7 +22,18 @@ const outputFormatted = (request: Request) => {
     const output_type = request.output_type
 
     if (output_type === 'STRING') {
-      return <span>{output}</span>
+      let parsed: string | number | boolean | object
+
+      try {
+        parsed = JSON.parse(output)
+      } catch (error) {
+        parsed = output
+      }
+      return (
+        <span>
+          <pre>{JSON.stringify(parsed, null, 2)}</pre>
+        </span>
+      )
     } else if (output_type === 'JSON') {
       return <ReactJson src={JSON.parse(output || '')} />
     } else if (output_type === 'HTML') {

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { createContext, PropsWithChildren } from 'react'
 
 interface AuthContextType {
   isAuthEnabled: boolean
@@ -10,11 +10,11 @@ const defaultAuthContext: AuthContextType = {
   userName: 'anonymous',
 }
 
-export const AuthContext = React.createContext<AuthContextType | null>(null)
+export const AuthContext = createContext<AuthContextType | null>(null)
 
 const AuthProvider = ({
   children,
-}: React.PropsWithChildren<Record<never, never>>) => {
+}: PropsWithChildren<Record<never, never>>) => {
   return (
     <AuthContext.Provider value={defaultAuthContext}>
       {children}

@@ -17,7 +17,6 @@ const useMyAxios = () => {
   }, [])
 
   const getUseAxios = useCallback(() => {
-    console.log('Making new axios!')
     return makeUseAxios({ axios: axiosInstance, cache: false })
   }, [axiosInstance])
 

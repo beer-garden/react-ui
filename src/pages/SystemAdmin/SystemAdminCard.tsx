@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import OverflowTooltip from 'components/overflowTooltip'
+import OverflowTooltip from 'components/OverflowTooltip'
 import useSystems from 'hooks/useSystems'
 import {
   alertStyle,
@@ -170,7 +170,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
       <Divider variant="middle" />
       <SystemCardInstances
         instances={systems[systemIndex].instances}
-        fileHeader={`${systems[systemIndex].name}[${systems[systemIndex].version}]-`}
+        fileHeader={`${systems[systemIndex].name}[${systems[systemIndex].version}]`}
       />
     </Card>
   )

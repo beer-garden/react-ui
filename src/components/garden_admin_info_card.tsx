@@ -24,10 +24,11 @@ const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
           width: '100%',
           maxHeight: 400,
           maxWidth: 300,
+          p: 0,
         }}
       >
         {garden.namespaces.map((namespace: string) => (
-          <ListItem key={namespace}>
+          <ListItem key={namespace} disableGutters disablePadding dense>
             {'\u25CF'} {namespace}
           </ListItem>
         ))}
@@ -54,11 +55,7 @@ const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
   return (
     <Box width={1 / 3} pb={1}>
       <Card sx={{ minWidth: 275 }}>
-        <AppBar
-          color="inherit"
-          style={{ background: 'lightgray' }}
-          position="static"
-        >
+        <AppBar color="inherit" position="static">
           <Toolbar>
             <Typography variant="h6" color="inherit">
               Garden Info
