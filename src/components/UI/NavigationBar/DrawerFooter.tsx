@@ -9,20 +9,12 @@ import {
 } from '@mui/material'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useVersion from 'hooks/useVersion'
-import { useEffect, useState } from 'react'
 
 const DrawerFooter = () => {
   const { config, getConfig } = ServerConfigContainer.useContainer()
-  const [version, setVersion] = useState<string>()
 
   if (!config) getConfig()
-  const { getVersion } = useVersion()
-
-  useEffect(() => {
-    getVersion().then((response) => {
-      if (response.data) setVersion(response.data.beer_garden_version)
-    })
-  }, [getVersion])
+  const versionConfig = useVersion()
 
   return (
     <MuiMenuList dense style={{ marginTop: 'auto' }}>
@@ -32,7 +24,7 @@ const DrawerFooter = () => {
           <SportsBarIcon fontSize="small" />
         </ListItemIcon>
         <ListItemText>
-          Beer Garden <b>{version}</b>
+          Beer Garden <b>{versionConfig?.beer_garden_version}</b>
         </ListItemText>
       </MenuItem>
       <MenuItem

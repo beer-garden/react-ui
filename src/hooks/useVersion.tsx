@@ -1,18 +1,22 @@
-import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { useMyAxios } from 'hooks/useMyAxios'
+import useAxios from 'axios-hooks'
+import { useEffect, useState } from 'react'
 import { VersionConfig } from 'types/config-types'
 
 const useVersion = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const { axiosInstance } = useMyAxios()
+  const [config, setConfig] = useState<VersionConfig>()
+  const [{ data, error }] = useAxios({
+    url: '/version',
+    method: 'GET',
+    withCredentials: false,
+  })
 
-  const getVersion = () => {
-    return axiosInstance.get<VersionConfig>('/version', {
-      withCredentials: authEnabled,
-    })
-  }
+  useEffect(() => {
+    if (data && !error) {
+      setConfig(data)
+    }
+  }, [data, error])
 
-  return { getVersion }
+  return config
 }
 
 export default useVersion

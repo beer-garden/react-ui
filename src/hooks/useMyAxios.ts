@@ -6,13 +6,6 @@ const useMyAxios = () => {
   const axiosInstance: AxiosInstance = useMemo(() => {
     return axios.create({
       // baseURL: `http://${process.env.REACT_APP_HOSTNAME}:2337`,
-      withCredentials: false,
-      proxy: {
-        protocol: 'http',
-        host: 'localhost',
-        port: 2337,
-        // auth: {username: 'my-user', password: 'my-password'}
-      },
     })
   }, [])
 
