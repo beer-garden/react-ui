@@ -109,6 +109,7 @@
     "lint-watch": "npx eslint-watch './src/**/*.{js,ts,tsx}' --ext '.tsx' --ext '.ts' --watch --color --clear",
     "lint-fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
     "prepare": "husky install",
+    "profile": "react-app-rewired build --profile",
     "start": "PORT=4000 BROWSER=none react-app-rewired start",
     "test": "NODE_ENV=test CI=true react-app-rewired test",
     "test-watch": "NODE_ENV=test react-app-rewired test"
