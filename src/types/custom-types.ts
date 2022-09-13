@@ -1,3 +1,4 @@
+import { AlertColor } from '@mui/material'
 import { AxiosResponse } from 'axios'
 
 import { BlockedCommand, Command, Job, Request, System } from './backend-types'
@@ -110,3 +111,10 @@ export interface CommandIndexTableData
 }
 
 export type StrippedSystem = Omit<System, 'commands'>
+
+export interface SnackbarState {
+  severity: AlertColor
+  message?: string
+  showSeverity?: boolean
+  doNotAutoDismiss?: boolean
+}

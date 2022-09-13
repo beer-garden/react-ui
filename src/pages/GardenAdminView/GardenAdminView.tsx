@@ -9,18 +9,14 @@ import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
 import InfoCard from 'components/garden_admin_info_card'
 import PageHeader from 'components/PageHeader'
+import { Snackbar } from 'components/Snackbar'
 import Table from 'components/table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import {
-  GardenConnectionForm,
-  GardenSyncButton,
-  SubmissionStatusSnackbar,
-  SubmissionStatusState,
-} from 'pages/GardenAdminView'
+import { GardenConnectionForm, GardenSyncButton } from 'pages/GardenAdminView'
 import { Fragment, useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Garden, System } from 'types/backend-types'
-import { TableState } from 'types/custom-types'
+import { SnackbarState, TableState } from 'types/custom-types'
 
 const SystemLink = (text: string, params: string[]) => {
   return <RouterLink to={'/systems/' + params.join('/')}>{text}</RouterLink>
@@ -29,9 +25,9 @@ const SystemLink = (text: string, params: string[]) => {
 const GardenAdminView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
 
-  const [syncStatus, setSyncStatus] = useState<
-    SubmissionStatusState | undefined
-  >(undefined)
+  const [syncStatus, setSyncStatus] = useState<SnackbarState | undefined>(
+    undefined,
+  )
   const [garden, setGarden] = useState<Garden>()
   const params = useParams()
 
@@ -120,11 +116,7 @@ const GardenAdminView = () => {
       <PageHeader title={'Garden View'} description={''} />
       <Divider />
       {renderComponents()}
-      {syncStatus ? (
-        <SubmissionStatusSnackbar
-          status={syncStatus as SubmissionStatusState}
-        />
-      ) : null}
+      {syncStatus ? <Snackbar status={syncStatus} /> : null}
     </Box>
   )
 }

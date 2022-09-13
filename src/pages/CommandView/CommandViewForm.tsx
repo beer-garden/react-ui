@@ -2,6 +2,7 @@ import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import Form from '@rjsf/material-ui'
 import { AxiosRequestConfig } from 'axios'
+import { Snackbar } from 'components/Snackbar'
 import { useMyAxios } from 'hooks/useMyAxios'
 import {
   createContext,
@@ -12,7 +13,12 @@ import {
 } from 'react'
 import ReactJson from 'react-json-view'
 import { useNavigate } from 'react-router-dom'
-import { AugmentedCommand, ObjectWithStringKeys } from 'types/custom-types'
+import { Job, RequestTemplate } from 'types/backend-types'
+import {
+  AugmentedCommand,
+  ObjectWithStringKeys,
+  SnackbarState,
+} from 'types/custom-types'
 
 import {
   cleanModelForDisplay,
@@ -58,6 +64,9 @@ const CommandViewForm = ({
   isJob,
   validator,
 }: CommandViewFormProps) => {
+  const [submitStatus, setSubmitStatus] = useState<SnackbarState | undefined>(
+    undefined,
+  )
   const [model, setModel] = useState(initialModel)
   const [displayModel, setDisplayModel] = useState(model)
   const [fileMetaData, setFileMetaData] = useState<FileMetaData[]>([])
@@ -81,8 +90,14 @@ const CommandViewForm = ({
   }
 
   const raiseError = (message: string) => {
-    // TODO: make this more useful
     console.error(message)
+
+    setSubmitStatus({
+      severity: 'error',
+      message: message,
+      showSeverity: false,
+      doNotAutoDismiss: true,
+    })
   }
 
   const handleError = (message: string) => {
@@ -98,18 +113,27 @@ const CommandViewForm = ({
       return
     }
 
-    const argumentToSubmit = getSubmitArgument(
-      model,
-      command,
-      isJob,
-      hasByteParameters,
-    )
+    let argumentToSubmit: Job | RequestTemplate
+    let payload: Job | RequestTemplate
 
-    const payload = prepareModelForSubmit(
-      argumentToSubmit,
-      command.parameters,
-      isJob,
-    )
+    try {
+      argumentToSubmit = getSubmitArgument(
+        model,
+        command,
+        isJob,
+        hasByteParameters,
+      )
+
+      payload = prepareModelForSubmit(
+        argumentToSubmit,
+        command.parameters,
+        isJob,
+      )
+    } catch (error) {
+      raiseError(String(error))
+
+      return
+    }
 
     const forwardPath = isJob ? '/jobs/' : '/requests/'
 
@@ -187,6 +211,7 @@ const CommandViewForm = ({
           </ButtonGroup>
         </BytesParameterContext.Provider>
       </Box>
+      {submitStatus ? <Snackbar status={submitStatus} /> : null}
       <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>
         <h3>Preview</h3>
         <ReactJson src={displayModel} />
