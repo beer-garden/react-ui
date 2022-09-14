@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material'
-import { Alert, Box, Button, Divider, Grid, Tooltip } from '@mui/material'
+import { Alert, Box, Button, Grid, Tooltip } from '@mui/material'
+import { Divider } from 'components/Divider'
 import { ModalWrapper } from 'components/ModalWrapper'
 import PageHeader from 'components/PageHeader'
 import useAdmin from 'hooks/useAdmin'
@@ -49,33 +50,21 @@ const SystemAdmin = () => {
 
   return (
     <Box>
-      <Grid alignItems="flex-end" justifyContent="space-between" container>
+      <Grid alignItems="start" justifyContent="space-between" container>
         <Grid key="header" item>
           <PageHeader title="Systems Management" description="" />
         </Grid>
-        <Grid
-          key="filter"
-          item
-          display="flex"
-          alignItems="center"
-          flexDirection="row"
-        >
+        <Grid key="filter" item>
           <NamespacesSelectedContext.Provider value={contextValue}>
             <NamespaceSelect />
           </NamespacesSelectedContext.Provider>
         </Grid>
-        <Grid
-          key="actions"
-          item
-          display="flex"
-          alignItems="center"
-          flexDirection="row"
-        >
+        <Grid key="actions" item>
           <Tooltip arrow title="Clear All Queues">
             <Button
               variant="contained"
               color="secondary"
-              sx={{ m: 1 }}
+              sx={{ mx: 1 }}
               onClick={() => setOpen(true)}
             >
               Clear
@@ -86,7 +75,7 @@ const SystemAdmin = () => {
               onClick={adminClient.rescanPluginDirectory}
               variant="contained"
               color="primary"
-              sx={{ m: 1 }}
+              sx={{ mx: 1 }}
             >
               Rescan
             </Button>
@@ -111,7 +100,7 @@ const SystemAdmin = () => {
         }
         styleOverrides={{ size: 'sm', top: '-55%' }}
       />
-      <Divider sx={{ my: 2 }} />
+      <Divider />
       {namespacesSelected.map((namespace: string) => (
         <NamespaceCard namespace={namespace} key={namespace + 'card'} />
       ))}

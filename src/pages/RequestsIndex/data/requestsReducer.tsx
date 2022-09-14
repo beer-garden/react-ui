@@ -8,7 +8,7 @@ import {
   RequestsAction,
   RequestsSearchApi,
   UrlPayload,
-} from 'pages/RequestsIndex/RequestsIndexTable/data'
+} from 'pages/RequestsIndex/data'
 import { useCallback, useMemo, useReducer } from 'react'
 
 const initialRequestState: RequestIndexTableState = {

@@ -110,14 +110,14 @@ const GardenAdminView = () => {
   }
 
   return (
-    <Box pb={10}>
+    <Box>
       <Typography style={{ flex: 1, float: 'right' }}>
         <GardenSyncButton
           gardenName={gardenName}
           setSyncStatus={setSyncStatus}
         />
       </Typography>
-      <PageHeader title={'Garden View'} description={''} />
+      <PageHeader title="Garden View" description="" />
       <Divider />
       {renderComponents()}
       {syncStatus ? (

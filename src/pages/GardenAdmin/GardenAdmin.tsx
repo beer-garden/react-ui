@@ -24,7 +24,7 @@ const GardensAdmin = (): JSX.Element => {
 
   return (
     <Box>
-      <PageHeader title={'Gardens Management'} description={''} />
+      <PageHeader title="Gardens Management" description="" />
       <Divider />
       <Grid container spacing={3}>
         {gardens.map((garden: Garden) => (

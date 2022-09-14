@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import { AxiosResponse } from 'axios'
+import { Divider } from 'components/Divider'
 import PageHeader from 'components/PageHeader'
 import { JobButton } from 'pages/JobView'
 import { useEffect, useState } from 'react'
@@ -45,6 +46,7 @@ const JobView = () => {
         </Button>
       </Typography>
       <PageHeader title="Job" description={description} />
+      <Divider />
     </Box>
   )
 }

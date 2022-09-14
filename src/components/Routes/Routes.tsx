@@ -37,49 +37,42 @@ const Routes = () => {
 
   return (
     <ReactRouterDomRoutes>
-      <Route path={'systems'} element={<RequireAuth />}>
+      <Route path="systems" element={<RequireAuth />}>
         <Route index element={<SystemsIndex />} />
-
-        <Route path={':namespace'}>
+        <Route path=":namespace">
           <Route index element={<CommandIndex />} />
-
-          <Route path={':systemName'}>
+          <Route path=":systemName">
             <Route index element={<CommandIndex />} />
-
-            <Route path={':version'}>
+            <Route path=":version">
               <Route index element={<CommandIndex />} />
-              <Route path={'commands/:commandName'} element={<CommandView />} />
+              <Route path="commands/:commandName" element={<CommandView />} />
             </Route>
           </Route>
         </Route>
       </Route>
-
       <Route path="admin" element={<RequireAuth />}>
         <Route path="systems" element={<SystemAdmin />} />
         <Route path="gardens">
           <Route index element={<GardensAdmin />} />
-          <Route path={':gardenName'} element={<GardenAdminView />} />
+          <Route path=":gardenName" element={<GardenAdminView />} />
         </Route>
         <Route path="commandblocklist" element={<CommandBlocklistView />} />
       </Route>
-
-      <Route path={'requests'} element={<RequireAuth />}>
+      <Route path="requests" element={<RequireAuth />}>
         <Route index element={<RequestsIndex />} />
-        <Route path={':id'} element={<RequestView />} />
+        <Route path=":id" element={<RequestView />} />
       </Route>
-
-      <Route path={'jobs'} element={<RequireAuth />}>
+      <Route path="jobs" element={<RequireAuth />}>
         <Route index element={<JobIndex />} />
-        <Route path={'create'} element={<JobCreate />} />
-        <Route path={':id'} element={<JobView />} />
+        <Route path="create" element={<JobCreate />} />
+        <Route path=":id" element={<JobView />} />
       </Route>
-
-      <Route path={'/login'} element={<Login />} />
+      <Route path="/login" element={<Login />} />
       <Route
-        path={'*'}
+        path="*"
         element={
           <RequireAuth>
-            <Navigate replace to={'/systems'} />
+            <Navigate replace to="/systems" />
           </RequireAuth>
         }
       />
