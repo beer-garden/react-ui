@@ -1,13 +1,10 @@
 import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { FormikHelpers } from 'formik'
-import {
-  ConnectionFormFields,
-  StompHeader,
-  SubmissionStatusState,
-} from 'pages/GardenAdminView'
+import { ConnectionFormFields, StompHeader } from 'pages/GardenAdminView'
 import { Dispatch, SetStateAction } from 'react'
 import { Garden } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 /**
  * Return a function to use as the onSubmit for Formik
@@ -17,9 +14,7 @@ import { Garden } from 'types/backend-types'
  */
 const useGardenConnectionFormOnSubmit = (
   garden: Garden,
-  setSubmissionStatus: Dispatch<
-    SetStateAction<SubmissionStatusState | undefined>
-  >,
+  setSubmissionStatus: Dispatch<SetStateAction<SnackbarState | undefined>>,
 ) => {
   const axiosConfig: AxiosRequestConfig = {
     url: '/api/v1/gardens/' + encodeURIComponent(garden.name),
@@ -48,13 +43,27 @@ const useGardenConnectionFormOnSubmit = (
     execute({
       data: patchData,
     })
-      .then(() => setSubmissionStatus({ result: 'success' }))
-      .catch((error) => {
+      .then(() =>
         setSubmissionStatus({
-          result: 'failure',
-          msg: `${error.response.status} ${error.response.statusText}`,
-        })
+          severity: 'success',
+          message: 'Connection update successful',
+          showSeverity: false,
+        }),
+      )
+      .catch((error) => {
         console.error('ERROR', error)
+
+        if (error.response && error.response.statusText) {
+          setSubmissionStatus({
+            severity: 'error',
+            message: `${error.response.status} ${error.response.statusText}`,
+          })
+        } else {
+          setSubmissionStatus({
+            severity: 'error',
+            message: `${error}`,
+          })
+        }
       })
 
     formikActions.setSubmitting(false)
