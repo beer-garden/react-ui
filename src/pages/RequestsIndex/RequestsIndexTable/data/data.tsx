@@ -78,9 +78,14 @@ const useRequests = () => {
   const handleRefresh = useCallback(() => {
     execute(config, { useCache: false })
       .then((resp) =>
-        console.log('data.tsx - execute fired with response:', resp),
+        console.log(
+          'data.tsx:handleRefresh() - execute fired with response:',
+          resp,
+        ),
       )
-      .catch((e) => console.error('data.tsx - error from execute:', e))
+      .catch((e) =>
+        console.error('data.tsx:handleRefresh() - error from execute:', e),
+      )
   }, [execute, config])
 
   /**

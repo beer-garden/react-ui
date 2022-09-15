@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material'
 import { ThemeProvider } from 'components/UI/Theme/ThemeProvider'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { DebugContainer } from 'containers/DebugContainer'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -15,9 +16,11 @@ ReactDOM.render(
     <ThemeProvider>
       <CssBaseline />
       <ServerConfigContainer.Provider>
-        <AuthContainer.Provider>
-          <App />
-        </AuthContainer.Provider>
+        <DebugContainer.Provider>
+          <AuthContainer.Provider>
+            <App />
+          </AuthContainer.Provider>
+        </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </ThemeProvider>
   </BrowserRouter>,

@@ -1,9 +1,15 @@
 import Axios, { AxiosInstance } from 'axios'
-import { makeUseAxios } from 'axios-hooks'
+import { makeUseAxios, Options as AxiosHooksOptions } from 'axios-hooks'
 import { useCallback, useMemo } from 'react'
 
 const useMyAxios = () => {
-  // const axiosInstance: AxiosInstance = Axios.create(BASIC_REQUEST_CONFIG)
+  const axiosManualOptions: AxiosHooksOptions = {
+    manual: true,
+    useCache: false,
+    ssr: false,
+    autoCancel: false,
+  }
+
   const axiosInstance: AxiosInstance = useMemo(() => {
     return Axios.create()
   }, [])
@@ -12,7 +18,7 @@ const useMyAxios = () => {
     return makeUseAxios({ axios: axiosInstance, cache: false })
   }, [axiosInstance])
 
-  return { axiosInstance, getUseAxios }
+  return { axiosInstance, getUseAxios, axiosManualOptions }
 }
 
 export { useMyAxios }

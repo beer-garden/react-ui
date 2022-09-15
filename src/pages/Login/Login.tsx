@@ -1,6 +1,7 @@
-import { Box, Button, Stack, TextField } from '@mui/material'
+import { Box, Button, Stack } from '@mui/material'
 import { AuthContainer } from 'containers/AuthContainer'
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik'
+import { Form, Formik, FormikHelpers } from 'formik'
+import { LoginTextField } from 'pages/Login'
 import { useLocation, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 interface LoginFormValues {
@@ -21,33 +22,15 @@ const getLoginOnSubmit =
     nextPage: VoidFunction,
   ) =>
   (values: LoginFormValues, actions: FormikHelpers<LoginFormValues>) => {
-    login(values.username, values.password).then(() => nextPage())
+    login(values.username, values.password)
+      .then(() => nextPage())
+      .catch((error) => {
+        //TODO snackbar
+        console.error(error)
+      })
 
     actions.setSubmitting(false)
   }
-
-interface LoginTextFieldProps {
-  id: string
-  label: string
-  type: string
-}
-
-const LoginTextField = ({ id, label, type }: LoginTextFieldProps) => {
-  const context = useFormikContext<LoginFormValues>()
-
-  return (
-    <TextField
-      required
-      name={id}
-      type={type}
-      label={label}
-      value={context.values[id]}
-      onChange={context.handleChange}
-      error={context.touched[id] && Boolean(context.errors[id])}
-      helperText={context.touched[id] && context.errors[id]}
-    />
-  )
-}
 
 const Login = () => {
   const initialValues: LoginFormValues = { username: '', password: '' }
@@ -55,17 +38,11 @@ const Login = () => {
   const { state } = useLocation()
   const navigate = useNavigate()
 
-  let from: string
-  if (state instanceof Object && 'from' in state) {
-    from = state['from']
-  } else {
-    from = '/jobs'
-  }
-
+  const from: string =
+    state instanceof Object && 'from' in state ? state['from'] : '/jobs'
   const nextPage = () => {
     navigate(from, { replace: true })
   }
-
   const loginOnSubmit = getLoginOnSubmit(login, nextPage)
 
   return (
@@ -87,3 +64,4 @@ const Login = () => {
   )
 }
 export { Login }
+export type { LoginFormValues }
