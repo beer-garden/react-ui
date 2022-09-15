@@ -2,7 +2,7 @@ import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { useEffect, useState } from 'react'
-import { BlockedCommand, BlockedList } from 'types/backend-types'
+import { BlockedCommand } from 'types/backend-types'
 import { CommandIndexTableData } from 'types/custom-types'
 
 const useBlockList = () => {
