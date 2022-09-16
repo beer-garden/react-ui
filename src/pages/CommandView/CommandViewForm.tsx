@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
-import Form from '@rjsf/material-ui'
+import { MuiForm5 as Form } from '@rjsf/material-ui'
 import { AxiosRequestConfig } from 'axios'
 import { Snackbar } from 'components/Snackbar'
 import { useMyAxios } from 'hooks/useMyAxios'
