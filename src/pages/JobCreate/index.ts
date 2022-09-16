@@ -1,1 +1,1 @@
-export * from './JobCreate'
+export { JobCreate as default } from './JobCreate'

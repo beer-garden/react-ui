@@ -1,1 +1,1 @@
-export * from './GardenAdmin'
+export { GardensAdmin as default } from './GardenAdmin'

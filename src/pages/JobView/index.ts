@@ -1,2 +1,2 @@
 export * from './JobButton'
-export * from './JobView'
+export { JobView as default } from './JobView'
