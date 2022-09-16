@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
 import { TInstance, TQueue } from 'test/testData'
 
@@ -10,7 +11,9 @@ describe('Queue Modal', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <QueueModal instance={TInstance} />
+          <DebugContainer.Provider>
+            <QueueModal instance={TInstance} />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
@@ -31,7 +34,9 @@ describe('Queue Modal', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <QueueModal instance={TInstance} />
+          <DebugContainer.Provider>
+            <QueueModal instance={TInstance} />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
@@ -54,7 +59,9 @@ describe('Queue Modal', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <QueueModal instance={badInst} />
+          <DebugContainer.Provider>
+            <QueueModal instance={badInst} />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )

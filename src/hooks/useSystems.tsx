@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
@@ -29,37 +30,33 @@ const useSystems = () => {
   }
 }
 
-const useReloadSystem = () => {
+const useManipulateSystem = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
   const reloadSystem = (systemId: string) => {
-    execute({
+    const config: AxiosRequestConfig = {
       url: `/api/v1/systems/${systemId}`,
       method: 'patch',
       withCredentials: authEnabled,
       data: { operation: 'reload' },
-    })
+    }
+
+    execute(config)
   }
 
-  return { reloadSystem }
-}
-
-const useDeleteSystem = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const { axiosManualOptions } = useMyAxios()
-  const [, execute] = useAxios({}, axiosManualOptions)
-
   const deleteSystem = (systemId: string) => {
-    execute({
+    const config: AxiosRequestConfig = {
       url: `/api/v1/systems/${systemId}`,
       method: 'delete',
       withCredentials: authEnabled,
-    })
+    }
+
+    execute(config)
   }
 
-  return { deleteSystem }
+  return { reloadSystem, deleteSystem }
 }
 
-export { useDeleteSystem, useReloadSystem, useSystems }
+export { useManipulateSystem, useSystems }

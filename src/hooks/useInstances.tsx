@@ -1,15 +1,8 @@
 import { AxiosRequestConfig, Method as AxiosMethod } from 'axios'
-import useAxios, { Options as AxiosHooksOptions } from 'axios-hooks'
+import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { Instance, System } from 'types/backend-types'
-
-const axiosOptions: AxiosHooksOptions = {
-  manual: true,
-  useCache: false,
-  ssr: false,
-  autoCancel: false,
-}
 
 const getConfig = (id: string, method: AxiosMethod, authEnabled: boolean) => {
   const config: AxiosRequestConfig<Instance> = {
@@ -22,8 +15,8 @@ const getConfig = (id: string, method: AxiosMethod, authEnabled: boolean) => {
 
 const useFetchStatus = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-
-  const [, execute] = useAxios({}, axiosOptions)
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
 
   /**
    * Fetches status of an instance from the backend after a timeout
@@ -52,8 +45,8 @@ const useFetchStatus = () => {
 const useToggleInstance = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const fetchStatus = useFetchStatus()
-
-  const [, execute] = useAxios({}, axiosOptions)
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
 
   const toggleInstance = async (id: string, operation: string) => {
     const config = getConfig(id, 'patch', authEnabled)
@@ -71,50 +64,27 @@ const useToggleInstance = () => {
   return toggleInstance
 }
 
-const useStartInstance = () => {
+const useInstances = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
   const toggleInstance = useToggleInstance()
 
   const startInstance = async (id: string) => {
     return await toggleInstance(id, 'start')
   }
 
-  return { startInstance }
-}
-
-const useStopInstance = () => {
-  const toggleInstance = useToggleInstance()
-
   const stopInstance = async (id: string) => {
     return await toggleInstance(id, 'start')
   }
-
-  return { stopInstance }
-}
-
-const useStartAllInstances = () => {
-  const toggleInstance = useToggleInstance()
-
-  const startAllInstances = (system: System) => {
-    system.instances.forEach((instance) => toggleInstance(instance.id, 'start'))
-  }
-
-  return { startAllInstances }
-}
-
-const useStopAllInstances = () => {
-  const toggleInstance = useToggleInstance()
 
   const stopAllInstances = (system: System) => {
     system.instances.forEach((instance) => toggleInstance(instance.id, 'stop'))
   }
 
-  return { stopAllInstances }
-}
-
-const useInstances = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const { axiosManualOptions } = useMyAxios()
-  const [, execute] = useAxios({}, axiosManualOptions)
+  const startAllInstances = (system: System) => {
+    system.instances.forEach((instance) => toggleInstance(instance.id, 'start'))
+  }
 
   const getInstanceLogs = (
     id: string,
@@ -122,7 +92,7 @@ const useInstances = () => {
     startLine?: number,
     endLine?: number,
   ) => {
-    return execute({
+    const config: AxiosRequestConfig = {
       url: `/api/v1/instances/${id}/logs`,
       method: 'get',
       withCredentials: authEnabled,
@@ -131,29 +101,30 @@ const useInstances = () => {
         end_line: endLine,
         timeout: timeout,
       },
-    })
+    }
+
+    return execute(config)
   }
 
   const downloadLogs = (id: string) => {
-    return execute({
+    const config: AxiosRequestConfig = {
       url: `/api/v1/instances/${id}/logs`,
       method: 'get',
       withCredentials: authEnabled,
       responseType: 'blob',
-    })
+    }
+
+    return execute(config)
   }
 
   return {
+    startInstance,
+    stopInstance,
+    startAllInstances,
+    stopAllInstances,
     getInstanceLogs,
     downloadLogs,
-    useStartInstance,
   }
 }
 
-export {
-  useInstances,
-  useStartAllInstances,
-  useStartInstance,
-  useStopAllInstances,
-  useStopInstance,
-}
+export { useInstances }

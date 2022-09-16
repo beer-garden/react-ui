@@ -2,7 +2,7 @@ import {
   CRON_KEYS,
   DATE_KEYS,
   INTERVAL_KEYS,
-} from 'services/job.service/job-service-values'
+} from 'hooks/useJobs/use-jobs-values'
 import { Request } from 'types/backend-types'
 import { ObjectWithStringKeys } from 'types/custom-types'
 

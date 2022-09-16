@@ -8,8 +8,8 @@ import { JobView } from './JobView'
 
 let mockJobResponse: { data: Job | undefined }
 
-jest.mock('services/job.service/job.service', () => ({
-  useJobServices: () => ({
+jest.mock('hooks/useJobs', () => ({
+  useJobs: () => ({
     deleteJob: (cb: () => unknown) => cb(),
     getJob: (cb: (arg0: { data: Job | undefined }) => unknown) =>
       cb(mockJobResponse),
@@ -23,7 +23,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('JobView', () => {
   afterAll(() => {
-    jest.unmock('services/job.service/job.service')
+    jest.unmock('hooks/useJobs')
     jest.unmock('react-router-dom')
   })
 

@@ -21,8 +21,8 @@ import {
   Typography,
 } from '@mui/material'
 import OverflowTooltip from 'components/OverflowTooltip'
-import { useStartAllInstances, useStopAllInstances } from 'hooks/useInstances'
-import { useDeleteSystem, useReloadSystem } from 'hooks/useSystems'
+import { useInstances } from 'hooks/useInstances'
+import { useManipulateSystem } from 'hooks/useSystems'
 import {
   alertStyle,
   instanceIcon,
@@ -35,10 +35,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import { System } from 'types/backend-types'
 
 const SystemAdminCard = ({ systems }: { systems: System[] }) => {
-  const { startAllInstances } = useStartAllInstances()
-  const { stopAllInstances } = useStopAllInstances()
-  const { reloadSystem } = useReloadSystem()
-  const { deleteSystem } = useDeleteSystem()
+  const { startAllInstances, stopAllInstances } = useInstances()
+  const { reloadSystem, deleteSystem } = useManipulateSystem()
   const [systemIndex, setSystemIndex] = useState(0)
 
   const handleChange = (event: SelectChangeEvent) => {

@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import { AxiosResponse } from 'axios'
-import { useJobServices } from 'services/job.service/job.service'
+import { useJobs } from 'hooks/useJobs'
 import { Job } from 'types/backend-types'
 
 interface JobButtonParams {
@@ -10,7 +10,7 @@ interface JobButtonParams {
 }
 
 const JobButton = ({ job, id, callback }: JobButtonParams) => {
-  const { pauseJob, resumeJob } = useJobServices()
+  const { pauseJob, resumeJob } = useJobs()
   if (job && job.status === 'RUNNING') {
     return (
       <Button
