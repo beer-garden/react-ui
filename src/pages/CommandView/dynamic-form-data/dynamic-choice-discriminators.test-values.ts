@@ -490,3 +490,37 @@ export const dynamicCommandWithMultipleParameters: Command = {
   hidden: false,
   metadata: {},
 }
+
+export const selfReferringCommand: Command = {
+  name: 'say_day',
+  description: 'Demonstrates self-referring choices',
+  parameters: [
+    {
+      key: 'day',
+      type: 'String',
+      multi: false,
+      display_name: 'day',
+      optional: false,
+      choices: {
+        display: 'typeahead',
+        strict: true,
+        type: 'command',
+        // eslint-disable-next-line no-template-curly-in-string
+        value: 'days_filter(filter_param=${day})',
+        details: {
+          name: 'days_filter',
+          args: [['filter_param', 'day']],
+        },
+      },
+      nullable: false,
+      type_info: {},
+      parameters: [],
+    },
+  ],
+  command_type: 'ACTION',
+  output_type: 'STRING',
+  schema: {},
+  form: {},
+  hidden: false,
+  metadata: {},
+}

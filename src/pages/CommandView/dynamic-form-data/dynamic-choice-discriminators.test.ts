@@ -16,6 +16,7 @@ import {
   dynamicUrlWithSingleParameter,
   paramNoChoices,
   paramWithStaticChoice,
+  selfReferringCommand,
   simpleDynamicCommand,
   simpleDynamicCommandFullySpecified,
   simpleDynamicCommandWithTypeahead,
@@ -34,6 +35,7 @@ const dynamicCommandsList = [
   simpleDynamicCommandWithTypeahead,
   simpleDynamicUrl,
   simpleDynamicUrlNullable,
+  selfReferringCommand,
 ]
 
 describe('hasDynamicChoiceProperties', () => {
@@ -98,7 +100,8 @@ describe('individual command predicates', () => {
     const withoutCommandWithArgs = dynamicCommandsList.filter(
       (item) =>
         item !== dynamicCommandWithSingleParameter &&
-        item !== dynamicCommandWithMultipleParameters,
+        item !== dynamicCommandWithMultipleParameters &&
+        item !== selfReferringCommand,
     )
     expect(hasCommandChoiceWithArgs(dynamicCommandWithSingleParameter)).toBe(
       true,
@@ -106,6 +109,7 @@ describe('individual command predicates', () => {
     expect(hasCommandChoiceWithArgs(dynamicCommandWithMultipleParameters)).toBe(
       true,
     )
+    expect(hasCommandChoiceWithArgs(selfReferringCommand)).toBe(true)
     expect(!withoutCommandWithArgs.some(hasCommandChoiceWithArgs)).toBe(true)
   })
 
