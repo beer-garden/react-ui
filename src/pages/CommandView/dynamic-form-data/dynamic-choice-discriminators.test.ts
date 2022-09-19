@@ -1,12 +1,12 @@
 import {
   commandIsDynamic,
   hasCommandChoiceWithArgs,
+  hasDynamicDictionary,
   hasSimpleCommandChoice,
   hasSimpleCommandFullySpecified,
   hasSimpleUrlChoice,
   hasUrlChoiceWithArgs,
   parameterHasDynamicChoiceProperties,
-  hasDynamicDictionary,
 } from './dynamic-choice-discriminators'
 import {
   dictWithDynamicInstanceKeyCommand,
