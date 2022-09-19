@@ -2,6 +2,7 @@
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { useBabelRc, override } = require('customize-cra');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const rewireWebpackBundleAnalyzer = require('react-app-rewire-webpack-bundle-analyzer');
 
 const polyFillOverride = function(config) {
   config.plugins.push(
@@ -51,7 +52,26 @@ const copyWebpackOverride = function(config) {
   return config;
 };
 
+const analyzer = function(config, env) {
+  if (env === 'production') {
+    config = rewireWebpackBundleAnalyzer(config, env, {
+      analyzerMode: 'static',
+      reportFilename: 'report.html'
+    })
+  }
+  return config
+}
+
+const namedChunks = function override(config, env) {
+    // Get rid of hash for js files
+    config.output.filename = "static/js/[name].js"
+    config.output.chunkFilename = "static/js/[name].chunk.js"
+  return config;
+};
+
 module.exports = override(
+  analyzer,
+  namedChunks,
   polyFillOverride,
   copyWebpackOverride,
   useBabelRc(),

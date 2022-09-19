@@ -1,1 +1,1 @@
-export * from './RequestView'
+export { RequestView as default } from './RequestView'

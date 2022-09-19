@@ -1,4 +1,5 @@
 import { Box, Button, Divider } from '@mui/material'
+import { Snackbar } from 'components/Snackbar'
 import { Form, Formik } from 'formik'
 import {
   ConnectionHttpValues,
@@ -7,11 +8,11 @@ import {
   ConnectionStompValues,
   connectionValidationSchema,
   GardenConnectionParameters,
-  SubmissionStatusSnackbar,
   useGardenConnectionFormOnSubmit,
 } from 'pages/GardenAdminView'
 import { useState } from 'react'
 import { Garden } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 export interface SubmissionStatusState {
   result: 'success' | 'failure'
@@ -25,7 +26,7 @@ interface GardenConnectionFormProps {
 const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
   const { connection_type: conxType, connection_params: conxParms } = garden
   const [submissionStatus, setSubmissionStatus] = useState<
-    SubmissionStatusState | undefined
+    SnackbarState | undefined
   >(undefined)
 
   return (
@@ -51,11 +52,7 @@ const GardenConnectionForm = ({ garden }: GardenConnectionFormProps) => {
           </Button>
         </Form>
       </Formik>
-      {submissionStatus ? (
-        <SubmissionStatusSnackbar
-          status={submissionStatus as SubmissionStatusState}
-        />
-      ) : null}
+      {submissionStatus ? <Snackbar status={submissionStatus} /> : null}
     </>
   )
 }

@@ -1,3 +1,3 @@
 export * from './ExploreButton'
-export * from './SystemIndex'
+export { SystemsIndex as default } from './SystemIndex'
 export * from './systemIndexHelpers'

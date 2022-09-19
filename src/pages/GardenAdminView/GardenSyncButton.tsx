@@ -1,12 +1,12 @@
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Button } from '@mui/material'
 import useAxios from 'axios-hooks'
-import { SubmissionStatusState } from 'pages/GardenAdminView'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { SnackbarState } from 'types/custom-types'
 
 interface GardenSynButtonParams {
   gardenName: string
-  setSyncStatus: Dispatch<SetStateAction<SubmissionStatusState | undefined>>
+  setSyncStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
 }
 
 const GardenSyncButton = ({
@@ -39,18 +39,29 @@ const GardenSyncButton = ({
     })
       .then(() =>
         setSyncStatus({
-          result: 'success',
+          severity: 'success',
+          message: 'Garden sync successful',
+          showSeverity: false,
         }),
       )
       .catch((error) => {
-        setSyncStatus({
-          result: 'failure',
-          msg: `${error.response.status} ${error.response.statusText}`,
-        })
         console.error('ERROR', error)
+
+        if (error.response) {
+          setSyncStatus({
+            severity: 'error',
+            message: `${error.response.status} ${error.response.statusText}`,
+          })
+        } else {
+          setSyncStatus({
+            severity: 'error',
+            message: `${error}`,
+          })
+        }
       })
     setIsLoading(loading)
   }
+
   return error ? (
     <Button variant="contained" color="error">
       Sync Error
