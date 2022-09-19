@@ -1,1 +1,1 @@
-export * from './CommandView'
+export { CommandView as default } from './CommandView'

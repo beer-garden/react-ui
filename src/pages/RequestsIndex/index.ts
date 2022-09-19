@@ -1,1 +1,1 @@
-export * from './RequestsIndex'
+export { RequestsIndex as default } from './RequestsIndex'

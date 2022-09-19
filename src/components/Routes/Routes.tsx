@@ -1,24 +1,25 @@
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { CommandBlocklistView } from 'pages/CommandBlocklistView'
-import { CommandIndex } from 'pages/CommandIndex'
-import { CommandView } from 'pages/CommandView'
-import { GardensAdmin } from 'pages/GardenAdmin'
-import { GardenAdminView } from 'pages/GardenAdminView'
-import { JobCreate } from 'pages/JobCreate'
-import { JobIndex } from 'pages/JobIndex'
-import { JobView } from 'pages/JobView'
 import { Login } from 'pages/Login'
-import { RequestsIndex } from 'pages/RequestsIndex'
-import { RequestView } from 'pages/RequestView'
-import { SystemAdmin } from 'pages/SystemAdmin'
-import { SystemsIndex } from 'pages/SystemIndex'
-import { useEffect, useState } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import {
   Navigate,
   Route,
   Routes as ReactRouterDomRoutes,
 } from 'react-router-dom'
+
+const CommandBlocklistView = lazy(() => import('pages/CommandBlocklistView'))
+const CommandIndex = lazy(() => import('pages/CommandIndex'))
+const CommandView = lazy(() => import('pages/CommandView'))
+const GardensAdmin = lazy(() => import('pages/GardenAdmin'))
+const GardenAdminView = lazy(() => import('pages/GardenAdminView'))
+const JobCreate = lazy(() => import('pages/JobCreate'))
+const JobIndex = lazy(() => import('pages/JobIndex'))
+const JobView = lazy(() => import('pages/JobView'))
+const RequestsIndex = lazy(() => import('pages/RequestsIndex'))
+const RequestView = lazy(() => import('pages/RequestView'))
+const SystemAdmin = lazy(() => import('pages/SystemAdmin'))
+const SystemsIndex = lazy(() => import('pages/SystemIndex'))
 
 const Routes = () => {
   const { getConfig } = ServerConfigContainer.useContainer()
@@ -39,13 +40,10 @@ const Routes = () => {
     <ReactRouterDomRoutes>
       <Route path={'systems'} element={<RequireAuth />}>
         <Route index element={<SystemsIndex />} />
-
         <Route path={':namespace'}>
           <Route index element={<CommandIndex />} />
-
           <Route path={':systemName'}>
             <Route index element={<CommandIndex />} />
-
             <Route path={':version'}>
               <Route index element={<CommandIndex />} />
               <Route path={'commands/:commandName'} element={<CommandView />} />
@@ -53,7 +51,6 @@ const Routes = () => {
           </Route>
         </Route>
       </Route>
-
       <Route path="admin" element={<RequireAuth />}>
         <Route path="systems" element={<SystemAdmin />} />
         <Route path="gardens">
@@ -62,18 +59,15 @@ const Routes = () => {
         </Route>
         <Route path="commandblocklist" element={<CommandBlocklistView />} />
       </Route>
-
       <Route path={'requests'} element={<RequireAuth />}>
         <Route index element={<RequestsIndex />} />
         <Route path={':id'} element={<RequestView />} />
       </Route>
-
       <Route path={'jobs'} element={<RequireAuth />}>
         <Route index element={<JobIndex />} />
         <Route path={'create'} element={<JobCreate />} />
         <Route path={':id'} element={<JobView />} />
       </Route>
-
       <Route path={'/login'} element={<Login />} />
       <Route
         path={'*'}

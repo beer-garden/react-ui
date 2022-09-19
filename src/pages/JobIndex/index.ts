@@ -1,1 +1,1 @@
-export * from './JobIndex'
+export { JobIndex as default } from './JobIndex'
