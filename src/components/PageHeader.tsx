@@ -5,24 +5,15 @@ interface PageHeaderProps {
   description: string
 }
 
-const PageHeader = (
-  {
-    title,
-    description
-  }: PageHeaderProps
-) => {
+const PageHeader = ({ title, description }: PageHeaderProps) => {
   return (
-    <Box>
-      <Box display="flex" alignItems="flex-end">
-        <Box>
-          <Typography variant="h4"><b>{title}</b></Typography>
-        </Box>
-        <Box pl={1}>
-          <Typography>{description}</Typography>
-        </Box>
-      </Box>
+    <Box display="flex" alignItems="flex-end">
+      <Typography variant="h4">
+        <b>{title}</b>
+      </Typography>
+      <Typography pl={1}>{description}</Typography>
     </Box>
   )
 }
 
-export default PageHeader
+export { PageHeader }

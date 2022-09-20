@@ -8,7 +8,7 @@ import {
   RequestsSearchApi,
   SearchableColumn,
   SearchableColumnData,
-} from 'pages/RequestsIndex/RequestsIndexTable/data'
+} from 'pages/RequestsIndex/data'
 import { Filters } from 'react-table'
 
 const getIndexBySearchTerm = (

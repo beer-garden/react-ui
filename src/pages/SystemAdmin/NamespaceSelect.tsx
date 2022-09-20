@@ -1,18 +1,17 @@
 import {
+  Box,
   Checkbox,
   Chip,
   FormControl,
-  Input,
   InputLabel,
   MenuItem,
+  OutlinedInput,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { useTheme } from '@mui/material/styles'
 import { NamespacesSelectedContext } from 'pages/SystemAdmin'
 import { useContext } from 'react'
 
 const NamespaceSelect = () => {
-  const theme = useTheme()
   const { namespaces, namespacesSelected, setNamespacesSelected } = useContext(
     NamespacesSelectedContext,
   )
@@ -35,34 +34,29 @@ const NamespaceSelect = () => {
   }
 
   return (
-    <FormControl
-      size="small"
-      sx={{
-        margin: theme.spacing(1),
-        minWidth: 255,
-      }}
-    >
+    <FormControl size="small" sx={{ minWidth: 255 }}>
       <InputLabel id="namespaceSelectLabel">Namespaces:</InputLabel>
       <Select
         labelId="namespaceSelectLabel"
         multiple
         value={namespacesSelected}
         onChange={handleChange}
-        input={<Input />}
+        input={<OutlinedInput label="Namespace" />}
         renderValue={(selected) => (
-          <div
-            style={{
+          <Box
+            sx={{
               display: 'flex',
               flexWrap: 'wrap',
+              gap: 0.5,
             }}
           >
-            {(selected as string[]).map((value: string) => (
-              <Chip key={value} label={value} sx={{ margin: 2 }} />
+            {selected.map((value: string) => (
+              <Chip key={value} label={value} />
             ))}
-          </div>
+          </Box>
         )}
       >
-        <MenuItem value={'showAll'} key={'select all'}>
+        <MenuItem dense value={'showAll'} key={'select all'}>
           <Checkbox
             color="secondary"
             checked={namespaces.length === namespacesSelected.length}
@@ -70,7 +64,7 @@ const NamespaceSelect = () => {
           Select All
         </MenuItem>
         {namespaces.map((namespace: string) => (
-          <MenuItem value={namespace} key={namespace + 'select'}>
+          <MenuItem dense value={namespace} key={namespace + 'select'}>
             <Checkbox
               color="secondary"
               checked={namespacesSelected.indexOf(namespace) > -1}

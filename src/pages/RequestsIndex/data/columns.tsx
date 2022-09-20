@@ -1,6 +1,6 @@
 import { SelectionColumnFilter } from 'components/Table/filters'
 import DateRangeColumnFilter from 'components/Table/filters/DateRangeColumnFilter'
-import { RequestsIndexTableData } from 'pages/RequestsIndex/RequestsIndexTable/data'
+import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 

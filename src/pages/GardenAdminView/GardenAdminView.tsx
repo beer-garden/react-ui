@@ -8,7 +8,7 @@ import {
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
 import InfoCard from 'components/garden_admin_info_card'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import Table from 'components/table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -106,14 +106,14 @@ const GardenAdminView = () => {
   }
 
   return (
-    <Box pb={10}>
+    <Box>
       <Typography style={{ flex: 1, float: 'right' }}>
         <GardenSyncButton
           gardenName={gardenName}
           setSyncStatus={setSyncStatus}
         />
       </Typography>
-      <PageHeader title={'Garden View'} description={''} />
+      <PageHeader title="Garden View" description="" />
       <Divider />
       {renderComponents()}
       {syncStatus ? <Snackbar status={syncStatus} /> : null}

@@ -6,7 +6,7 @@ import {
   SearchableColumn,
   SearchableColumnData,
   UnsearchableColumn,
-} from 'pages/RequestsIndex/RequestsIndexTable/data'
+} from 'pages/RequestsIndex/data'
 
 const searchableColumnData: SearchableColumnData[] = [
   'command',
