@@ -21,7 +21,8 @@ import {
   Typography,
 } from '@mui/material'
 import OverflowTooltip from 'components/OverflowTooltip'
-import useSystems from 'hooks/useSystems'
+import { useInstances } from 'hooks/useInstances'
+import { useManipulateSystem } from 'hooks/useSystems'
 import {
   alertStyle,
   instanceIcon,
@@ -34,7 +35,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import { System } from 'types/backend-types'
 
 const SystemAdminCard = ({ systems }: { systems: System[] }) => {
-  const systemClient = useSystems()
+  const { startAllInstances, stopAllInstances } = useInstances()
+  const { reloadSystem, deleteSystem } = useManipulateSystem()
   const [systemIndex, setSystemIndex] = useState(0)
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -112,7 +114,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
               >
                 <IconButton
                   size="small"
-                  onClick={() => systemClient.startSystem(systems[systemIndex])}
+                  onClick={() => startAllInstances(systems[systemIndex])}
                   aria-label="start"
                 >
                   <PlayCircleFilledIcon />
@@ -125,7 +127,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
               >
                 <IconButton
                   size="small"
-                  onClick={() => systemClient.stopSystem(systems[systemIndex])}
+                  onClick={() => stopAllInstances(systems[systemIndex])}
                   aria-label="stop"
                 >
                   <StopIcon />
@@ -134,9 +136,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
               <Tooltip arrow title="Reload system" placement="bottom-start">
                 <IconButton
                   size="small"
-                  onClick={() =>
-                    systemClient.reloadSystem(systems[systemIndex].id)
-                  }
+                  onClick={() => reloadSystem(systems[systemIndex].id)}
                   aria-label="reload"
                 >
                   <CachedIcon />
@@ -145,9 +145,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
               <Tooltip arrow title="Delete system" placement="bottom-start">
                 <IconButton
                   size="small"
-                  onClick={() =>
-                    systemClient.deleteSystem(systems[systemIndex].id)
-                  }
+                  onClick={() => deleteSystem(systems[systemIndex].id)}
                   aria-label="delete"
                 >
                   <DeleteIcon />

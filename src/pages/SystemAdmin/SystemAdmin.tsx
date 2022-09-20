@@ -44,8 +44,8 @@ const SystemAdmin = () => {
     setNamespacesSelected: setNamespacesSelected,
   }
 
-  const adminClient = useAdmin()
-  const queueClient = useQueue()
+  const { rescanPluginDirectory } = useAdmin()
+  const { clearQueues } = useQueue()
 
   return (
     <Box>
@@ -83,7 +83,7 @@ const SystemAdmin = () => {
           </Tooltip>
           <Tooltip arrow title="Rescan Plugin Directory">
             <Button
-              onClick={adminClient.rescanPluginDirectory}
+              onClick={rescanPluginDirectory}
               variant="contained"
               color="primary"
               sx={{ m: 1 }}
@@ -99,7 +99,7 @@ const SystemAdmin = () => {
         onClose={() => setOpen(false)}
         onCancel={() => setOpen(false)}
         onSubmit={() => {
-          queueClient.clearQueues()
+          clearQueues()
           setOpen(false)
         }}
         content={

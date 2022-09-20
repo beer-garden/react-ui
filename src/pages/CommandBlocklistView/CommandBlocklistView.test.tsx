@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
 import { TBlockedCommand, TCommand } from 'test/testData'
 
@@ -10,7 +11,9 @@ describe('CommandBlocklistView', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <CommandBlocklistView />
+          <DebugContainer.Provider>
+            <CommandBlocklistView />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
@@ -24,7 +27,9 @@ describe('CommandBlocklistView', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <CommandBlocklistView />
+          <DebugContainer.Provider>
+            <CommandBlocklistView />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
@@ -37,7 +42,9 @@ describe('CommandBlocklistView', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <CommandBlocklistView />
+          <DebugContainer.Provider>
+            <CommandBlocklistView />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
@@ -55,7 +62,9 @@ describe('CommandBlocklistView', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <CommandBlocklistView />
+          <DebugContainer.Provider>
+            <CommandBlocklistView />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
@@ -73,7 +82,9 @@ describe('CommandBlocklistView', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <CommandBlocklistView />
+          <DebugContainer.Provider>
+            <CommandBlocklistView />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )

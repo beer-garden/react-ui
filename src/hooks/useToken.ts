@@ -1,35 +1,47 @@
 import { AxiosRequestConfig } from 'axios'
 import { configure } from 'axios-hooks'
+import { DebugContainer } from 'containers/DebugContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { useTokenExpiration } from 'hooks/useTokenExpiration'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface TokenResponse {
   access: string
   refresh: string
 }
 
-export const useToken = (
-  onTokenInvalid: () => void,
-  onTokenRefreshRequired: () => Promise<void>,
-) => {
-  const { axiosInstance } = useMyAxios()
+export const useToken = (onTokenInvalid: () => void) => {
   const accessToken = useRef<string>()
-  const { clearAutomaticTokenRefresh, setTokenExpiration } = useTokenExpiration(
-    onTokenRefreshRequired,
+  const tokenRefreshTimerId = useRef<number>()
+  const [tokenExpiration, setTokenExpiration] = useState<Date | undefined>(
+    undefined,
   )
 
-  const setRefreshToken = useCallback((refreshToken) => {
-    window.localStorage.setItem('refresh_token', refreshToken)
-  }, [])
+  const { DEBUG_AUTH } = DebugContainer.useContainer()
+  const { axiosInstance } = useMyAxios()
 
-  const getRefreshToken = () => {
+  const getRefreshToken = useCallback(() => {
+    if (DEBUG_AUTH) {
+      console.log('getRefreshToken invoked')
+    }
     return window.localStorage.getItem('refresh_token')
-  }
+  }, [DEBUG_AUTH])
+
+  const setRefreshToken = useCallback(
+    (refreshToken) => {
+      if (DEBUG_AUTH) {
+        console.log('setRefreshToken invoked')
+      }
+      window.localStorage.setItem('refresh_token', refreshToken)
+    },
+    [DEBUG_AUTH],
+  )
 
   const setToken = useCallback(
     ({ access, refresh }: TokenResponse) => {
+      if (DEBUG_AUTH) {
+        console.log('setToken invoked')
+      }
       accessToken.current = access
       const exp = jwtDecode<JwtPayload>(access).exp as number
       const expirationDate = new Date(exp * 1000)
@@ -37,19 +49,61 @@ export const useToken = (
       setTokenExpiration(expirationDate)
       setRefreshToken(refresh)
     },
-    [setTokenExpiration, setRefreshToken],
+    [DEBUG_AUTH, setRefreshToken],
   )
 
+  const onTokenRefreshRequired = useCallback(async () => {
+    if (DEBUG_AUTH) {
+      console.log('onTokenRefreshRequired invoked')
+    }
+    const {
+      data: { access, refresh },
+    } = await axiosInstance.post<TokenResponse>('/api/v1/token/refresh', {
+      refresh: getRefreshToken(),
+    })
+
+    setToken({ access, refresh })
+  }, [DEBUG_AUTH, axiosInstance, getRefreshToken, setToken])
+
+  useEffect(() => {
+    if (tokenExpiration instanceof Date && !isNaN(tokenExpiration.valueOf())) {
+      const now = new Date()
+      const triggerMilliseconds = tokenExpiration.getTime() - now.getTime()
+
+      if (DEBUG_AUTH) {
+        console.log(`setting token refresh to ${triggerMilliseconds} ms`)
+      }
+
+      tokenRefreshTimerId.current = window.setTimeout(async () => {
+        onTokenRefreshRequired()
+      }, triggerMilliseconds)
+    }
+
+    return () => {
+      window.clearTimeout(tokenRefreshTimerId.current)
+    }
+  }, [DEBUG_AUTH, onTokenRefreshRequired, tokenExpiration])
+
+  const clearAutomaticTokenRefresh = useCallback(() => {
+    if (DEBUG_AUTH) {
+      console.log('clearAutomaticTokenRefresh invoked')
+    }
+    window.clearTimeout(tokenRefreshTimerId.current)
+    setTokenExpiration(undefined)
+  }, [DEBUG_AUTH])
+
   const isAuthenticated = useCallback(() => {
-    const authenticated = !!accessToken.current
-    return authenticated
+    return !!accessToken.current
   }, [])
 
   const clearToken = useCallback(() => {
+    if (DEBUG_AUTH) {
+      console.log('clearing token')
+    }
     accessToken.current = ''
     setRefreshToken(null)
     clearAutomaticTokenRefresh()
-  }, [setRefreshToken, clearAutomaticTokenRefresh])
+  }, [DEBUG_AUTH, setRefreshToken, clearAutomaticTokenRefresh])
 
   const requestInterceptor = useCallback(
     (config: AxiosRequestConfig): AxiosRequestConfig => {
@@ -57,13 +111,25 @@ export const useToken = (
 
       config.headers.Authorization = `Bearer ${accessToken.current}`
 
+      if (DEBUG_AUTH) {
+        console.log('config in requestInterceptor', config)
+      }
+
       return config
     },
-    [accessToken],
+    [DEBUG_AUTH],
   )
 
   const errorHandler = useCallback(
     (error) => {
+      if (DEBUG_AUTH) {
+        if (error.response) {
+          console.log(
+            'error.response.status in errorHandler',
+            error.response.status,
+          )
+        }
+      }
       if (error.response?.status === 401 && accessToken.current) {
         if (accessToken) {
           clearToken()
@@ -72,26 +138,39 @@ export const useToken = (
       }
       return Promise.reject(error)
     },
-    [clearToken, onTokenInvalid],
+    [DEBUG_AUTH, clearToken, onTokenInvalid],
   )
 
   useEffect(() => {
     const req = axiosInstance.interceptors.request.use(requestInterceptor)
     const res = axiosInstance.interceptors.response.use((response) => {
+      if (DEBUG_AUTH) {
+        console.log('response in interceptor', response)
+      }
       return response
     }, errorHandler)
 
     // Remove the old interceptors when the token changes
-    if (req > 0) axiosInstance.interceptors.request.eject(0)
-    if (res > 0) axiosInstance.interceptors.response.eject(0)
+    if (req > 0) {
+      if (DEBUG_AUTH) {
+        console.log(`req = ${req}, removing old interceptor`)
+      }
+      axiosInstance.interceptors.request.eject(0)
+    }
+    if (res > 0) {
+      if (DEBUG_AUTH) {
+        console.log(`res = ${res}, removing old interceptor`)
+      }
+      axiosInstance.interceptors.response.eject(0)
+    }
 
     configure({ axios: axiosInstance })
-  }, [errorHandler, requestInterceptor, axiosInstance])
+  }, [errorHandler, requestInterceptor, axiosInstance, DEBUG_AUTH])
 
   return {
     clearToken,
     setToken,
     isAuthenticated,
-    getRefreshToken,
+    onTokenRefreshRequired,
   }
 }

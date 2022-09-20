@@ -2,7 +2,9 @@ import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
 import { AxiosRequestConfig } from 'axios'
+import useAxios from 'axios-hooks'
 import { Snackbar } from 'components/Snackbar'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import {
   createContext,
@@ -70,9 +72,11 @@ const CommandViewForm = ({
   const [model, setModel] = useState(initialModel)
   const [displayModel, setDisplayModel] = useState(model)
   const [fileMetaData, setFileMetaData] = useState<FileMetaData[]>([])
-  const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const hasByteParameters = isByteCommand(command.parameters)
+  const { authEnabled } = ServerConfigContainer.useContainer()
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
 
   const onResetForm = () => {
     setModel(handleByteParametersReset(initialModel, model, command.parameters))
@@ -139,9 +143,6 @@ const CommandViewForm = ({
 
     if (hasByteParameters) {
       const data = new FormData()
-      const config = {
-        headers: { 'Content-type': 'multipart/form-data' },
-      } as AxiosRequestConfig<FormData>
 
       data.append('request', JSON.stringify(payload))
 
@@ -150,8 +151,15 @@ const CommandViewForm = ({
         data.append(fileData.parameterName as string, file, file.name)
       }
 
-      axiosInstance
-        .post('/api/v1/requests', data, config)
+      const config = {
+        url: '/api/v1/requests',
+        method: 'post',
+        data: data,
+        headers: { 'Content-type': 'multipart/form-data' },
+        withCredentials: authEnabled,
+      } as AxiosRequestConfig<FormData>
+
+      execute(config)
         .then((response) => {
           navigate(forwardPath + response.data.id)
         })
@@ -161,8 +169,12 @@ const CommandViewForm = ({
     } else {
       const path = isJob ? '/api/v1/jobs' : '/api/v1/requests'
 
-      axiosInstance
-        .post(path, payload)
+      execute({
+        url: path,
+        method: 'post',
+        data: payload,
+        withCredentials: authEnabled,
+      })
         .then((response) => {
           navigate(forwardPath + response.data.id)
         })

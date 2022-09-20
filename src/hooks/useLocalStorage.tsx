@@ -1,8 +1,8 @@
+import { DebugContainer } from 'containers/DebugContainer'
 import { useCallback, useState } from 'react'
 
-const DEBUG_LOCAL_STORAGE = false
-
 const useLocalStorage = <T,>(key: string, initialValue: T) => {
+  const { DEBUG_LOCAL_STORAGE } = DebugContainer.useContainer()
   const [storedValue, _setStoredValue] = useState<T>(() => {
     if (typeof window === 'undefined') {
       if (DEBUG_LOCAL_STORAGE) {
@@ -43,7 +43,7 @@ const useLocalStorage = <T,>(key: string, initialValue: T) => {
       }
       _setStoredValue(value)
     },
-    [_setStoredValue],
+    [DEBUG_LOCAL_STORAGE],
   )
 
   const setValue = useCallback(

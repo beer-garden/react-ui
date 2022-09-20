@@ -1,6 +1,7 @@
 import { render, waitFor } from '@testing-library/react'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
 
 import App from './App'
@@ -10,9 +11,11 @@ describe('App', () => {
     const { container } = render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <AuthContainer.Provider>
-            <App />
-          </AuthContainer.Provider>
+          <DebugContainer.Provider>
+            <AuthContainer.Provider>
+              <App />
+            </AuthContainer.Provider>
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )

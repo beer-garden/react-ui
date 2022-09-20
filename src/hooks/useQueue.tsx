@@ -1,34 +1,44 @@
+import { AxiosResponse } from 'axios'
+import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { Queue } from 'types/backend-types'
 
 const useQueue = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const { axiosInstance } = useMyAxios()
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getInstanceQueues = (instanceId: string) => {
-    return axiosInstance.get<Queue[]>(
-      `/api/v1/instances/${instanceId}/queues`,
-      {
-        withCredentials: authEnabled,
-      },
-    )
-  }
-
-  const clearQueue = (name: string) => {
-    return axiosInstance.delete<Queue[]>(`/api/v1/queues/${name}`, {
+  const getInstanceQueues = (
+    instanceId: string,
+  ): Promise<AxiosResponse<Queue[]>> => {
+    return execute({
+      url: `/api/v1/instances/${instanceId}/queues`,
+      method: 'get',
       withCredentials: authEnabled,
     })
   }
 
-  const clearQueues = () => {
-    return axiosInstance.delete<Queue[]>('/api/v1/queues/', {
+  const clearQueue = (name: string): Promise<AxiosResponse<Queue[]>> => {
+    return execute({
+      url: `/api/v1/queues/${name}`,
+      method: 'delete',
       withCredentials: authEnabled,
     })
   }
 
-  const getQueues = () => {
-    return axiosInstance.get<Queue[]>('/api/v1/queues/', {
+  const clearQueues = (): Promise<AxiosResponse<Queue[]>> => {
+    return execute({
+      url: '/api/v1/queues/',
+      method: 'delete',
+      withCredentials: authEnabled,
+    })
+  }
+
+  const getQueues = (): Promise<AxiosResponse<Queue[]>> => {
+    return execute({
+      url: '/api/v1/queues/',
+      method: 'get',
       withCredentials: authEnabled,
     })
   }

@@ -1,3 +1,4 @@
+import { DebugContainer } from 'containers/DebugContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
 import { useCallback, useEffect, useState } from 'react'
@@ -20,33 +21,27 @@ export interface User extends UserBase {
 }
 
 const useAuth = () => {
+  const { DEBUG_LOGIN } = DebugContainer.useContainer()
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const [user, _setUser] = useState<string | null>(null)
-  const onTokenRefreshRequired = useCallback(refresh, [refresh])
 
-  const setUser = (userName: string | null) => {
-    _setUser(userName)
-  }
+  const setUser = useCallback(
+    (userName: string | null) => {
+      if (DEBUG_LOGIN) {
+        console.log('Setting username:', userName)
+      }
+      _setUser(userName)
+    },
+    [DEBUG_LOGIN],
+  )
 
   const onTokenInvalid = useCallback(() => {
     setUser(null)
-  }, [])
+  }, [setUser])
 
-  const { clearToken, setToken, isAuthenticated, getRefreshToken } = useToken(
-    onTokenInvalid,
-    onTokenRefreshRequired,
-  )
-
-  async function refresh() {
-    const {
-      data: { access, refresh },
-    } = await axiosInstance.post<TokenResponse>('/api/v1/token/refresh', {
-      refresh: getRefreshToken(),
-    })
-
-    setToken({ access, refresh })
-  }
+  const { clearToken, setToken, isAuthenticated, onTokenRefreshRequired } =
+    useToken(onTokenInvalid)
 
   useEffect(() => {
     window.addEventListener(
@@ -60,13 +55,13 @@ const useAuth = () => {
         }
       },
     )
-  }, [clearToken, isAuthenticated, onTokenRefreshRequired])
+  }, [clearToken, isAuthenticated, onTokenRefreshRequired, setUser])
 
   const logout = useCallback(() => {
     clearToken()
     setUser(null)
     navigate('/')
-  }, [navigate, clearToken])
+  }, [clearToken, setUser, navigate])
 
   const login = useCallback(
     async (username: string, password: string) => {
@@ -76,12 +71,18 @@ const useAuth = () => {
         username,
         password,
       })
+
+      if (DEBUG_LOGIN) {
+        console.log('AuthContainer.login().access', access)
+        console.log('AuthContainer.login().refresh', refresh)
+      }
+
       setUser(username)
       setToken({ access, refresh })
 
       window.localStorage.setItem(AuthEvents.LOGIN, new Date().toISOString())
     },
-    [setToken, axiosInstance],
+    [axiosInstance, DEBUG_LOGIN, setUser, setToken],
   )
 
   return {
