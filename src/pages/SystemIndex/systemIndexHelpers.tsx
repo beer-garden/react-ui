@@ -1,4 +1,4 @@
-import useSystems from 'hooks/useSystems'
+import { useSystems } from 'hooks/useSystems'
 import { ExploreButton } from 'pages/SystemIndex'
 import { useMemo } from 'react'
 import { Column } from 'react-table'

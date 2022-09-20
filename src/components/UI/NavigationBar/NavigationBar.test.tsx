@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
 
 import { NavigationBar } from './NavigationBar'
@@ -9,11 +10,13 @@ describe('NavigationBar', () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
-          <NavigationBar
-            setMarginLeft={() => {
-              console.log('set margin')
-            }}
-          />
+          <DebugContainer.Provider>
+            <NavigationBar
+              setMarginLeft={() => {
+                console.log('set margin')
+              }}
+            />
+          </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )

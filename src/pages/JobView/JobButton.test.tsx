@@ -1,12 +1,13 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
 import { TJob } from 'test/testData'
 import { Job } from 'types/backend-types'
 
 import { JobButton } from './JobButton'
 
-jest.mock('services/job.service/job.service', () => ({
-  useJobServices: () => ({
+jest.mock('hooks/useJobs', () => ({
+  useJobs: () => ({
     pauseJob: (cb: () => unknown) => cb(),
     resumeJob: (cb: () => unknown) => cb(),
   }),
@@ -15,7 +16,7 @@ jest.mock('services/job.service/job.service', () => ({
 let jData: Job
 
 describe('JobButton', () => {
-  afterAll(() => jest.unmock('services/job.service/job.service'))
+  afterAll(() => jest.unmock('hooks/useJobs'))
 
   beforeEach(() => {
     jData = Object.assign({}, TJob)
@@ -25,7 +26,9 @@ describe('JobButton', () => {
     const mockFn = jest.fn()
     render(
       <BrowserRouter>
-        <JobButton id="24" job={jData} callback={mockFn} />
+        <DebugContainer.Provider>
+          <JobButton id="24" job={jData} callback={mockFn} />
+        </DebugContainer.Provider>
       </BrowserRouter>,
     )
     expect(screen.getByText('Pause job')).toBeInTheDocument()
@@ -40,7 +43,9 @@ describe('JobButton', () => {
     const mockFn = jest.fn()
     render(
       <BrowserRouter>
-        <JobButton id="24" job={jData} callback={mockFn} />
+        <DebugContainer.Provider>
+          <JobButton id="24" job={jData} callback={mockFn} />
+        </DebugContainer.Provider>
       </BrowserRouter>,
     )
     expect(screen.getByText('Resume job')).toBeInTheDocument()
@@ -53,7 +58,9 @@ describe('JobButton', () => {
   test('render pause button when job is running', () => {
     render(
       <BrowserRouter>
-        <JobButton id="24" job={jData} callback={jest.fn} />
+        <DebugContainer.Provider>
+          <JobButton id="24" job={jData} callback={jest.fn} />
+        </DebugContainer.Provider>
       </BrowserRouter>,
     )
     expect(screen.getByText('Pause job')).toBeInTheDocument()
@@ -63,7 +70,9 @@ describe('JobButton', () => {
     jData.status = 'STOPPED'
     render(
       <BrowserRouter>
-        <JobButton id="24" job={jData} callback={jest.fn} />
+        <DebugContainer.Provider>
+          <JobButton id="24" job={jData} callback={jest.fn} />
+        </DebugContainer.Provider>
       </BrowserRouter>,
     )
     expect(screen.getByText('Resume job')).toBeInTheDocument()
