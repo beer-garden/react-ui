@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getFormattedTable } from 'pages/JobIndex/jobIndexHelpers'
 import { useEffect, useState } from 'react'

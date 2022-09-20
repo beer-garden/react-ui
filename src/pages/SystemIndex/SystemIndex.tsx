@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { Divider } from 'components/Divider'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
 import {
   useSystemIndexTableColumns,

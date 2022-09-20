@@ -13,7 +13,7 @@ import {
 import useAxios from 'axios-hooks'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import RequestsTable from 'components/table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {

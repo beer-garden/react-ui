@@ -16,4 +16,4 @@ const PageHeader = ({ title, description }: PageHeaderProps) => {
   )
 }
 
-export default PageHeader
+export { PageHeader }

@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControlLabel } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
 import { useCommands } from 'hooks/useCommands'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'

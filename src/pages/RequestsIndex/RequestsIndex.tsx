@@ -2,7 +2,7 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material'
 import { Divider } from 'components/Divider'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { SSRTable } from 'components/Table'
 import {
   defaultOrderingColumnIndex,
