@@ -4,7 +4,7 @@ import { Form, Formik, FormikHelpers } from 'formik'
 import { LoginTextField } from 'pages/Login'
 import { useLocation, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
-interface LoginFormValues {
+export interface LoginFormValues {
   [index: string]: string
   username: string
   password: string
@@ -64,4 +64,3 @@ const Login = () => {
   )
 }
 export { Login }
-export type { LoginFormValues }
