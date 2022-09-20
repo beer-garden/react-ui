@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
-import { TInstance, TQueue } from 'test/testData'
+import { TInstance, TQueue } from 'test/test-values'
 
 import QueueModal from './QueueModal'
 

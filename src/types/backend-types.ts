@@ -260,3 +260,48 @@ export interface Queue {
   display: string
   name: string
 }
+
+export interface User {
+  id: string
+  username: string
+  role_assignments: RoleAssignment[]
+  permissions: Permissions
+  sync_status: null
+}
+
+export interface RoleAssignment {
+  domain: RoleAssignmentDomain
+  role: Role
+}
+
+interface RoleAssignmentDomain {
+  scope: 'Garden' | 'Global' | 'System'
+  identifiers: RoleIdentifier
+}
+
+interface RoleIdentifier {
+  serialization_schema_selector: any
+  deserialization_schema_selector: any
+}
+
+interface Role {
+  id: string
+  name: string
+  permissions: string[]
+  description?: string
+}
+
+interface DomainPermission {
+  [key: string]: ObjectWithStringKeys
+}
+
+interface Permissions {
+  domain_permissions: DomainPermission
+  global_permissions: string[]
+}
+
+// interface UserPatch {
+//   password: string
+//   hashed_password: string
+//   role_assignments: RoleAssignment[]
+// }

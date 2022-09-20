@@ -6,6 +6,7 @@ import {
 import BlockIcon from '@mui/icons-material/Block'
 import FactoryIcon from '@mui/icons-material/Factory'
 import LocalFloristIcon from '@mui/icons-material/LocalFlorist'
+import PeopleIcon from '@mui/icons-material/People'
 import {
   Collapse,
   Divider,
@@ -16,10 +17,12 @@ import {
 } from '@mui/material'
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useState } from 'react'
 import * as React from 'react'
 
 const AdminMenu = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
   const [open, setOpen] = useState(false)
 
   const handleClick = () => setOpen(!open)
@@ -46,6 +49,14 @@ const AdminMenu = () => {
       <Collapse in={open && drawerIsOpen} timeout={'auto'} unmountOnExit>
         <Divider />
         <MenuList>
+          {authEnabled && (
+            <ListItemLink
+              icon={<PeopleIcon fontSize="small" />}
+              primary={'Users'}
+              to={'/admin/users'}
+              sx={{ pl: 3 }}
+            />
+          )}
           <ListItemLink
             icon={<LocalFloristIcon fontSize="small" />}
             primary={'Gardens'}

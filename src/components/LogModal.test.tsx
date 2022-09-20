@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { BrowserRouter } from 'react-router-dom'
-import { TInstance, TLog } from 'test/testData'
+import { TInstance, TLog } from 'test/test-values'
 
 import LogModal from './LogModal'
 

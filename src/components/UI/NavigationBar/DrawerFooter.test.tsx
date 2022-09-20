@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { BrowserRouter } from 'react-router-dom'
-import { TServerConfig, TVersionConfig } from 'test/testData'
+import { TServerConfig, TVersionConfig } from 'test/test-values'
 
 import { DrawerFooter } from './DrawerFooter'
 

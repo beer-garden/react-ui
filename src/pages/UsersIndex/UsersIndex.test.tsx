@@ -2,53 +2,52 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
-import { TBlockedCommand, TCommand } from 'test/test-values'
+import { TUser } from 'test/user-test-values'
 
-import { CommandBlocklistView } from './CommandBlocklistView'
+import { UsersIndex } from './UsersIndex'
 
-describe('CommandBlocklistView', () => {
-  test('render table of blocked commands', async () => {
+describe('UsersIndex', () => {
+  test('render table of current users', async () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <CommandBlocklistView />
+            <UsersIndex />
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
-    expect(screen.getByText('Command Publishing Blocklist')).toBeInTheDocument()
+    expect(screen.getByText('User Management')).toBeInTheDocument()
     await waitFor(() => {
-      expect(screen.getByText(TBlockedCommand.command)).toBeInTheDocument()
+      expect(screen.getByText(TUser.username)).toBeInTheDocument()
     })
   })
 
-  test('render button to add command', () => {
+  test('render button to add user', async () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <CommandBlocklistView />
+            <UsersIndex />
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
-    expect(
-      screen.getByRole('button', { name: 'Add command' }),
-    ).toBeInTheDocument()
+    const btn = await screen.findByRole('button', { name: 'Add user' })
+    expect(btn).toBeInTheDocument()
   })
 
-  test('add modal submits', async () => {
+  test.skip('add modal submits', async () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <CommandBlocklistView />
+            <UsersIndex />
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
-    fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
     await waitFor(() => {
       expect(screen.getByText('Submit')).toBeInTheDocument()
     })
@@ -58,17 +57,17 @@ describe('CommandBlocklistView', () => {
     })
   })
 
-  test('add modal cancels', async () => {
+  test.skip('add modal cancels', async () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <CommandBlocklistView />
+            <UsersIndex />
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
-    fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
     await waitFor(() => {
       expect(screen.getByText('Cancel')).toBeInTheDocument()
     })
@@ -78,23 +77,29 @@ describe('CommandBlocklistView', () => {
     })
   })
 
-  test('adds command to blocklist', async () => {
+  test.skip('adds user to table', async () => {
     render(
       <BrowserRouter>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <CommandBlocklistView />
+            <UsersIndex />
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </BrowserRouter>,
     )
-    fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
-    fireEvent.click(
-      screen.getByRole('checkbox', { name: 'Toggle Row Selected' }),
-    )
+    fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
+    fireEvent.change(screen.getByRole('input', { name: 'username' }), {
+      target: { value: 'testUser' },
+    })
+    fireEvent.change(screen.getByRole('input', { name: 'password' }), {
+      target: { value: 'notSecret' },
+    })
+    fireEvent.change(screen.getByRole('input', { name: 'confirm' }), {
+      target: { value: 'notSecret' },
+    })
     fireEvent.click(screen.getByText('Submit'))
     await waitFor(() => {
-      expect(screen.getByText(TCommand.name)).toBeInTheDocument()
+      expect(screen.getByText('testUser')).toBeInTheDocument()
     })
   })
 })

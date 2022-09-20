@@ -12,6 +12,7 @@ import { DrawerFooter } from 'components/UI/NavigationBar/DrawerFooter'
 import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
 import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import * as React from 'react'
 
@@ -28,6 +29,7 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
     false,
   )
   const [drawerIsOpen, setDrawerIsOpen] = React.useState(drawerIsPinned)
+  const { authEnabled } = ServerConfigContainer.useContainer()
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerIsOpen(open || drawerIsPinned)
@@ -57,7 +59,12 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">Beer Garden</Typography>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Beer Garden
+          </Typography>
+          {authEnabled && (
+            <Typography variant="subtitle1">Hello, Admin!</Typography>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer

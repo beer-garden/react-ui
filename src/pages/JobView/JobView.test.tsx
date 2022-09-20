@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Router from 'react-router-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { TJob } from 'test/testData'
+import { TJob } from 'test/test-values'
 import { Job } from 'types/backend-types'
 
 import { JobView } from './JobView'

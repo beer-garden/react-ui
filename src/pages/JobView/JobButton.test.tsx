@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { DebugContainer } from 'containers/DebugContainer'
 import { BrowserRouter } from 'react-router-dom'
-import { TJob } from 'test/testData'
+import { TJob } from 'test/test-values'
 import { Job } from 'types/backend-types'
 
 import { JobButton } from './JobButton'

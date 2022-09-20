@@ -1,7 +1,8 @@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
-import * as mockData from './testData'
+import * as mockData from './test-values'
+import { TUser } from './user-test-values'
 
 axios.defaults.baseURL = 'http://localhost:4000'
 
@@ -17,6 +18,7 @@ mock.onGet('/version').reply(200, mockData.TVersionConfig)
 mock.onGet('/api/v1/jobs').reply(200, mockData.TJob)
 mock.onGet('/api/v1/commandpublishingblocklist').reply(200, mockData.TBlocklist)
 mock.onGet('/api/v1/systems').reply(200, [mockData.TSystem])
+mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
 mock.onGet(regexLogs).reply(200, mockData.TLog, { request_id: 'fetchedLog' })
 mock.onGet(regexQueues).reply(200, [mockData.TQueue])
 
