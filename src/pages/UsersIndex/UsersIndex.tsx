@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add'
 import { Box, Button, Tooltip } from '@mui/material'
 import { Divider } from 'components/Divider'
-import { ModalWrapper } from 'components/ModalWrapper'
+import NewUserModal from 'components/NewUserModal'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
@@ -38,6 +38,19 @@ export const UsersIndex = () => {
   const { getUsers } = useUsers()
 
   useEffect(() => {
+    updateUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const userData = useMemo(() => {
+    return users.map((user: User): UserIndexTableData => {
+      return {
+        username: user.username,
+      }
+    })
+  }, [users])
+
+  const updateUsers = () => {
     getUsers()
       .then((response) => {
         setUsers(response.data.users)
@@ -49,16 +62,7 @@ export const UsersIndex = () => {
           doNotAutoDismiss: true,
         })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const userData = useMemo(() => {
-    return users.map((user: User): UserIndexTableData => {
-      return {
-        username: user.username,
-      }
-    })
-  }, [users])
+  }
 
   return (
     <Box>
@@ -73,20 +77,7 @@ export const UsersIndex = () => {
           <AddIcon />
         </Button>
       </Tooltip>
-      <ModalWrapper
-        open={open}
-        header="Create User"
-        onClose={() => {
-          setOpen(false)
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-        onSubmit={() => {
-          setOpen(false)
-        }}
-        content={<>CONTENT</>}
-      />
+      <NewUserModal open={open} setOpen={setOpen} updateUsers={updateUsers} />
       <PageHeader title="User Management" description="" />
       <Divider />
       <Table
