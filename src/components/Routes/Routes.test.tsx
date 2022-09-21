@@ -1,7 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import { mockAxios } from 'test/axios-mock'
-import { TServerConfig } from 'test/test-values'
 import { SuspendedProviders } from 'test/testMocks'
 
 import { Routes } from './Routes'
@@ -13,7 +10,7 @@ describe('Routes', () => {
         <Routes />
       </SuspendedProviders>,
     )
-    const header = await screen.findByRole('heading')
+    const header = await screen.findByRole('heading', { name: 'Systems' })
     expect(header).toBeInTheDocument()
     expect(header.textContent).toEqual('Systems')
   })

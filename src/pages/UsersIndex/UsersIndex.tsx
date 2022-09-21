@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { Box, Button, Tooltip } from '@mui/material'
 import { Divider } from 'components/Divider'
 import { ModalWrapper } from 'components/ModalWrapper'
-import PageHeader from 'components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import useUsers from 'hooks/useUsers'
@@ -49,7 +49,7 @@ export const UsersIndex = () => {
           doNotAutoDismiss: true,
         })
       })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const userData = useMemo(() => {
