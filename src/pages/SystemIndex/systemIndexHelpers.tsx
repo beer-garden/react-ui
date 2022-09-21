@@ -1,5 +1,5 @@
 import { useSystems } from 'hooks/useSystems'
-import { ExploreButton } from 'pages/SystemIndex/SystemIndexTable'
+import { ExploreButton } from 'pages/SystemIndex'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/backend-types'
@@ -12,6 +12,24 @@ type SystemIndexTableData = {
   commandCount: number
   instanceCount: number
   exploreButton: JSX.Element
+}
+
+const formatSystems = (systems: System[]) => {
+  const formattedSystems: (string | JSX.Element | number)[][] = []
+
+  for (const index in systems) {
+    formattedSystems.push([
+      systems[index].namespace,
+      systems[index].name,
+      systems[index].version,
+      systems[index].description,
+      systems[index].commands.length,
+      systems[index].instances.length,
+      ExploreButton(systems[index]),
+    ])
+  }
+
+  return formattedSystems
 }
 
 const systemMapper = (system: System): SystemIndexTableData => {
@@ -111,4 +129,4 @@ const useSystemIndexTableColumns = () => {
   )
 }
 
-export { useSystemIndexTableColumns, useSystemIndexTableData }
+export { formatSystems, useSystemIndexTableColumns, useSystemIndexTableData }

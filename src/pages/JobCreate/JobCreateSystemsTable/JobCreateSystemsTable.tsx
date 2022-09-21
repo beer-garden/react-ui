@@ -13,7 +13,7 @@ const JobCreateSystemsTable = ({
 }: PropsWithChildren<JobCreateSystemTableProps>) => {
   return (
     <Table
-      tableName="Choose System For Job"
+      tableKey="JobSystems"
       data={useSystemsData(systemSetter)}
       columns={useSystemColumns()}
       showGlobalFilter

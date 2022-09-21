@@ -56,11 +56,10 @@ const JobCreateCommandsTable = ({
     .map((column) =>
       replaceWidth('description', 50 + descriptionLength * 8, column),
     )
-  const tableName = `Choose Command from '${system.name}'`
 
   return (
     <Table
-      tableName={tableName}
+      tableKey="JobCommands"
       data={data}
       columns={fixedColumns}
       showGlobalFilter

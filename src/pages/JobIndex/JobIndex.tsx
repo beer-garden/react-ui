@@ -1,6 +1,7 @@
-import { Box, Button, Divider } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import useAxios from 'axios-hooks'
-import PageHeader from 'components/PageHeader'
+import { Divider } from 'components/Divider'
+import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getFormattedTable } from 'pages/JobIndex/jobIndexHelpers'
 import { useEffect, useState } from 'react'
@@ -31,8 +32,8 @@ const JobIndex = () => {
   return (
     <Box>
       <PageHeader title="Request Scheduler" description="" />
-      <Button onClick={createRequestOnClick}>Create</Button>
       <Divider />
+      <Button onClick={createRequestOnClick}>Create</Button>
       {getFormattedTable(jobs)}
     </Box>
   )

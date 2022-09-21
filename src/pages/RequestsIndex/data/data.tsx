@@ -10,7 +10,7 @@ import {
   updateApiOrderBy,
   updateApiSearchBy,
   useRequestsReducer,
-} from 'pages/RequestsIndex/RequestsIndexTable/data'
+} from 'pages/RequestsIndex/data'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Filters } from 'react-table'
 import { Request } from 'types/backend-types'

@@ -1,6 +1,8 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CancelIcon from '@mui/icons-material/Cancel'
-import { Button } from '@mui/material'
+import { Box, Button } from '@mui/material'
+import { Divider } from 'components/Divider'
+import { PageHeader } from 'components/PageHeader'
 import { JobCreateCommandsTable } from 'pages/JobCreate/JobCreateCommandsTable'
 import { JobCreateForwarder } from 'pages/JobCreate/JobCreateForwarder'
 import { JobCreateSystemsTable } from 'pages/JobCreate/JobCreateSystemsTable'
@@ -40,19 +42,34 @@ const JobCreate = () => {
   )
 
   return !system ? (
-    <JobCreateSystemsTable systemSetter={setSystem}>
-      {cancelAllSchedulingButton}
-    </JobCreateSystemsTable>
+    <Box>
+      <PageHeader title="Choose System For Job" description="" />
+      <Divider />
+      <JobCreateSystemsTable systemSetter={setSystem}>
+        {cancelAllSchedulingButton}
+      </JobCreateSystemsTable>
+    </Box>
   ) : !command ? (
-    <JobCreateCommandsTable
-      system={system as System}
-      commandSetter={setCommand}
-    >
-      <Button size="small" onClick={backToSystem} startIcon={<ArrowBackIcon />}>
-        Back
-      </Button>
-      {cancelAllSchedulingButton}
-    </JobCreateCommandsTable>
+    <Box>
+      <PageHeader
+        title={`Choose Command from '${system.name}'`}
+        description=""
+      />
+      <Divider />
+      <JobCreateCommandsTable
+        system={system as System}
+        commandSetter={setCommand}
+      >
+        <Button
+          size="small"
+          onClick={backToSystem}
+          startIcon={<ArrowBackIcon />}
+        >
+          Back
+        </Button>
+        {cancelAllSchedulingButton}
+      </JobCreateCommandsTable>
+    </Box>
   ) : (
     <JobCreateForwarder
       system={system as System}
