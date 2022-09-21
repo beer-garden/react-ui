@@ -1,7 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { DebugContainer } from 'containers/DebugContainer'
-import { BrowserRouter } from 'react-router-dom'
+import { AllProviders } from 'test/testMocks'
 import { TUser } from 'test/user-test-values'
 
 import { UsersIndex } from './UsersIndex'
@@ -9,13 +7,9 @@ import { UsersIndex } from './UsersIndex'
 describe('UsersIndex', () => {
   test('render table of current users', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <UsersIndex />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <UsersIndex />
+      </AllProviders>,
     )
     expect(screen.getByText('User Management')).toBeInTheDocument()
     await waitFor(() => {
@@ -25,13 +19,9 @@ describe('UsersIndex', () => {
 
   test('render button to add user', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <UsersIndex />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <UsersIndex />
+      </AllProviders>,
     )
     const btn = await screen.findByRole('button', { name: 'Add user' })
     expect(btn).toBeInTheDocument()
@@ -39,13 +29,9 @@ describe('UsersIndex', () => {
 
   test.skip('add modal submits', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <UsersIndex />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <UsersIndex />
+      </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
     await waitFor(() => {
@@ -59,13 +45,9 @@ describe('UsersIndex', () => {
 
   test.skip('add modal cancels', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <UsersIndex />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <UsersIndex />
+      </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
     await waitFor(() => {
@@ -79,13 +61,9 @@ describe('UsersIndex', () => {
 
   test.skip('adds user to table', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <UsersIndex />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <UsersIndex />
+      </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
     fireEvent.change(screen.getByRole('input', { name: 'username' }), {

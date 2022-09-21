@@ -5,20 +5,17 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { BrowserRouter } from 'react-router-dom'
 import { TInstance, TLog } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 
 import LogModal from './LogModal'
 
 describe('Log Modal', () => {
   test('renders modal window with contents', () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <LogModal instance={TInstance} fileHeader="TestFile" />
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <LogModal instance={TInstance} fileHeader="TestFile" />
+      </AllProviders>,
     )
     expect(
       screen.getByRole('button', { name: 'Get Tail Logs' }),
@@ -33,11 +30,9 @@ describe('Log Modal', () => {
 
   test('renders warning alert on init', () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <LogModal instance={TInstance} fileHeader="TestFile" />
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <LogModal instance={TInstance} fileHeader="TestFile" />
+      </AllProviders>,
     )
     expect(screen.getByRole('alert')).toBeInTheDocument()
     expect(
@@ -51,11 +46,9 @@ describe('Log Modal', () => {
 
   test('displays tail logs', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <LogModal instance={TInstance} fileHeader="TestFile" />
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <LogModal instance={TInstance} fileHeader="TestFile" />
+      </AllProviders>,
     )
     expect(screen.getByText('Get Tail Logs')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Get Tail Logs'))
@@ -70,11 +63,9 @@ describe('Log Modal', () => {
 
   test('displays line logs', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <LogModal instance={TInstance} fileHeader="TestFile" />
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <LogModal instance={TInstance} fileHeader="TestFile" />
+      </AllProviders>,
     )
     expect(screen.getByText('Get Line Logs')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Get Line Logs'))
@@ -89,11 +80,9 @@ describe('Log Modal', () => {
 
   test('downloads log file', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <LogModal instance={TInstance} fileHeader="TestFile" />
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <LogModal instance={TInstance} fileHeader="TestFile" />
+      </AllProviders>,
     )
     expect(screen.getByText('Download Logs')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Download Logs'))

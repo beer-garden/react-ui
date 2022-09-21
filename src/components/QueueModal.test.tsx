@@ -1,21 +1,15 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { DebugContainer } from 'containers/DebugContainer'
-import { BrowserRouter } from 'react-router-dom'
 import { TInstance, TQueue } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 
 import QueueModal from './QueueModal'
 
 describe('Queue Modal', () => {
   test('renders modal window with contents', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <QueueModal instance={TInstance} />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <QueueModal instance={TInstance} />
+      </AllProviders>,
     )
     // await first one to let axios give back queue list
     await waitFor(() => {
@@ -32,13 +26,9 @@ describe('Queue Modal', () => {
 
   test('makes user confirm to clear queue', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <QueueModal instance={TInstance} />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <QueueModal instance={TInstance} />
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Clear' })).toBeInTheDocument()
@@ -57,13 +47,9 @@ describe('Queue Modal', () => {
     const badInst = Object.assign({}, TInstance)
     badInst.id = 'bad'
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <QueueModal instance={badInst} />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <QueueModal instance={badInst} />
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument()

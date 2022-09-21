@@ -18,8 +18,7 @@ import {
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { useState } from 'react'
-import * as React from 'react'
+import { useContext, useState } from 'react'
 
 const AdminMenu = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -27,7 +26,7 @@ const AdminMenu = () => {
 
   const handleClick = () => setOpen(!open)
 
-  const drawerIsOpen = React.useContext(NavigationBarContext).drawerIsOpen
+  const drawerIsOpen = useContext(NavigationBarContext).drawerIsOpen
 
   if (!drawerIsOpen && open) {
     setOpen(drawerIsOpen)

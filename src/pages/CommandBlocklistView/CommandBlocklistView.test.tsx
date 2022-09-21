@@ -1,21 +1,15 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { DebugContainer } from 'containers/DebugContainer'
-import { BrowserRouter } from 'react-router-dom'
 import { TBlockedCommand, TCommand } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 
 import { CommandBlocklistView } from './CommandBlocklistView'
 
 describe('CommandBlocklistView', () => {
   test('render table of blocked commands', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <CommandBlocklistView />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <CommandBlocklistView />
+      </AllProviders>,
     )
     expect(screen.getByText('Command Publishing Blocklist')).toBeInTheDocument()
     await waitFor(() => {
@@ -25,13 +19,9 @@ describe('CommandBlocklistView', () => {
 
   test('render button to add command', () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <CommandBlocklistView />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <CommandBlocklistView />
+      </AllProviders>,
     )
     expect(
       screen.getByRole('button', { name: 'Add command' }),
@@ -40,13 +30,9 @@ describe('CommandBlocklistView', () => {
 
   test('add modal submits', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <CommandBlocklistView />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <CommandBlocklistView />
+      </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
     await waitFor(() => {
@@ -60,13 +46,9 @@ describe('CommandBlocklistView', () => {
 
   test('add modal cancels', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <CommandBlocklistView />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <CommandBlocklistView />
+      </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
     await waitFor(() => {
@@ -80,13 +62,9 @@ describe('CommandBlocklistView', () => {
 
   test('adds command to blocklist', async () => {
     render(
-      <BrowserRouter>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <CommandBlocklistView />
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <CommandBlocklistView />
+      </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
     fireEvent.click(

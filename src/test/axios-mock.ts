@@ -29,8 +29,9 @@ mock
 
 // Success POST
 mock.onPost('/api/v1/requests').reply(200, { id: 'testRequest' })
+mock.onPost('/api/v1/token').reply(200, { access: 'admin', refresh: 'none' })
 
 // default
 mock.onAny().reply(200, undefined)
 
-module.exports = { mockAxios: mock }
+export { mock as mockAxios }
