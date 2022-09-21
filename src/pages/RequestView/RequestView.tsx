@@ -3,9 +3,11 @@ import {
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {
+  Alert,
   Backdrop,
-  Box,
+  Box, Breadcrumbs,
   Button,
   Card,
   CardActions,
@@ -21,8 +23,9 @@ import useAxios from 'axios-hooks'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { PageHeader } from 'components/PageHeader'
-import RequestsTable from 'components/table'
+import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { RequestViewTable } from 'pages/RequestView'
 import {
   getParentLinks,
   outputFormatted,
@@ -31,9 +34,6 @@ import { useContext, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
-
-import { ThemeContext } from '../../components/UI/Theme/ThemeProvider'
-import { RequestViewTable } from './RequestViewTable/RequestViewTable'
 
 interface RequestVariables {
   namespace: string
@@ -112,7 +112,12 @@ const RequestView = () => {
       {request ? (
         <>
           <Divider />
-          {request.parent ? getParentLinks(request) : null}
+          {request.parent ?
+              <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+                {getParentLinks(request.parent, )}
+                <Typography>{request.command}</Typography>
+              </Breadcrumbs> : null
+          }
           <RequestViewTable request={request} />
           <Box pt={4} display="flex" alignItems="flex-start">
             {!expandParameter ? (
@@ -121,7 +126,7 @@ const RequestView = () => {
                   <Typography style={{ flex: 1 }} variant="h6">
                     Output
                   </Typography>
-                  {request.output_type === 'STRING' ? null : (
+                  {!['HTML', 'JSON'].includes(request.output_type) ? null : (
                     <FormControlLabel
                       control={
                         <Switch
@@ -139,7 +144,7 @@ const RequestView = () => {
                   <Link
                     href={downloadUrl}
                     download={`${request.id}.${
-                      request.output_type === 'STRING'
+                      ['STRING', null].includes(request.output_type)
                         ? 'txt'
                         : request.output_type.toLowerCase()
                     }`}
@@ -199,9 +204,10 @@ const RequestView = () => {
           </Box>
         </>
       ) : (
-        <Backdrop open={true}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+          error ? (<Alert severity="error">{error.message}</Alert>) :
+              <Backdrop open={true}>
+                <CircularProgress color="inherit" />
+              </Backdrop>
       )}
     </>
   )

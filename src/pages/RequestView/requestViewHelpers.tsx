@@ -1,5 +1,5 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Breadcrumbs, CircularProgress, Typography } from '@mui/material'
+import {Breadcrumbs, CircularProgress} from '@mui/material'
 import { SupportedColorScheme } from '@mui/material/styles'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
@@ -14,18 +14,18 @@ const outputFormatted = (
     const output = request.output || ''
     const output_type = request.output_type
 
-    if (output_type === 'STRING' || showAsRawData) {
+    if (!['HTML', 'JSON'].includes(output_type) || showAsRawData) {
       let parsed: string | number | boolean | object
 
-      try {
-        parsed = JSON.parse(output)
-      } catch (error) {
-        parsed = output
-      }
+        try {
+          parsed = JSON.parse(output)
+          parsed = JSON.stringify(parsed, null, 2)
+        } catch (error) {
+          parsed = output
+        }
+
       return (
-        <span>
-          <pre>{JSON.stringify(parsed, null, 2)}</pre>
-        </span>
+          <pre style={{whiteSpace: 'pre-wrap', wordBreak: 'break-all', overflow: 'auto' }}>{parsed}</pre>
       )
     } else if (output_type === 'JSON') {
       return (
@@ -48,7 +48,7 @@ const getParentLinks = (request: Request): JSX.Element => {
     <>
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
         {getParentLinks(request.parent)}
-        <Typography>{request.command}</Typography>
+        <RouterLink to={'/requests/' + request.id}>{request.command}</RouterLink>
       </Breadcrumbs>
     </>
   ) : (

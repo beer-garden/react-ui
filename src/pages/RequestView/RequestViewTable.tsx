@@ -6,14 +6,13 @@ import {
 import { Card, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import { Table } from 'components/Table'
 import { SelectionColumnFilter } from 'components/Table/filters'
-import { useState } from 'react'
-import { Request } from 'types/backend-types'
-
 import {
   formatBeergardenRequests,
   SystemLink,
   useRequestsIndexTableColumns,
-} from '../../RequestsIndex/RequestsIndexTable/data'
+} from 'pages/RequestsIndex/RequestsIndexTable/data'
+import { useState } from 'react'
+import { Request } from 'types/backend-types'
 
 interface RequestViewTableProps {
   request: Request
@@ -89,13 +88,13 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
             arrow
             placement="right"
             title={
-              <Card>
+              <>
                 <Typography>
                   <b>{request.status}</b>
                 </Typography>
                 <Divider />
                 <Typography>{statusMsg}</Typography>
-              </Card>
+              </>
             }
           >
             <InfoOutlined fontSize="small" />
