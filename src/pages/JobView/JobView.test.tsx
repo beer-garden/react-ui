@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import Router from 'react-router-dom'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import { TJob } from 'test/test-values'
 import { Job } from 'types/backend-types'
 
@@ -34,9 +34,9 @@ describe('JobView', () => {
   test('renders Delete button', () => {
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
-      <BrowserRouter>
+      <HashRouter>
         <JobView />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.getByText('Delete Job')).toBeInTheDocument()
   })
@@ -44,9 +44,9 @@ describe('JobView', () => {
   test('renders Update button', () => {
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
-      <BrowserRouter>
+      <HashRouter>
         <JobView />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.getByText('Update Job')).toBeInTheDocument()
   })
@@ -54,9 +54,9 @@ describe('JobView', () => {
   test('not render Resume or Pause buttons if no jobs', () => {
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
-      <BrowserRouter>
+      <HashRouter>
         <JobView />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     // slight cheat - job does not immediately exist and we check immediately
     expect(screen.queryByText('Resume Job')).not.toBeInTheDocument()
@@ -65,9 +65,9 @@ describe('JobView', () => {
   test('render Pause button when jobs', async () => {
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
-      <BrowserRouter>
+      <HashRouter>
         <JobView />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     // wait for job to exist
     expect(await screen.findByText('Pause job')).toBeInTheDocument()
