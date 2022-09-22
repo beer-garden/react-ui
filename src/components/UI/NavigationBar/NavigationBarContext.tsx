@@ -1,20 +1,23 @@
-import * as React from 'react'
+import {
+  createContext,
+  KeyboardEvent,
+  MouseEvent,
+  PropsWithChildren,
+} from 'react'
 
-type Opener = (
-  open: boolean,
-) => (event: React.KeyboardEvent | React.MouseEvent) => void
+export type Opener = (open: boolean) => (event: KeyboardEvent | MouseEvent) => void
 
 type NavigationBarContextProviderProps = {
   toggleDrawer: Opener
   drawerIsOpen: boolean
-} & React.PropsWithChildren<Record<never, never>>
+} & PropsWithChildren<Record<never, never>>
 
 type navigationBarContext = {
   toggleDrawer: Opener
   drawerIsOpen: boolean
 }
 
-const NavigationBarContext = React.createContext<navigationBarContext>({
+const NavigationBarContext = createContext<navigationBarContext>({
   toggleDrawer: {} as Opener,
   drawerIsOpen: false,
 })

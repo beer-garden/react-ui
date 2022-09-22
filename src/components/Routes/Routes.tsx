@@ -1,7 +1,7 @@
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { Login } from 'pages/Login'
-import { lazy, useEffect, useState } from 'react'
+import { lazy } from 'react'
 import {
   Navigate,
   Route,
@@ -20,21 +20,12 @@ const RequestsIndex = lazy(() => import('pages/RequestsIndex'))
 const RequestView = lazy(() => import('pages/RequestView'))
 const SystemAdmin = lazy(() => import('pages/SystemAdmin'))
 const SystemsIndex = lazy(() => import('pages/SystemIndex'))
+const UsersIndex = lazy(() => import('pages/UsersIndex'))
 
 const Routes = () => {
-  const { getConfig } = ServerConfigContainer.useContainer()
-  const [authIsEnabled, setAuthIsEnabled] = useState<boolean | undefined>()
+  const { authEnabled } = ServerConfigContainer.useContainer()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getConfig()
-      setAuthIsEnabled(data?.auth_enabled)
-    }
-
-    fetchData()
-  }, [getConfig])
-
-  if (authIsEnabled === undefined) return null
+  if (authEnabled === undefined) return null
 
   return (
     <ReactRouterDomRoutes>
@@ -52,6 +43,7 @@ const Routes = () => {
         </Route>
       </Route>
       <Route path="admin" element={<RequireAuth />}>
+        {authEnabled && <Route path="users" element={<UsersIndex />} />}
         <Route path="systems" element={<SystemAdmin />} />
         <Route path="gardens">
           <Route index element={<GardensAdmin />} />

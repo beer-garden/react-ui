@@ -3,25 +3,21 @@ import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 
-const useAdmin = () => {
+const useUsers = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const rescanPluginDirectory = () => {
-    const patchData = {
-      operation: 'rescan',
-    }
+  const getUsers = () => {
     const config: AxiosRequestConfig = {
-      url: '/api/v1/admin',
-      method: 'patch',
+      url: '/api/v1/users',
+      method: 'get',
       withCredentials: authEnabled,
-      data: patchData,
     }
 
     return execute(config)
   }
-  return { rescanPluginDirectory }
+  return { getUsers }
 }
 
-export default useAdmin
+export default useUsers

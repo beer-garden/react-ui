@@ -12,14 +12,16 @@ import { DrawerFooter } from 'components/UI/NavigationBar/DrawerFooter'
 import { DrawerHeader } from 'components/UI/NavigationBar/DrawerHeader'
 import { MenuList } from 'components/UI/NavigationBar/MenuList/MenuList'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
+import { AuthContainer } from 'containers/AuthContainer'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import * as React from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 export const closedDrawerWidth = 37
 export const openedDrawerWidth = 205
 
 interface NavigationBarProps {
-  setMarginLeft: React.Dispatch<React.SetStateAction<number>>
+  setMarginLeft: Dispatch<SetStateAction<number>>
 }
 
 const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
@@ -27,7 +29,9 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
     'drawerIsPinned',
     false,
   )
-  const [drawerIsOpen, setDrawerIsOpen] = React.useState(drawerIsPinned)
+  const [drawerIsOpen, setDrawerIsOpen] = useState(drawerIsPinned)
+  const { authEnabled } = ServerConfigContainer.useContainer()
+  const { user } = AuthContainer.useContainer()
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerIsOpen(open || drawerIsPinned)
@@ -38,6 +42,7 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
     setMarginLeft(value ? openedDrawerWidth : closedDrawerWidth)
     setDrawerIsOpen(value)
   }
+
   return (
     <NavigationBarContextProvider
       toggleDrawer={toggleDrawer}
@@ -57,7 +62,12 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">Beer Garden</Typography>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Beer Garden
+          </Typography>
+          {authEnabled && user && (
+            <Typography variant="subtitle1">Hello, {user}!</Typography>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer

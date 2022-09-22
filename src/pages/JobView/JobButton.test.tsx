@@ -1,7 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { DebugContainer } from 'containers/DebugContainer'
-import { BrowserRouter } from 'react-router-dom'
-import { TJob } from 'test/testData'
+import { TJob } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 import { Job } from 'types/backend-types'
 
 import { JobButton } from './JobButton'
@@ -25,11 +24,9 @@ describe('JobButton', () => {
   test('pause job on click', async () => {
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
-        <DebugContainer.Provider>
-          <JobButton id="24" job={jData} callback={mockFn} />
-        </DebugContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <JobButton id="24" job={jData} callback={mockFn} />
+      </AllProviders>,
     )
     expect(screen.getByText('Pause job')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Pause job'))
@@ -42,11 +39,9 @@ describe('JobButton', () => {
     jData.status = 'STOPPED'
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
-        <DebugContainer.Provider>
-          <JobButton id="24" job={jData} callback={mockFn} />
-        </DebugContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <JobButton id="24" job={jData} callback={mockFn} />
+      </AllProviders>,
     )
     expect(screen.getByText('Resume job')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Resume job'))
@@ -57,11 +52,9 @@ describe('JobButton', () => {
 
   test('render pause button when job is running', () => {
     render(
-      <BrowserRouter>
-        <DebugContainer.Provider>
-          <JobButton id="24" job={jData} callback={jest.fn} />
-        </DebugContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <JobButton id="24" job={jData} callback={jest.fn} />
+      </AllProviders>,
     )
     expect(screen.getByText('Pause job')).toBeInTheDocument()
   })
@@ -69,11 +62,9 @@ describe('JobButton', () => {
   test('render resume button when job is not running', () => {
     jData.status = 'STOPPED'
     render(
-      <BrowserRouter>
-        <DebugContainer.Provider>
-          <JobButton id="24" job={jData} callback={jest.fn} />
-        </DebugContainer.Provider>
-      </BrowserRouter>,
+      <AllProviders>
+        <JobButton id="24" job={jData} callback={jest.fn} />
+      </AllProviders>,
     )
     expect(screen.getByText('Resume job')).toBeInTheDocument()
   })
