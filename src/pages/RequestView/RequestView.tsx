@@ -3,11 +3,12 @@ import {
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
   Alert,
   Backdrop,
-  Box, Breadcrumbs,
+  Box,
+  Breadcrumbs,
   Button,
   Card,
   CardActions,
@@ -20,7 +21,6 @@ import {
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
-import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
@@ -101,6 +101,7 @@ const RequestView = () => {
           command,
         ].join('/')}
         variant="contained"
+        disabled={!!error || !request}
         color="secondary"
         onAuxClick={pourItAgainClick}
         onClick={pourItAgainClick}
@@ -111,13 +112,12 @@ const RequestView = () => {
       <Divider />
       {request ? (
         <>
-          <Divider />
-          {request.parent ?
-              <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
-                {getParentLinks(request.parent, )}
-                <Typography>{request.command}</Typography>
-              </Breadcrumbs> : null
-          }
+          {request.parent ? (
+            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+              {getParentLinks(request.parent)}
+              <Typography>{request.command}</Typography>
+            </Breadcrumbs>
+          ) : null}
           <RequestViewTable request={request} />
           <Box pt={4} display="flex" alignItems="flex-start">
             {!expandParameter ? (
@@ -203,11 +203,12 @@ const RequestView = () => {
             ) : null}
           </Box>
         </>
+      ) : error ? (
+        <Alert severity="error">{error.message}</Alert>
       ) : (
-          error ? (<Alert severity="error">{error.message}</Alert>) :
-              <Backdrop open={true}>
-                <CircularProgress color="inherit" />
-              </Backdrop>
+        <Backdrop open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       )}
     </>
   )

@@ -10,7 +10,7 @@ import {
   formatBeergardenRequests,
   SystemLink,
   useRequestsIndexTableColumns,
-} from 'pages/RequestsIndex/RequestsIndexTable/data'
+} from 'pages/RequestsIndex/data'
 import { useState } from 'react'
 import { Request } from 'types/backend-types'
 
