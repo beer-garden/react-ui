@@ -14,9 +14,9 @@ interface ModalProps {
 const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
   const [debounce, setDebounce] = useState<NodeJS.Timeout | undefined>()
   const [error, setError] = useState<boolean>(false)
-  const [name, setName] = useState<string | undefined>(undefined)
-  const [password, setPassword] = useState<string | undefined>(undefined)
-  const [confirm, setConfirm] = useState<string | undefined>(undefined)
+  const [name, setName] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [confirm, setConfirm] = useState<string>('')
   const [alertStatus, setAlertStatus] = useState<SnackbarState | undefined>(
     undefined,
   )
@@ -24,9 +24,10 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
   const { createUser } = useUsers()
 
   const clearForm = () => {
-    setName(undefined)
-    setPassword(undefined)
-    setConfirm(undefined)
+    setOpen(false)
+    setName('')
+    setPassword('')
+    setConfirm('')
   }
 
   useEffect(() => {
@@ -54,11 +55,9 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
         open={open}
         header="Create User"
         onClose={() => {
-          setOpen(false)
           clearForm()
         }}
         onCancel={() => {
-          setOpen(false)
           clearForm()
         }}
         onSubmit={() => {
@@ -69,7 +68,6 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
                   severity: 'success',
                   message: `User ${name} successfully created!`,
                 })
-                setOpen(false)
                 clearForm()
                 updateUsers()
               })
@@ -87,7 +85,6 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
               doNotAutoDismiss: true,
             })
           }
-          clearForm()
         }}
         styleOverrides={{ size: 'xs', top: '-55%' }}
         content={
