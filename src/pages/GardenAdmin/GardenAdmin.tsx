@@ -2,8 +2,11 @@ import { Box, Grid } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
 import GardenCard from 'components/garden_admin_card'
+import { GardenSyncButton } from 'components/GardenSyncButton'
 import { PageHeader } from 'components/PageHeader'
+import { Snackbar, SnackbarState } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { CreateGarden } from 'pages/GardenAdmin'
 import { useEffect, useState } from 'react'
 import { Garden } from 'types/backend-types'
 
@@ -16,6 +19,10 @@ const GardensAdmin = (): JSX.Element => {
     withCredentials: authEnabled,
   })
 
+  const [requestStatus, setRequestStatus] = useState<SnackbarState | undefined>(
+    undefined,
+  )
+
   useEffect(() => {
     if (data && !error) {
       setGardens(data)
@@ -23,17 +30,22 @@ const GardensAdmin = (): JSX.Element => {
   }, [data, error])
 
   return (
-    <Box>
+    <>
+      <CreateGarden />
+      <Box style={{ float: 'right' }}>
+        <GardenSyncButton gardenName={''} setSyncStatus={setRequestStatus} />
+      </Box>
       <PageHeader title="Gardens Management" description="" />
       <Divider />
       <Grid container spacing={3}>
         {gardens.map((garden: Garden) => (
           <Grid key={garden['name']} item xs={4}>
-            <GardenCard garden={garden} />
+            <GardenCard garden={garden} setRequestStatus={setRequestStatus} />
           </Grid>
         ))}
       </Grid>
-    </Box>
+      {requestStatus ? <Snackbar status={requestStatus} /> : null}
+    </>
   )
 }
 

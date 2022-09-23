@@ -49,7 +49,39 @@ const useGardens = () => {
     return execute(config)
   }
 
-  return { getGardens, getGarden, syncUsers, deleteGarden }
+  const createGarden = (gardenName: string, patchData: unknown) => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/gardens',
+      method: 'POST',
+      data: patchData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+
+    return execute(config)
+  }
+
+  const updateGarden = (gardenName: string, patchData: unknown) => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/gardens/' + encodeURIComponent(gardenName),
+      method: 'PATCH',
+      data: {
+        operation: 'config',
+        path: '',
+        value: patchData,
+      },
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+
+    return execute(config)
+  }
+
+  return { getGardens, getGarden, syncUsers, deleteGarden, createGarden, updateGarden }
 }
 
 export default useGardens

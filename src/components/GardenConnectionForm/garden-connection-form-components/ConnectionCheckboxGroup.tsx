@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, FormGroup, Tooltip } from '@mui/material'
+import { ConnectionFormFields } from 'components/GardenConnectionForm'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from 'pages/GardenAdminView'
 
 interface ConnectionCheckboxGroupProps {
   id: string
@@ -14,36 +14,22 @@ const ConnectionCheckboxGroup = ({
   tooltip,
 }: ConnectionCheckboxGroupProps) => {
   const context = useFormikContext<ConnectionFormFields>()
-
   return (
-    <FormGroup sx={{ width: '27%' }}>
-      {tooltip ? (
-        <Tooltip title={tooltip}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name={id}
-                checked={Boolean(context.values[id])}
-                onChange={context.handleChange}
-              />
-            }
-            label={label}
-            sx={{ mt: 2, pr: 1 }}
-          />
-        </Tooltip>
-      ) : (
+    <FormGroup sx={{ width: '20%' }}>
+      <Tooltip title={tooltip || ''}>
         <FormControlLabel
           control={
             <Checkbox
+              color="secondary"
               name={id}
               checked={Boolean(context.values[id])}
               onChange={context.handleChange}
             />
           }
           label={label}
-          sx={{ mt: 2, pr: 1 }}
+          sx={{ mt: 1, pr: 1 }}
         />
-      )}
+      </Tooltip>
     </FormGroup>
   )
 }

@@ -1,7 +1,9 @@
-import { AxiosRequestConfig } from 'axios'
-import useAxios from 'axios-hooks'
+import {
+  ConnectionFormFields,
+  StompHeader,
+} from 'components/GardenConnectionForm'
 import { FormikHelpers } from 'formik'
-import { ConnectionFormFields, StompHeader } from 'pages/GardenAdminView'
+import useGardens from 'hooks/useGardens'
 import { Dispatch, SetStateAction } from 'react'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -10,43 +12,28 @@ import { SnackbarState } from 'types/custom-types'
  * Return a function to use as the onSubmit for Formik
  * @param garden
  * @param  setSubmissionStatus
+ * @param isCreateGarden
  * @returns An onSubmit function
  */
 const useGardenConnectionFormOnSubmit = (
   garden: Garden,
   setSubmissionStatus: Dispatch<SetStateAction<SnackbarState | undefined>>,
+  isCreateGarden?: boolean,
 ) => {
-  const axiosConfig: AxiosRequestConfig = {
-    url: '/api/v1/gardens/' + encodeURIComponent(garden.name),
-    method: 'PATCH',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  }
-  const axiosOptions = {
-    manual: true,
-  }
+  const { createGarden, updateGarden } = useGardens()
+  const execute = isCreateGarden ? createGarden : updateGarden
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [response, execute] = useAxios(axiosConfig, axiosOptions)
   return (
     connectionParams: ConnectionFormFields,
     formikActions: FormikHelpers<ConnectionFormFields>,
   ) => {
-    const patchData = {
-      operation: 'config',
-      path: '',
-      value: updateConnection(connectionParams, garden),
-    }
-
-    execute({
-      data: patchData,
-    })
+    execute(garden.name, updateConnection(connectionParams, garden))
       .then(() =>
         setSubmissionStatus({
           severity: 'success',
-          message: 'Connection update successful',
+          message: isCreateGarden
+            ? 'Garden create successful'
+            : 'Connection update successful',
           showSeverity: false,
         }),
       )
@@ -82,10 +69,11 @@ const updateConnection = (
   connectionParams: ConnectionFormFields,
   garden: Garden,
 ) => {
-  const { connectionType, ...params } = connectionParams
+  const { gardenName, connectionType, ...params } = connectionParams
 
   return {
     ...garden,
+    name: gardenName,
     connection_type: connectionType,
     connection_params: getConnectionParams(params),
   }
@@ -119,7 +107,12 @@ const getConnectionParams = (
       subscribe_destination: methodParams.stompSubscribeDestination,
       username: methodParams.stompUsername,
       password: methodParams.stompPassword,
-      ssl: { use_ssl: methodParams.stompSsl },
+      ssl: {
+        use_ssl: methodParams.stompUseSsl,
+        ca_cert: methodParams.stompCACert,
+        client_cert: methodParams.stompClientCert,
+        client_key: methodParams.stompClientKey,
+      },
       headers: (methodParams.stompHeaders as StompHeader[]).map(deIdifyHeader),
     },
   }

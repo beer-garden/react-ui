@@ -1,59 +1,74 @@
 import {
   AppBar,
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
+  Grid,
+  Modal,
   Toolbar,
   Typography,
 } from '@mui/material'
-import Table from 'components/table'
+import { Divider } from 'components/Divider'
+import { GardenStatusAlert } from 'components/GardenStatusAlert'
 import useGardens from 'hooks/useGardens'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { Garden } from 'types/backend-types'
-import { TableState } from 'types/custom-types'
+import { SnackbarState } from 'types/custom-types'
 
 interface GardenAdminCardProps {
   garden: Garden
+  setRequestStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
 }
 
-const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
+const GardenAdminCard = ({
+  garden,
+  setRequestStatus,
+}: GardenAdminCardProps) => {
+  const [open, setOpen] = useState(false)
+
   const { deleteGarden } = useGardens()
-  function getTableData() {
-    return [
-      ['Status', garden.status],
-      ['Namespaces', garden.namespaces.length],
-      ['Systems', garden.systems.length],
-    ]
+
+  const style = {
+    position: 'absolute' as const,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    height: 'auto',
+    overflow: 'auto',
   }
 
-  const state: TableState = {
-    formatData: getTableData,
-    tableHeads: [],
-    includePageNav: false,
-    disableSearch: true,
-  }
+  const handleDeleteClick = () => {
+    deleteGarden(garden.name)
+      .then(() => {
+        setRequestStatus({
+          severity: 'success',
+          message: `Garden: ${garden.name} successful removed`,
+          showSeverity: false,
+        })
+        setOpen(false)
+      })
+      .catch((error) => {
+        console.error('ERROR', error)
 
-  function getDeleteButton(connection_type: string) {
-    if (connection_type !== 'LOCAL') {
-      return (
-        <Button
-          onClick={() => deleteGarden(garden.name)}
-          variant="contained"
-          color="secondary"
-        >
-          Delete {garden.name}
-        </Button>
-      )
-    }
-  }
-
-  function localOrRemote(connection_type: string) {
-    if (connection_type === 'LOCAL') {
-      return '(LOCAL)'
-    } else {
-      return '(REMOTE)'
-    }
+        if (error.response) {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error.response.data.message}`,
+            doNotAutoDismiss: true,
+          })
+        } else {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error}`,
+          })
+        }
+      })
   }
 
   return (
@@ -61,23 +76,71 @@ const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
       <AppBar color="inherit" position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit">
-            {garden.name} {localOrRemote(garden.connection_type)}
+            {garden.name}{' '}
+            {garden.connection_type === 'LOCAL' ? '(LOCAL)' : '(REMOTE)'}
           </Typography>
         </Toolbar>
       </AppBar>
       <CardContent>
-        <Table parentState={state} />
+        <Grid container>
+          <Grid>Status: </Grid>
+          <Grid>
+            <GardenStatusAlert status={garden.status} />
+          </Grid>
+        </Grid>
+        Namespaces: {garden.namespaces.length} <br /> Systems:{' '}
+        {garden.systems.length}
       </CardContent>
       <CardActions>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           component={RouterLink}
           to={'/admin/gardens/' + garden.name}
+          sx={{ width: 0.75, mr: 1 }}
         >
-          Edit {garden.name} configurations
+          Edit configurations
         </Button>
-        {getDeleteButton(garden.connection_type)}
+        {garden.connection_type !== 'LOCAL' ? (
+          <>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => setOpen(true)}
+            >
+              Delete
+            </Button>
+            <Modal
+              open={open}
+              onClose={() => setOpen(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                Confirm Garden Deletion
+                <Divider />
+                Are you sure you want to delete garden: {garden.name}? This will
+                also delete all Systems assocaited with garden: {garden.name}.
+                <Divider />
+                <Button
+                  onClick={() => handleDeleteClick()}
+                  variant="contained"
+                  color="secondary"
+                  sx={{ mr: 1 }}
+                >
+                  Confirm
+                </Button>
+                <Button
+                  onClick={() => setOpen(false)}
+                  variant="contained"
+                  color="error"
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </Modal>
+          </>
+        ) : null}
       </CardActions>
     </Card>
   )

@@ -1,23 +1,19 @@
 import LoadingButton from '@mui/lab/LoadingButton'
-import { Button } from '@mui/material'
+import { Box } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { SnackbarState } from 'types/custom-types'
 
 interface GardenSynButtonParams {
-  gardenName: string
   setSyncStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
 }
 
-const GardenSyncButton = ({
-  gardenName,
-  setSyncStatus,
-}: GardenSynButtonParams) => {
+const GardenSyncAllButton = ({ setSyncStatus }: GardenSynButtonParams) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const [{ loading, error }, execute] = useAxios(
+  const [{ loading }, execute] = useAxios(
     {
-      url: '/api/v1/gardens/' + gardenName,
+      url: '/api/v1/gardens/',
       method: 'PATCH',
     },
     { manual: true },
@@ -62,21 +58,19 @@ const GardenSyncButton = ({
     setIsLoading(loading)
   }
 
-  return error ? (
-    <Button variant="contained" color="error">
-      Sync Error
-    </Button>
-  ) : (
-    <LoadingButton
-      variant="contained"
-      color="primary"
-      onClick={handleClick}
-      loading={isLoading}
-      loadingIndicator="Loading"
-    >
-      Sync
-    </LoadingButton>
+  return (
+    <Box style={{ float: 'right' }}>
+      <LoadingButton
+        variant="contained"
+        color="primary"
+        onClick={handleClick}
+        loading={isLoading}
+        loadingIndicator="Loading"
+      >
+        Sync All
+      </LoadingButton>
+    </Box>
   )
 }
 
-export { GardenSyncButton }
+export { GardenSyncAllButton }
