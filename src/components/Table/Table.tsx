@@ -96,6 +96,9 @@ interface TableProps<T extends ObjectWithStringKeys> extends TableOptions<T> {
   maxrows?: number
   tableName?: string
   tableKey?: string
+  hideToolbar?: boolean
+  hideSort?: boolean
+  hidePagination?: boolean
 }
 
 const DEBUG_INITIAL_STATE = false
@@ -110,6 +113,9 @@ const Table = <T extends ObjectWithStringKeys>(
     columns,
     showGlobalFilter,
     setSelection,
+    hideToolbar,
+    hideSort,
+    hidePagination,
     ...childProps
   } = props
 
@@ -199,7 +205,7 @@ const Table = <T extends ObjectWithStringKeys>(
 
   return (
     <>
-      <Toolbar name={tableName || ''} instance={instance} />
+      {hideToolbar ? null : <Toolbar name={tableName || ''} instance={instance} />}
       <FilterChipBar<T> instance={instance} />
       <Box {...childProps}>
         <Stack direction="row" spacing={3}>
@@ -256,7 +262,7 @@ const Table = <T extends ObjectWithStringKeys>(
                           />
                         </Tooltip>
                       )}
-                      {column.canSort ? (
+                      {column.canSort && !hideSort ? (
                         <Tooltip title={sortTitle}>
                           <TableSortLabel
                             active={column.isSorted}
@@ -333,7 +339,7 @@ const Table = <T extends ObjectWithStringKeys>(
           })}
         </TableBody>
       </StyledTable>
-      <TablePagination maxRows={props.maxrows} instance={instance} />
+      {hidePagination ? null : <TablePagination maxRows={props.maxrows} instance={instance} />}
     </>
   )
 }
