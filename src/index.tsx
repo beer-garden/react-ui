@@ -5,6 +5,7 @@ import { ThemeProvider } from 'components/UI/Theme/ThemeProvider'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -17,9 +18,11 @@ ReactDOM.render(
       <CssBaseline />
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>
-            <App />
-          </AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <App />
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </ThemeProvider>
