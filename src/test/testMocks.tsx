@@ -2,8 +2,10 @@ import ErrorBoundary from 'components/ErrorBoundary'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import { DebugSettings } from 'types/config-types'
 
 interface AuthContextType {
   isAuthEnabled: boolean
@@ -25,7 +27,9 @@ export const AllProviders = ({ children }: ProviderMocks) => {
     <BrowserRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>{children}</AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>{children}</AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </BrowserRouter>
@@ -43,9 +47,11 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
     <BrowserRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>
-            <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
-          </AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </BrowserRouter>
@@ -64,9 +70,11 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
       <ErrorBoundary>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <AuthContainer.Provider>
-              <SubProvider>{children}</SubProvider>
-            </AuthContainer.Provider>
+            <SocketContainer.Provider>
+              <AuthContainer.Provider>
+                <LoginProvider>{children}</LoginProvider>
+              </AuthContainer.Provider>
+            </SocketContainer.Provider>
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </ErrorBoundary>
@@ -74,7 +82,7 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
   )
 }
 
-const SubProvider = ({ children }: ProviderMocks) => {
+const LoginProvider = ({ children }: ProviderMocks) => {
   const { login } = AuthContainer.useContainer()
   login('admin', 'password')
     .then(() => {
@@ -85,4 +93,50 @@ const SubProvider = ({ children }: ProviderMocks) => {
       // properties of undefined (reading 'replace')" }
     })
   return <>{children}</>
+}
+
+/**
+ * Wrapper that only has socket provider and what it needs to run
+ * not authenticated
+ * @param param0
+ * @returns
+ */
+export const SocketProvider = ({ children }: ProviderMocks) => {
+  return (
+    <DebugContainer.Provider>
+      <SocketContainer.Provider>{children}</SocketContainer.Provider>
+    </DebugContainer.Provider>
+  )
+}
+
+/**
+ * Set any debug log for testing purposes
+ * @param param0
+ */
+export const SetDebugLogs = ({
+  DEBUG_LOGIN,
+  DEBUG_AUTH,
+  DEBUG_LOCAL_STORAGE,
+  DEBUG_SOCKET,
+}: DebugSettings) => {
+  const { setDebug } = DebugContainer.useContainer()
+  setDebug({
+    DEBUG_LOGIN,
+    DEBUG_AUTH,
+    DEBUG_LOCAL_STORAGE,
+    DEBUG_SOCKET,
+  })
+}
+
+/**
+ * Set all debug logs to false
+ */
+export const ResetDebugLogs = () => {
+  const { setDebug } = DebugContainer.useContainer()
+  setDebug({
+    DEBUG_LOGIN: false,
+    DEBUG_AUTH: false,
+    DEBUG_LOCAL_STORAGE: false,
+    DEBUG_SOCKET: false,
+  })
 }

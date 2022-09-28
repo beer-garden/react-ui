@@ -1,10 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { DebugContainer } from 'containers/DebugContainer'
+import { useEffect, useMemo, useRef } from 'react'
 import { createContainer } from 'unstated-next'
-
-const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
-const eventUrl =
-  protocol + window.location.hostname + ':2337/api/v1/socket/events/'
-const ws = new WebSocket(eventUrl)
 
 type WsCallback = (arg0: MessageEvent['data']) => void
 interface CallbackList {
@@ -12,7 +8,13 @@ interface CallbackList {
 }
 
 const useSocket = () => {
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
+  const eventUrl =
+    protocol + window.location.hostname + ':2337/api/v1/socket/events'
+  const ws = useMemo(() => new WebSocket(eventUrl), [eventUrl])
+
   const cbList = useRef<CallbackList>({})
+  const { DEBUG_SOCKET } = DebugContainer.useContainer()
 
   useEffect(() => {
     /**
@@ -21,11 +23,12 @@ const useSocket = () => {
      */
     ws.onmessage = (message) => {
       const event = JSON.parse(message.data)
+      if (DEBUG_SOCKET) console.log('Socket message', event)
       Object.values(cbList.current).forEach((callback: WsCallback) => {
         callback(event)
       })
     }
-  }, [])
+  }, [DEBUG_SOCKET, ws])
 
   /**
    * Adds function to list of callbacks, WILL OVERWRITE EXISTING FUNCTION
@@ -34,11 +37,13 @@ const useSocket = () => {
    * @param cb function Callback function
    */
   const addCallback = (key: string, cb: WsCallback) => {
+    if (DEBUG_SOCKET) console.log(`Adding ${key} socket listener`)
     cbList.current[key] = cb
   }
 
   const removeCallback = (key: string) => {
     if (cbList.current[key]) {
+      if (DEBUG_SOCKET) console.log(`Removing ${key} socket listener`)
       delete cbList.current[key]
     }
   }

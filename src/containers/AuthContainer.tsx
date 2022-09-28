@@ -85,7 +85,7 @@ const useAuth = () => {
 
       window.localStorage.setItem(AuthEvents.LOGIN, new Date().toISOString())
     },
-    [axiosInstance, DEBUG_LOGIN, setUser, setToken],
+    [axiosInstance, DEBUG_LOGIN, setUser, setToken, updateToken],
   )
 
   return {

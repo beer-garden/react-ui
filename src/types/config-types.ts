@@ -15,3 +15,10 @@ export interface VersionConfig {
   current_api_version: string
   supported_api_versions: [string]
 }
+
+export interface DebugSettings {
+  DEBUG_LOGIN?: boolean
+  DEBUG_AUTH?: boolean
+  DEBUG_LOCAL_STORAGE?: boolean
+  DEBUG_SOCKET?: boolean
+}
