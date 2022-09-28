@@ -4,10 +4,14 @@ import FactoryIcon from '@mui/icons-material/Factory'
 import { Divider, MenuList as MuiMenuList } from '@mui/material'
 import { AdminMenu } from 'components/UI/NavigationBar/MenuList/AdminMenu'
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
+import { LogoutButton } from 'components/UI/NavigationBar/MenuList/LogoutButton'
 import { OptionsMenu } from 'components/UI/NavigationBar/MenuList/OptionsMenu'
+import { AuthContainer } from 'containers/AuthContainer'
 import * as React from 'react'
 
 const MenuList = () => {
+  const { user } = AuthContainer.useContainer()
+
   return (
     <MuiMenuList>
       {mainEntries.map((entry: mainEntriesType) => {
@@ -24,6 +28,7 @@ const MenuList = () => {
       <AdminMenu />
       <Divider />
       <OptionsMenu />
+      {user && <LogoutButton />}
     </MuiMenuList>
   )
 }
