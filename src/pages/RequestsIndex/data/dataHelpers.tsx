@@ -89,7 +89,7 @@ const SystemLink = (label: string, params: string[]) => {
       }}
     >
       {' '}
-      <RouterLink to={'/systems' + params.join('/')}>{label}</RouterLink>
+      <RouterLink to={'/systems/' + params.join('/')}>{label}</RouterLink>
     </Box>
   )
 }
@@ -132,4 +132,4 @@ const formatBeergardenRequests = (
   return requests.map(requestToFormatted)
 }
 
-export { formatBeergardenRequests }
+export { formatBeergardenRequests, RequestLink, SystemLink }
