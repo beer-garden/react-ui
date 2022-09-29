@@ -15,7 +15,6 @@ describe('Queue Modal', () => {
     await waitFor(() => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
-    expect(screen.getByRole('heading')).toBeInTheDocument()
     expect(
       screen.getByRole('columnheader', { name: 'Name' }),
     ).toBeInTheDocument()
