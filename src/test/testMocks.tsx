@@ -5,7 +5,6 @@ import { DebugContainer } from 'containers/DebugContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { DebugSettings } from 'types/config-types'
 
 interface AuthContextType {
   isAuthEnabled: boolean
