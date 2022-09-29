@@ -119,6 +119,8 @@ const QueueModal = ({ instance }: IQueueModal) => {
           data={queueData}
           columns={useTableColumns()}
           maxrows={10}
+          hidePagination
+          hideToolbar
         />
       </Stack>
       <ModalWrapper
