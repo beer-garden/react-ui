@@ -163,6 +163,7 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
               tableKey="UserSync"
               data={userData}
               columns={useTableColumns()}
+              hideToolbar
             />
           </>
         }
