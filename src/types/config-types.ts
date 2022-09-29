@@ -17,8 +17,8 @@ export interface VersionConfig {
 }
 
 export interface DebugSettings {
-  DEBUG_LOGIN?: boolean
-  DEBUG_AUTH?: boolean
-  DEBUG_LOCAL_STORAGE?: boolean
-  DEBUG_SOCKET?: boolean
+  LOGIN?: boolean
+  AUTH?: boolean
+  LOCAL_STORAGE?: boolean
+  SOCKET?: boolean
 }

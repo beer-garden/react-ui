@@ -97,46 +97,14 @@ const LoginProvider = ({ children }: ProviderMocks) => {
 
 /**
  * Wrapper that only has socket provider and what it needs to run
- * not authenticated
+ * not authenticated, with logs on
  * @param param0
  * @returns
  */
 export const SocketProvider = ({ children }: ProviderMocks) => {
   return (
-    <DebugContainer.Provider>
+    <DebugContainer.Provider initialState={{ SOCKET: true }}>
       <SocketContainer.Provider>{children}</SocketContainer.Provider>
     </DebugContainer.Provider>
   )
-}
-
-/**
- * Set any debug log for testing purposes
- * @param param0
- */
-export const SetDebugLogs = ({
-  DEBUG_LOGIN,
-  DEBUG_AUTH,
-  DEBUG_LOCAL_STORAGE,
-  DEBUG_SOCKET,
-}: DebugSettings) => {
-  const { setDebug } = DebugContainer.useContainer()
-  setDebug({
-    DEBUG_LOGIN,
-    DEBUG_AUTH,
-    DEBUG_LOCAL_STORAGE,
-    DEBUG_SOCKET,
-  })
-}
-
-/**
- * Set all debug logs to false
- */
-export const ResetDebugLogs = () => {
-  const { setDebug } = DebugContainer.useContainer()
-  setDebug({
-    DEBUG_LOGIN: false,
-    DEBUG_AUTH: false,
-    DEBUG_LOCAL_STORAGE: false,
-    DEBUG_SOCKET: false,
-  })
 }

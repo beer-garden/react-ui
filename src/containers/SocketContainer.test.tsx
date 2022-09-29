@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 import WS from 'jest-websocket-mock'
-import { ResetDebugLogs, SetDebugLogs, SocketProvider } from 'test/testMocks'
+import { SocketProvider } from 'test/testMocks'
 
 import { SocketContainer } from './SocketContainer'
 
@@ -17,38 +17,22 @@ describe('Socket Container', () => {
 
   afterAll(() => {
     consoleSpy.mockRestore()
-    const { result } = renderHook(() => ResetDebugLogs(), {
-      wrapper: SocketProvider,
-    })
-    if (result.error) console.error(result.error)
   })
 
   test('adds function to listener list', () => {
     const mockFn = jest.fn()
-    const { result } = renderHook(
-      () => {
-        SetDebugLogs({ DEBUG_SOCKET: true })
-        return SocketContainer.useContainer()
-      },
-      {
-        wrapper: SocketProvider,
-      },
-    )
+    const { result } = renderHook(() => SocketContainer.useContainer(), {
+      wrapper: SocketProvider,
+    })
     result.current.addCallback('testCB', mockFn)
     expect(consoleSpy).toHaveBeenCalledWith('Adding testCB socket listener')
   })
 
   test('does not error adding existing function to listener list', () => {
     const mockFn = jest.fn()
-    const { result } = renderHook(
-      () => {
-        SetDebugLogs({ DEBUG_SOCKET: true })
-        return SocketContainer.useContainer()
-      },
-      {
-        wrapper: SocketProvider,
-      },
-    )
+    const { result } = renderHook(() => SocketContainer.useContainer(), {
+      wrapper: SocketProvider,
+    })
     result.current.addCallback('testCB', mockFn)
     result.current.addCallback('testCB', mockFn)
     expect(consoleSpy).toHaveBeenCalledWith('Adding testCB socket listener')
@@ -56,15 +40,9 @@ describe('Socket Container', () => {
   })
 
   test('does not remove non-existent function from listener list if', () => {
-    const { result } = renderHook(
-      () => {
-        SetDebugLogs({ DEBUG_SOCKET: true })
-        return SocketContainer.useContainer()
-      },
-      {
-        wrapper: SocketProvider,
-      },
-    )
+    const { result } = renderHook(() => SocketContainer.useContainer(), {
+      wrapper: SocketProvider,
+    })
     result.current.removeCallback('testCB')
     expect(consoleSpy).not.toHaveBeenCalledWith(
       'Removing testCB socket listener',
@@ -73,15 +51,9 @@ describe('Socket Container', () => {
 
   test('removes function from listener list', () => {
     const mockFn = jest.fn()
-    const { result } = renderHook(
-      () => {
-        SetDebugLogs({ DEBUG_SOCKET: true })
-        return SocketContainer.useContainer()
-      },
-      {
-        wrapper: SocketProvider,
-      },
-    )
+    const { result } = renderHook(() => SocketContainer.useContainer(), {
+      wrapper: SocketProvider,
+    })
     result.current.addCallback('testCB', mockFn)
     consoleSpy.mockClear()
     result.current.removeCallback('testCB')
@@ -102,15 +74,9 @@ describe('Socket Container', () => {
     test('calls listeners on message', async () => {
       const testMsg = JSON.stringify({ test: 'This is a test' })
       const mockFn = jest.fn()
-      const { result } = renderHook(
-        () => {
-          SetDebugLogs({ DEBUG_SOCKET: true })
-          return SocketContainer.useContainer()
-        },
-        {
-          wrapper: SocketProvider,
-        },
-      )
+      const { result } = renderHook(() => SocketContainer.useContainer(), {
+        wrapper: SocketProvider,
+      })
       result.current.addCallback('testAdd', mockFn)
       await server.connected
       server.send(testMsg)
