@@ -10,8 +10,7 @@ const TRoleAssignment: RoleAssignment = {
   domain: {
     scope: 'System',
     identifiers: {
-      serialization_schema_selector: true,
-      deserialization_schema_selector: true,
+      namespace: 'child',
     },
   },
   role: TRole,
@@ -27,8 +26,7 @@ const TAdminRoleAssignment: RoleAssignment = {
   domain: {
     scope: 'System',
     identifiers: {
-      serialization_schema_selector: true,
-      deserialization_schema_selector: true,
+      name: 'default',
     },
   },
   role: TAdminRole,

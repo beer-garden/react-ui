@@ -2,6 +2,7 @@ import ErrorBoundary from 'components/ErrorBoundary'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -25,10 +26,23 @@ export const AllProviders = ({ children }: ProviderMocks) => {
     <BrowserRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>{children}</AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>{children}</AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </BrowserRouter>
+  )
+}
+
+/**
+ * Wrapper that just has config provider
+ * @param param0 Component(s) to render as children
+ * @returns
+ */
+export const ConfigProviders = ({ children }: ProviderMocks) => {
+  return (
+    <ServerConfigContainer.Provider>{children}</ServerConfigContainer.Provider>
   )
 }
 
@@ -43,9 +57,11 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
     <BrowserRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>
-            <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
-          </AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </BrowserRouter>
@@ -64,9 +80,11 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
       <ErrorBoundary>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <AuthContainer.Provider>
-              <SubProvider>{children}</SubProvider>
-            </AuthContainer.Provider>
+            <SocketContainer.Provider>
+              <AuthContainer.Provider>
+                <LoginProvider>{children}</LoginProvider>
+              </AuthContainer.Provider>
+            </SocketContainer.Provider>
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </ErrorBoundary>
@@ -74,7 +92,7 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
   )
 }
 
-const SubProvider = ({ children }: ProviderMocks) => {
+const LoginProvider = ({ children }: ProviderMocks) => {
   const { login } = AuthContainer.useContainer()
   login('admin', 'password')
     .then(() => {
