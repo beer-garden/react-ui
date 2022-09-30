@@ -54,6 +54,15 @@ export const TInstance: Instance = {
   queue_type: 'queued',
 }
 
+export const TInstance2: Instance = {
+  description: 'another instance to test',
+  id: 'secondInst',
+  name: 'secondInstance',
+  status: 'INITIALIZING',
+  status_info: { heartbeat: 70 },
+  queue_type: 'queued',
+}
+
 export const TLog =
   'This is a test log\nMultiples line items\nJust to test with'
 

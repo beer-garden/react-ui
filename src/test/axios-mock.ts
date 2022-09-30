@@ -2,14 +2,13 @@ import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
 import * as mockData from './test-values'
-import { TUser } from './user-test-values'
+import { TAdmin, TUser } from './user-test-values'
 
 axios.defaults.baseURL = 'http://localhost:4000'
 
 const mock = new MockAdapter(axios)
 
 const regexLogs = new RegExp(/(\/api\/v1\/instances\/)\w+(\/logs)/)
-
 const regexQueues = new RegExp(/(\/api\/v1\/instances\/)(\w+[^bad])(\/queues)/)
 
 // Success GET
@@ -30,6 +29,7 @@ mock
 // Success POST
 mock.onPost('/api/v1/requests').reply(200, { id: 'testRequest' })
 mock.onPost('/api/v1/token').reply(200, { access: 'admin', refresh: 'none' })
+mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
 
 // default
 mock.onAny().reply(200, undefined)

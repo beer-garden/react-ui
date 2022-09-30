@@ -4,8 +4,7 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { DebugSettings } from 'types/config-types'
+import { HashRouter } from 'react-router-dom'
 
 interface AuthContextType {
   isAuthEnabled: boolean
@@ -24,7 +23,7 @@ interface ProviderMocks {
  */
 export const AllProviders = ({ children }: ProviderMocks) => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
           <SocketContainer.Provider>
@@ -32,7 +31,7 @@ export const AllProviders = ({ children }: ProviderMocks) => {
           </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
@@ -44,7 +43,7 @@ export const AllProviders = ({ children }: ProviderMocks) => {
  */
 export const SuspendedProviders = ({ children }: ProviderMocks) => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
           <SocketContainer.Provider>
@@ -54,7 +53,7 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
           </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
@@ -66,7 +65,7 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
  */
 export const LoggedInProviders = ({ children }: ProviderMocks) => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ErrorBoundary>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
@@ -78,7 +77,7 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </ErrorBoundary>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
