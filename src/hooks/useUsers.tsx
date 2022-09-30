@@ -17,7 +17,22 @@ const useUsers = () => {
 
     return execute(config)
   }
-  return { getUsers }
+
+  const createUser = (name: string, pw: string) => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/users',
+      method: 'post',
+      withCredentials: authEnabled,
+      data: {
+        username: name,
+        password: pw,
+      },
+    }
+
+    return execute(config)
+  }
+
+  return { getUsers, createUser }
 }
 
 export default useUsers
