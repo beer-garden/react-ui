@@ -6,13 +6,13 @@ import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
 import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
-  <BrowserRouter>
+  <HashRouter>
     <ThemeProvider>
       <CssBaseline />
       <ServerConfigContainer.Provider>
@@ -23,7 +23,7 @@ ReactDOM.render(
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </ThemeProvider>
-  </BrowserRouter>,
+  </HashRouter>,
   document.getElementById('root'),
 )
 

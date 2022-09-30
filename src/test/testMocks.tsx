@@ -3,7 +3,7 @@ import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
 import { Suspense } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 
 interface AuthContextType {
   isAuthEnabled: boolean
@@ -22,13 +22,13 @@ interface ProviderMocks {
  */
 export const AllProviders = ({ children }: ProviderMocks) => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
           <AuthContainer.Provider>{children}</AuthContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
@@ -40,7 +40,7 @@ export const AllProviders = ({ children }: ProviderMocks) => {
  */
 export const SuspendedProviders = ({ children }: ProviderMocks) => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
           <AuthContainer.Provider>
@@ -48,7 +48,7 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
           </AuthContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
@@ -60,7 +60,7 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
  */
 export const LoggedInProviders = ({ children }: ProviderMocks) => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ErrorBoundary>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
@@ -70,7 +70,7 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </ErrorBoundary>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 
 import { ModalWrapper } from './ModalWrapper'
 
@@ -8,14 +8,14 @@ describe('Modal Wrapper', () => {
   test('renders modal window with contents', () => {
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
+      <HashRouter>
         <ModalWrapper
           open={true}
           onClose={mockFn}
           header="This Is A Test Modal"
           content={<Typography>So much test</Typography>}
         />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.getByText('So much test')).toBeInTheDocument()
     expect(screen.getByText('This Is A Test Modal')).toBeInTheDocument()
@@ -24,14 +24,14 @@ describe('Modal Wrapper', () => {
   test('does not render modal window when trigger is false', () => {
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
+      <HashRouter>
         <ModalWrapper
           open={false}
           onClose={mockFn}
           header="This Is A Test Modal"
           content={<Typography>So much test</Typography>}
         />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.queryByText('So much test')).not.toBeInTheDocument()
     expect(screen.queryByText('This Is A Test Modal')).not.toBeInTheDocument()
@@ -40,7 +40,7 @@ describe('Modal Wrapper', () => {
   test('adds submit button when given callback', async () => {
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
+      <HashRouter>
         <ModalWrapper
           open={true}
           onClose={mockFn}
@@ -48,7 +48,7 @@ describe('Modal Wrapper', () => {
           header="This Is A Test Modal"
           content={<Typography>So much test</Typography>}
         />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.getByText('Submit')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Submit'))
@@ -60,7 +60,7 @@ describe('Modal Wrapper', () => {
   test('adds cancel button when given callback', async () => {
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
+      <HashRouter>
         <ModalWrapper
           open={true}
           onClose={mockFn}
@@ -68,7 +68,7 @@ describe('Modal Wrapper', () => {
           header="This Is A Test Modal"
           content={<Typography>So much test</Typography>}
         />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.getByText('Cancel')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Cancel'))
@@ -80,7 +80,7 @@ describe('Modal Wrapper', () => {
   test('adds custom button when given prop', async () => {
     const mockFn = jest.fn()
     render(
-      <BrowserRouter>
+      <HashRouter>
         <ModalWrapper
           open={true}
           onClose={mockFn}
@@ -88,7 +88,7 @@ describe('Modal Wrapper', () => {
           header="This Is A Test Modal"
           content={<Typography>So much test</Typography>}
         />
-      </BrowserRouter>,
+      </HashRouter>,
     )
     expect(screen.getByText('Test Button!')).toBeInTheDocument()
     fireEvent.click(screen.getByText('Test Button!'))
