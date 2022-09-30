@@ -1,4 +1,5 @@
 import { DebugContainer } from 'containers/DebugContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
 import { useCallback, useEffect, useState } from 'react'
@@ -22,6 +23,7 @@ export interface User extends UserBase {
 
 const useAuth = () => {
   const { DEBUG_LOGIN } = DebugContainer.useContainer()
+  const { updateSocketToken } = SocketContainer.useContainer()
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const [user, _setUser] = useState<string | null>(null)
@@ -79,10 +81,11 @@ const useAuth = () => {
 
       setUser(username)
       setToken({ access, refresh })
+      updateSocketToken(access)
 
       window.localStorage.setItem(AuthEvents.LOGIN, new Date().toISOString())
     },
-    [axiosInstance, DEBUG_LOGIN, setUser, setToken],
+    [axiosInstance, DEBUG_LOGIN, setUser, setToken, updateSocketToken],
   )
 
   return {

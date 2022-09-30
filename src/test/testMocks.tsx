@@ -2,6 +2,7 @@ import ErrorBoundary from 'components/ErrorBoundary'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
 import { HashRouter } from 'react-router-dom'
 
@@ -25,7 +26,9 @@ export const AllProviders = ({ children }: ProviderMocks) => {
     <HashRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>{children}</AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>{children}</AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </HashRouter>
@@ -43,9 +46,11 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
     <HashRouter>
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
-          <AuthContainer.Provider>
-            <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
-          </AuthContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
     </HashRouter>
@@ -64,9 +69,11 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
       <ErrorBoundary>
         <ServerConfigContainer.Provider>
           <DebugContainer.Provider>
-            <AuthContainer.Provider>
-              <SubProvider>{children}</SubProvider>
-            </AuthContainer.Provider>
+            <SocketContainer.Provider>
+              <AuthContainer.Provider>
+                <LoginProvider>{children}</LoginProvider>
+              </AuthContainer.Provider>
+            </SocketContainer.Provider>
           </DebugContainer.Provider>
         </ServerConfigContainer.Provider>
       </ErrorBoundary>
@@ -74,7 +81,7 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
   )
 }
 
-const SubProvider = ({ children }: ProviderMocks) => {
+const LoginProvider = ({ children }: ProviderMocks) => {
   const { login } = AuthContainer.useContainer()
   login('admin', 'password')
     .then(() => {
@@ -85,4 +92,18 @@ const SubProvider = ({ children }: ProviderMocks) => {
       // properties of undefined (reading 'replace')" }
     })
   return <>{children}</>
+}
+
+/**
+ * Wrapper that only has socket provider and what it needs to run
+ * not authenticated, with logs on
+ * @param param0
+ * @returns
+ */
+export const SocketProvider = ({ children }: ProviderMocks) => {
+  return (
+    <DebugContainer.Provider initialState={{ SOCKET: true }}>
+      <SocketContainer.Provider>{children}</SocketContainer.Provider>
+    </DebugContainer.Provider>
+  )
 }
