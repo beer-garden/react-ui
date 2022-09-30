@@ -17,7 +17,7 @@ enum AuthEvents {
 const useAuth = () => {
   const { DEBUG_LOGIN } = DebugContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const { updateToken } = SocketContainer.useContainer()
+  const { updateSocketToken } = SocketContainer.useContainer()
   const { axiosInstance } = useMyAxios()
   const { getUser } = useUsers()
   const navigate = useNavigate()
@@ -83,11 +83,11 @@ const useAuth = () => {
 
       setUser(username)
       setToken({ access, refresh })
-      updateToken(access)
+      updateSocketToken(access)
 
       window.localStorage.setItem(AuthEvents.LOGIN, new Date().toISOString())
     },
-    [axiosInstance, DEBUG_LOGIN, setUser, setToken, updateToken],
+    [axiosInstance, DEBUG_LOGIN, setUser, setToken, updateSocketToken],
   )
 
   const hasPermission = (permission: string) => {

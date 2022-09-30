@@ -1,7 +1,8 @@
+import { DebugSettings } from 'types/config-types'
 import { createContainer } from 'unstated-next'
 
 const useDebugContainer = (
-  initialState = {
+  initialState: DebugSettings = {
     LOGIN: false,
     AUTH: false,
     LOCAL_STORAGE: false,

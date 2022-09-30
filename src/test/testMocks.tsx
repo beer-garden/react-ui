@@ -113,14 +113,7 @@ const LoginProvider = ({ children }: ProviderMocks) => {
  */
 export const SocketProvider = ({ children }: ProviderMocks) => {
   return (
-    <DebugContainer.Provider
-      initialState={{
-        LOGIN: false,
-        AUTH: false,
-        LOCAL_STORAGE: false,
-        SOCKET: true,
-      }}
-    >
+    <DebugContainer.Provider initialState={{ SOCKET: true }}>
       <SocketContainer.Provider>{children}</SocketContainer.Provider>
     </DebugContainer.Provider>
   )

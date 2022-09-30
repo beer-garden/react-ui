@@ -94,7 +94,7 @@ describe('Socket Container', () => {
         wrapper: SocketProvider,
       })
       await server.connected
-      result.current.updateToken(msg.payload)
+      result.current.updateSocketToken(msg.payload)
       await expect(server).toReceiveMessage(msgStr)
       expect(server).toHaveReceivedMessages([msgStr])
     })
