@@ -23,7 +23,7 @@ export interface User extends UserBase {
 
 const useAuth = () => {
   const { DEBUG_LOGIN } = DebugContainer.useContainer()
-  const { updateToken } = SocketContainer.useContainer()
+  const { updateSocketToken } = SocketContainer.useContainer()
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const [user, _setUser] = useState<string | null>(null)
@@ -81,11 +81,11 @@ const useAuth = () => {
 
       setUser(username)
       setToken({ access, refresh })
-      updateToken(access)
+      updateSocketToken(access)
 
       window.localStorage.setItem(AuthEvents.LOGIN, new Date().toISOString())
     },
-    [axiosInstance, DEBUG_LOGIN, setUser, setToken, updateToken],
+    [axiosInstance, DEBUG_LOGIN, setUser, setToken, updateSocketToken],
   )
 
   return {

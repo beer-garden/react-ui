@@ -48,7 +48,7 @@ const useSocket = () => {
     }
   }
 
-  const updateToken = (token: string) => {
+  const updateSocketToken = (token: string) => {
     if (token && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ name: 'UPDATE_TOKEN', payload: token }))
     }
@@ -57,7 +57,7 @@ const useSocket = () => {
   return {
     addCallback,
     removeCallback,
-    updateToken,
+    updateSocketToken,
   }
 }
 
