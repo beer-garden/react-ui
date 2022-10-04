@@ -9,8 +9,8 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import SyncUserModal from 'components/SyncUserModal'
 import { Table } from 'components/Table'
-import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useUsers from 'hooks/useUsers'
 import { useEffect, useMemo, useState } from 'react'
 import { Column } from 'react-table'
@@ -54,7 +54,7 @@ const useTableColumns = (sync: boolean) => {
 }
 
 export const UsersIndex = () => {
-  const { hasPermission } = AuthContainer.useContainer()
+  const { hasPermission } = PermissionsContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [openAdd, setOpenAdd] = useState<boolean>(false)
   const [openSync, setOpenSync] = useState<boolean>(false)

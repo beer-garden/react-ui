@@ -2,6 +2,7 @@ import ErrorBoundary from 'components/ErrorBoundary'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
 import { HashRouter } from 'react-router-dom'
@@ -27,7 +28,11 @@ export const AllProviders = ({ children }: ProviderMocks) => {
       <ServerConfigContainer.Provider>
         <DebugContainer.Provider>
           <SocketContainer.Provider>
-            <AuthContainer.Provider>{children}</AuthContainer.Provider>
+            <AuthContainer.Provider>
+              <PermissionsContainer.Provider>
+                {children}
+              </PermissionsContainer.Provider>
+            </AuthContainer.Provider>
           </SocketContainer.Provider>
         </DebugContainer.Provider>
       </ServerConfigContainer.Provider>
