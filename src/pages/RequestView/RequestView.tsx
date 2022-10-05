@@ -1,5 +1,4 @@
 import {
-  Download as DownloadIcon,
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
@@ -14,10 +13,7 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
-  FormControlLabel,
   IconButton,
-  Link,
-  Switch,
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
@@ -25,15 +21,15 @@ import { Divider } from 'components/Divider'
 import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { RequestViewTable } from 'pages/RequestView'
-import {
-  getParentLinks,
-  outputFormatted,
-} from 'pages/RequestView/requestViewHelpers'
+import { getParentLinks } from 'pages/RequestView/requestViewHelpers'
 import { useContext, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
+
+import { RequestViewOutput } from './RequestViewOutput'
 
 interface RequestVariables {
   namespace: string
@@ -58,11 +54,25 @@ const RequestView = () => {
   const [expandParameter, setExpandParameter] = useState(false)
   const { id } = useParams()
 
-  const [{ data, error }] = useAxios({
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
+
+  const [{ data, error }, refetch] = useAxios({
     url: '/api/v1/requests/' + id,
     method: 'get',
     withCredentials: authEnabled,
-  })
+  }, {useCache: false})
+
+  useEffect(() => {
+    addCallback('request complete', (event) => {
+      if (event.name === 'REQUEST_COMPLETED' && event.payload?.id === id) {
+        refetch()
+      }
+    })
+    return () => {
+      removeCallback('request complete')
+    }
+  }, [addCallback, id, refetch, removeCallback])
+
   useEffect(() => {
     if (data && !error) {
       setRequest(data)
@@ -77,15 +87,9 @@ const RequestView = () => {
 
   const { namespace, system, systemVersion, command } = variables
 
-  const [showAsRawData, setShowAsRawData] = useState(false)
-
   const pourItAgainClick = () => {
     // todo restore functionality of pass request data once command page has been refactored
   }
-
-  const downloadUrl = window.URL.createObjectURL(
-    new Blob([request?.output || '']),
-  )
 
   return (
     <>
@@ -121,55 +125,13 @@ const RequestView = () => {
           <RequestViewTable request={request} />
           <Box pt={4} display="flex" alignItems="flex-start">
             {!expandParameter ? (
-              <Card sx={{ width: 1 }}>
-                <CardActions>
-                  <Typography style={{ flex: 1 }} variant="h6">
-                    Output
-                  </Typography>
-                  {!['HTML', 'JSON'].includes(request.output_type) ? null : (
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          color="secondary"
-                          checked={!showAsRawData}
-                          onChange={() => {
-                            setShowAsRawData(!showAsRawData)
-                          }}
-                          inputProps={{ 'aria-label': 'controlled' }}
-                        />
-                      }
-                      label="Formatted"
-                    />
-                  )}
-                  <Link
-                    href={downloadUrl}
-                    download={`${request.id}.${
-                      ['STRING', null].includes(request.output_type)
-                        ? 'txt'
-                        : request.output_type.toLowerCase()
-                    }`}
-                  >
-                    <IconButton size="small" aria-label="expand">
-                      <DownloadIcon />
-                    </IconButton>
-                  </Link>
-                  <IconButton
-                    size="small"
-                    onClick={() => setExpandOutput(!expandOutput)}
-                    aria-label="expand"
-                  >
-                    {expandParameter || expandOutput ? (
-                      <ExpandLessIcon />
-                    ) : (
-                      <ExpandMoreIcon />
-                    )}
-                  </IconButton>
-                </CardActions>
-                <Divider />
-                <CardContent>
-                  {outputFormatted(request, theme, showAsRawData)}
-                </CardContent>
-              </Card>
+              <RequestViewOutput
+                request={request}
+                expandParameter={expandParameter}
+                expandOutput={expandOutput}
+                setExpandOutput={setExpandOutput}
+                theme={theme}
+              />
             ) : null}
             {!expandOutput ? (
               <Card sx={{ width: 1 }}>

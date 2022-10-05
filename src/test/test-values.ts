@@ -7,6 +7,7 @@ import {
   Job,
   Parameter,
   Queue,
+  Request,
   RequestTemplate,
   System,
 } from 'types/backend-types'
@@ -123,4 +124,43 @@ export const TBlockedCommand: BlockedCommand = {
 
 export const TBlocklist: BlockedList = {
   command_publishing_blocklist: [TBlockedCommand],
+}
+
+export const TRequest: Request = {
+  children: [],
+  command: 'command',
+  command_type: '',
+  comment: null,
+  created_at: 0,
+  error_class: null,
+  id: '',
+  instance_name: '',
+  namespace: 'namespace',
+  output: 'output',
+  output_type: 'STRING',
+  parameters: [],
+  parent: null,
+  status: 'SUCCESS',
+  system: 'system',
+  system_version: 'system_version',
+  updated_at: 0
+}
+
+export const TRequestInProgress: Request = {
+  children: [],
+  command: 'command',
+  command_type: '',
+  comment: null,
+  created_at: 0,
+  error_class: null,
+  id: '',
+  instance_name: '',
+  namespace: 'namespace',
+  output_type: 'STRING',
+  parameters: [],
+  parent: null,
+  status: 'IN PROGRESS',
+  system: 'system',
+  system_version: 'system_version',
+  updated_at: 0
 }
