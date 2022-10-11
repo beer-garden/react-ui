@@ -141,7 +141,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
                 type: 'success',
                 msg: 'Success! Please allow 10 seconds for the message counts to update.',
               }
-              setAlerts([...alerts, newAlert])
+              setAlerts((alerts) => [...alerts, newAlert])
             })
             .catch((e) => {
               const newAlert: IQueueAlert = {
@@ -150,7 +150,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
                   'Error clearing Queue list: ' +
                   get(e, 'data.message', 'Please check the server logs'),
               }
-              setAlerts([...alerts, newAlert])
+              setAlerts((alerts) => [...alerts, newAlert])
             })
           setOpen(false)
           selectedQueue.current = ''

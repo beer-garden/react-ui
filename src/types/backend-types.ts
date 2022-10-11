@@ -1,4 +1,4 @@
-import { EmptyObject, ObjectWithStringKeys } from './custom-types'
+import { EmptyObject, NestedObject, ObjectWithStringKeys } from './custom-types'
 
 export interface Command {
   name: string
@@ -266,7 +266,7 @@ export interface User {
   username: string
   role_assignments: RoleAssignment[]
   permissions: Permissions
-  sync_status: null
+  sync_status: NestedObject | null
 }
 
 export interface RoleAssignment {
@@ -280,8 +280,9 @@ interface RoleAssignmentDomain {
 }
 
 interface RoleIdentifier {
-  serialization_schema_selector: any
-  deserialization_schema_selector: any
+  name?: string
+  namespace?: string
+  version?: string
 }
 
 interface Role {
@@ -291,12 +292,8 @@ interface Role {
   description?: string
 }
 
-interface DomainPermission {
-  [key: string]: ObjectWithStringKeys
-}
-
 interface Permissions {
-  domain_permissions: DomainPermission
+  domain_permissions: NestedObject
   global_permissions: string[]
 }
 

@@ -11,16 +11,6 @@ enum AuthEvents {
   LOGIN = 'LOGIN',
 }
 
-export interface UserBase {
-  username: string
-  password: string
-}
-
-export interface User extends UserBase {
-  _id: string
-  // role: 'user' | 'admin'  // TODO
-}
-
 const useAuth = () => {
   const { DEBUG_LOGIN } = DebugContainer.useContainer()
   const { updateSocketToken } = SocketContainer.useContainer()

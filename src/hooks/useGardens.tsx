@@ -3,14 +3,14 @@ import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 
-const useUsers = () => {
+const useGardens = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getUsers = () => {
+  const getGardens = () => {
     const config: AxiosRequestConfig = {
-      url: '/api/v1/users',
+      url: '/api/v1/gardens',
       method: 'get',
       withCredentials: authEnabled,
     }
@@ -18,9 +18,9 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const getUser = (name: string) => {
+  const getGarden = (name: string) => {
     const config: AxiosRequestConfig = {
-      url: `/api/v1/users/${name}`,
+      url: `/api/v1/gardens/${name}`,
       method: 'get',
       withCredentials: authEnabled,
     }
@@ -28,21 +28,28 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const createUser = (name: string, pw: string) => {
+  const deleteGarden = (name: string) => {
     const config: AxiosRequestConfig = {
-      url: '/api/v1/users',
-      method: 'post',
+      url: `/api/v1/gardens/${name}`,
+      method: 'delete',
       withCredentials: authEnabled,
-      data: {
-        username: name,
-        password: pw,
-      },
     }
 
     return execute(config)
   }
 
-  return { getUsers, getUser, createUser }
+  const syncUsers = () => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/gardens',
+      method: 'patch',
+      withCredentials: authEnabled,
+      data: { path: '', value: '', operation: 'sync_users' },
+    }
+
+    return execute(config)
+  }
+
+  return { getGardens, getGarden, syncUsers, deleteGarden }
 }
 
-export default useUsers
+export default useGardens

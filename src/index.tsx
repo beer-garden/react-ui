@@ -5,6 +5,7 @@ import { ThemeProvider } from 'components/UI/Theme/ThemeProvider'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import ReactDOM from 'react-dom'
 import { HashRouter } from 'react-router-dom'
@@ -20,7 +21,9 @@ ReactDOM.render(
         <DebugContainer.Provider>
           <SocketContainer.Provider>
             <AuthContainer.Provider>
-              <App />
+              <PermissionsContainer.Provider>
+                <App />
+              </PermissionsContainer.Provider>
             </AuthContainer.Provider>
           </SocketContainer.Provider>
         </DebugContainer.Provider>

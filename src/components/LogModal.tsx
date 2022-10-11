@@ -85,7 +85,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
             'Something went wrong on the backend: ' +
             get(e, 'response.data.message', 'Please check the server logs'),
         }
-        setAlerts([...alerts, newAlert])
+        setAlerts((prev) => [...prev, newAlert])
         setIsLoading(false)
       })
   }
@@ -112,7 +112,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
               'Error downloading file: ' +
               get(e, 'response.data.message', 'Please check the server logs'),
           }
-          setAlerts([...alerts, newAlert])
+          setAlerts((prev) => [...prev, newAlert])
         })
     }
   }
