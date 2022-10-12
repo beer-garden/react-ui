@@ -17,9 +17,7 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
   const [name, setName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [confirm, setConfirm] = useState<string>('')
-  const [alertStatus, setAlertStatus] = useState<SnackbarState | undefined>(
-    undefined,
-  )
+  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
 
   const { createUser } = useUsers()
 
@@ -64,7 +62,7 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
           if (name && password && password === confirm) {
             createUser(name, password)
               .then(() => {
-                setAlertStatus({
+                setAlert({
                   severity: 'success',
                   message: `User ${name} successfully created!`,
                 })
@@ -72,14 +70,14 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
                 updateUsers()
               })
               .catch((e) => {
-                setAlertStatus({
+                setAlert({
                   severity: 'error',
-                  message: e,
+                  message: e.response.data.message || e,
                   doNotAutoDismiss: true,
                 })
               })
           } else {
-            setAlertStatus({
+            setAlert({
               severity: 'error',
               message: 'Please fill out entire form properly',
               doNotAutoDismiss: true,
@@ -125,7 +123,7 @@ const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
           </Box>
         }
       />
-      {alertStatus ? <Snackbar status={alertStatus} /> : null}
+      {alert ? <Snackbar status={alert} /> : null}
     </>
   )
 }
