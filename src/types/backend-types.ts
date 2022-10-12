@@ -266,7 +266,11 @@ export interface User {
   username: string
   role_assignments: RoleAssignment[]
   permissions: Permissions
-  sync_status: null
+  sync_status: SyncStatus | null
+}
+
+export interface SyncStatus {
+  [key: string]: boolean
 }
 
 export interface RoleAssignment {
@@ -274,20 +278,23 @@ export interface RoleAssignment {
   role: Role
 }
 
+export type DomainScope = 'Garden' | 'Global' | 'System'
 interface RoleAssignmentDomain {
-  scope: 'Garden' | 'Global' | 'System'
+  scope: DomainScope
   identifiers: RoleIdentifier
 }
 
-interface RoleIdentifier {
-  serialization_schema_selector: any
-  deserialization_schema_selector: any
+export interface RoleIdentifier {
+  name?: string
+  namespace?: string
+  version?: string
 }
 
-interface Role {
+export interface Role {
   id: string
   name: string
   permissions: string[]
+  sync_status: SyncStatus | null
   description?: string
 }
 
@@ -300,8 +307,14 @@ interface Permissions {
   global_permissions: string[]
 }
 
-// interface UserPatch {
-//   password: string
-//   hashed_password: string
-//   role_assignments: RoleAssignment[]
-// }
+export interface UserPatch {
+  role_assignments: RolePatch[]
+  password?: string
+  hashed_password?: string // not used in UI
+}
+
+export interface RolePatch {
+  role_name: string
+  domain: RoleAssignmentDomain
+  role_id?: string
+}

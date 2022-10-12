@@ -1,7 +1,15 @@
 import { AlertColor } from '@mui/material'
 import { AxiosResponse } from 'axios'
 
-import { BlockedCommand, Command, Job, Request, System } from './backend-types'
+import {
+  BlockedCommand,
+  Command,
+  Garden,
+  Job,
+  Request,
+  System,
+  User,
+} from './backend-types'
 
 export interface ObjectWithStringKeys {
   [key: string]: unknown
@@ -117,4 +125,14 @@ export interface SnackbarState {
   message?: string
   showSeverity?: boolean
   doNotAutoDismiss?: boolean
+}
+
+export type syncString = 'IN_PROGRESS' | 'COMPLETE' | 'PENDING' | 'NOT RUNNING'
+
+export interface SyncGarden extends Garden {
+  syncStatus: syncString
+}
+
+export interface SyncUser extends User {
+  fullySynced: boolean
 }

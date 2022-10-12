@@ -7,12 +7,13 @@ import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import useUsers from 'hooks/useUsers'
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Column } from 'react-table'
 import { User } from 'types/backend-types'
 import { ObjectWithStringKeys, SnackbarState } from 'types/custom-types'
 
 interface UserIndexTableData extends ObjectWithStringKeys {
-  username: string
+  username: JSX.Element
 }
 
 const useTableColumns = () => {
@@ -32,9 +33,7 @@ const useTableColumns = () => {
 export const UsersIndex = () => {
   const [open, setOpen] = useState(false)
   const [users, setUsers] = useState<User[]>([])
-  const [alertStatus, setAlertStatus] = useState<SnackbarState | undefined>(
-    undefined,
-  )
+  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { getUsers } = useUsers()
 
   useEffect(() => {
@@ -45,7 +44,20 @@ export const UsersIndex = () => {
   const userData = useMemo(() => {
     return users.map((user: User): UserIndexTableData => {
       return {
-        username: user.username,
+        username: (
+          <Box
+            key={`${user.username}_link`}
+            sx={{
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              width: '120px',
+              display: 'block',
+              overflow: 'hidden',
+            }}
+          >
+            <Link to={`/admin/users/${user.username}`}>{user.username}</Link>
+          </Box>
+        ),
       }
     })
   }, [users])
@@ -56,9 +68,9 @@ export const UsersIndex = () => {
         setUsers(response.data.users)
       })
       .catch((e) => {
-        setAlertStatus({
+        setAlert({
           severity: 'error',
-          message: e,
+          message: e.response.data.message || e,
           doNotAutoDismiss: true,
         })
       })
@@ -86,7 +98,7 @@ export const UsersIndex = () => {
         columns={useTableColumns()}
         showGlobalFilter
       />
-      {alertStatus ? <Snackbar status={alertStatus} /> : null}
+      {alert ? <Snackbar status={alert} /> : null}
     </Box>
   )
 }

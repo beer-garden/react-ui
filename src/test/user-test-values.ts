@@ -4,15 +4,13 @@ const TRole = {
   id: 'role1',
   name: 'testRole',
   permissions: ['basic'],
+  sync_status: { someGarden: false },
 }
 
 const TRoleAssignment: RoleAssignment = {
   domain: {
     scope: 'System',
-    identifiers: {
-      serialization_schema_selector: true,
-      deserialization_schema_selector: true,
-    },
+    identifiers: { namespace: 'child' },
   },
   role: TRole,
 }
@@ -21,15 +19,13 @@ const TAdminRole = {
   id: 'role1',
   name: 'testRole',
   permissions: ['admin'],
+  sync_status: { someGarden: true },
 }
 
 const TAdminRoleAssignment: RoleAssignment = {
   domain: {
     scope: 'System',
-    identifiers: {
-      serialization_schema_selector: true,
-      deserialization_schema_selector: true,
-    },
+    identifiers: { name: 'default' },
   },
   role: TAdminRole,
 }
