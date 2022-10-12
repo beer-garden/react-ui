@@ -85,7 +85,7 @@ describe('Socket Container', () => {
         JSON.parse(testMsg),
       )
       expect(mockFn).toHaveBeenCalledWith(JSON.parse(testMsg))
-    }, 8000)
+    })
 
     test('sends token to authenticate', async () => {
       const msg = { name: 'UPDATE_TOKEN', payload: 'valid_token' }

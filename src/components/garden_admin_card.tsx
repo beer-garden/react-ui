@@ -8,8 +8,8 @@ import {
   Typography,
 } from '@mui/material'
 import Table from 'components/table'
+import useGardens from 'hooks/useGardens'
 import { Link as RouterLink } from 'react-router-dom'
-import GardenService from 'services/garden_service'
 import { Garden } from 'types/backend-types'
 import { TableState } from 'types/custom-types'
 
@@ -18,6 +18,7 @@ interface GardenAdminCardProps {
 }
 
 const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
+  const { deleteGarden } = useGardens()
   function getTableData() {
     return [
       ['Status', garden.status],
@@ -37,7 +38,7 @@ const GardenAdminCard = ({ garden }: GardenAdminCardProps) => {
     if (connection_type !== 'LOCAL') {
       return (
         <Button
-          onClick={() => GardenService.deleteGarden(garden.name)}
+          onClick={() => deleteGarden(garden.name)}
           variant="contained"
           color="secondary"
         >

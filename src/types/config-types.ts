@@ -20,5 +20,6 @@ export interface DebugSettings {
   LOGIN?: boolean
   AUTH?: boolean
   LOCAL_STORAGE?: boolean
+  PERMISSION?: boolean
   SOCKET?: boolean
 }
