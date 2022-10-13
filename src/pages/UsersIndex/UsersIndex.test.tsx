@@ -27,6 +27,22 @@ describe('UsersIndex', () => {
     })
   })
 
+  test('user in table is clickable', async () => {
+    render(
+      <AllProviders>
+        <UsersIndex />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(TUser.username)).toBeInTheDocument()
+    })
+    const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+    expect(links[0].textContent).toEqual(TUser.username)
+    expect(links[0].href).toContain(
+      `http://localhost/#/admin/users/${TUser.username}`,
+    )
+  })
+
   test('render button to add user', async () => {
     render(
       <AllProviders>

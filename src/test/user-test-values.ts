@@ -1,13 +1,14 @@
-import { RoleAssignment, User } from 'types/backend-types'
+import { TGarden } from 'test/garden-test-values'
+import { RoleAssignment, RolePatch, User, UserPatch } from 'types/backend-types'
 
-const TRole = {
+export const TRole = {
   id: 'role1',
   name: 'testRole',
   permissions: ['basic'],
   sync_status: { someGarden: false },
 }
 
-const TRoleAssignment: RoleAssignment = {
+export const TRoleAssignment: RoleAssignment = {
   domain: {
     scope: 'System',
     identifiers: { namespace: 'child' },
@@ -15,14 +16,14 @@ const TRoleAssignment: RoleAssignment = {
   role: TRole,
 }
 
-const TAdminRole = {
-  id: 'role1',
-  name: 'testRole',
+export const TAdminRole = {
+  id: 'role2',
+  name: 'adminRole',
   permissions: ['admin'],
   sync_status: { someGarden: true },
 }
 
-const TAdminRoleAssignment: RoleAssignment = {
+export const TAdminRoleAssignment: RoleAssignment = {
   domain: {
     scope: 'System',
     identifiers: { name: 'default' },
@@ -43,5 +44,18 @@ export const TAdmin: User = {
   id: 'usr2',
   role_assignments: [TAdminRoleAssignment],
   permissions: { domain_permissions: {}, global_permissions: ['admin'] },
-  sync_status: null,
+  sync_status: { [TGarden.name]: true },
+}
+
+export const TRolePatch: RolePatch = {
+  role_name: 'testRole',
+  domain: {
+    scope: 'Global',
+    identifiers: { namespace: 'child' },
+  },
+}
+
+export const TUserPatch: UserPatch = {
+  password: 'soSecure',
+  role_assignments: [TRolePatch],
 }

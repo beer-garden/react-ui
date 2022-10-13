@@ -69,7 +69,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
       <CardContent>
         <IconButton
           sx={{ float: 'right' }}
-          aria-label="settings"
+          aria-label="Remove Role"
           onClick={removeRole}
         >
           <CloseIcon />
@@ -104,7 +104,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
               sx={{ minWidth: 110 }}
               labelId="scope-label"
               variant="outlined"
-              value={role.domain.scope}
+              value={role.domain.scope || ''}
               label="Scope"
               onChange={(event: SelectChangeEvent) => {
                 setRole(
@@ -124,7 +124,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
           {(role.domain.scope === 'System' ||
             role.domain.scope === 'Garden') && (
             <TextField
-              value={role.domain.identifiers.name}
+              value={role.domain.identifiers.name || ''}
               size="small"
               label="Name"
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +134,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
           )}
           {role.domain.scope === 'System' && (
             <TextField
-              value={role.domain.identifiers.namespace}
+              value={role.domain.identifiers.namespace || ''}
               size="small"
               label="Namespace"
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +144,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
           )}
           {role.domain.scope === 'System' && (
             <TextField
-              value={role.domain.identifiers.version}
+              value={role.domain.identifiers.version || ''}
               size="small"
               label="Version"
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
