@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import * as useAxios from 'axios-hooks'
 import WS from 'jest-websocket-mock'
 import Router from 'react-router-dom'
-import { TRequest, TRequestInProgress } from 'test/test-values'
+import { TRequest } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
 import { RequestView } from './RequestView'
@@ -51,16 +51,7 @@ describe('RequestView', () => {
 
   test('renders Request View page with contents', async () => {
     const mockId = '1234'
-    const mockFetch = jest.fn()
-    const mockResponse = Object.assign({}, TRequest, { id: mockId })
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
-    jest
-      .spyOn(useAxios, 'default')
-      .mockReturnValue([
-        { data: mockResponse, loading: false, error: null },
-        mockFetch,
-        jest.fn(),
-      ])
 
     render(
       <AllProviders>
@@ -82,20 +73,13 @@ describe('RequestView', () => {
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {
     const mockId = '1234'
     const mockFetch = jest.fn()
-    const mockResponse = Object.assign({}, TRequestInProgress, { id: mockId })
-
-    const mockEvent = {
-      name: 'REQUEST_COMPLETED',
-      payload: Object.assign({}, TRequest, { id: mockId }),
-    }
-
-    const mockMessage = JSON.stringify(mockEvent)
+    const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
     jest
       .spyOn(useAxios, 'default')
       .mockReturnValue([
-        { data: mockResponse, loading: false, error: null },
+        { data: mockInProgressResponse, loading: false, error: null },
         mockFetch,
         jest.fn(),
       ])
@@ -116,6 +100,13 @@ describe('RequestView', () => {
     expect(screen.getByTestId('request-view-output')).toBeInTheDocument()
     expect(screen.getByText('Parameters')).toBeInTheDocument()
 
+    // send request completed event
+    const mockEvent = {
+      name: 'REQUEST_COMPLETED',
+      payload:  TRequest,
+    }
+
+    const mockMessage = JSON.stringify(mockEvent)
     server.send(mockMessage)
 
     expect(mockFetch).toBeCalledTimes(1)
@@ -124,26 +115,12 @@ describe('RequestView', () => {
   test('does not refetch page contents when REQUEST_COMPLETED event occurs and requestId does not match', async () => {
     const mockId = '1234'
     const mockFetch = jest.fn()
-    const mockResponse = Object.assign({}, TRequestInProgress, { id: mockId })
-
-    const mockEvent = {
-      name: 'REQUEST_COMPLETED',
-      payload: Object.assign({}, TRequest, { id: mockId }),
-    }
-
-    const mockEventOther = {
-      name: 'REQUEST_COMPLETED',
-      payload: Object.assign({}, TRequest, { id: '5678' }),
-    }
-
-    const mockMessage = JSON.stringify(mockEvent)
-    const mockMessageOther = JSON.stringify(mockEventOther)
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
     jest
       .spyOn(useAxios, 'default')
       .mockReturnValue([
-        { data: mockResponse, loading: false, error: null },
+        { data: TRequest, loading: false, error: null },
         mockFetch,
         jest.fn(),
       ])
@@ -164,10 +141,14 @@ describe('RequestView', () => {
     expect(screen.getByTestId('request-view-output')).toBeInTheDocument()
     expect(screen.getByText('Parameters')).toBeInTheDocument()
 
+    // send request complete event for different requestid
+    const mockEventOther = {
+      name: 'REQUEST_COMPLETED',
+      payload: Object.assign({}, TRequest, { id: '5678' }),
+    }
+    const mockMessageOther = JSON.stringify(mockEventOther)
     server.send(mockMessageOther)
 
-    server.send(mockMessage)
-
-    expect(mockFetch).toBeCalledTimes(1)
+    expect(mockFetch).not.toHaveBeenCalled()
   })
 })

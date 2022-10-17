@@ -129,12 +129,12 @@ export const TBlocklist: BlockedList = {
 export const TRequest: Request = {
   children: [],
   command: 'command',
-  command_type: '',
-  comment: null,
-  created_at: 0,
+  command_type: 'test command type',
+  comment: 'test comment',
+  created_at: 1234,
   error_class: null,
-  id: '',
-  instance_name: '',
+  id: '1234',
+  instance_name: 'instance',
   namespace: 'namespace',
   output: 'output',
   output_type: 'STRING',
@@ -143,24 +143,5 @@ export const TRequest: Request = {
   status: 'SUCCESS',
   system: 'system',
   system_version: 'system_version',
-  updated_at: 0
-}
-
-export const TRequestInProgress: Request = {
-  children: [],
-  command: 'command',
-  command_type: '',
-  comment: null,
-  created_at: 0,
-  error_class: null,
-  id: '',
-  instance_name: '',
-  namespace: 'namespace',
-  output_type: 'STRING',
-  parameters: [],
-  parent: null,
-  status: 'IN PROGRESS',
-  system: 'system',
-  system_version: 'system_version',
-  updated_at: 0
+  updated_at: 1235
 }

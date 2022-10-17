@@ -22,14 +22,12 @@ import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { SocketContainer } from 'containers/SocketContainer'
-import { RequestViewTable } from 'pages/RequestView'
+import { RequestViewOutput, RequestViewTable } from 'pages/RequestView'
 import { getParentLinks } from 'pages/RequestView/requestViewHelpers'
 import { useContext, useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
-
-import { RequestViewOutput } from './RequestViewOutput'
 
 interface RequestVariables {
   namespace: string

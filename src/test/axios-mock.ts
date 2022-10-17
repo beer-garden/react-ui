@@ -19,6 +19,7 @@ mock.onGet('/api/v1/gardens').reply(200, [TGarden])
 mock.onGet('/api/v1/commandpublishingblocklist').reply(200, mockData.TBlocklist)
 mock.onGet('/api/v1/systems').reply(200, [mockData.TSystem])
 mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
+mock.onGet('/api/v1/requests/1234').reply(200, mockData.TRequest)
 mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
   // this can be updated to be dynamic by parsing config.url for name
   return [200, { users: [TAdmin] }]
