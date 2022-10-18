@@ -23,6 +23,18 @@ export const TServerConfig = {
   url_prefix: '/',
 }
 
+export const TServerAuthConfig = {
+  application_name: 'testApp',
+  auth_enabled: true,
+  trusted_header_auth_enabled: false,
+  icon_default: 'none',
+  debug_mode: false,
+  execute_javascript: false,
+  garden_name: 'testGarden',
+  metrics_url: '/metrics',
+  url_prefix: '/',
+}
+
 export const TVersionConfig = {
   beer_garden_version: '1.0.0',
   current_api_version: '1.0.1',

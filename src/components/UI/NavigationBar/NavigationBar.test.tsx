@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { mockAxios } from 'test/axios-mock'
-import { TServerConfig } from 'test/test-values'
+import { TServerAuthConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
 
 import { NavigationBar } from './NavigationBar'
@@ -39,9 +39,7 @@ describe('NavigationBar', () => {
 
   test('adds user welcome when logged in', async () => {
     // change return to enable auth
-    mockAxios
-      .onGet('/config')
-      .reply(200, Object.assign({}, TServerConfig, { auth_enabled: true }))
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
 
     render(
       <LoggedInProviders>

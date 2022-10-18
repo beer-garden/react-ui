@@ -11,15 +11,17 @@ import { AllProviders } from 'test/testMocks'
 import LogModal from './LogModal'
 
 describe('Log Modal', () => {
-  test('renders modal window with contents', () => {
+  test('renders modal window with contents', async () => {
     render(
       <AllProviders>
         <LogModal instance={TInstance} fileHeader="TestFile" />
       </AllProviders>,
     )
-    expect(
-      screen.getByRole('button', { name: 'Get Tail Logs' }),
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Get Tail Logs' }),
+      ).toBeInTheDocument()
+    })
     expect(
       screen.getByRole('button', { name: 'Get Line Logs' }),
     ).toBeInTheDocument()
@@ -28,13 +30,15 @@ describe('Log Modal', () => {
     ).toBeInTheDocument()
   })
 
-  test('renders warning alert on init', () => {
+  test('renders warning alert on init', async () => {
     render(
       <AllProviders>
         <LogModal instance={TInstance} fileHeader="TestFile" />
       </AllProviders>,
     )
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
     expect(
       screen.getByText(
         'Plugin must be listening to the Admin Queue and logging' +
@@ -84,7 +88,9 @@ describe('Log Modal', () => {
         <LogModal instance={TInstance} fileHeader="TestFile" />
       </AllProviders>,
     )
-    expect(screen.getByText('Download Logs')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Download Logs')).toBeInTheDocument()
+    })
     fireEvent.click(screen.getByText('Download Logs'))
   })
 })

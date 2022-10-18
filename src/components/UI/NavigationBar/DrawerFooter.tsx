@@ -11,8 +11,7 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useVersion from 'hooks/useVersion'
 
 const DrawerFooter = () => {
-  const { config, getConfig } = ServerConfigContainer.useContainer()
-  if (!config) getConfig()
+  const { config } = ServerConfigContainer.useContainer()
   const versionConfig = useVersion()
   return (
     <MuiMenuList dense style={{ marginTop: 'auto' }}>

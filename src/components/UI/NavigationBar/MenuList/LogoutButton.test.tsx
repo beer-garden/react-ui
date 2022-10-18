@@ -1,16 +1,14 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
 import { mockAxios } from 'test/axios-mock'
-import { TServerConfig } from 'test/test-values'
+import { TServerAuthConfig } from 'test/test-values'
 import { LoggedInProviders } from 'test/testMocks'
 
 import { MenuList } from './MenuList'
 
 describe('LogoutButton', () => {
   test('logs user out when clicked', async () => {
-    mockAxios
-      .onGet('/config')
-      .reply(200, Object.assign({}, TServerConfig, { auth_enabled: true }))
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
 
     render(
       <LoggedInProviders>

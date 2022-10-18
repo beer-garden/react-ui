@@ -18,10 +18,12 @@ import {
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useContext, useState } from 'react'
 
 const AdminMenu = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const { hasPermission } = PermissionsContainer.useContainer()
   const [open, setOpen] = useState(false)
 
   const handleClick = () => setOpen(!open)
@@ -48,7 +50,7 @@ const AdminMenu = () => {
       <Collapse in={open && drawerIsOpen} timeout={'auto'} unmountOnExit>
         <Divider />
         <MenuList>
-          {authEnabled && (
+          {authEnabled && hasPermission('user:update') && (
             <ListItemLink
               icon={<PeopleIcon fontSize="small" />}
               primary={'Users'}

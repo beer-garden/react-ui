@@ -1,5 +1,5 @@
 import { useMyAxios } from 'hooks/useMyAxios'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ServerConfig } from 'types/config-types'
 import { createContainer } from 'unstated-next'
 
@@ -14,10 +14,13 @@ const useServerConfig = () => {
         Accept: 'application/json',
       },
     })
-
     setConfig(data)
-    return data
-  }, [setConfig, axiosInstance])
+  }, [axiosInstance])
+
+  useEffect(() => {
+    getConfig()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const authEnabled = useMemo(() => {
     return config?.auth_enabled ?? false
@@ -29,7 +32,6 @@ const useServerConfig = () => {
 
   return {
     config,
-    getConfig,
     authEnabled,
     debugEnabled,
   }

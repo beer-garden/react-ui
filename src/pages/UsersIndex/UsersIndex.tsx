@@ -59,7 +59,7 @@ export const UsersIndex = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [openAdd, setOpenAdd] = useState<boolean>(false)
   const [openSync, setOpenSync] = useState<boolean>(false)
-  const [syncStatus, setSyncStatus] = useState<boolean>(true)
+  const [syncStatus, setSyncStatus] = useState<boolean>(false)
   const [users, setUsers] = useState<SyncUser[]>([])
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { getUsers } = useUsers()
@@ -77,8 +77,10 @@ export const UsersIndex = () => {
       .then((response) => {
         const tmpUsers: SyncUser[] = []
         response.data.users.forEach((user: User) => {
-          const tmpUser = Object.assign({ fullySynced: true }, user)
+          const tmpUser = Object.assign({ fullySynced: false }, user)
           if (user.sync_status) {
+            tmpUser.fullySynced = true
+            setSyncStatus(true)
             Object.values(user.sync_status).forEach((synced) => {
               if (!synced) {
                 tmpUser.fullySynced = false
@@ -87,9 +89,7 @@ export const UsersIndex = () => {
           }
           tmpUsers.push(tmpUser)
         })
-
         setUsers(tmpUsers)
-        setSyncStatus(true)
       })
       .catch((e) => {
         setAlert({

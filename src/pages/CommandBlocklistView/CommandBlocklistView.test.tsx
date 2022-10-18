@@ -17,15 +17,17 @@ describe('CommandBlocklistView', () => {
     })
   })
 
-  test('render button to add command', () => {
+  test('render button to add command', async () => {
     render(
       <AllProviders>
         <CommandBlocklistView />
       </AllProviders>,
     )
-    expect(
-      screen.getByRole('button', { name: 'Add command' }),
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Add command' }),
+      ).toBeInTheDocument()
+    })
   })
 
   test('add modal submits', async () => {
