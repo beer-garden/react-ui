@@ -14,8 +14,7 @@ const SelectionColumnFilter = ({
   },
 }: FilterProps<ObjectWithStringKeys>) => {
   const options = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let options: Set<any>
+    let options: Set<string>
 
     if (selectionOptions) {
       options = new Set(selectionOptions)
