@@ -6,19 +6,6 @@ import { TRequest } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
 import { RequestView } from './RequestView'
-jest.mock('./RequestViewTable', () => ({
-  RequestViewTable: () => {
-    const MockTable = <div data-testid="request-view-table" />
-    return MockTable
-  },
-}))
-
-jest.mock('./RequestViewOutput', () => ({
-  RequestViewOutput: () => {
-    const MockOutput = <div data-testid="request-view-output" />
-    return MockOutput
-  },
-}))
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -31,7 +18,9 @@ jest.mock('axios-hooks', () => ({
 }))
 
 describe('RequestView', () => {
+  window.URL.createObjectURL = jest.fn(() => 'url')
   let server: WS
+
 
   beforeEach(() => {
     server = new WS('ws://localhost:2337/api/v1/socket/events')
@@ -42,8 +31,6 @@ describe('RequestView', () => {
   })
 
   afterAll(() => {
-    jest.unmock('./RequestViewTable')
-    jest.unmock('./RequestViewOutput')
     jest.unmock('react-router-dom')
     jest.unmock('axios-hooks')
     jest.clearAllMocks()
@@ -65,22 +52,47 @@ describe('RequestView', () => {
 
     expect(screen.getByText(mockId)).toBeInTheDocument()
     expect(screen.getByText('remake request')).toBeInTheDocument()
-    expect(screen.getByTestId('request-view-table')).toBeInTheDocument()
-    expect(screen.getByTestId('request-view-output')).toBeInTheDocument()
+
+    expect(screen.getByText('Command')).toBeInTheDocument()
+    expect(screen.getByText('test command')).toBeInTheDocument()
+
+    expect(screen.getByText('Namespace')).toBeInTheDocument()
+    expect(screen.getByText('test namespace')).toBeInTheDocument()
+
+    expect(screen.getByText('System')).toBeInTheDocument()
+    expect(screen.getByText('test system')).toBeInTheDocument()
+
+    expect(screen.getByText('Version')).toBeInTheDocument()
+    expect(screen.getByText('test version')).toBeInTheDocument()
+
+    expect(screen.getByText('Instance')).toBeInTheDocument()
+    expect(screen.getByText('test instance')).toBeInTheDocument()
+
+    expect(screen.getByText('Status')).toBeInTheDocument()
+    expect(screen.getByText('SUCCESS')).toBeInTheDocument()
+
+    expect(screen.getByText('Created')).toBeInTheDocument()
+    expect(screen.getByText('1970-01-01T00:00:01.200Z')).toBeInTheDocument()
+
+    expect(screen.getByText('Updated')).toBeInTheDocument()
+    expect(screen.getByText('1970-01-01T00:00:01.235Z')).toBeInTheDocument()
+
+    expect(screen.getByText('Output')).toBeInTheDocument()
+    expect(screen.getByText('test output')).toBeInTheDocument()
+
     expect(screen.getByText('Parameters')).toBeInTheDocument()
   })
 
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {
     const mockId = '1234'
-    const mockFetch = jest.fn()
     const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
     jest
-      .spyOn(useAxios, 'default')
-      .mockReturnValue([
+    .spyOn(useAxios, 'default')
+    .mockReturnValue([
         { data: mockInProgressResponse, loading: false, error: null },
-        mockFetch,
+        jest.fn(),
         jest.fn(),
       ])
 
@@ -89,15 +101,42 @@ describe('RequestView', () => {
         <RequestView />
       </AllProviders>,
     )
-
     await waitFor(() => {
       expect(screen.getByText('Request View')).toBeInTheDocument()
     })
 
     expect(screen.getByText(mockId)).toBeInTheDocument()
     expect(screen.getByText('remake request')).toBeInTheDocument()
-    expect(screen.getByTestId('request-view-table')).toBeInTheDocument()
-    expect(screen.getByTestId('request-view-output')).toBeInTheDocument()
+
+    expect(screen.getByText('Command')).toBeInTheDocument()
+    expect(screen.getByText('test command')).toBeInTheDocument()
+
+    expect(screen.getByText('Namespace')).toBeInTheDocument()
+    expect(screen.getByText('test namespace')).toBeInTheDocument()
+
+    expect(screen.getByText('System')).toBeInTheDocument()
+    expect(screen.getByText('test system')).toBeInTheDocument()
+
+    expect(screen.getByText('Version')).toBeInTheDocument()
+    expect(screen.getByText('test version')).toBeInTheDocument()
+
+    expect(screen.getByText('Instance')).toBeInTheDocument()
+    expect(screen.getByText('test instance')).toBeInTheDocument()
+
+    // should be in progress
+    expect(screen.getByText('Status')).toBeInTheDocument()
+    expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
+    expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
+
+    expect(screen.getByText('Created')).toBeInTheDocument()
+    expect(screen.getByText('1970-01-01T00:00:01.200Z')).toBeInTheDocument()
+
+    expect(screen.getByText('Updated')).toBeInTheDocument()
+    expect(screen.getByText('1970-01-01T00:00:01.235Z')).toBeInTheDocument()
+
+    expect(screen.getByText('Output')).toBeInTheDocument()
+    expect(screen.queryByText('test output')).not.toBeInTheDocument()
+
     expect(screen.getByText('Parameters')).toBeInTheDocument()
 
     // send request completed event
@@ -109,19 +148,25 @@ describe('RequestView', () => {
     const mockMessage = JSON.stringify(mockEvent)
     server.send(mockMessage)
 
-    expect(mockFetch).toBeCalledTimes(1)
+    await waitFor(() => {
+      expect(screen.queryByText('IN PROGRESS')).not.toBeInTheDocument()
+    })
+
+    expect(screen.getByText('SUCCESS')).toBeInTheDocument()
+    expect(screen.getByText('test output')).toBeInTheDocument()
+
   })
 
   test('does not refetch page contents when REQUEST_COMPLETED event occurs and requestId does not match', async () => {
     const mockId = '1234'
-    const mockFetch = jest.fn()
+    const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
     jest
       .spyOn(useAxios, 'default')
       .mockReturnValue([
-        { data: TRequest, loading: false, error: null },
-        mockFetch,
+        { data: mockInProgressResponse, loading: false, error: null },
+        jest.fn(),
         jest.fn(),
       ])
 
@@ -134,12 +179,40 @@ describe('RequestView', () => {
     await waitFor(() => {
       expect(screen.getByText('Request View')).toBeInTheDocument()
     })
-
     expect(screen.getByText(mockId)).toBeInTheDocument()
     expect(screen.getByText('remake request')).toBeInTheDocument()
-    expect(screen.getByTestId('request-view-table')).toBeInTheDocument()
-    expect(screen.getByTestId('request-view-output')).toBeInTheDocument()
+
+    expect(screen.getByText('Command')).toBeInTheDocument()
+    expect(screen.getByText('test command')).toBeInTheDocument()
+
+    expect(screen.getByText('Namespace')).toBeInTheDocument()
+    expect(screen.getByText('test namespace')).toBeInTheDocument()
+
+    expect(screen.getByText('System')).toBeInTheDocument()
+    expect(screen.getByText('test system')).toBeInTheDocument()
+
+    expect(screen.getByText('Version')).toBeInTheDocument()
+    expect(screen.getByText('test version')).toBeInTheDocument()
+
+    expect(screen.getByText('Instance')).toBeInTheDocument()
+    expect(screen.getByText('test instance')).toBeInTheDocument()
+
+    // should be in progress
+    expect(screen.getByText('Status')).toBeInTheDocument()
+    expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
+    expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
+
+    expect(screen.getByText('Created')).toBeInTheDocument()
+    expect(screen.getByText('1970-01-01T00:00:01.200Z')).toBeInTheDocument()
+
+    expect(screen.getByText('Updated')).toBeInTheDocument()
+    expect(screen.getByText('1970-01-01T00:00:01.235Z')).toBeInTheDocument()
+
+    expect(screen.getByText('Output')).toBeInTheDocument()
+    expect(screen.queryByText('test output')).not.toBeInTheDocument()
+
     expect(screen.getByText('Parameters')).toBeInTheDocument()
+
 
     // send request complete event for different requestid
     const mockEventOther = {
@@ -149,6 +222,8 @@ describe('RequestView', () => {
     const mockMessageOther = JSON.stringify(mockEventOther)
     server.send(mockMessageOther)
 
-    expect(mockFetch).not.toHaveBeenCalled()
+    expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
+    expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
+
   })
 })

@@ -128,20 +128,20 @@ export const TBlocklist: BlockedList = {
 
 export const TRequest: Request = {
   children: [],
-  command: 'command',
+  command: 'test command',
   command_type: 'test command type',
   comment: 'test comment',
-  created_at: 1234,
+  created_at: 1200,
   error_class: null,
   id: '1234',
-  instance_name: 'instance',
-  namespace: 'namespace',
-  output: 'output',
+  instance_name: 'test instance',
+  namespace: 'test namespace',
+  output: 'test output',
   output_type: 'STRING',
   parameters: [],
   parent: null,
   status: 'SUCCESS',
-  system: 'system',
-  system_version: 'system_version',
+  system: 'test system',
+  system_version: 'test version',
   updated_at: 1235
 }
