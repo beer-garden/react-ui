@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import * as useAxios from 'axios-hooks'
 import WS from 'jest-websocket-mock'
 import Router from 'react-router-dom'
+import { mockAxios } from 'test/axios-mock'
 import { TRequest } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
@@ -10,11 +10,6 @@ import { RequestView } from './RequestView'
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
-}))
-
-jest.mock('axios-hooks', () => ({
-  ...jest.requireActual('axios-hooks'),
-  useAxios: jest.fn(),
 }))
 
 describe('RequestView', () => {
@@ -88,13 +83,7 @@ describe('RequestView', () => {
     const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
-    jest
-    .spyOn(useAxios, 'default')
-    .mockReturnValue([
-        { data: mockInProgressResponse, loading: false, error: null },
-        jest.fn(),
-        jest.fn(),
-      ])
+    mockAxios.onGet('/api/v1/requests/1234').reply(200, mockInProgressResponse)
 
     render(
       <AllProviders>
@@ -145,6 +134,8 @@ describe('RequestView', () => {
       payload:  TRequest,
     }
 
+    mockAxios.onGet('/api/v1/requests/1234').reply(200, TRequest)
+
     const mockMessage = JSON.stringify(mockEvent)
     server.send(mockMessage)
 
@@ -162,13 +153,7 @@ describe('RequestView', () => {
     const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
-    jest
-      .spyOn(useAxios, 'default')
-      .mockReturnValue([
-        { data: mockInProgressResponse, loading: false, error: null },
-        jest.fn(),
-        jest.fn(),
-      ])
+    mockAxios.onGet('/api/v1/requests/1234').reply(200, mockInProgressResponse)
 
     render(
       <AllProviders>
