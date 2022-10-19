@@ -3,6 +3,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { useBabelRc, override } = require('customize-cra');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const rewireWebpackBundleAnalyzer = require('react-app-rewire-webpack-bundle-analyzer');
+const Visualizer = require('webpack-visualizer-plugin')
 
 const polyFillOverride = function(config) {
   config.plugins.push(
@@ -52,20 +53,35 @@ const copyWebpackOverride = function(config) {
   return config;
 };
 
-const analyzer = function(config, env) {
-  if (env === 'production') {
-    config = rewireWebpackBundleAnalyzer(config, env, {
+const analyzer = function(config) {
+  if (config.mode === 'production') {
+    config = rewireWebpackBundleAnalyzer(config, config.mode, {
       analyzerMode: 'static',
       reportFilename: 'report.html'
     })
   }
   return config
-}
+};
+
+const visualizer = function(config) {
+  console.log('config', config.mode)
+  if (config.mode === 'production') {
+    config.plugins.push(new Visualizer());
+  }
+  return config;
+};
 
 const namedChunks = function override(config, env) {
     // Get rid of hash for js files
     config.output.filename = "static/js/[name].js"
     config.output.chunkFilename = "static/js/[name].chunk.js"
+  return config;
+};
+
+const watchOptions = (config) => {
+  config.watchOptions = {
+    ignored: ['**/**/*test.tsx', '**/node_modules/**']
+  };
   return config;
 };
 
@@ -75,5 +91,7 @@ module.exports = override(
   polyFillOverride,
   copyWebpackOverride,
   useBabelRc(),
+  watchOptions,
+  visualizer,
   ignoreWarnings([/Failed to parse source map/])
 )
