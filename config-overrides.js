@@ -3,7 +3,6 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { useBabelRc, override } = require('customize-cra');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const rewireWebpackBundleAnalyzer = require('react-app-rewire-webpack-bundle-analyzer');
-const Visualizer = require('webpack-visualizer-plugin')
 
 const polyFillOverride = function(config) {
   config.plugins.push(
@@ -63,14 +62,6 @@ const analyzer = function(config) {
   return config
 };
 
-const visualizer = function(config) {
-  console.log('config', config.mode)
-  if (config.mode === 'production') {
-    config.plugins.push(new Visualizer());
-  }
-  return config;
-};
-
 const namedChunks = function override(config, env) {
     // Get rid of hash for js files
     config.output.filename = "static/js/[name].js"
@@ -80,7 +71,7 @@ const namedChunks = function override(config, env) {
 
 const watchOptions = (config) => {
   config.watchOptions = {
-    ignored: ['**/**/*test.tsx', '**/node_modules/**']
+    ignored: ['**/**/*test.tsx', '**/test/**', '**/node_modules/**']
   };
   return config;
 };
@@ -92,6 +83,5 @@ module.exports = override(
   copyWebpackOverride,
   useBabelRc(),
   watchOptions,
-  visualizer,
   ignoreWarnings([/Failed to parse source map/])
 )
