@@ -117,7 +117,10 @@
         "statements": 50
       }
     },
-    "coverageReporters": ["text-summary", "html"]
+    "coverageReporters": [
+      "text-summary",
+      "html"
+    ]
   },
   "proxy": "http://localhost:2337",
   "scripts": {
