@@ -29,16 +29,6 @@ function parseValue(filterValue: FilterValue) {
   return defaultComparator
 }
 
-// const numericTextFilter = <T extends ObjectWithStringKeys>(
-//   rows: Array<Row<T>>,
-//   id: Array<IdType<T>>,
-//   filterValue: FilterValue,
-// ): Array<Row<T>> => {
-//   const comparator = parseValue(filterValue)
-
-//   return rows.filter((row) => comparator(row.values[id[0]]))
-// }
-
 function numericTextFilter<T extends ObjectWithStringKeys>(
   rows: Array<Row<T>>,
   id: Array<IdType<T>>,
@@ -48,8 +38,5 @@ function numericTextFilter<T extends ObjectWithStringKeys>(
 
   return rows.filter((row) => comparator(row.values[id[0]]))
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// numericTextFilter.autoRemove = (val: any) => !val
 
 export { numericTextFilter }
