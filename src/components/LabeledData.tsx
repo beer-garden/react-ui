@@ -20,7 +20,6 @@ const LabeledData = ({ label, data, link }: ILabelData) => {
     <Box>
       <Typography
         sx={{ mx: 1, my: 2 }}
-        color="text.secondary"
         fontWeight={'bold'}
         variant="overline"
       >
