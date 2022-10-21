@@ -87,7 +87,9 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
           <DebugContainer.Provider>
             <SocketContainer.Provider>
               <AuthContainer.Provider>
-                <LoginProvider>{children}</LoginProvider>
+                <PermissionsContainer.Provider>
+                  <LoginProvider>{children}</LoginProvider>
+                </PermissionsContainer.Provider>
               </AuthContainer.Provider>
             </SocketContainer.Provider>
           </DebugContainer.Provider>
