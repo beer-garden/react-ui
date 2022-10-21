@@ -178,6 +178,7 @@ export const UsersIndex = () => {
         data={userData}
         columns={useTableColumns(syncStatus)}
         showGlobalFilter
+        hideToolbar
       />
       {alert && <Snackbar status={alert} />}
     </Box>
