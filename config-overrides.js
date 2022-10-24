@@ -52,20 +52,27 @@ const copyWebpackOverride = function(config) {
   return config;
 };
 
-const analyzer = function(config, env) {
-  if (env === 'production') {
-    config = rewireWebpackBundleAnalyzer(config, env, {
+const analyzer = function(config) {
+  if (config.mode === 'production') {
+    config = rewireWebpackBundleAnalyzer(config, config.mode, {
       analyzerMode: 'static',
       reportFilename: 'report.html'
     })
   }
   return config
-}
+};
 
 const namedChunks = function override(config, env) {
     // Get rid of hash for js files
     config.output.filename = "static/js/[name].js"
     config.output.chunkFilename = "static/js/[name].chunk.js"
+  return config;
+};
+
+const watchOptions = (config) => {
+  config.watchOptions = {
+    ignored: ['**/**/*test.tsx', '**/test/**', '**/node_modules/**']
+  };
   return config;
 };
 
@@ -75,5 +82,6 @@ module.exports = override(
   polyFillOverride,
   copyWebpackOverride,
   useBabelRc(),
+  watchOptions,
   ignoreWarnings([/Failed to parse source map/])
 )
