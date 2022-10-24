@@ -1,4 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import { Routes } from 'components/Routes'
+import { Suspense } from 'react'
 import { mockAxios } from 'test/axios-mock'
 import { TServerConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
@@ -20,6 +22,79 @@ describe('NavigationBar', () => {
     const header = await screen.findByRole('heading')
     expect(header).toBeInTheDocument()
     expect(header.textContent).toEqual('Beer Garden')
+  })
+
+  describe('url manipulation workaround', () => {
+    let warnSpy: jest.SpyInstance
+
+    beforeAll(() => {
+      const realLocation = window.location
+      window.location = { ...realLocation, assign: jest.fn() }
+      // hides page does not exist warning log we don't really care about
+      // since Router handles redirect
+      warnSpy = jest.spyOn(console, 'warn')
+    })
+
+    afterEach(() => {
+      window.location.hash = '/'
+      window.location.pathname = '/'
+    })
+
+    afterAll(() => {
+      warnSpy.mockClear()
+    })
+
+    test('redirects to correct page if given', async () => {
+      window.location.hash = '#first/requests'
+      render(
+        <AllProviders>
+          <NavigationBar
+            setMarginLeft={() => {
+              // do nothing
+            }}
+          />
+        </AllProviders>,
+      )
+      await waitFor(() => expect(window.location.hash).toEqual('#/requests'))
+    })
+
+    test.each(['#first/systems', '#second/', '#/other', '#again/bad'])(
+      'redirects to systems page on bad hash %s',
+      async (url) => {
+        window.location.hash = url
+        render(
+          <AllProviders>
+            <>
+              <NavigationBar
+                setMarginLeft={() => {
+                  // do nothing
+                }}
+              />
+              <Suspense fallback={'loading'}>
+                <Routes />
+              </Suspense>
+            </>
+          </AllProviders>,
+        )
+        await waitFor(() => expect(window.location.hash).toEqual('#/systems'))
+      },
+    )
+
+    test.each(['something', 'other/', '/test/'])(
+      'removes bad pathname %s',
+      async (url) => {
+        render(
+          <AllProviders>
+            <NavigationBar
+              setMarginLeft={() => {
+                // do nothing
+              }}
+            />
+          </AllProviders>,
+        )
+        await waitFor(() => expect(window.location.pathname).toEqual('/'))
+      },
+    )
   })
 
   test('no user welcome when not logged in', async () => {
