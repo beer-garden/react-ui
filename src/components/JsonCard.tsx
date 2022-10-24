@@ -13,7 +13,7 @@ import ReactJson from 'react-json-view'
 
 interface IJsonCard {
   title: string
-  cb: () => void
+  collapseHandler: () => void
   iconTrigger: boolean
   data?: object
 }
@@ -21,12 +21,12 @@ interface IJsonCard {
 /**
  * Reusable component that renders a JSON object on screen in a expandable box
  * @param title string Text for header
- * @param cb function Handler for collapse click
+ * @param collapseHandler function Handler for collapse click
  * @param data Object JSON to display
  * @iconTrigger boolean Trigger collapse collapse icon flip
  * @returns
  */
-const JsonCard = ({ title, cb, data, iconTrigger }: IJsonCard) => {
+const JsonCard = ({ title, collapseHandler, data, iconTrigger }: IJsonCard) => {
   const theme = useContext(ThemeContext).theme
   const textColor = theme === 'dark' ? 'text.secondary' : 'common.white'
 
@@ -44,10 +44,10 @@ const JsonCard = ({ title, cb, data, iconTrigger }: IJsonCard) => {
           <IconButton
             color="inherit"
             size="small"
-            onClick={cb}
+            onClick={collapseHandler}
             aria-label="Expand Area"
           >
-            {iconTrigger ? <ExpandLess /> : <ExpandMore />}
+            {iconTrigger ? <ExpandMore /> : <ExpandLess />}
           </IconButton>
         </Typography>
       </CardActions>

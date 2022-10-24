@@ -13,16 +13,12 @@ interface ILabelData {
  * @param label string Data label
  * @param data string | number Data to display
  * @param link string Url to use for 'to' in Link component
- * @returns 
+ * @returns
  */
 const LabeledData = ({ label, data, link }: ILabelData) => {
   return (
     <Box>
-      <Typography
-        sx={{ mx: 1, my: 2 }}
-        fontWeight={'bold'}
-        variant="overline"
-      >
+      <Typography sx={{ my: 2 }} fontWeight={'bold'} variant="overline">
         {label}:
       </Typography>
       {link ? (

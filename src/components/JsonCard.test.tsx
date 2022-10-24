@@ -14,7 +14,7 @@ describe('JSON Card', () => {
       <HashRouter>
         <JsonCard
           iconTrigger={true}
-          cb={jest.fn()}
+          collapseHandler={jest.fn()}
           title="Test Modal"
           data={testObject}
         />
@@ -31,7 +31,7 @@ describe('JSON Card', () => {
       <HashRouter>
         <JsonCard
           iconTrigger={true}
-          cb={jest.fn()}
+          collapseHandler={jest.fn()}
           title="Test Modal"
           data={testObject}
         />
@@ -47,7 +47,7 @@ describe('JSON Card', () => {
       <HashRouter>
         <JsonCard
           iconTrigger={true}
-          cb={jest.fn()}
+          collapseHandler={jest.fn()}
           title="Test Modal"
           data={undefined}
         />
@@ -62,7 +62,7 @@ describe('JSON Card', () => {
       <HashRouter>
         <JsonCard
           iconTrigger={true}
-          cb={mockFn}
+          collapseHandler={mockFn}
           title="Test Modal"
           data={testObject}
         />

@@ -14,8 +14,8 @@ import { Job } from 'types/backend-types'
 const JobView = () => {
   const [job, setJob] = useState<Job | null>(null)
   const [description, setDescription] = useState('')
-  const [expandTrigger, setExpandTrigger] = useState(false)
-  const [expandTemplate, setExpandTemplate] = useState(false)
+  const [showTrigger, setShowTrigger] = useState(true)
+  const [showTemplate, setShowTemplate] = useState(true)
   const { hasPermission } = PermissionsContainer.useContainer()
   const params = useParams()
   const { getJob, deleteJob } = useJobs()
@@ -77,10 +77,7 @@ const JobView = () => {
       <PageHeader title="Job" description={description} />
       <Divider />
       <Stack direction={'column'} spacing={2}>
-        <Paper
-          sx={{ backgroundColor: 'background.default' }}
-          elevation={0}
-        >
+        <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
           {job ? (
             <Box
               sx={{
@@ -125,24 +122,24 @@ const JobView = () => {
           )}
         </Paper>
         <Stack direction={'row'} spacing={2}>
-          {!expandTemplate && (
+          {showTrigger && (
             <JsonCard
               title="Trigger"
-              cb={() => {
-                setExpandTemplate(!expandTemplate)
+              collapseHandler={() => {
+                setShowTemplate(!showTemplate)
               }}
               data={job?.trigger}
-              iconTrigger={expandTemplate || expandTrigger}
+              iconTrigger={showTrigger && showTemplate}
             />
           )}
-          {!expandTrigger && (
+          {showTemplate && (
             <JsonCard
               title="Request Template"
-              cb={() => {
-                setExpandTrigger(!expandTrigger)
+              collapseHandler={() => {
+                setShowTrigger(!showTrigger)
               }}
               data={job?.request_template}
-              iconTrigger={expandTemplate || expandTrigger}
+              iconTrigger={showTrigger && showTemplate}
             />
           )}
         </Stack>
