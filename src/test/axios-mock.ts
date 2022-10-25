@@ -29,6 +29,7 @@ mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
 })
 mock.onGet(regexLogs).reply(200, mockData.TLog, { request_id: 'fetchedLog' })
 mock.onGet(regexQueues).reply(200, [mockData.TQueue])
+mock.onGet('/api/v1/instances/testinst').reply(200, mockData.TInstance)
 
 // Fail GET
 mock
