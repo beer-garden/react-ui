@@ -75,7 +75,7 @@ const useInstances = () => {
   }
 
   const stopInstance = async (id: string) => {
-    return await toggleInstance(id, 'start')
+    return await toggleInstance(id, 'stop')
   }
 
   const stopAllInstances = (system: System) => {

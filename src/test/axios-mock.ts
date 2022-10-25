@@ -29,6 +29,7 @@ mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
 })
 mock.onGet(regexLogs).reply(200, mockData.TLog, { request_id: 'fetchedLog' })
 mock.onGet(regexQueues).reply(200, [mockData.TQueue])
+mock.onGet('/api/v1/instances/testinst').reply(200, mockData.TInstance)
 
 // Fail GET
 mock
@@ -43,6 +44,7 @@ mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
 // Success PATCH
 mock.onPatch('/api/v1/gardens').reply(200, {})
 mock.onPatch(regexUsers).reply(200, TUser)
+mock.onPatch('/api/v1/instances/testinst').reply(200, mockData.TInstance)
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')

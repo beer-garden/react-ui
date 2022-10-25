@@ -16,6 +16,7 @@ function getTheme(themeName: SupportedColorScheme) {
   const d5 = '#7b7b7b' //disabled button
 
   //Main colors for light theme
+  const ltext = '#000000'
   const l1 = '#ffffff'
   const l2 = '#003B6D'
   const l3 = '#0064ba'
@@ -108,6 +109,7 @@ function getTheme(themeName: SupportedColorScheme) {
             main: l3,
           },
           text: {
+            primary: ltext,
             secondary: l3,
           },
           action: {
