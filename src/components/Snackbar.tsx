@@ -74,5 +74,4 @@ const Snackbar = (props: SnackbarProps) => {
   )
 }
 
-export { Snackbar }
-export type { SnackbarProps, SnackbarState }
+export { type SnackbarProps, Snackbar }

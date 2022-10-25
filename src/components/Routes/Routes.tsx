@@ -22,6 +22,7 @@ const RequestView = lazy(() => import('pages/RequestView'))
 const SystemAdmin = lazy(() => import('pages/SystemAdmin'))
 const SystemsIndex = lazy(() => import('pages/SystemIndex'))
 const UsersIndex = lazy(() => import('pages/UsersIndex'))
+const UsersView = lazy(() => import('pages/UsersView'))
 
 const Routes = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -47,7 +48,10 @@ const Routes = () => {
       {(hasPermission('system:update') || hasPermission('garden:update')) && (
         <Route path="admin" element={<RequireAuth />}>
           {authEnabled && hasPermission('user:update') && (
-            <Route path="users" element={<UsersIndex />} />
+            <Route path="users">
+              <Route index element={<UsersIndex />} />
+              <Route path=":userName" element={<UsersView />} />
+            </Route>
           )}
           {hasPermission('system:update') && (
             <Route path="systems" element={<SystemAdmin />} />

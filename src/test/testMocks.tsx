@@ -5,21 +5,18 @@ import { DebugContainer } from 'containers/DebugContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
-import { HashRouter } from 'react-router-dom'
-
-interface AuthContextType {
-  isAuthEnabled: boolean
-  userName: string
-}
+import { HashRouter, MemoryRouter } from 'react-router-dom'
 
 interface ProviderMocks {
   children: JSX.Element
-  authProps?: AuthContextType
+  startLocation?: string[]
+  user?: string
+  pw?: string
 }
 
 /**
  * Wrapper that puts children inside all props needed to render app properly
- * @param param0 Component(s) to render as children
+ * @param children Component(s) to render as children
  * @returns
  */
 export const AllProviders = ({ children }: ProviderMocks) => {
@@ -41,8 +38,66 @@ export const AllProviders = ({ children }: ProviderMocks) => {
 }
 
 /**
+ * Wrapper that puts children inside all props needed to render app properly
+ * using MemoryRouter so a current page location can be given
+ * @param children Component(s) to render as children
+ * @param startLocation String path for page URL when test runs
+ * @returns
+ */
+export const MemoryProvider = ({ children, startLocation }: ProviderMocks) => {
+  return (
+    <MemoryRouter initialEntries={startLocation}>
+      <ServerConfigContainer.Provider>
+        <DebugContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <PermissionsContainer.Provider>
+                <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+              </PermissionsContainer.Provider>
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
+        </DebugContainer.Provider>
+      </ServerConfigContainer.Provider>
+    </MemoryRouter>
+  )
+}
+
+/**
+ * Wrapper that puts children inside all props needed to render app properly
+ * using MemoryRouter so a current page location can be given and username/password
+ * to login with
+ * @param children Component(s) to render as children
+ * @param startLocation String path for page URL when test runs
+ * @returns
+ */
+export const LoggedInMemory = ({
+  children,
+  startLocation,
+  user,
+  pw,
+}: ProviderMocks) => {
+  return (
+    <MemoryRouter initialEntries={startLocation}>
+      <ServerConfigContainer.Provider>
+        <DebugContainer.Provider>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <PermissionsContainer.Provider>
+                <LoginProvider user={user} pw={pw}>
+                  <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+                </LoginProvider>
+              </PermissionsContainer.Provider>
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
+        </DebugContainer.Provider>
+      </ServerConfigContainer.Provider>
+    </MemoryRouter>
+  )
+}
+
+/**
  * Wrapper that just has config provider
- * @param param0 Component(s) to render as children
+ * @param children Component(s) to render as children
  * @returns
  */
 export const ConfigProviders = ({ children }: ProviderMocks) => {
@@ -54,7 +109,7 @@ export const ConfigProviders = ({ children }: ProviderMocks) => {
 /**
  * Wrapper that puts children inside all props needed to render app properly
  * AND has a Suspense fallback
- * @param param0 Component(s) to render as children
+ * @param children Component(s) to render as children
  * @returns
  */
 export const SuspendedProviders = ({ children }: ProviderMocks) => {
@@ -64,7 +119,9 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
         <DebugContainer.Provider>
           <SocketContainer.Provider>
             <AuthContainer.Provider>
-              <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+              <PermissionsContainer.Provider>
+                <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+              </PermissionsContainer.Provider>
             </AuthContainer.Provider>
           </SocketContainer.Provider>
         </DebugContainer.Provider>
@@ -76,7 +133,7 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
 /**
  * Wrapper that puts children inside all props needed to render app properly
  * AND logs in as admin user
- * @param param0 Component(s) to render as children
+ * @param children Component(s) to render as children
  * @returns
  */
 export const LoggedInProviders = ({ children }: ProviderMocks) => {
@@ -87,7 +144,9 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
           <DebugContainer.Provider>
             <SocketContainer.Provider>
               <AuthContainer.Provider>
-                <LoginProvider>{children}</LoginProvider>
+                <PermissionsContainer.Provider>
+                  <LoginProvider>{children}</LoginProvider>
+                </PermissionsContainer.Provider>
               </AuthContainer.Provider>
             </SocketContainer.Provider>
           </DebugContainer.Provider>
@@ -97,9 +156,11 @@ export const LoggedInProviders = ({ children }: ProviderMocks) => {
   )
 }
 
-const LoginProvider = ({ children }: ProviderMocks) => {
+const LoginProvider = ({ children, user, pw }: ProviderMocks) => {
   const { login } = AuthContainer.useContainer()
-  login('admin', 'password')
+  const userName = user || 'admin'
+  const password = pw || 'password'
+  login(userName, password)
     .then(() => {
       // do nothing its a test
     })
@@ -113,7 +174,7 @@ const LoginProvider = ({ children }: ProviderMocks) => {
 /**
  * Wrapper that only has socket provider and what it needs to run
  * not authenticated, with logs on
- * @param param0
+ * @param children
  * @returns
  */
 export const SocketProvider = ({ children }: ProviderMocks) => {

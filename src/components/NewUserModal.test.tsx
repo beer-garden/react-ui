@@ -4,15 +4,17 @@ import { AllProviders } from 'test/testMocks'
 import NewUserModal from './NewUserModal'
 
 describe('NewUser Modal', () => {
-  test('renders modal window with contents', () => {
+  test('renders modal window with contents', async () => {
     render(
       <AllProviders>
         <NewUserModal open={true} setOpen={jest.fn()} updateUsers={jest.fn()} />
       </AllProviders>,
     )
-    expect(
-      screen.getByRole('heading', { name: 'Create User' }),
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create User' }),
+      ).toBeInTheDocument()
+    })
     expect(
       screen.getByRole('textbox', { name: 'Username' }),
     ).toBeInTheDocument()

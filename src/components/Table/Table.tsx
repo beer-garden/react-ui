@@ -205,20 +205,22 @@ const Table = <T extends ObjectWithStringKeys>(
 
   return (
     <>
-      {hideToolbar ? null : <Toolbar name={tableName || ''} instance={instance} />}
+      {!hideToolbar && <Toolbar name={tableName || ''} instance={instance} />}
       <FilterChipBar<T> instance={instance} />
-      <Box {...childProps}>
-        <Stack direction="row" spacing={3}>
-          {showGlobalFilter ? (
-            <DefaultGlobalFilter<T>
-              preGlobalFilteredRows={preGlobalFilteredRows}
-              globalFilter={state.globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
-          ) : null}{' '}
-          {props.children}
-        </Stack>
-      </Box>
+      {(showGlobalFilter || props.children) && (
+        <Box {...childProps}>
+          <Stack direction="row" spacing={3}>
+            {showGlobalFilter && (
+              <DefaultGlobalFilter<T>
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                globalFilter={state.globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+            )}
+            {props.children}
+          </Stack>
+        </Box>
+      )}
       <StyledTable {...tableProps}>
         <TableHead>
           {headerGroups.map((headerGroup) => {
@@ -339,7 +341,9 @@ const Table = <T extends ObjectWithStringKeys>(
           })}
         </TableBody>
       </StyledTable>
-      {hidePagination ? null : <TablePagination maxRows={props.maxrows} instance={instance} />}
+      {hidePagination ? null : (
+        <TablePagination maxRows={props.maxrows} instance={instance} />
+      )}
     </>
   )
 }

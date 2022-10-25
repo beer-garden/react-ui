@@ -5,8 +5,9 @@ import {
   waitFor,
   within,
 } from '@testing-library/react'
-import { mockAxios } from 'test/axios-mock'
-import { AllProviders } from 'test/testMocks'
+import { mockAxios, regexUsers } from 'test/axios-mock'
+import { TServerAuthConfig } from 'test/test-values'
+import { AllProviders, LoggedInProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 
 import { UsersIndex } from './UsersIndex'
@@ -27,17 +28,77 @@ describe('UsersIndex', () => {
     })
   })
 
-  test('render button to add user', async () => {
+  test('user in table is clickable', async () => {
     render(
       <AllProviders>
         <UsersIndex />
       </AllProviders>,
     )
-    const btn = await screen.findByRole('button', { name: 'Add user' })
+    await waitFor(() => {
+      expect(screen.getByText(TUser.username)).toBeInTheDocument()
+    })
+    const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+    expect(links[0].textContent).toEqual(TUser.username)
+    expect(links[0].href).toContain(
+      `http://localhost/#/admin/users/${TUser.username}`,
+    )
+  })
+
+  test('render button to add user', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    render(
+      <LoggedInProviders>
+        <UsersIndex />
+      </LoggedInProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByTestId('AddIcon')).toBeInTheDocument()
+    })
+  })
+
+  test('no add user button if no permission', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    render(
+      <LoggedInProviders>
+        <UsersIndex />
+      </LoggedInProviders>,
+    )
+    await waitFor(() =>
+      expect(screen.queryByTestId('AddIcon')).not.toBeInTheDocument(),
+    )
+  })
+
+  test('no sync button if no sync status', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    render(
+      <LoggedInProviders>
+        <UsersIndex />
+      </LoggedInProviders>,
+    )
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('button', { name: 'Sync user' }),
+      ).not.toBeInTheDocument(),
+    )
+  })
+
+  test('render button to sync user', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    mockAxios.onGet('/api/v1/users').reply(200, { users: [TAdmin] })
+    render(
+      <LoggedInProviders>
+        <UsersIndex />
+      </LoggedInProviders>,
+    )
+    const btn = await screen.findByRole('button', { name: 'Sync user' })
     expect(btn).toBeInTheDocument()
   })
 
   test('table unchanged on cancel', async () => {
+    mockAxios.onGet('/api/v1/users').reply(200, { users: [TUser] })
     render(
       <AllProviders>
         <UsersIndex />

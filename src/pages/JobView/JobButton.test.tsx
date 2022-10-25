@@ -50,22 +50,26 @@ describe('JobButton', () => {
     })
   })
 
-  test('render pause button when job is running', () => {
+  test('render pause button when job is running', async () => {
     render(
       <AllProviders>
         <JobButton id="24" job={jData} callback={jest.fn} />
       </AllProviders>,
     )
-    expect(screen.getByText('Pause job')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Pause job')).toBeInTheDocument()
+    })
   })
 
-  test('render resume button when job is not running', () => {
+  test('render resume button when job is not running', async () => {
     jData.status = 'STOPPED'
     render(
       <AllProviders>
         <JobButton id="24" job={jData} callback={jest.fn} />
       </AllProviders>,
     )
-    expect(screen.getByText('Resume job')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Resume job')).toBeInTheDocument()
+    })
   })
 })

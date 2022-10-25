@@ -42,6 +42,10 @@ const usePermissions = () => {
   }, [user])
 
   const hasPermission = (permission: string) => {
+    if (DEBUG_PERMISSION) {
+      console.log('authEnabled', authEnabled)
+      console.log('user object', userObj)
+    }
     // True if the user has the permission for any objects at all
     if (!authEnabled) return true
     if (!userObj) return false

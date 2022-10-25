@@ -10,3 +10,8 @@ export const TGarden: Garden = {
   systems: [TSystem],
   connection_type: 'HTTP',
 }
+
+export const TGardenSync = {
+  gardenOne: true,
+  gardenTwo: false,
+}
