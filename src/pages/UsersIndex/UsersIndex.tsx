@@ -13,6 +13,7 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useUsers from 'hooks/useUsers'
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Column } from 'react-table'
 import { User } from 'types/backend-types'
 import {
@@ -22,7 +23,7 @@ import {
 } from 'types/custom-types'
 
 interface UserIndexTableData extends ObjectWithStringKeys {
-  username: string
+  username: JSX.Element
   sync?: JSX.Element
 }
 
@@ -58,7 +59,7 @@ export const UsersIndex = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [openAdd, setOpenAdd] = useState<boolean>(false)
   const [openSync, setOpenSync] = useState<boolean>(false)
-  const [syncStatus, setSyncStatus] = useState<boolean>(true)
+  const [syncStatus, setSyncStatus] = useState<boolean>(false)
   const [users, setUsers] = useState<SyncUser[]>([])
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { getUsers } = useUsers()
@@ -76,8 +77,10 @@ export const UsersIndex = () => {
       .then((response) => {
         const tmpUsers: SyncUser[] = []
         response.data.users.forEach((user: User) => {
-          const tmpUser = Object.assign({ fullySynced: true }, user)
+          const tmpUser = Object.assign({ fullySynced: false }, user)
           if (user.sync_status) {
+            tmpUser.fullySynced = true
+            setSyncStatus(true)
             Object.values(user.sync_status).forEach((synced) => {
               if (!synced) {
                 tmpUser.fullySynced = false
@@ -86,14 +89,12 @@ export const UsersIndex = () => {
           }
           tmpUsers.push(tmpUser)
         })
-
         setUsers(tmpUsers)
-        setSyncStatus(true)
       })
       .catch((e) => {
         setAlert({
           severity: 'error',
-          message: e,
+          message: e.response.data.message || e,
           doNotAutoDismiss: true,
         })
       })
@@ -105,7 +106,20 @@ export const UsersIndex = () => {
   const userData = useMemo(() => {
     return users.map((user: SyncUser): UserIndexTableData => {
       return {
-        username: user.username,
+        username: (
+          <Box
+            key={`${user.username}_link`}
+            sx={{
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              width: '120px',
+              display: 'block',
+              overflow: 'hidden',
+            }}
+          >
+            <Link to={`/admin/users/${user.username}`}>{user.username}</Link>
+          </Box>
+        ),
         sync:
           syncStatus && user.fullySynced ? (
             <CheckIcon color="success" />
@@ -164,6 +178,7 @@ export const UsersIndex = () => {
         data={userData}
         columns={useTableColumns(syncStatus)}
         showGlobalFilter
+        hideToolbar
       />
       {alert && <Snackbar status={alert} />}
     </Box>

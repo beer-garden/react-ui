@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { TGarden } from 'test/garden-test-values'
 import * as mockData from 'test/test-values'
-import { TAdmin, TUser } from 'test/user-test-values'
+import { TAdmin, TAdminRole, TRole, TUser } from 'test/user-test-values'
 
 axios.defaults.baseURL = 'http://localhost:4000'
 
@@ -20,6 +20,8 @@ mock.onGet('/api/v1/gardens').reply(200, [TGarden])
 mock.onGet('/api/v1/commandpublishingblocklist').reply(200, mockData.TBlocklist)
 mock.onGet('/api/v1/systems').reply(200, [mockData.TSystem])
 mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
+mock.onGet(regexUsers).reply(200, TUser)
+mock.onGet('/api/v1/roles').reply(200, { roles: [TRole, TAdminRole] })
 mock.onGet('/api/v1/requests/1234').reply(200, mockData.TRequest)
 mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
   // this can be updated to be dynamic by parsing config.url for name
@@ -41,7 +43,11 @@ mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
 
 // Success PATCH
 mock.onPatch('/api/v1/gardens').reply(200, {})
+mock.onPatch(regexUsers).reply(200, TUser)
 mock.onPatch('/api/v1/instances/testinst').reply(200, mockData.TInstance)
+
+// Success DELETE
+mock.onDelete(regexUsers).reply(204, '')
 
 // default
 mock.onAny().reply(200, undefined)

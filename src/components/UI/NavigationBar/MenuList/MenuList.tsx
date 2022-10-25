@@ -7,10 +7,12 @@ import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 import { LogoutButton } from 'components/UI/NavigationBar/MenuList/LogoutButton'
 import { OptionsMenu } from 'components/UI/NavigationBar/MenuList/OptionsMenu'
 import { AuthContainer } from 'containers/AuthContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import * as React from 'react'
 
 const MenuList = () => {
   const { user } = AuthContainer.useContainer()
+  const { hasPermission } = PermissionsContainer.useContainer()
 
   return (
     <MuiMenuList>
@@ -21,11 +23,13 @@ const MenuList = () => {
             primary={entry.displayName}
             key={entry.key}
             icon={entry.icon}
-            sx={{pl: 1}}
+            sx={{ pl: 1 }}
           />
         )
       })}
-      <AdminMenu />
+      {(hasPermission('system:update') || hasPermission('garden:update')) && (
+        <AdminMenu />
+      )}
       <Divider />
       <OptionsMenu />
       {user && <LogoutButton />}

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { TInstance, TInstance2 } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
@@ -14,7 +14,9 @@ describe('SystemCard actions', () => {
         />
       </AllProviders>,
     )
-    expect(screen.getByText('testInstance')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('testInstance')).toBeInTheDocument()
+    })
     expect(screen.getByText('secondInstance')).toBeInTheDocument()
   })
 

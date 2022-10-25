@@ -1,5 +1,5 @@
 import { useMyAxios } from 'hooks/useMyAxios'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ServerConfig } from 'types/config-types'
 import { createContainer } from 'unstated-next'
 
@@ -7,22 +7,18 @@ const useServerConfig = () => {
   const { axiosInstance } = useMyAxios()
   const [config, setConfig] = useState<ServerConfig | null>(null)
 
-  const getConfig = useCallback(async () => {
-    const { data } = await axiosInstance.get<ServerConfig>('/config', {
-      timeout: 1000,
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-
-    setConfig(data)
-    return data
-  }, [axiosInstance])
-
   useEffect(() => {
-    getConfig()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    axiosInstance
+      .get<ServerConfig>('/config', {
+        timeout: 1000,
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+      .then((response) => {
+        setConfig(response.data)
+      })
+  }, [axiosInstance])
 
   const authEnabled = useMemo(() => {
     return config?.auth_enabled ?? false
@@ -34,7 +30,6 @@ const useServerConfig = () => {
 
   return {
     config,
-    getConfig,
     authEnabled,
     debugEnabled,
   }
