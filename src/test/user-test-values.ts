@@ -44,6 +44,6 @@ export const TAdmin: User = {
   username: 'adminUser',
   id: 'usr2',
   role_assignments: [TAdminRoleAssignment],
-  permissions: { domain_permissions: {}, global_permissions: ['admin'] },
+  permissions: { domain_permissions: {}, global_permissions: ['job:update'] },
   sync_status: null,
 }

@@ -9,6 +9,7 @@ axios.defaults.baseURL = 'http://localhost:4000'
 const mock = new MockAdapter(axios)
 
 const regexLogs = new RegExp(/(\/api\/v1\/instances\/)\w+(\/logs)/)
+export const regexUsers = new RegExp(/(\/api\/v1\/users\/)\w+/)
 const regexQueues = new RegExp(/(\/api\/v1\/instances\/)(\w+[^bad])(\/queues)/)
 
 // Success GET
