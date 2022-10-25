@@ -1,5 +1,6 @@
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { Login } from 'pages/Login'
 import { lazy } from 'react'
 import {
@@ -24,6 +25,7 @@ const UsersIndex = lazy(() => import('pages/UsersIndex'))
 
 const Routes = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const { hasPermission } = PermissionsContainer.useContainer()
 
   if (authEnabled === undefined) return null
 
@@ -42,24 +44,36 @@ const Routes = () => {
           </Route>
         </Route>
       </Route>
-      <Route path="admin" element={<RequireAuth />}>
-        {authEnabled && <Route path="users" element={<UsersIndex />} />}
-        <Route path="systems" element={<SystemAdmin />} />
-        <Route path="gardens">
-          <Route index element={<GardensAdmin />} />
-          <Route path=":gardenName" element={<GardenAdminView />} />
+      {(hasPermission('system:update') || hasPermission('garden:update')) && (
+        <Route path="admin" element={<RequireAuth />}>
+          {authEnabled && hasPermission('user:update') && (
+            <Route path="users" element={<UsersIndex />} />
+          )}
+          {hasPermission('system:update') && (
+            <Route path="systems" element={<SystemAdmin />} />
+          )}
+          {hasPermission('garden:update') && (
+            <Route path="gardens">
+              <Route index element={<GardensAdmin />} />
+              <Route path=":gardenName" element={<GardenAdminView />} />
+            </Route>
+          )}
+          {hasPermission('garden:update') && (
+            <Route path="commandblocklist" element={<CommandBlocklistView />} />
+          )}
         </Route>
-        <Route path="commandblocklist" element={<CommandBlocklistView />} />
-      </Route>
+      )}
       <Route path="requests" element={<RequireAuth />}>
         <Route index element={<RequestsIndex />} />
         <Route path=":id" element={<RequestView />} />
       </Route>
-      <Route path="jobs" element={<RequireAuth />}>
-        <Route index element={<JobIndex />} />
-        <Route path="create" element={<JobCreate />} />
-        <Route path=":id" element={<JobView />} />
-      </Route>
+      {hasPermission('job:read') && (
+        <Route path="jobs" element={<RequireAuth />}>
+          <Route index element={<JobIndex />} />
+          <Route path="create" element={<JobCreate />} />
+          <Route path=":id" element={<JobView />} />
+        </Route>
+      )}
       <Route path="/login" element={<Login />} />
       <Route
         path="*"

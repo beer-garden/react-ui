@@ -18,10 +18,12 @@ import {
 import { ListItemLink } from 'components/UI/NavigationBar/MenuList/ListItemLink'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useContext, useState } from 'react'
 
 const AdminMenu = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const { hasPermission } = PermissionsContainer.useContainer()
   const [open, setOpen] = useState(false)
 
   const handleClick = () => setOpen(!open)
@@ -48,7 +50,7 @@ const AdminMenu = () => {
       <Collapse in={open && drawerIsOpen} timeout={'auto'} unmountOnExit>
         <Divider />
         <MenuList>
-          {authEnabled && (
+          {authEnabled && hasPermission('user:update') && (
             <ListItemLink
               icon={<PeopleIcon fontSize="small" />}
               primary={'Users'}
@@ -56,24 +58,30 @@ const AdminMenu = () => {
               sx={{ pl: 3 }}
             />
           )}
-          <ListItemLink
-            icon={<LocalFloristIcon fontSize="small" />}
-            primary={'Gardens'}
-            to={'/admin/gardens'}
-            sx={{ pl: 3 }}
-          />
-          <ListItemLink
-            icon={<FactoryIcon fontSize="small" />}
-            primary={'Systems'}
-            to={'/admin/systems'}
-            sx={{ pl: 3 }}
-          />
-          <ListItemLink
-            icon={<BlockIcon fontSize="small" />}
-            primary={'Command Publishing Blocklist'}
-            to={'/admin/commandblocklist'}
-            sx={{ pl: 3 }}
-          />
+          {hasPermission('garden:update') && (
+            <ListItemLink
+              icon={<LocalFloristIcon fontSize="small" />}
+              primary={'Gardens'}
+              to={'/admin/gardens'}
+              sx={{ pl: 3 }}
+            />
+          )}
+          {hasPermission('system:update') && (
+            <ListItemLink
+              icon={<FactoryIcon fontSize="small" />}
+              primary={'Systems'}
+              to={'/admin/systems'}
+              sx={{ pl: 3 }}
+            />
+          )}
+          {hasPermission('garden:update') && (
+            <ListItemLink
+              icon={<BlockIcon fontSize="small" />}
+              primary={'Command Publishing Blocklist'}
+              to={'/admin/commandblocklist'}
+              sx={{ pl: 3 }}
+            />
+          )}
         </MenuList>
       </Collapse>
     </>
