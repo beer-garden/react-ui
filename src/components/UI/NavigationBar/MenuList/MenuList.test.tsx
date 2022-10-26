@@ -28,7 +28,6 @@ describe('Menu List', () => {
 
   test('should show logout button when logged in', async () => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-
     render(
       <LoggedInProviders>
         <NavigationBarContextProvider
@@ -49,7 +48,6 @@ describe('Menu List', () => {
   test('should show admin menu when permission', async () => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
     mockAxios.onGet(regexUsers).reply(200, TAdmin)
-
     render(
       <LoggedInProviders>
         <NavigationBarContextProvider
@@ -70,7 +68,6 @@ describe('Menu List', () => {
   test('should not show admin menu when no permission', async () => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
     mockAxios.onGet(regexUsers).reply(200, TUser)
-
     render(
       <LoggedInProviders>
         <NavigationBarContextProvider
@@ -85,6 +82,46 @@ describe('Menu List', () => {
     )
     await waitFor(() => {
       expect(screen.queryByText('Admin')).not.toBeInTheDocument()
+    })
+  })
+
+  test('should not show scheduler when no permission', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TUser)
+    render(
+      <LoggedInProviders>
+        <NavigationBarContextProvider
+          toggleDrawer={(open: boolean) => () => {
+            // noop
+          }}
+          drawerIsOpen={true}
+        >
+          <MenuList />
+        </NavigationBarContextProvider>
+      </LoggedInProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.queryByText('Scheduler')).not.toBeInTheDocument()
+    })
+  })
+
+  test('should show Scheduler option when permission', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    render(
+      <LoggedInProviders>
+        <NavigationBarContextProvider
+          toggleDrawer={(open: boolean) => () => {
+            // noop
+          }}
+          drawerIsOpen={true}
+        >
+          <MenuList />
+        </NavigationBarContextProvider>
+      </LoggedInProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText('Scheduler')).toBeInTheDocument()
     })
   })
 })
