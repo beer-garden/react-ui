@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { Garden } from 'types/backend-types'
 
 const useGardens = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -9,7 +10,7 @@ const useGardens = () => {
   const [, execute] = useAxios({}, axiosManualOptions)
 
   const getGardens = () => {
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<Garden[]> = {
       url: '/api/v1/gardens',
       method: 'get',
       withCredentials: authEnabled,
@@ -19,7 +20,7 @@ const useGardens = () => {
   }
 
   const getGarden = (name: string) => {
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<Garden> = {
       url: `/api/v1/gardens/${name}`,
       method: 'get',
       withCredentials: authEnabled,

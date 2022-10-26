@@ -51,6 +51,8 @@ export const TAdmin: User = {
       'garden:update',
       'user:create',
       'job:update',
+      'job:create',
+      'job:read',
     ],
   },
   sync_status: { [TGarden.name]: true },
