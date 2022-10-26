@@ -3,12 +3,13 @@ import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
 import { GardenSyncButton } from 'components/GardenSyncButton'
 import { PageHeader } from 'components/PageHeader'
-import { Snackbar, SnackbarState } from 'components/Snackbar'
+import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { CreateGarden, GardenAdminCard } from 'pages/GardenAdmin'
 import { useEffect, useState } from 'react'
 import { Garden } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 const GardensAdmin = (): JSX.Element => {
   const { authEnabled } = ServerConfigContainer.useContainer()
