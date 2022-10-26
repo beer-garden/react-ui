@@ -3,7 +3,7 @@ import { GardenConnectionForm } from 'components/GardenConnectionForm'
 import { useState } from 'react'
 import { Garden } from 'types/backend-types'
 
-const style = {
+const modalStyle = {
   position: 'absolute' as const,
   top: '50%',
   left: '50%',
@@ -40,7 +40,7 @@ const CreateGarden = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <GardenConnectionForm garden={garden} isCreateGarden={true} />
         </Box>
       </Modal>

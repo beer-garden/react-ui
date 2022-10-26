@@ -21,37 +21,58 @@ const useGardenConnectionFormOnSubmit = (
   isCreateGarden?: boolean,
 ) => {
   const { createGarden, updateGarden } = useGardens()
-  const execute = isCreateGarden ? createGarden : updateGarden
 
   return (
     connectionParams: ConnectionFormFields,
     formikActions: FormikHelpers<ConnectionFormFields>,
   ) => {
-    execute(garden.name, updateConnection(connectionParams, garden))
-      .then(() =>
-        setSubmissionStatus({
-          severity: 'success',
-          message: isCreateGarden
-            ? 'Garden create successful'
-            : 'Connection update successful',
-          showSeverity: false,
-        }),
-      )
-      .catch((error) => {
-        console.error('ERROR', error)
+    isCreateGarden
+      ? createGarden(updateConnection(connectionParams, garden))
+          .then(() =>
+            setSubmissionStatus({
+              severity: 'success',
+              message: 'Garden create successful',
+              showSeverity: false,
+            }),
+          )
+          .catch((error) => {
+            console.error('ERROR', error)
 
-        if (error.response && error.response.statusText) {
-          setSubmissionStatus({
-            severity: 'error',
-            message: `${error.response.status} ${error.response.statusText}`,
+            if (error.response && error.response.statusText) {
+              setSubmissionStatus({
+                severity: 'error',
+                message: `${error.response.status} ${error.response.statusText}`,
+              })
+            } else {
+              setSubmissionStatus({
+                severity: 'error',
+                message: `${error}`,
+              })
+            }
           })
-        } else {
-          setSubmissionStatus({
-            severity: 'error',
-            message: `${error}`,
+      : updateGarden(garden.name, updateConnection(connectionParams, garden))
+          .then(() =>
+            setSubmissionStatus({
+              severity: 'success',
+              message: 'Connection update successful',
+              showSeverity: false,
+            }),
+          )
+          .catch((error) => {
+            console.error('ERROR', error)
+
+            if (error.response && error.response.statusText) {
+              setSubmissionStatus({
+                severity: 'error',
+                message: `${error.response.status} ${error.response.statusText}`,
+              })
+            } else {
+              setSubmissionStatus({
+                severity: 'error',
+                message: `${error}`,
+              })
+            }
           })
-        }
-      })
 
     formikActions.setSubmitting(false)
   }

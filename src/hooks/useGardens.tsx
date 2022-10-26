@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { Garden } from 'types/backend-types'
 
 const useGardens = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -49,7 +50,7 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const createGarden = (gardenName: string, data: unknown) => {
+  const createGarden = (data: Garden) => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/gardens',
       method: 'POST',
@@ -63,7 +64,7 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const updateGarden = (name: string, data: unknown) => {
+  const updateGarden = (name: string, data: Garden) => {
     const config: AxiosRequestConfig = {
       url: `/api/v1/gardens/${name}`,
       method: 'PATCH',

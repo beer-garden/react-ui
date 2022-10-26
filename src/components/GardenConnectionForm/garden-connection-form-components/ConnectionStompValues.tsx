@@ -119,7 +119,8 @@ const fourthRow = [
       id: 'stompCACert',
       label: 'CA cert',
       tooltip:
-        'Path to certificate file containing the certificate of the authority that issued the message broker certificate',
+        'Path to certificate file containing the certificate ' +
+        'of the authority that issued the message broker certificate',
       sx: { mt: 0, pb: 5 },
     },
   },

@@ -15,11 +15,6 @@ import { useState } from 'react'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
-export interface SubmissionStatusState {
-  result: 'success' | 'failure'
-  msg?: string
-}
-
 interface GardenConnectionFormProps {
   garden: Garden
   isCreateGarden?: boolean

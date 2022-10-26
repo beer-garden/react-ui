@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import { Divider } from 'components/Divider'
 import { GardenStatusAlert } from 'components/GardenStatusAlert'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useGardens from 'hooks/useGardens'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -30,8 +31,9 @@ const GardenAdminCard = ({
   const [open, setOpen] = useState(false)
 
   const { deleteGarden } = useGardens()
+  const { hasPermission } = PermissionsContainer.useContainer()
 
-  const style = {
+  const modalStyle = {
     position: 'absolute' as const,
     top: '50%',
     left: '50%',
@@ -83,7 +85,9 @@ const GardenAdminCard = ({
       </AppBar>
       <CardContent>
         <Grid container>
-          <Grid>Status: </Grid>
+          <Grid>
+            <Box sx={{ mr: 1 }}>Status: </Box>
+          </Grid>
           <Grid>
             <GardenStatusAlert status={garden.status} />
           </Grid>
@@ -103,24 +107,27 @@ const GardenAdminCard = ({
         </Button>
         {garden.connection_type !== 'LOCAL' ? (
           <>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => setOpen(true)}
-            >
-              Delete
-            </Button>
+            {hasPermission('garden:delete') && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => setOpen(true)}
+              >
+                Delete
+              </Button>
+            )}
+
             <Modal
               open={open}
               onClose={() => setOpen(false)}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={style}>
+              <Box sx={modalStyle}>
                 Confirm Garden Deletion
                 <Divider />
                 Are you sure you want to delete garden: {garden.name}? This will
-                also delete all Systems assocaited with garden: {garden.name}.
+                also delete all Systems associated with garden: {garden.name}.
                 <Divider />
                 <Button
                   onClick={() => handleDeleteClick()}
@@ -146,4 +153,4 @@ const GardenAdminCard = ({
   )
 }
 
-export default GardenAdminCard
+export { GardenAdminCard }
