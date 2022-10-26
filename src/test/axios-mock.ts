@@ -45,9 +45,11 @@ mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
 mock.onPatch('/api/v1/gardens').reply(200, {})
 mock.onPatch(regexUsers).reply(200, TUser)
 mock.onPatch('/api/v1/instances/testinst').reply(200, mockData.TInstance)
+mock.onPatch('/api/v1/systems/testsys').reply(200, '')
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')
+mock.onDelete('/api/v1/systems').reply(204, '')
 
 // default
 mock.onAny().reply(200, undefined)

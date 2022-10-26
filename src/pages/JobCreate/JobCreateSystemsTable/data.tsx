@@ -47,8 +47,11 @@ const useSystemMapper = (
 const useSystemsData = (systemSetter: (system: System) => void) => {
   const { getSystems } = useSystems()
   const systemMapper = useSystemMapper(systemSetter)
-
-  return (getSystems() as System[]).map(systemMapper)
+  let systems: System[] = []
+  getSystems().then((response) => {
+    systems = response.data
+  })
+  return systems.map(systemMapper)
 }
 const useSystemColumns = () => {
   return useMemo<Column<JobCreateSystemsTableData>[]>(
