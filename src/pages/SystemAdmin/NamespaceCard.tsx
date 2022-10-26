@@ -6,7 +6,9 @@ import {
   Grid,
   Typography,
 } from '@mui/material'
+import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { useSystems } from 'hooks/useSystems'
 import {
   alertStyle,
@@ -17,41 +19,82 @@ import {
 import SystemCard from 'pages/SystemAdmin/SystemAdminCard'
 import { useEffect, useState } from 'react'
 import { System } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 const NamespaceCard = ({ namespace }: { namespace: string }) => {
   const { hasSystemPermission } = PermissionsContainer.useContainer()
-  const systemClient = useSystems()
-  const systems = systemClient.systems
+  const { getSystems } = useSystems()
+  const [filteredSystems, setFilteredSystems] = useState<System[]>([])
+  const [sortedSystems, setSortedSystems] = useState<{
+    [key: string]: System[]
+  }>({})
+  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const [expanded, setExpanded] = useState(true)
   const [permission, setPermission] = useState(false)
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
+
+  const fetchPermissions = (systems: System[]) => {
+    if (systems[0]) {
+      hasSystemPermission('system:update', namespace, systems[0].id).then(
+        (response) => {
+          setPermission(response || false)
+        },
+      )
+    }
+  }
+
+  const updateSystems = () => {
+    getSystems()
+      .then((response) => {
+        return response.data
+      })
+      .then((systems) => {
+        const filtered = systems.filter(
+          (system: System) => system.namespace === namespace,
+        )
+        setFilteredSystems(filtered)
+        return filtered
+      })
+      .then((filtered) => {
+        fetchPermissions(filtered)
+        return filtered
+      })
+      .then((filtered) => {
+        const sorted = sortSystems(filtered)
+        setSortedSystems(sorted)
+      })
+      .catch((e) => {
+        setAlert({
+          severity: 'error',
+          message: e,
+          doNotAutoDismiss: true,
+        })
+      })
+  }
+
+  useEffect(() => {
+    addCallback('system_updates', (event) => {
+      if (
+        event.name === 'INSTANCE_UPDATED' ||
+        event.name === 'SYSTEM_REMOVED'
+      ) {
+        updateSystems()
+      }
+    })
+    return () => {
+      removeCallback('system_updates')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addCallback, removeCallback])
+
+  useEffect(() => {
+    updateSystems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
   }
-
-  const filteredSystem = systems.filter(
-    (system: System) => system.namespace === namespace,
-  )
-  useEffect(() => {
-    const fetchPermission = async () => {
-      if (filteredSystem[0]) {
-        const permCheck = await hasSystemPermission(
-          'system:update',
-          namespace,
-          filteredSystem[0].id,
-        )
-        setPermission(permCheck || false)
-      }
-    }
-    fetchPermission()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [namespace, filteredSystem[0]])
-
-  if (!systems) {
-    return <></>
-  }
-
-  const sortedSystems = sortSystems(filteredSystem)
 
   return (
     <>
@@ -63,8 +106,8 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
               ...alertStyle,
               backgroundColor: 'primary.main',
             }}
-            icon={systemIcon(filteredSystem) ? undefined : false}
-            severity={systemsSeverity(filteredSystem)}
+            icon={systemIcon(filteredSystems) ? undefined : false}
+            severity={systemsSeverity(filteredSystems)}
             onClick={handleExpandClick}
             title="Click to collapse"
           >
@@ -98,6 +141,7 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
           </Collapse>
         </Card>
       )}
+      {alert && <Snackbar status={alert} />}
     </>
   )
 }

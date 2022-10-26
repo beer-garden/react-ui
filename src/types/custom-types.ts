@@ -17,6 +17,10 @@ export interface ObjectWithStringKeys {
 
 export type EmptyObject = Record<string, never>
 
+export interface SuccessCallback {
+  (response: AxiosResponse): void
+}
+
 export interface TableState {
   tableHeads: string[]
   completeDataSet?: System[] | Command[] | Request[] | Job[]

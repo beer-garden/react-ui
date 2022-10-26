@@ -58,10 +58,12 @@ mock
     }
     return [200, Object.assign({}, mockData.TJob, { status: 'PAUSED' })]
   })
+mock.onPatch('/api/v1/systems/testsys').reply(200, '')
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')
 mock.onDelete(`/api/v1/jobs/${mockData.TJob.id}`).reply(204, '')
+mock.onDelete('/api/v1/systems/testsys').reply(204)
 
 // default
 mock.onAny().reply(200, 'undefined axios mock - add to axios-mock.ts')
