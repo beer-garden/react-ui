@@ -25,7 +25,7 @@ const useSystems = () => {
   useEffect(() => {
     addCallback('system_updates', (event) => {
       if (
-        event.name === 'INSTANCE_UPDATED'
+        event.name === 'INSTANCE_UPDATED' || event.name === 'SYSTEM_REMOVED'
       ) {
         refetch()
       }
