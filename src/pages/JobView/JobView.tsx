@@ -16,7 +16,7 @@ const JobView = () => {
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
-  const { hasPermission } = PermissionsContainer.useContainer()
+  const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
   const { getJob, deleteJob } = useJobs()
   const navigate = useNavigate()
@@ -53,8 +53,7 @@ const JobView = () => {
 
   return (
     <Box>
-      {/* TODO: this should be hasJobPermission */}
-      {hasPermission('job:update') && (
+      {job && hasJobPermission('job:update', job) && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
           <Button variant="contained" color="primary">
             Update Job

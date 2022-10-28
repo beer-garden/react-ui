@@ -49,6 +49,7 @@ export const TAdmin: User = {
       'system:update',
       'user:update',
       'garden:update',
+      'request:create',
       'user:create',
       'job:update',
       'job:create',

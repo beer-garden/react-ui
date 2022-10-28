@@ -6,12 +6,14 @@ import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { Suspense } from 'react'
 import { HashRouter, MemoryRouter } from 'react-router-dom'
+import { DebugSettings } from 'types/config-types'
 
-interface ProviderMocks {
+export interface ProviderMocks {
   children: JSX.Element
   startLocation?: string[]
   user?: string
   pw?: string
+  logs?: DebugSettings
 }
 
 /**
@@ -182,5 +184,28 @@ export const SocketProvider = ({ children }: ProviderMocks) => {
     <DebugContainer.Provider initialState={{ SOCKET: true }}>
       <SocketContainer.Provider>{children}</SocketContainer.Provider>
     </DebugContainer.Provider>
+  )
+}
+
+/**
+ * Wrapper that uses AllProviders but with logs on
+ * @param children
+ * @returns
+ */
+export const LogsProvider = ({ children, logs }: ProviderMocks) => {
+  return (
+    <HashRouter>
+      <ServerConfigContainer.Provider>
+        <DebugContainer.Provider initialState={logs}>
+          <SocketContainer.Provider>
+            <AuthContainer.Provider>
+              <PermissionsContainer.Provider>
+                {children}
+              </PermissionsContainer.Provider>
+            </AuthContainer.Provider>
+          </SocketContainer.Provider>
+        </DebugContainer.Provider>
+      </ServerConfigContainer.Provider>
+    </HashRouter>
   )
 }

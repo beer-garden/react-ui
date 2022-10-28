@@ -1,10 +1,32 @@
 import { Button } from '@mui/material'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
-const ExecuteButton = (system: StrippedSystem, command: AugmentedCommand) => {
-  const { namespace, systemName, systemVersion, name } = command
+interface IExeButton {
+  system: StrippedSystem
+  command: AugmentedCommand
+}
+
+const ExecuteButton = ({ system, command }: IExeButton) => {
+  const { namespace, systemName, systemVersion, name, systemId } = command
+  const { hasSystemPermission } = PermissionsContainer.useContainer()
+  const [permission, setPermission] = useState(false)
+
+  useEffect(() => {
+    const fetchPermission = async () => {
+      const permCheck = await hasSystemPermission(
+        'request:create',
+        namespace,
+        systemId,
+      )
+      setPermission(permCheck || false)
+    }
+    fetchPermission()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [namespace, systemId])
 
   return (
     <JobRequestCreationContext.Consumer>
@@ -14,7 +36,6 @@ const ExecuteButton = (system: StrippedSystem, command: AugmentedCommand) => {
           setCommand && setCommand(command)
           setIsJob && setIsJob(false)
         }
-
         return (
           <Button
             component={RouterLink}
@@ -30,6 +51,7 @@ const ExecuteButton = (system: StrippedSystem, command: AugmentedCommand) => {
             size="small"
             variant="contained"
             color="primary"
+            disabled={permission}
           >
             Execute
           </Button>

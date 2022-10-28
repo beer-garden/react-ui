@@ -1,9 +1,11 @@
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import useGardens from 'hooks/useGardens'
+import { useSystems } from 'hooks/useSystems'
 import useUsers from 'hooks/useUsers'
 import { useCallback, useEffect, useState } from 'react'
-import { User } from 'types/backend-types'
+import { Garden, Job, User } from 'types/backend-types'
 import { createContainer } from 'unstated-next'
 
 const usePermissions = () => {
@@ -12,6 +14,8 @@ const usePermissions = () => {
   const { user } = AuthContainer.useContainer()
   const [userObj, setUser] = useState<User | null>(null)
 
+  const { getGarden } = useGardens()
+  const { getSystems } = useSystems()
   const { getUser } = useUsers()
 
   const getUserObj = useCallback(() => {
@@ -27,37 +31,109 @@ const usePermissions = () => {
   }, [DEBUG_PERMISSION, user])
 
   useEffect(() => {
-    window.addEventListener(
-      'storage',
-      async (event: WindowEventMap['storage']) => {
-        if (event.key === 'LOGOUT') {
-          setUser(null)
-        } else if (event.key === 'LOGIN') {
-          getUserObj()
-        }
-      },
-    )
+    const storageListener = async (event: WindowEventMap['storage']) => {
+      if (event.key === 'LOGOUT') {
+        setUser(null)
+      } else if (event.key === 'LOGIN') {
+        getUserObj()
+      }
+    }
+    window.addEventListener('storage', storageListener)
     getUserObj()
+    return () => window.removeEventListener('storage', storageListener)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
-  const hasPermission = (permission: string) => {
+  const basePermissionCheck = (): boolean | undefined => {
     if (DEBUG_PERMISSION) {
       console.log('authEnabled', authEnabled)
       console.log('user object', userObj)
     }
-    // True if the user has the permission for any objects at all
     if (!authEnabled) return true
     if (!userObj) return false
+    return undefined
+  }
+
+  const hasPermission = (permission: string): boolean => {
+    const baseCheck = basePermissionCheck()
+    if (typeof baseCheck !== 'undefined') {
+      return !!baseCheck
+    }
     return (
-      userObj.permissions.global_permissions.includes(permission) ||
+      userObj?.permissions.global_permissions.includes(permission) ||
       // eslint-disable-next-line no-prototype-builtins
-      userObj.permissions.domain_permissions.hasOwnProperty(permission)
+      !!userObj?.permissions.domain_permissions.hasOwnProperty(permission)
     )
+  }
+
+  const hasGardenPermission = (permission: string, garden: Garden): boolean => {
+    const baseCheck = basePermissionCheck()
+    if (!userObj || typeof baseCheck !== 'undefined') {
+      return !!baseCheck
+    }
+    if (userObj.permissions.global_permissions.includes(permission)) {
+      return true
+    }
+    const domainPermissions = userObj.permissions.domain_permissions
+    // eslint-disable-next-line no-prototype-builtins
+    if (domainPermissions.hasOwnProperty(permission)) {
+      return domainPermissions[permission].garden_ids.includes(garden.id)
+    }
+    return false
+  }
+
+  const hasSystemPermission = async (
+    permission: string,
+    namespace: string,
+    systemId: string,
+  ): Promise<boolean> => {
+    const baseCheck = basePermissionCheck()
+    if (!userObj || typeof baseCheck !== 'undefined') {
+      return !!baseCheck
+    }
+    if (userObj.permissions.global_permissions.includes(permission)) {
+      return true
+    }
+    return getGarden(namespace).then((response) => {
+      const garden = response.data
+      if (garden && hasGardenPermission(permission, garden)) {
+        return true
+      }
+      const domainPermissions = userObj.permissions.domain_permissions
+      // eslint-disable-next-line no-prototype-builtins
+      if (domainPermissions.hasOwnProperty(permission)) {
+        return domainPermissions[permission].system_ids.includes(systemId)
+      }
+      return false
+    })
+  }
+
+  const hasJobPermission = (permission: string, job: Job) => {
+    const baseCheck = basePermissionCheck()
+    if (typeof baseCheck !== 'undefined') {
+      return !!baseCheck
+    }
+    const foundSystem = getSystems().find(
+      (system) =>
+        system.namespace === job.request_template.namespace &&
+        system.version === job.request_template.system_version &&
+        system.name === job.request_template.system,
+    )
+    if (foundSystem) {
+      return hasSystemPermission(
+        permission,
+        job.request_template.namespace,
+        foundSystem.id,
+      )
+    }
+    return false
   }
 
   return {
     hasPermission,
+    hasGardenPermission,
+    hasSystemPermission,
+    hasJobPermission,
   }
 }
 

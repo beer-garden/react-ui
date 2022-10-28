@@ -11,6 +11,7 @@ import {
   RequestTemplate,
   System,
 } from 'types/backend-types'
+import { AugmentedCommand } from 'types/custom-types'
 
 export const TServerConfig = {
   application_name: 'testApp',
@@ -116,6 +117,13 @@ export const TSystem: System = {
   template: 'template',
 }
 
+export const TAugmentedCommand: AugmentedCommand = Object.assign({}, TCommand, {
+  namespace: 'someNamespace',
+  systemName: TSystem.name,
+  systemVersion: TSystem.version,
+  systemId: TSystem.id,
+})
+
 export const TQueue: Queue = {
   version: '1.0.2',
   system: 'default',
@@ -155,5 +163,5 @@ export const TRequest: Request = {
   status: 'SUCCESS',
   system: 'test system',
   system_version: 'test version',
-  updated_at: 1235
+  updated_at: 1235,
 }
