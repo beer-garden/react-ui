@@ -1,5 +1,4 @@
 import LoadingButton from '@mui/lab/LoadingButton'
-import { Button } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { SnackbarState } from 'types/custom-types'
@@ -15,7 +14,7 @@ const GardenSyncButton = ({
 }: GardenSynButtonParams) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const [{ loading, error }, execute] = useAxios(
+  const [{ loading }, execute] = useAxios(
     {
       url: '/api/v1/gardens/' + gardenName,
       method: 'PATCH',
@@ -50,7 +49,8 @@ const GardenSyncButton = ({
         if (error.response) {
           setSyncStatus({
             severity: 'error',
-            message: `${error.response.status} ${error.response.statusText}`,
+            message: `${error.response.data.message}`,
+            doNotAutoDismiss: true,
           })
         } else {
           setSyncStatus({
@@ -62,11 +62,7 @@ const GardenSyncButton = ({
     setIsLoading(loading)
   }
 
-  return error ? (
-    <Button variant="contained" color="error">
-      Sync Error
-    </Button>
-  ) : (
+  return (
     <LoadingButton
       variant="contained"
       color="primary"

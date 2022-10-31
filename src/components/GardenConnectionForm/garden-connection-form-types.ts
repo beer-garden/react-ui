@@ -1,25 +1,35 @@
 export interface ConnectionFormFields {
-  readonly [index: string]: string | number | boolean | StompHeader[]
+  readonly [index: string]:
+    | string
+    | number
+    | boolean
+    | undefined
+    | StompHeader[]
 
   connectionType: string
+
+  gardenName: string
 
   httpCACert: string
   httpCAVerify: boolean
   httpClientCert: string
   httpHost: string
-  httpPort: number
+  httpPort: number | undefined
   httpSsl: boolean
   httpUrlPrefix: string
   httpUsername: string
   httpPassword: string
 
   stompHost: string
-  stompPort: number
+  stompPort: number | undefined
   stompSendDestination: string
   stompSubscribeDestination: string
   stompUsername: string
   stompPassword: string
-  stompSsl: boolean
+  stompUseSsl: boolean
+  stompCACert: string | undefined
+  stompClientCert: string | undefined
+  stompClientKey: string | undefined
   stompHeaders: StompHeader[]
 }
 

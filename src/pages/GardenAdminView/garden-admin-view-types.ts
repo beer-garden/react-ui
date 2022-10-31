@@ -16,13 +16,14 @@ interface Status {
 }
 
 export interface GardenConnectionParameters {
+  name?: string
   http?: HttpConnectionParameters
   stomp?: StompConnectionParameters
 }
 
 interface HttpConnectionParameters {
   host?: string
-  port?: number
+  port?: number | undefined
   url_prefix?: string
   ssl?: boolean
   ca_cert?: string
@@ -34,12 +35,15 @@ interface HttpConnectionParameters {
 
 interface StompConnectionParameters {
   host?: string
-  port?: number
+  port?: number | undefined
   send_destination?: string
   subscribe_destination?: string
   username?: string
   password?: string
-  ssl?: StompSsl
+  use_ssl: boolean
+  ca_cert?: string
+  client_cert?: string
+  client_key?: string
   headers: StompHeader[]
 }
 
@@ -48,6 +52,9 @@ interface StompHeader {
   value: string
 }
 
-interface StompSsl {
+export interface StompSsl {
+  ca_cert?: string
+  client_cert?: string
+  client_key?: string
   use_ssl: boolean
 }

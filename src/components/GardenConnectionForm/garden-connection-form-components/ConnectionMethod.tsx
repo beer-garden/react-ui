@@ -1,6 +1,6 @@
-import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material'
+import { Box, MenuItem, Stack, TextField } from '@mui/material'
+import { ConnectionFormFields } from 'components/GardenConnectionForm'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from 'pages/GardenAdminView'
 
 const ConnectionMethod = () => {
   const context = useFormikContext<ConnectionFormFields>()
@@ -8,7 +8,6 @@ const ConnectionMethod = () => {
   return (
     <Stack spacing={2}>
       <Box sx={{ mt: 1, mb: -2 }}>
-        <Typography variant="h6">Update Connection</Typography>
         <TextField
           variant="standard"
           select
