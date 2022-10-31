@@ -133,7 +133,8 @@ const fifthRow = [
       id: 'stompClientCert',
       label: 'Client cert',
       tooltip:
-        'Path to client public certificate to use when communicating with the message broker',
+        'Path to client public certificate to use when communicating with ' +
+        'the message broker',
       sx: { mt: 0 },
     },
   },
@@ -143,7 +144,8 @@ const fifthRow = [
       id: 'stompClientKey',
       label: 'Client key',
       tooltip:
-        'Path to client private key to use when communicating with the message broker',
+        'Path to client private key to use when communicating with the ' +
+        'message broker',
       sx: { mt: 1 },
     },
   },
