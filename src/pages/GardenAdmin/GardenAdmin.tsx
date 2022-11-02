@@ -15,7 +15,7 @@ const GardensAdmin = (): JSX.Element => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { hasPermission } = PermissionsContainer.useContainer()
   const [gardens, setGardens] = useState<Garden[]>([])
-  const [{ data, error }] = useAxios({
+  const [{ data, error }, refetch] = useAxios({
     url: '/api/v1/gardens',
     method: 'get',
     withCredentials: authEnabled,
@@ -36,7 +36,11 @@ const GardensAdmin = (): JSX.Element => {
       {hasPermission('garden:create') && <CreateGarden />}
       {hasPermission('garden:update') && (
         <Box style={{ float: 'right' }}>
-          <GardenSyncButton gardenName={''} setSyncStatus={setRequestStatus} />
+          <GardenSyncButton
+            gardenName={''}
+            refetchData={refetch}
+            setSyncStatus={setRequestStatus}
+          />
         </Box>
       )}
       <PageHeader title="Gardens Management" description="" />

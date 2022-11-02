@@ -1,30 +1,24 @@
-import {
-  Alert,
-  Backdrop,
-  Box,
-  CircularProgress,
-  Typography,
-} from '@mui/material'
+import { Alert, Backdrop, CircularProgress, Typography } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
-import InfoCard from 'components/garden_admin_info_card'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
 import { GardenSyncButton } from 'components/GardenSyncButton'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
-import Table from 'components/table'
+import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { Fragment, useEffect, useState } from 'react'
-import { Link as RouterLink, useParams } from 'react-router-dom'
-import { Garden, System } from 'types/backend-types'
-import { SnackbarState, TableState } from 'types/custom-types'
-
-const SystemLink = (text: string, params: string[]) => {
-  return <RouterLink to={'/systems/' + params.join('/')}>{text}</RouterLink>
-}
+import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { GardenInfoCard } from 'pages/GardenAdminView'
+import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { Garden } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 const GardenAdminView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const { hasPermission } = PermissionsContainer.useContainer()
+  const systemsColumns = useSystemIndexTableColumns()
 
   const [syncStatus, setSyncStatus] = useState<SnackbarState | undefined>(
     undefined,
@@ -34,7 +28,7 @@ const GardenAdminView = () => {
 
   const gardenName = String(params.gardenName)
 
-  const [{ data, error }] = useAxios({
+  const [{ data, error }, refetch] = useAxios({
     url: '/api/v1/gardens/' + gardenName,
     method: 'get',
     withCredentials: authEnabled,
@@ -46,79 +40,51 @@ const GardenAdminView = () => {
     }
   }, [data, error])
 
-  const state: TableState = {
-    completeDataSet: [],
-    formatData: formatData,
-    cacheKey: `lastKnown_${window.location.href}`,
-    includePageNav: true,
-    disableSearch: true,
-    tableHeads: ['Namespace', 'System', 'Version'],
-  }
-
-  if (garden) {
-    state.completeDataSet = garden.systems
-  }
-
-  function formatData(systems: System[]) {
-    const tempData: (string | JSX.Element | number)[][] = []
-    for (const i in systems) {
-      tempData[i] = [
-        SystemLink(systems[i].namespace, [systems[i].namespace]),
-        SystemLink(systems[i].name, [systems[i].namespace, systems[i].name]),
-        SystemLink(systems[i].version, [
-          systems[i].namespace,
-          systems[i].name,
-          systems[i].version,
-        ]),
-      ]
-    }
-    return tempData
-  }
-
-  function getConfigSetup() {
-    const localGardenAlert =
-      'Since this is the local Garden it is not possible to modify connection information'
-    if (garden) {
-      if (garden.connection_type === 'LOCAL') {
-        return <Alert severity="info">{localGardenAlert}</Alert>
-      } else {
-        return <GardenConnectionForm garden={garden} />
-      }
-    }
-  }
-
-  function renderComponents() {
-    if (garden) {
-      return (
-        <Fragment>
-          <InfoCard garden={garden} />
+  return (
+    <>
+      {hasPermission('garden:update') && (
+        <Typography style={{ flex: 1, float: 'right' }}>
+          <GardenSyncButton
+            gardenName={gardenName}
+            refetchData={refetch}
+            setSyncStatus={setSyncStatus}
+          />
+        </Typography>
+      )}
+      <PageHeader title="Garden View" description="" />
+      <Divider />
+      {garden ? (
+        <>
+          <GardenInfoCard garden={garden} />
+          <Divider />
           <Typography variant="h6">Connected Systems</Typography>
-          <Table parentState={state} />
-          {getConfigSetup()}
-        </Fragment>
-      )
-    } else {
-      return (
+          {garden.status === 'RUNNING' ? (
+            <Table
+              tableKey="systems"
+              data={garden.systems.map(systemMapper)}
+              columns={systemsColumns}
+            />
+          ) : (
+            `Unable to display systems when status is ${garden.status}`
+          )}
+          <Divider />
+          {garden.connection_type === 'LOCAL' ? (
+            <Alert severity="info">
+              {
+                'Since this is the local Garden it is not possible to modify connection information'
+              }
+            </Alert>
+          ) : (
+            garden.connection_params && <GardenConnectionForm garden={garden} />
+          )}
+        </>
+      ) : (
         <Backdrop open={true}>
           <CircularProgress color="inherit" />
         </Backdrop>
-      )
-    }
-  }
-
-  return (
-    <Box>
-      <Typography style={{ flex: 1, float: 'right' }}>
-        <GardenSyncButton
-          gardenName={gardenName}
-          setSyncStatus={setSyncStatus}
-        />
-      </Typography>
-      <PageHeader title="Garden View" description="" />
-      <Divider />
-      {renderComponents()}
+      )}
       {syncStatus ? <Snackbar status={syncStatus} /> : null}
-    </Box>
+    </>
   )
 }
 

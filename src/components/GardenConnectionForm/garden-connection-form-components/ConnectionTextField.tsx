@@ -1,5 +1,6 @@
 import { TextField, Tooltip } from '@mui/material'
 import { ConnectionFormFields } from 'components/GardenConnectionForm'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useFormikContext } from 'formik'
 
 export type ConnectionTextFieldPropsType = {
@@ -16,6 +17,8 @@ interface ConnectionTextFieldProps {
 
 const ConnectionTextField = ({ props }: ConnectionTextFieldProps) => {
   const context = useFormikContext<ConnectionFormFields>()
+  const { hasPermission } = PermissionsContainer.useContainer()
+
   const { id, label, type, sx, tooltip } = props
   return tooltip ? (
     <Tooltip title={tooltip}>
@@ -24,6 +27,7 @@ const ConnectionTextField = ({ props }: ConnectionTextFieldProps) => {
         name={id}
         type={type}
         label={label}
+        disabled={!hasPermission('garden:update')}
         value={context.values[id]}
         onChange={context.handleChange}
         error={context.touched[id] && Boolean(context.errors[id])}
@@ -37,6 +41,7 @@ const ConnectionTextField = ({ props }: ConnectionTextFieldProps) => {
       name={id}
       type={type}
       label={label}
+      disabled={!hasPermission('garden:update')}
       value={context.values[id]}
       onChange={context.handleChange}
       error={context.touched[id] && Boolean(context.errors[id])}
