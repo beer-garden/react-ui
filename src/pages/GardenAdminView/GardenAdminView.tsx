@@ -44,7 +44,10 @@ const GardenAdminView = () => {
 
   useEffect(() => {
     addCallback('garden_updates', (event) => {
-      if (event.name === 'GARDEN_UPDATED') {
+      if (
+        event.name === 'GARDEN_UPDATED' &&
+        event.payload.name === gardenName
+      ) {
         refetch()
       }
     })
