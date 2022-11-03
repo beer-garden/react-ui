@@ -1,9 +1,22 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import {Breadcrumbs, CircularProgress} from '@mui/material'
+import { Breadcrumbs, CircularProgress } from '@mui/material'
 import { SupportedColorScheme } from '@mui/material/styles'
+import { DateTimeFormatOptions } from 'luxon'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
+
+const dateFormatted = (date: Date) => {
+  const options: DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    second: 'numeric',
+    minute: 'numeric',
+  }
+  return date.toLocaleString(undefined, options)
+}
 
 const outputFormatted = (
   request: Request,
@@ -17,15 +30,23 @@ const outputFormatted = (
     if (!['HTML', 'JSON'].includes(output_type) || showAsRawData) {
       let parsed: string | number | boolean | object
 
-        try {
-          parsed = JSON.parse(output)
-          parsed = JSON.stringify(parsed, null, 2)
-        } catch (error) {
-          parsed = output
-        }
+      try {
+        parsed = JSON.parse(output)
+        parsed = JSON.stringify(parsed, null, 2)
+      } catch (error) {
+        parsed = output
+      }
 
       return (
-          <pre style={{whiteSpace: 'pre-wrap', wordBreak: 'break-all', overflow: 'auto' }}>{parsed}</pre>
+        <pre
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-all',
+            overflow: 'auto',
+          }}
+        >
+          {parsed}
+        </pre>
       )
     } else if (output_type === 'JSON') {
       return (
@@ -48,7 +69,9 @@ const getParentLinks = (request: Request): JSX.Element => {
     <>
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
         {getParentLinks(request.parent)}
-        <RouterLink to={'/requests/' + request.id}>{request.command}</RouterLink>
+        <RouterLink to={'/requests/' + request.id}>
+          {request.command}
+        </RouterLink>
       </Breadcrumbs>
     </>
   ) : (
@@ -56,4 +79,4 @@ const getParentLinks = (request: Request): JSX.Element => {
   )
 }
 
-export { getParentLinks, outputFormatted }
+export { dateFormatted,getParentLinks, outputFormatted }
