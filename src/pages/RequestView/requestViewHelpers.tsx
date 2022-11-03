@@ -14,6 +14,7 @@ const dateFormatted = (date: Date) => {
     hour: 'numeric',
     second: 'numeric',
     minute: 'numeric',
+    hour12: false
   }
   return date.toLocaleString(undefined, options)
 }
