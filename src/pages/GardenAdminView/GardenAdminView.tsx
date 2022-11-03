@@ -54,7 +54,7 @@ const GardenAdminView = () => {
     return () => {
       removeCallback('garden_updates')
     }
-  }, [addCallback, removeCallback, refetch])
+  }, [addCallback, removeCallback, refetch, gardenName])
 
   return (
     <>
