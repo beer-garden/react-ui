@@ -8,6 +8,7 @@ import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { GardenInfoCard } from 'pages/GardenAdminView'
 import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
 import { useEffect, useState } from 'react'
@@ -39,6 +40,18 @@ const GardenAdminView = () => {
       setGarden(data)
     }
   }, [data, error])
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
+
+  useEffect(() => {
+    addCallback('garden_updates', (event) => {
+      if (event.name === 'GARDEN_UPDATED') {
+        refetch()
+      }
+    })
+    return () => {
+      removeCallback('garden_updates')
+    }
+  }, [addCallback, removeCallback, refetch])
 
   return (
     <>
@@ -46,7 +59,6 @@ const GardenAdminView = () => {
         <Typography style={{ flex: 1, float: 'right' }}>
           <GardenSyncButton
             gardenName={gardenName}
-            refetchData={refetch}
             setSyncStatus={setSyncStatus}
           />
         </Typography>

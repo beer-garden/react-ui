@@ -5,13 +5,11 @@ import { SnackbarState } from 'types/custom-types'
 
 interface GardenSynButtonParams {
   gardenName: string
-  refetchData: () => void
   setSyncStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
 }
 
 const GardenSyncButton = ({
   gardenName,
-  refetchData,
   setSyncStatus,
 }: GardenSynButtonParams) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -38,17 +36,15 @@ const GardenSyncButton = ({
     execute({
       data: patchData,
     })
-      .then(() => {
-        refetchData()
+      .then(async () => {
         setSyncStatus({
           severity: 'success',
           message: 'Garden sync successful',
           showSeverity: false,
         })
       })
-      .catch((error) => {
+      .catch(async (error) => {
         console.error('ERROR', error)
-        refetchData()
         if (error.response) {
           setSyncStatus({
             severity: 'error',
