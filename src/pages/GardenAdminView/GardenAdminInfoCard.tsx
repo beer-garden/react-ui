@@ -16,7 +16,7 @@ interface GardenInfoCardProps {
   garden: Garden
 }
 
-const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
+const GardenAdminInfoCard = ({ garden }: GardenInfoCardProps) => {
   return (
     <Box width={1 / 3}>
       <Card sx={{ minWidth: 275 }}>
@@ -60,4 +60,4 @@ const GardenInfoCard = ({ garden }: GardenInfoCardProps) => {
   )
 }
 
-export { GardenInfoCard }
+export { GardenAdminInfoCard }

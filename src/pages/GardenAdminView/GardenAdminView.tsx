@@ -9,7 +9,7 @@ import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
-import { GardenInfoCard } from 'pages/GardenAdminView'
+import { GardenAdminInfoCard } from 'pages/GardenAdminView'
 import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -70,7 +70,7 @@ const GardenAdminView = () => {
       <Divider />
       {garden ? (
         <>
-          <GardenInfoCard garden={garden} />
+          <GardenAdminInfoCard garden={garden} />
           <Divider />
           <Typography variant="h6">Connected Systems</Typography>
           {garden.status === 'RUNNING' ? (

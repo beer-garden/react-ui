@@ -36,14 +36,14 @@ const GardenSyncButton = ({
     execute({
       data: patchData,
     })
-      .then(async () => {
+      .then(() => {
         setSyncStatus({
           severity: 'success',
           message: 'Garden sync successful',
           showSeverity: false,
         })
       })
-      .catch(async (error) => {
+      .catch((error) => {
         console.error('ERROR', error)
         if (error.response) {
           setSyncStatus({
