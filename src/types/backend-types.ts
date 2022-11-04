@@ -243,10 +243,10 @@ export interface Job {
 }
 
 export interface Garden {
-  id: string
+  id?: string
   name: string
   status: string
-  status_info: StatusInfo
+  status_info?: StatusInfo
   namespaces: string[]
   systems: System[]
   connection_type: string

@@ -1,12 +1,12 @@
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Button, Divider, TextField } from '@mui/material'
-import { FieldArray, getIn, useFormikContext } from 'formik'
-import { nanoid } from 'nanoid/non-secure'
 import {
   ConnectionFormFields,
   ConnectionFormHeading,
-} from 'pages/GardenAdminView'
+} from 'components/GardenConnectionForm'
+import { FieldArray, getIn, useFormikContext } from 'formik'
+import { nanoid } from 'nanoid/non-secure'
 
 const ConnectionStompHeaders = () => {
   const context = useFormikContext<ConnectionFormFields>()

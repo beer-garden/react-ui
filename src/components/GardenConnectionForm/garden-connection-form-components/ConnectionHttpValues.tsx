@@ -5,7 +5,7 @@ import {
   ConnectionTextField,
   ConnectionTextFieldPropsType,
   getFieldValues,
-} from 'pages/GardenAdminView'
+} from 'components/GardenConnectionForm'
 
 const ConnectionHttpValues = () => {
   return (

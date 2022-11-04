@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { Garden } from 'types/backend-types'
 
 const useGardens = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -49,7 +50,46 @@ const useGardens = () => {
     return execute(config)
   }
 
-  return { getGardens, getGarden, syncUsers, deleteGarden }
+  const createGarden = (data: Garden) => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/gardens',
+      method: 'POST',
+      data: data,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+
+    return execute(config)
+  }
+
+  const updateGarden = (name: string, data: Garden) => {
+    const config: AxiosRequestConfig = {
+      url: `/api/v1/gardens/${name}`,
+      method: 'PATCH',
+      data: {
+        operation: 'config',
+        path: '',
+        value: data,
+      },
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+
+    return execute(config)
+  }
+
+  return {
+    getGardens,
+    getGarden,
+    syncUsers,
+    deleteGarden,
+    createGarden,
+    updateGarden,
+  }
 }
 
 export default useGardens
