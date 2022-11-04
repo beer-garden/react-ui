@@ -28,19 +28,24 @@ const isIntervalTrigger = (triggerType: string) => {
 
 const JobView = () => {
   const [open, setOpen] = useState<boolean>(false)
+  const [job, setLocalJob] = useState<Job>()
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
   const { hasPermission } = PermissionsContainer.useContainer()
-  const { setIsJob, setJob, job } = useJobRequestCreation()
+  const { setIsJob, setJob } = useJobRequestCreation()
   const params = useParams()
   const { getJob, deleteJob, runAdHoc } = useJobs()
   const navigate = useNavigate()
 
+  const _setJob = (job: Job) => {
+    setJob && setJob(job)
+    setLocalJob(job)
+  }
+
   const id = params.id as string
-  const jobButtonCallback = (response: AxiosResponse) =>
-    setJob && setJob(response.data)
+  const jobButtonCallback = (response: AxiosResponse) => _setJob(response.data)
 
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(
@@ -65,7 +70,7 @@ const JobView = () => {
   useEffect(() => {
     if (id) {
       getJob((response: AxiosResponse) => {
-        setJob && setJob(response.data)
+        _setJob(response.data)
         if (response.data) {
           setDescription(`${response.data.name} ${id}`)
         } else {
