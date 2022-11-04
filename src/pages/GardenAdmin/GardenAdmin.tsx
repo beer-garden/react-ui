@@ -36,7 +36,11 @@ const GardensAdmin = (): JSX.Element => {
 
   useEffect(() => {
     addCallback('garden_updates', (event) => {
-      if (event.name === 'GARDEN_UPDATED') {
+      if (
+        ['GARDEN_CREATED', 'GARDEN_UPDATED', 'GARDEN_REMOVED'].includes(
+          event.name,
+        )
+      ) {
         refetch()
       }
     })
