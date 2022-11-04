@@ -1,36 +1,27 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import Router from 'react-router-dom'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 import { mockAxios, regexUsers } from 'test/axios-mock'
 import { TJob, TServerAuthConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
-import { Job } from 'types/backend-types'
 
 import { JobView } from './JobView'
 
-let mockJobResponse: { data: Job | undefined }
-
-jest.mock('hooks/useJobs', () => ({
-  useJobs: () => ({
-    deleteJob: (cb: () => unknown) => cb(),
-    getJob: (cb: (arg0: { data: Job | undefined }) => unknown) =>
-      cb(mockJobResponse),
-  }),
-}))
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
+  useParams: () => {
+    return { id: '123test' }
+  },
 }))
 
 describe('JobView', () => {
   afterAll(() => {
-    jest.unmock('hooks/useJobs')
     jest.unmock('react-router-dom')
-  })
-
-  beforeAll(() => {
-    mockJobResponse = { data: Object.assign({}, TJob) }
   })
 
   describe('user has permission', () => {
@@ -40,7 +31,6 @@ describe('JobView', () => {
     })
 
     test('renders Delete button', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -52,7 +42,6 @@ describe('JobView', () => {
     })
 
     test('renders Update button', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -64,7 +53,6 @@ describe('JobView', () => {
     })
 
     test('renders Run button', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -76,7 +64,6 @@ describe('JobView', () => {
     })
 
     test('not render Resume or Pause buttons if no jobs', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -88,7 +75,6 @@ describe('JobView', () => {
     })
 
     test('render Pause button when jobs', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -107,7 +93,6 @@ describe('JobView', () => {
     })
 
     test('no Delete button', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -119,7 +104,6 @@ describe('JobView', () => {
     })
 
     test('no Update button', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -131,7 +115,6 @@ describe('JobView', () => {
     })
 
     test('no Run button', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -143,7 +126,6 @@ describe('JobView', () => {
     })
 
     test('no Pause button when jobs', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -155,7 +137,6 @@ describe('JobView', () => {
     })
 
     test('not render Resume or Pause buttons when jobs', async () => {
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
       render(
         <LoggedInProviders>
           <JobView />
@@ -169,31 +150,33 @@ describe('JobView', () => {
   })
 
   test('renders Job data if job', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
       <AllProviders>
         <JobView />
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByText(TJob.name)).toBeInTheDocument()
     })
+    expect(screen.getByText(TJob.request_template.system)).toBeInTheDocument()
+    expect(screen.getByText('RUNNING')).toBeInTheDocument()
+    expect(screen.getByText('Success Count:')).toBeInTheDocument()
+    expect(screen.getByText('Error Count:')).toBeInTheDocument()
   })
 
   test('renders loading if no job', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
+    mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, undefined)
     render(
       <AllProviders>
         <JobView />
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByTestId('dataLoading')).toBeInTheDocument()
     })
   })
 
   test('renders trigger and template JSON', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
       <AllProviders>
         <JobView />
@@ -206,26 +189,73 @@ describe('JobView', () => {
   })
 
   test('allows collapse trigger', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
       <AllProviders>
         <JobView />
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByText('Trigger')).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Expand Area' })[1])
+    await waitFor(() => {
+      expect(screen.queryByText('Trigger')).not.toBeInTheDocument()
     })
   })
 
   test('allows collapse template', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1234' })
     render(
       <AllProviders>
         <JobView />
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByText('Request Template')).toBeInTheDocument()
     })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Expand Area' })[0])
+    await waitFor(() => {
+      expect(screen.queryByText('Request Template')).not.toBeInTheDocument()
+    })
+  })
+
+  test('run now runs the job', async () => {
+    render(
+      <AllProviders>
+        <JobView />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(TJob.name)).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Run Now' }))
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    const alert = screen.getByRole('alert')
+    expect(within(alert).getByText('Job running...')).toBeInTheDocument()
+  })
+
+  test('run now gets user permission to run interval job', async () => {
+    mockAxios
+      .onGet(`/api/v1/jobs/${TJob.id}`)
+      .reply(200, Object.assign({}, TJob, { trigger_type: 'interval' }))
+    render(
+      <AllProviders>
+        <JobView />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(TJob.name)).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Run Now' }))
+    await waitFor(() => {
+      expect(screen.getByText('Reset the Job Interval')).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    const alert = screen.getByRole('alert')
+    expect(within(alert).getByText('Job running...')).toBeInTheDocument()
   })
 })

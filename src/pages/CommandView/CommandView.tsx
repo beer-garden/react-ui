@@ -4,15 +4,15 @@ import { Divider } from 'components/Divider'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
-import { checkContext } from 'pages/CommandView/commandViewHelpers'
 import {
   getJobSchema,
   getModel,
   getSchema,
   getUiSchema,
   getValidator,
-} from 'pages/CommandView/form-data'
+} from 'formHelpers'
+import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
+import { checkContext } from 'pages/CommandView/commandViewHelpers'
 import { useContext } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
@@ -50,7 +50,7 @@ const CommandView = () => {
   const schema = isJob
     ? getJobSchema(getSchema(instances, parameters))
     : getSchema(instances, parameters)
-  const uiSchema = getUiSchema(instances, parameters)
+  const uiSchema = getUiSchema(instances)
   const model = getModel(parameters)
   const validator = getValidator(parameters)
 

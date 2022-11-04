@@ -5,7 +5,19 @@ import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import {
+  getSubmitArgument,
+  prepareModelForSubmit,
+} from 'formHelpers/get-submit-argument'
 import { useMyAxios } from 'hooks/useMyAxios'
+import {
+  cleanModelForDisplay,
+  CustomFileWidget,
+  dataUrlToFile,
+  FileMetaData,
+  handleByteParametersReset,
+  isByteCommand,
+} from 'pages/CommandView'
 import {
   createContext,
   createRef,
@@ -21,18 +33,6 @@ import {
   ObjectWithStringKeys,
   SnackbarState,
 } from 'types/custom-types'
-
-import {
-  cleanModelForDisplay,
-  dataUrlToFile,
-  handleByteParametersReset,
-  isByteCommand,
-} from './commandViewHelpers'
-import { CustomFileWidget, FileMetaData } from './CustomFileWidget'
-import {
-  getSubmitArgument,
-  prepareModelForSubmit,
-} from './form-data/get-submit-argument'
 
 interface CommandViewFormProps {
   schema: ObjectWithStringKeys
