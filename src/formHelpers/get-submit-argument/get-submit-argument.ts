@@ -2,6 +2,7 @@ import {
   CronTrigger,
   DateTrigger,
   IntervalTrigger,
+  IntervalType,
   Job,
   RequestTemplate,
   TriggerType,
@@ -214,7 +215,6 @@ const getDateTrigger = (triggerData: ObjectWithStringKeys) => {
 }
 
 const getIntervalTrigger = (triggerData: ObjectWithStringKeys) => {
-  type IntervalType = 'seconds' | 'minutes' | 'hours' | 'days' | 'weeks'
   const type: TriggerType = 'interval'
   const baseTrigger: IntervalTrigger = {
     start_date: Date.parse(triggerData.interval_start_date as string),
@@ -260,7 +260,7 @@ const getCronTrigger = (triggerData: ObjectWithStringKeys): CombinedTrigger => {
       ? { start_date: Date.parse(triggerData.cron_start_date as string) }
       : null),
     ...('cron_end_date' in triggerData
-      ? { end_data: Date.parse(triggerData.cron_end_date as string) }
+      ? { end_date: Date.parse(triggerData.cron_end_date as string) }
       : null),
   }
 
@@ -270,6 +270,11 @@ const getCronTrigger = (triggerData: ObjectWithStringKeys): CombinedTrigger => {
   }
 }
 
+/**
+ * Convert RJSF format into server format
+ * @param model 
+ * @returns 
+ */
 const extractTrigger = (
   model: ObjectWithStringKeys,
 ): CombinedTrigger | null => {
@@ -322,7 +327,7 @@ const getSubmitArgument = (
   model: ObjectWithStringKeys,
   command: AugmentedCommand,
   isJob: boolean,
-  hasBytes: boolean,
+  hasBytes?: boolean,
 ) => {
   if (isJob) {
     return getJobPayload(model, command)

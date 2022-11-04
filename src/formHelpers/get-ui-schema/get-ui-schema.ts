@@ -6,10 +6,7 @@ const getInstanceUiSchema = (instances: Array<Instance>) => {
     : null
 }
 
-const getUiSchema = (
-  instances: Array<Instance>,
-  parameters: Array<Parameter>,
-) => {
+const getUiSchema = (instances: Array<Instance>) => {
   const baseUiSchema = {
     'ui:order': ['comment', 'instance_names', '*'],
     comment: {
