@@ -50,7 +50,10 @@ export const TJob: Job = {
   misfire_grace_time: null,
   name: 'testjob',
   next_run_time: 1,
-  request_template: {} as RequestTemplate,
+  request_template: {
+    namespace: 'test',
+    system: 'testsys',
+  } as RequestTemplate,
   status: 'RUNNING',
   success_count: 1,
   timeout: null,
@@ -155,5 +158,5 @@ export const TRequest: Request = {
   status: 'SUCCESS',
   system: 'test system',
   system_version: 'test version',
-  updated_at: 1235
+  updated_at: 1235,
 }
