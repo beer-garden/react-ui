@@ -16,7 +16,6 @@ describe('RequestView', () => {
   window.URL.createObjectURL = jest.fn(() => 'url')
   let server: WS
 
-
   beforeEach(() => {
     server = new WS('ws://localhost:2337/api/v1/socket/events')
   })
@@ -67,10 +66,10 @@ describe('RequestView', () => {
     expect(screen.getByText('SUCCESS')).toBeInTheDocument()
 
     expect(screen.getByText('Created')).toBeInTheDocument()
-    expect(screen.getByText('1970-01-01T00:00:01.200Z')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
 
     expect(screen.getByText('Updated')).toBeInTheDocument()
-    expect(screen.getByText('1970-01-01T00:00:01.235Z')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
 
     expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.getByText('test output')).toBeInTheDocument()
@@ -80,7 +79,9 @@ describe('RequestView', () => {
 
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {
     const mockId = '1234'
-    const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
+    const mockInProgressResponse = Object.assign({}, TRequest, {
+      status: 'IN PROGRESS',
+    })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
     mockAxios.onGet('/api/v1/requests/1234').reply(200, mockInProgressResponse)
@@ -118,10 +119,10 @@ describe('RequestView', () => {
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
 
     expect(screen.getByText('Created')).toBeInTheDocument()
-    expect(screen.getByText('1970-01-01T00:00:01.200Z')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
 
     expect(screen.getByText('Updated')).toBeInTheDocument()
-    expect(screen.getByText('1970-01-01T00:00:01.235Z')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
 
     expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.queryByText('test output')).not.toBeInTheDocument()
@@ -131,7 +132,7 @@ describe('RequestView', () => {
     // send request completed event
     const mockEvent = {
       name: 'REQUEST_COMPLETED',
-      payload:  TRequest,
+      payload: TRequest,
     }
 
     mockAxios.onGet('/api/v1/requests/1234').reply(200, TRequest)
@@ -145,12 +146,13 @@ describe('RequestView', () => {
 
     expect(screen.getByText('SUCCESS')).toBeInTheDocument()
     expect(screen.getByText('test output')).toBeInTheDocument()
-
   })
 
   test('does not refetch page contents when REQUEST_COMPLETED event occurs and requestId does not match', async () => {
     const mockId = '1234'
-    const mockInProgressResponse = Object.assign({}, TRequest, { status: 'IN PROGRESS' })
+    const mockInProgressResponse = Object.assign({}, TRequest, {
+      status: 'IN PROGRESS',
+    })
 
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
     mockAxios.onGet('/api/v1/requests/1234').reply(200, mockInProgressResponse)
@@ -188,16 +190,15 @@ describe('RequestView', () => {
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
 
     expect(screen.getByText('Created')).toBeInTheDocument()
-    expect(screen.getByText('1970-01-01T00:00:01.200Z')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
 
     expect(screen.getByText('Updated')).toBeInTheDocument()
-    expect(screen.getByText('1970-01-01T00:00:01.235Z')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
 
     expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.queryByText('test output')).not.toBeInTheDocument()
 
     expect(screen.getByText('Parameters')).toBeInTheDocument()
-
 
     // send request complete event for different requestid
     const mockEventOther = {
@@ -209,6 +210,5 @@ describe('RequestView', () => {
 
     expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
-
   })
 })

@@ -146,7 +146,7 @@ export const TRequest: Request = {
   command: 'test command',
   command_type: 'test command type',
   comment: 'test comment',
-  created_at: 1200,
+  created_at: 1667517166106,
   error_class: null,
   id: '1234',
   instance_name: 'test instance',
@@ -158,5 +158,5 @@ export const TRequest: Request = {
   status: 'SUCCESS',
   system: 'test system',
   system_version: 'test version',
-  updated_at: 1235,
+  updated_at: 1667517254662,
 }

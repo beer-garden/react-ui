@@ -14,6 +14,8 @@ import {
 import { useState } from 'react'
 import { Request } from 'types/backend-types'
 
+import {dateFormatted} from './requestViewHelpers'
+
 interface RequestViewTableProps {
   request: Request
 }
@@ -135,10 +137,10 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
         request.system,
         request.system_version,
       ]),
-      created: new Date(request.created_at).toJSON(),
+      created: dateFormatted(new Date(request.created_at)),
       instance: request.instance_name,
       status: request.status,
-      updated: new Date(request.updated_at).toJSON(),
+      updated: dateFormatted(new Date(request.updated_at)),
     },
   ]
 
