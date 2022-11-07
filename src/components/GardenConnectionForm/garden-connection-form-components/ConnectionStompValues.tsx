@@ -5,7 +5,7 @@ import {
   ConnectionStompHeaders,
   ConnectionTextField,
   ConnectionTextFieldPropsType,
-} from 'pages/GardenAdminView'
+} from 'components/GardenConnectionForm'
 
 const ConnectionStompValues = () => {
   return (
@@ -22,10 +22,14 @@ const ConnectionStompValues = () => {
       </Stack>
       <Stack direction="row" sx={{ ml: 3, mt: -3 }}>
         <ConnectionCheckboxGroup
-          id={'stompSsl'}
+          id={'stompUseSsl'}
           label={'SSL'}
           tooltip="Whether to connect with provided certifications"
         />
+        {fourthRow.map(mapToTextfieldComponents)}
+      </Stack>
+      <Stack direction="row" spacing={3} sx={{ ml: 3, mt: -3 }}>
+        {fifthRow.map(mapToTextfieldComponents)}
       </Stack>
       <Divider sx={{ mt: 2, mb: 1 }} />
       <ConnectionStompHeaders />
@@ -102,8 +106,47 @@ const thirdRow = [
       id: 'stompPassword',
       label: 'Password',
       tooltip: 'Password for Stomp connection',
-      sx: { mt: 0 },
+      sx: { mt: 0, pb: 2 },
       type: 'password',
+    },
+  },
+]
+
+const fourthRow = [
+  {
+    key: '10',
+    value: {
+      id: 'stompCACert',
+      label: 'CA cert',
+      tooltip:
+        'Path to certificate file containing the certificate ' +
+        'of the authority that issued the message broker certificate',
+      sx: { mt: 0, pb: 5 },
+    },
+  },
+]
+
+const fifthRow = [
+  {
+    key: '11',
+    value: {
+      id: 'stompClientCert',
+      label: 'Client cert',
+      tooltip:
+        'Path to client public certificate to use when communicating with ' +
+        'the message broker',
+      sx: { mt: 0 },
+    },
+  },
+  {
+    key: '12',
+    value: {
+      id: 'stompClientKey',
+      label: 'Client key',
+      tooltip:
+        'Path to client private key to use when communicating with the ' +
+        'message broker',
+      sx: { mt: 1 },
     },
   },
 ]

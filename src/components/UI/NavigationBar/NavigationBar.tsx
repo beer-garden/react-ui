@@ -15,7 +15,7 @@ import { NavigationBarContextProvider } from 'components/UI/NavigationBar/Naviga
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 export const closedDrawerWidth = 37
 export const openedDrawerWidth = 205
@@ -42,6 +42,17 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
     setMarginLeft(value ? openedDrawerWidth : closedDrawerWidth)
     setDrawerIsOpen(value)
   }
+
+  useEffect(() => {
+    // Workaround to make the URL play nice
+    if (window.location.pathname !== '/') {
+      window.location.pathname = '/'
+    }
+    if (!window.location.hash.startsWith('#/')) {
+      window.location.hash = window.location.hash.replace(/^#[^/]+\//, '#/')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.location.hash])
 
   return (
     <NavigationBarContextProvider

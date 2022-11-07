@@ -1,6 +1,6 @@
 import { TextField, Tooltip } from '@mui/material'
+import { ConnectionFormFields } from 'components/GardenConnectionForm'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from 'pages/GardenAdminView'
 
 export type ConnectionTextFieldPropsType = {
   id: string
@@ -17,7 +17,6 @@ interface ConnectionTextFieldProps {
 const ConnectionTextField = ({ props }: ConnectionTextFieldProps) => {
   const context = useFormikContext<ConnectionFormFields>()
   const { id, label, type, sx, tooltip } = props
-
   return tooltip ? (
     <Tooltip title={tooltip}>
       <TextField
