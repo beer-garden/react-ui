@@ -1,15 +1,11 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
-import useAxios from 'axios-hooks'
 import { Snackbar } from 'components/Snackbar'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { useMyAxios } from 'hooks/useMyAxios'
-import { CustomFileWidget, FileMetaData } from 'pages/CommandView'
+import { CustomFileWidget } from 'pages/CommandView'
 import { createRef, useState } from 'react'
 import ReactJson from 'react-json-view'
-import { useNavigate } from 'react-router-dom'
-import { Job, RequestTemplate } from 'types/backend-types'
+import { Job } from 'types/backend-types'
 import { ObjectWithStringKeys, SnackbarState } from 'types/custom-types'
 
 interface JobFormProps {
