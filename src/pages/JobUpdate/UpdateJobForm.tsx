@@ -37,11 +37,10 @@ const UpdateJobForm = ({
   )
   const [model, setModel] = useState(initialModel)
   const [displayModel, setDisplayModel] = useState(model)
-  const [fileMetaData, setFileMetaData] = useState<FileMetaData[]>([])
-  const navigate = useNavigate()
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const { axiosManualOptions } = useMyAxios()
-  const [, execute] = useAxios({}, axiosManualOptions)
+  // const navigate = useNavigate()
+  // const { authEnabled } = ServerConfigContainer.useContainer()
+  // const { axiosManualOptions } = useMyAxios()
+  // const [, execute] = useAxios({}, axiosManualOptions)
 
   // TODO: make these work
   const onResetForm = () => {
@@ -78,8 +77,8 @@ const UpdateJobForm = ({
   }
 
   const onSubmit = () => {
-    let argumentToSubmit: Job | RequestTemplate
-    let payload: Job | RequestTemplate
+    // let argumentToSubmit: Job | RequestTemplate
+    // let payload: Job | RequestTemplate
 
     try {
       // argumentToSubmit = getSubmitArgument(model, job, isJob)
@@ -94,9 +93,9 @@ const UpdateJobForm = ({
       return
     }
 
-    const forwardPath = isJob ? '/jobs/' : '/requests/'
+    // const forwardPath = isJob ? '/jobs/' : '/requests/'
 
-    const path = isJob ? '/api/v1/jobs' : '/api/v1/requests'
+    // const path = isJob ? '/api/v1/jobs' : '/api/v1/requests'
 
     // execute({
     //   url: path,

@@ -1,4 +1,4 @@
-import { Instance, Parameter } from 'types/backend-types'
+import { Instance } from 'types/backend-types'
 
 const getInstanceUiSchema = (instances: Array<Instance>) => {
   return instances.length === 1
