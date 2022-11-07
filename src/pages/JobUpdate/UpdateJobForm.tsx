@@ -32,7 +32,7 @@ const UpdateJobForm = ({
     undefined,
   )
   const [model, setModel] = useState(initialModel)
-  const [displayModel, setDisplayModel] = useState(model)
+  const [displayModel] = useState(model)
   // const navigate = useNavigate()
   // const { authEnabled } = ServerConfigContainer.useContainer()
   // const { axiosManualOptions } = useMyAxios()
