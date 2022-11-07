@@ -51,7 +51,7 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
             size="small"
             variant="contained"
             color="primary"
-            disabled={permission}
+            disabled={!permission}
           >
             Execute
           </Button>

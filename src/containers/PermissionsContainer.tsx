@@ -76,7 +76,7 @@ const usePermissions = () => {
     }
     const domainPermissions = userObj.permissions.domain_permissions
     // eslint-disable-next-line no-prototype-builtins
-    if (domainPermissions.hasOwnProperty(permission)) {
+    if (garden.id && domainPermissions.hasOwnProperty(permission)) {
       return domainPermissions[permission].garden_ids.includes(garden.id)
     }
     return false
