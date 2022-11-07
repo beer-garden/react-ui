@@ -1,3 +1,4 @@
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useSystems } from 'hooks/useSystems'
 import { ExploreButton } from 'pages/SystemIndex'
 import { useMemo } from 'react'
@@ -105,6 +106,7 @@ const useSystemIndexTableColumns = () => {
       },
       {
         Header: '',
+        Cell: DefaultCellRenderer,
         accessor: 'exploreButton',
         disableSortBy: true,
         disableGroupBy: true,
