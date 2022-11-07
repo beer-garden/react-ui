@@ -21,10 +21,6 @@ export interface NestedObject {
   [key: string]: ObjectWithStringKeys
 }
 
-export interface SuccessCallback {
-  (response: AxiosResponse): void
-}
-
 export interface TableState {
   tableHeads: string[]
   completeDataSet?: System[] | Command[] | Request[] | Job[]
@@ -36,7 +32,7 @@ export interface TableState {
   apiDataCall?(
     page: number,
     rowsPerPage: number,
-    successCallback: SuccessCallback,
+    successCallback: { (response: AxiosResponse): void },
   ): void
   getCellButton?(system: System): JSX.Element
   includeChildren?: boolean
