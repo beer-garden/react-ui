@@ -26,6 +26,7 @@ const rolesUser = Object.assign({}, TUser, {
 describe('UsersIndex', () => {
   afterAll(() => {
     jest.unmock('react-router-dom')
+    jest.clearAllMocks()
   })
 
   test('render info for user with no remote garden', async () => {

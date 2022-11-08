@@ -3,19 +3,38 @@ import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useCommands } from 'hooks/useCommands'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'
+import { useEffect, useState } from 'react'
 
 const CommandIndex = () => {
+  const { hasSystemPermission } = PermissionsContainer.useContainer()
   const {
     commands,
     namespace,
     systemName,
+    systemId,
     version,
     includeHidden,
     hiddenOnChange,
   } = useCommands()
-  const columns = useCommandIndexTableColumns()
+  const [permission, setPermission] = useState(false)
+
+  useEffect(() => {
+    const fetchPermission = async () => {
+      const permCheck = await hasSystemPermission(
+        'request:create',
+        namespace,
+        systemId,
+      )
+      setPermission(permCheck || false)
+    }
+    fetchPermission()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [namespace, systemId])
+
+  const columns = useCommandIndexTableColumns(permission)
   const breadcrumbs = [namespace, systemName, version]
     .filter((x) => !!x)
     .map((x) => String(x))

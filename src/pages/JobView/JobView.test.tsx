@@ -27,6 +27,7 @@ describe('JobView', () => {
   afterAll(() => {
     jest.unmock('hooks/useJobs')
     jest.unmock('react-router-dom')
+    jest.clearAllMocks()
   })
 
   beforeAll(() => {

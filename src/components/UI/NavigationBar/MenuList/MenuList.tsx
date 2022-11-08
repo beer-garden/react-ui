@@ -8,7 +8,7 @@ import { LogoutButton } from 'components/UI/NavigationBar/MenuList/LogoutButton'
 import { OptionsMenu } from 'components/UI/NavigationBar/MenuList/OptionsMenu'
 import { AuthContainer } from 'containers/AuthContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
-import * as React from 'react'
+import { ReactElement } from 'react'
 
 const MenuList = () => {
   const { user } = AuthContainer.useContainer()
@@ -16,17 +16,24 @@ const MenuList = () => {
 
   return (
     <MuiMenuList>
-      {mainEntries.map((entry: mainEntriesType) => {
-        return (
-          <ListItemLink
-            to={entry.path}
-            primary={entry.displayName}
-            key={entry.key}
-            icon={entry.icon}
-            sx={{ pl: 1 }}
-          />
-        )
-      })}
+      {mainEntries.map((entry: mainEntriesType) => (
+        <ListItemLink
+          to={entry.path}
+          primary={entry.displayName}
+          key={entry.key}
+          icon={entry.icon}
+          sx={{ pl: 1 }}
+        />
+      ))}
+      {hasPermission('job:read') && (
+        <ListItemLink
+          to="/jobs"
+          primary="Scheduler"
+          key="bgMenuEntry0003"
+          icon={<AccessTimeIcon fontSize="small" />}
+          sx={{ pl: 1 }}
+        />
+      )}
       {(hasPermission('system:update') || hasPermission('garden:update')) && (
         <AdminMenu />
       )}
@@ -43,7 +50,8 @@ type mainEntriesType = {
   key: string
   path: string
   displayName: string
-  icon?: React.ReactElement
+  icon?: ReactElement
+  permission?: string
 }
 
 const mainEntries: mainEntriesType[] = [
@@ -58,11 +66,5 @@ const mainEntries: mainEntriesType[] = [
     path: '/requests',
     displayName: 'Requests',
     icon: <EmojiPeopleIcon fontSize="small" />,
-  },
-  {
-    key: 'bgMenuEntry0003',
-    path: '/jobs',
-    displayName: 'Scheduler',
-    icon: <AccessTimeIcon fontSize="small" />,
   },
 ]
