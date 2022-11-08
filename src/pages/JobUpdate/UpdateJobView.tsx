@@ -1,14 +1,14 @@
 import { Box } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
-import { JobRequestCreationContext } from 'components/JobRequestCreation'
+import { useJobRequestCreation } from 'components/JobRequestCreation'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getJobSchema, getSchema, getUiSchema } from 'formHelpers'
 import { formatTrigger } from 'formHelpers/get-submit-argument'
 import { useSystems } from 'hooks/useSystems'
 import { UpdateJobForm } from 'pages/JobUpdate/UpdateJobForm'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { Job, System } from 'types/backend-types'
@@ -18,8 +18,7 @@ const UpdateJobView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { getSystems } = useSystems()
   const { namespace, systemName, version, jobName } = useParams()
-  const context = useContext(JobRequestCreationContext)
-  const { isJob, job } = context
+  const { isJob, job } = useJobRequestCreation()
 
   useEffect(() => {
     const foundSystem = getSystems().find(
@@ -28,7 +27,7 @@ const UpdateJobView = () => {
     if (foundSystem) {
       setSystem(foundSystem)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [systemName])
 
   const breadcrumbs = [namespace, systemName, version, jobName].filter(
