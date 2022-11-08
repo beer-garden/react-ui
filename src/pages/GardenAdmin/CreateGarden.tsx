@@ -1,7 +1,9 @@
 import { Box, Button, Modal } from '@mui/material'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
-import { useState } from 'react'
+import useGardens from 'hooks/useGardens'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Garden } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 const modalStyle = {
   position: 'absolute' as const,
@@ -15,7 +17,11 @@ const modalStyle = {
   overflow: 'auto',
 }
 
-const CreateGarden = () => {
+interface GardenConnectionFormProps {
+  setRequestStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
+}
+
+const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
   const [open, setOpen] = useState(false)
   const garden: Garden = {
     connection_params: { http: undefined, stomp: undefined },
@@ -25,6 +31,36 @@ const CreateGarden = () => {
     status: '',
     systems: [],
   }
+
+  const { createGarden } = useGardens()
+
+  const formOnSubmit = (garden: Garden) => {
+    createGarden(garden)
+      .then(() => {
+        setRequestStatus({
+          severity: 'success',
+          message: `Garden: ${garden.name} successfully created`,
+          showSeverity: false,
+        })
+        setOpen(false)
+      })
+      .catch((error) => {
+        console.error('ERROR', error)
+
+        if (error.response && error.response.statusText) {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error.response.status} ${error.response.statusText}`,
+          })
+        } else {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error}`,
+          })
+        }
+      })
+  }
+
   return (
     <Box style={{ float: 'right' }}>
       <Button
@@ -41,7 +77,12 @@ const CreateGarden = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-          <GardenConnectionForm garden={garden} isCreateGarden={true} />
+          <GardenConnectionForm
+            garden={garden}
+            title="Create Garden"
+            formOnSubmit={formOnSubmit}
+            includeGardenName={true}
+          />
         </Box>
       </Modal>
     </Box>

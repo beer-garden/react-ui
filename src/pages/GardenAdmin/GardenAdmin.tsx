@@ -51,7 +51,9 @@ const GardensAdmin = (): JSX.Element => {
 
   return (
     <>
-      {hasPermission('garden:create') && <CreateGarden />}
+      {hasPermission('garden:create') && (
+        <CreateGarden setRequestStatus={setRequestStatus} />
+      )}
       {hasPermission('garden:update') && (
         <Box style={{ float: 'right' }}>
           <GardenSyncButton gardenName={''} setSyncStatus={setRequestStatus} />

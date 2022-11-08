@@ -64,14 +64,14 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const updateGarden = (name: string, data: Garden) => {
+  const updateGarden = (garden: Garden) => {
     const config: AxiosRequestConfig = {
-      url: `/api/v1/gardens/${name}`,
+      url: `/api/v1/gardens/${garden.name}`,
       method: 'PATCH',
       data: {
         operation: 'config',
         path: '',
-        value: data,
+        value: garden,
       },
       headers: {
         Accept: 'application/json',
