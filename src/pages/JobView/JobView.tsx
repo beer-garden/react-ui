@@ -18,7 +18,7 @@ const JobView = () => {
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
-  const { hasPermission } = PermissionsContainer.useContainer()
+  const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
   const { getJob, deleteJob, pauseJob, resumeJob } = useJobs()
   const navigate = useNavigate()
@@ -77,8 +77,7 @@ const JobView = () => {
 
   return (
     <>
-      {/* TODO: this should be hasJobPermission */}
-      {job && hasPermission('job:update') && (
+      {job && hasJobPermission('job:update', job) && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
           <Button variant="contained" color="primary" aria-label="update job">
             Update Job
