@@ -29,7 +29,7 @@ const systemMapper = (system: System): SystemIndexTableData => {
 
 const useSystemIndexTableData = (): SystemIndexTableData[] => {
   const systemClient = useSystems()
-  const systemList = systemClient.getSystems()
+  const systemList = systemClient.systems
   return systemList.map(systemMapper)
 }
 

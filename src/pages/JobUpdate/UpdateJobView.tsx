@@ -16,12 +16,12 @@ import { Job, System } from 'types/backend-types'
 const UpdateJobView = () => {
   const [system, setSystem] = useState<System>()
   const { debugEnabled } = ServerConfigContainer.useContainer()
-  const { getSystems } = useSystems()
+  const { systems } = useSystems()
   const { namespace, systemName, version, jobName } = useParams()
   const { isJob, job } = useJobRequestCreation()
 
   useEffect(() => {
-    const foundSystem = getSystems().find(
+    const foundSystem = systems.find(
       (systemCheck) => systemCheck.name === systemName,
     )
     if (foundSystem) {

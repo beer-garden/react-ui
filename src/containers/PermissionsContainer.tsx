@@ -5,7 +5,7 @@ import useGardens from 'hooks/useGardens'
 import { useSystems } from 'hooks/useSystems'
 import useUsers from 'hooks/useUsers'
 import { useCallback, useEffect, useState } from 'react'
-import { Garden, Job, User } from 'types/backend-types'
+import { Garden, Job, System, User } from 'types/backend-types'
 import { createContainer } from 'unstated-next'
 
 const usePermissions = () => {
@@ -94,37 +94,39 @@ const usePermissions = () => {
     if (userObj.permissions.global_permissions.includes(permission)) {
       return true
     }
-    return getGarden(namespace).then((response) => {
-      const garden = response.data
-      if (garden && hasGardenPermission(permission, garden)) {
-        return true
-      }
-      const domainPermissions = userObj.permissions.domain_permissions
-      // eslint-disable-next-line no-prototype-builtins
-      if (domainPermissions.hasOwnProperty(permission)) {
-        return domainPermissions[permission].system_ids.includes(systemId)
-      }
-      return false
-    })
+    const response = await getGarden(namespace)
+    const garden = response.data
+    if (garden && hasGardenPermission(permission, garden)) {
+      return true
+    }
+    const domainPermissions = userObj.permissions.domain_permissions
+    // eslint-disable-next-line no-prototype-builtins
+    if (domainPermissions.hasOwnProperty(permission)) {
+      return domainPermissions[permission].system_ids.includes(systemId)
+    }
+    return false
   }
 
-  const hasJobPermission = (permission: string, job: Job) => {
+  const hasJobPermission = async (permission: string, job: Job) => {
     const baseCheck = basePermissionCheck()
     if (typeof baseCheck !== 'undefined') {
       return !!baseCheck
     }
-    const foundSystem = getSystems().find(
+    const response = await getSystems()
+    const systems: System[] = response.data
+    const foundSystem = systems.find(
       (system) =>
         system.namespace === job.request_template.namespace &&
         system.version === job.request_template.system_version &&
         system.name === job.request_template.system,
     )
     if (foundSystem) {
-      return hasSystemPermission(
+      const systemPerm = await hasSystemPermission(
         permission,
         job.request_template.namespace,
         foundSystem.id,
       )
+      return systemPerm
     }
     return false
   }

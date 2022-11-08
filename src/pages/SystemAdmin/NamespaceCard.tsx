@@ -21,7 +21,7 @@ import { System } from 'types/backend-types'
 const NamespaceCard = ({ namespace }: { namespace: string }) => {
   const { hasSystemPermission } = PermissionsContainer.useContainer()
   const systemClient = useSystems()
-  const systems = systemClient.getSystems()
+  const systems = systemClient.systems
   const [expanded, setExpanded] = useState(true)
   const [permission, setPermission] = useState(false)
 

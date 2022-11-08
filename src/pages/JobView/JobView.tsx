@@ -33,6 +33,7 @@ const JobView = () => {
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
+  const [permission, setPermission] = useState(false)
   const { setIsJob, setJob } = useJobRequestCreation()
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
@@ -46,6 +47,17 @@ const JobView = () => {
 
   const id = params.id as string
   const jobButtonCallback = (response: AxiosResponse) => _setJob(response.data)
+
+  useEffect(() => {
+    if (job) {
+      const fetchPermission = async () => {
+        const permCheck = await hasJobPermission('job:update', job)
+        setPermission(permCheck || false)
+      }
+      fetchPermission()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job])
 
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(
@@ -95,7 +107,7 @@ const JobView = () => {
 
   return (
     <>
-      {job && hasJobPermission('job:update', job) && (
+      {job && permission && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
           <Button
             variant="contained"
