@@ -13,14 +13,14 @@ const useJobs = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getJobs = (successCallback: SuccessCallback) => {
+  const getJobs = () => {
     // TODO: get rid of callbacks for all of these and just return the Promises
     const config: AxiosRequestConfig<Job[]> = {
       url: JOBS_URL,
       method: 'get',
       withCredentials: authEnabled,
     }
-    execute(config).then((response) => successCallback(response))
+    return execute(config)
   }
 
   const getJob = (successCallback: SuccessCallback, id: string) => {
@@ -46,6 +46,25 @@ const useJobs = () => {
     }
 
     execute(config).then((response) => successCallback(response))
+  }
+
+  const importJobs = (fileData: string) => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/import/jobs',
+      method: 'POST',
+      data: fileData,
+      withCredentials: authEnabled,
+    }
+    return execute(config)
+  }
+
+  const exportJobs = () => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/export/jobs',
+      method: 'POST',
+      withCredentials: authEnabled,
+    }
+    return execute(config)
   }
 
   const pauseJob = (successCallback: SuccessCallback, id: string) => {
@@ -106,6 +125,8 @@ const useJobs = () => {
   return {
     getJobs,
     getJob,
+    exportJobs,
+    importJobs,
     createJob,
     pauseJob,
     deleteJob,
