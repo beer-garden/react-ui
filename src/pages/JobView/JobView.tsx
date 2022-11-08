@@ -33,8 +33,8 @@ const JobView = () => {
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
-  const { hasPermission } = PermissionsContainer.useContainer()
   const { setIsJob, setJob } = useJobRequestCreation()
+  const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
   const { getJob, deleteJob, runAdHoc } = useJobs()
   const navigate = useNavigate()
@@ -49,7 +49,7 @@ const JobView = () => {
 
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(
-      (response) => {
+      () => {
         setAlert({
           severity: 'success',
           message: 'Job running...',
@@ -94,9 +94,8 @@ const JobView = () => {
   }, [job])
 
   return (
-    <Box>
-      {/* TODO: this should be hasJobPermission */}
-      {job && hasPermission('job:update') && (
+    <>
+      {job && hasJobPermission('job:update', job) && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
           <Button
             variant="contained"
@@ -247,7 +246,7 @@ const JobView = () => {
         </Stack>
       </Stack>
       {alert && <Snackbar status={alert} />}
-    </Box>
+    </>
   )
 }
 

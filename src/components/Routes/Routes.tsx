@@ -54,27 +54,35 @@ const Routes = () => {
               <Route path=":userName" element={<UsersView />} />
             </Route>
           )}
-          <Route path="systems" element={<SystemAdmin />} />
-          <Route path="gardens">
-            <Route index element={<GardensAdmin />} />
-            <Route path=":gardenName" element={<GardenAdminView />} />
-          </Route>
-          <Route path="commandblocklist" element={<CommandBlocklistView />} />
+          {hasPermission('system:update') && (
+            <Route path="systems" element={<SystemAdmin />} />
+          )}
+          {hasPermission('garden:update') && (
+            <Route path="gardens">
+              <Route index element={<GardensAdmin />} />
+              <Route path=":gardenName" element={<GardenAdminView />} />
+            </Route>
+          )}
+          {hasPermission('garden:update') && (
+            <Route path="commandblocklist" element={<CommandBlocklistView />} />
+          )}
         </Route>
       )}
       <Route path="requests" element={<RequireAuth />}>
         <Route index element={<RequestsIndex />} />
         <Route path=":id" element={<RequestView />} />
       </Route>
-      <Route path="jobs" element={<RequireAuth />}>
-        <Route index element={<JobIndex />} />
-        <Route path="create" element={<JobCreate />} />
-        <Route path=":id" element={<JobView />} />
-        <Route
-          path=":namespace/:systemName/:version/:jobName"
-          element={<JobUpdate />}
-        />
-      </Route>
+      {hasPermission('job:read') && (
+        <Route path="jobs" element={<RequireAuth />}>
+          <Route index element={<JobIndex />} />
+          <Route path="create" element={<JobCreate />} />
+          <Route path=":id" element={<JobView />} />
+          <Route
+            path=":namespace/:systemName/:version/:jobName"
+            element={<JobUpdate />}
+          />
+        </Route>
+      )}
       <Route path="/login" element={<Login />} />
       <Route
         path="*"

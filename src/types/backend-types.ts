@@ -1,4 +1,4 @@
-import { EmptyObject, NestedObject, ObjectWithStringKeys } from './custom-types'
+import { EmptyObject, ObjectWithStringKeys } from './custom-types'
 
 export interface Command {
   name: string
@@ -301,10 +301,14 @@ export interface Role {
 }
 
 interface Permissions {
-  domain_permissions: NestedObject
+  domain_permissions: { [key: string]: DomainPermission }
   global_permissions: string[]
 }
 
+export interface DomainPermission {
+  system_ids: string[]
+  garden_ids: string[]
+}
 export interface UserPatch {
   role_assignments: RolePatch[]
   password?: string

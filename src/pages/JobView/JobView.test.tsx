@@ -22,6 +22,7 @@ jest.mock('react-router-dom', () => ({
 describe('JobView', () => {
   afterAll(() => {
     jest.unmock('react-router-dom')
+    jest.clearAllMocks()
   })
 
   test('run now runs the job', async () => {

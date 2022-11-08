@@ -1,3 +1,4 @@
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useSystems } from 'hooks/useSystems'
 import { ExploreButton } from 'pages/SystemIndex'
 import { useMemo } from 'react'
@@ -12,24 +13,6 @@ type SystemIndexTableData = {
   commandCount: number
   instanceCount: number
   exploreButton: JSX.Element
-}
-
-const formatSystems = (systems: System[]) => {
-  const formattedSystems: (string | JSX.Element | number)[][] = []
-
-  for (const index in systems) {
-    formattedSystems.push([
-      systems[index].namespace,
-      systems[index].name,
-      systems[index].version,
-      systems[index].description,
-      systems[index].commands.length,
-      systems[index].instances.length,
-      ExploreButton(systems[index]),
-    ])
-  }
-
-  return formattedSystems
 }
 
 const systemMapper = (system: System): SystemIndexTableData => {
@@ -105,6 +88,7 @@ const useSystemIndexTableColumns = () => {
       },
       {
         Header: '',
+        Cell: DefaultCellRenderer,
         accessor: 'exploreButton',
         disableSortBy: true,
         disableGroupBy: true,
@@ -119,4 +103,4 @@ const useSystemIndexTableColumns = () => {
   )
 }
 
-export { formatSystems, useSystemIndexTableColumns, useSystemIndexTableData }
+export { systemMapper, useSystemIndexTableColumns, useSystemIndexTableData }

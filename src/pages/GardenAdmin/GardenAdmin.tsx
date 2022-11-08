@@ -6,6 +6,7 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { CreateGarden, GardenAdminCard } from 'pages/GardenAdmin'
 import { useEffect, useState } from 'react'
 import { Garden } from 'types/backend-types'
@@ -15,7 +16,7 @@ const GardensAdmin = (): JSX.Element => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { hasPermission } = PermissionsContainer.useContainer()
   const [gardens, setGardens] = useState<Garden[]>([])
-  const [{ data, error }] = useAxios({
+  const [{ data, error }, refetch] = useAxios({
     url: '/api/v1/gardens',
     method: 'get',
     withCredentials: authEnabled,
@@ -30,6 +31,23 @@ const GardensAdmin = (): JSX.Element => {
       setGardens(data)
     }
   }, [data, error])
+
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
+
+  useEffect(() => {
+    addCallback('garden_updates', (event) => {
+      if (
+        ['GARDEN_CREATED', 'GARDEN_UPDATED', 'GARDEN_REMOVED'].includes(
+          event.name,
+        )
+      ) {
+        refetch()
+      }
+    })
+    return () => {
+      removeCallback('garden_updates')
+    }
+  }, [addCallback, removeCallback, refetch])
 
   return (
     <>

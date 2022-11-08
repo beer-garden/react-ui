@@ -8,11 +8,11 @@ import {
   Toolbar,
 } from 'components/Table'
 import {
-  DefaultCellRenderer,
   DefaultColumnFilter,
   defaultColumnValues,
   DefaultGlobalFilter,
   DefaultHeader,
+  OverflowCellRenderer,
 } from 'components/Table/defaults'
 import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
 import {
@@ -67,7 +67,7 @@ const columnStyle = {
 
 const defaultColumn = {
   Filter: DefaultColumnFilter,
-  Cell: DefaultCellRenderer,
+  Cell: OverflowCellRenderer,
   Header: DefaultHeader,
   minWidth: 90, // minWidth is only used as a limit for resizing
   width: 150, // width is used for both the flex-basis and flex-grow
@@ -199,9 +199,6 @@ const Table = <T extends ObjectWithStringKeys>(
   }, [setInitialState, debouncedState, columns])
 
   const { role: tableRole, ...tableProps } = getTableProps()
-  if (tableProps?.style) {
-    tableProps.style.wordBreak = 'break-word'
-  }
 
   return (
     <>

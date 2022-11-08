@@ -58,24 +58,30 @@ const AdminMenu = () => {
               sx={{ pl: 3 }}
             />
           )}
-          <ListItemLink
-            icon={<LocalFloristIcon fontSize="small" />}
-            primary={'Gardens'}
-            to={'/admin/gardens'}
-            sx={{ pl: 3 }}
-          />
-          <ListItemLink
-            icon={<FactoryIcon fontSize="small" />}
-            primary={'Systems'}
-            to={'/admin/systems'}
-            sx={{ pl: 3 }}
-          />
-          <ListItemLink
-            icon={<BlockIcon fontSize="small" />}
-            primary={'Command Publishing Blocklist'}
-            to={'/admin/commandblocklist'}
-            sx={{ pl: 3 }}
-          />
+          {hasPermission('garden:update') && (
+            <ListItemLink
+              icon={<LocalFloristIcon fontSize="small" />}
+              primary={'Gardens'}
+              to={'/admin/gardens'}
+              sx={{ pl: 3 }}
+            />
+          )}
+          {hasPermission('system:update') && (
+            <ListItemLink
+              icon={<FactoryIcon fontSize="small" />}
+              primary={'Systems'}
+              to={'/admin/systems'}
+              sx={{ pl: 3 }}
+            />
+          )}
+          {hasPermission('garden:update') && (
+            <ListItemLink
+              icon={<BlockIcon fontSize="small" />}
+              primary={'Command Publishing Blocklist'}
+              to={'/admin/commandblocklist'}
+              sx={{ pl: 3 }}
+            />
+          )}
         </MenuList>
       </Collapse>
     </>
