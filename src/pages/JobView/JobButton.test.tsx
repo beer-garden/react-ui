@@ -15,7 +15,10 @@ jest.mock('hooks/useJobs', () => ({
 let jData: Job
 
 describe('JobButton', () => {
-  afterAll(() => jest.unmock('hooks/useJobs'))
+  afterAll(() => {
+    jest.unmock('hooks/useJobs')
+    jest.clearAllMocks()
+  })
 
   beforeEach(() => {
     jData = Object.assign({}, TJob)

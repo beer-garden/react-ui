@@ -8,7 +8,7 @@ let consoleSpy: jest.SpyInstance
 
 describe('Socket Container', () => {
   beforeEach(() => {
-    consoleSpy = jest.spyOn(console, 'log')
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation(jest.fn())
   })
 
   afterEach(() => {

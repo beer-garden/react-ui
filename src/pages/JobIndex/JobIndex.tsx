@@ -86,7 +86,9 @@ const JobIndex = () => {
     <>
       <PageHeader title="Request Scheduler" description="" />
       <Divider />
-      <Button onClick={createRequestOnClick}>Create</Button>
+      {hasPermission('job:create') && (
+        <Button onClick={createRequestOnClick}>Create</Button>
+      )}
       {hasPermission('job:create') && (
         <Button onClick={() => setOpenImport(true)}>IMPORT</Button>
       )}

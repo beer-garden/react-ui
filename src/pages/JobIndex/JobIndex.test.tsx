@@ -163,4 +163,30 @@ describe('JobIndex', () => {
       })
     })
   })
+
+  test('create button if permission', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    render(
+      <LoggedInProviders>
+        <JobIndex />
+      </LoggedInProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText('Create')).toBeInTheDocument()
+    })
+  })
+
+  test('no create button if no permission', async () => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TUser)
+    render(
+      <LoggedInProviders>
+        <JobIndex />
+      </LoggedInProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.queryByText('Create')).not.toBeInTheDocument()
+    })
+  })
 })

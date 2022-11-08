@@ -12,15 +12,24 @@ import { Command, System } from 'types/backend-types'
 import {
   AugmentedCommand,
   CommandIndexTableData,
+  ObjectWithStringKeys,
   StrippedSystem,
 } from 'types/custom-types'
 import { generateCommandName } from 'utils/generateCommandName'
 
+interface IParam extends ObjectWithStringKeys {
+  namespace: string
+  systemName: string
+  version: string
+}
+
 export const useCommands = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
+  const [systemId, setSystemId] = useState('')
   const [includeHidden, setIncludeHidden] = useState(false)
-  const { namespace, systemName, version } = useParams()
+  const { namespace, systemName, version } = useParams() as IParam
+
   const [{ data, error }] = useAxios({
     url: '/api/v1/systems',
     method: 'get',
@@ -38,6 +47,11 @@ export const useCommands = () => {
           version,
         ),
       )
+
+      const foundSystem = data.find(
+        (system: System) => system.name === systemName,
+      )
+      if (foundSystem) setSystemId(foundSystem.id)
     }
   }, [data, error, namespace, version, systemName, includeHidden])
 
@@ -52,6 +66,7 @@ export const useCommands = () => {
     commands,
     namespace,
     systemName,
+    systemId,
     version,
     includeHidden,
     hiddenOnChange,
@@ -73,7 +88,7 @@ const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
     command: command.name,
     name: generateCommandName(command.hidden, command.name),
     description: command.description ?? 'No description',
-    executeButton: ExecuteButton(system, command),
+    executeButton: <ExecuteButton system={system} command={command} />,
   }
 }
 

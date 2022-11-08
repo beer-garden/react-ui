@@ -3,7 +3,7 @@ import { NavigationBarContextProvider } from 'components/UI/NavigationBar/Naviga
 import { mockAxios, regexUsers } from 'test/axios-mock'
 import { TServerAuthConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
-import { TAdmin, TUser } from 'test/user-test-values'
+import { TUser } from 'test/user-test-values'
 
 import { AdminMenu } from './AdminMenu'
 
@@ -39,7 +39,7 @@ describe('Admin Menu', () => {
     })
   })
 
-  test('lists main item links', async () => {
+  test('lists main item links (no auth)', async () => {
     render(
       <AllProviders>
         <NavigationBarContextProvider
@@ -67,67 +67,106 @@ describe('Admin Menu', () => {
     expect(screen.queryByText('Users')).not.toBeInTheDocument()
   })
 
-  test('lists users when logged in', async () => {
-    // change return to enable auth
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
-    render(
-      <LoggedInProviders>
-        <NavigationBarContextProvider
-          toggleDrawer={(open: boolean) => () => {
-            // noop
-          }}
-          drawerIsOpen={true}
-        >
-          <AdminMenu />
-        </NavigationBarContextProvider>
-      </LoggedInProviders>,
-    )
-    fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
-    await waitFor(() => {
-      expect(screen.getByText('Gardens')).toBeInTheDocument()
-    })
-    await waitFor(() => {
-      expect(screen.getByText('Systems')).toBeInTheDocument()
-    })
-    await waitFor(() => {
+  describe('menu items only for specific user access', () => {
+    test('lists users', async () => {
+      const userObj = Object.assign({}, TUser, {
+        permissions: {
+          global_permissions: ['user:update'],
+          domain_permissions: {},
+        },
+      })
+      // change return to enable auth
+      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+      mockAxios.onGet(regexUsers).reply(200, userObj)
+      render(
+        <LoggedInProviders>
+          <NavigationBarContextProvider
+            toggleDrawer={(open: boolean) => () => {
+              // noop
+            }}
+            drawerIsOpen={true}
+          >
+            <AdminMenu />
+          </NavigationBarContextProvider>
+        </LoggedInProviders>,
+      )
+      fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
+      await waitFor(() => {
+        expect(screen.getByText('Users')).toBeInTheDocument()
+      })
       expect(
-        screen.getByText('Command Publishing Blocklist'),
-      ).toBeInTheDocument()
+        screen.queryByText('Command Publishing Blocklist'),
+      ).not.toBeInTheDocument()
+      expect(screen.queryByText('Gardens')).not.toBeInTheDocument()
+      expect(screen.queryByText('Systems')).not.toBeInTheDocument()
     })
-    await waitFor(() => {
-      expect(screen.getByText('Users')).toBeInTheDocument()
-    })
-  })
 
-  test('not list users when no permission', async () => {
-    // change return to enable auth
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TUser)
-    render(
-      <LoggedInProviders>
-        <NavigationBarContextProvider
-          toggleDrawer={(open: boolean) => () => {
-            // noop
-          }}
-          drawerIsOpen={true}
-        >
-          <AdminMenu />
-        </NavigationBarContextProvider>
-      </LoggedInProviders>,
-    )
-    fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
-    await waitFor(() => {
-      expect(screen.getByText('Gardens')).toBeInTheDocument()
+    test('lists garden and blocklist', async () => {
+      const userObj = Object.assign({}, TUser, {
+        permissions: {
+          global_permissions: ['garden:update'],
+          domain_permissions: {},
+        },
+      })
+      // change return to enable auth
+      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+      mockAxios.onGet(regexUsers).reply(200, userObj)
+      render(
+        <LoggedInProviders>
+          <NavigationBarContextProvider
+            toggleDrawer={(open: boolean) => () => {
+              // noop
+            }}
+            drawerIsOpen={true}
+          >
+            <AdminMenu />
+          </NavigationBarContextProvider>
+        </LoggedInProviders>,
+      )
+      fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
+      await waitFor(() => {
+        expect(screen.getByText('Gardens')).toBeInTheDocument()
+      })
+      await waitFor(() => {
+        expect(
+          screen.getByText('Command Publishing Blocklist'),
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Users')).not.toBeInTheDocument()
+      expect(screen.queryByText('Systems')).not.toBeInTheDocument()
     })
-    await waitFor(() => {
-      expect(screen.getByText('Systems')).toBeInTheDocument()
-    })
-    await waitFor(() => {
+
+    test('lists system', async () => {
+      const userObj = Object.assign({}, TUser, {
+        permissions: {
+          global_permissions: ['system:update'],
+          domain_permissions: {},
+        },
+      })
+      // change return to enable auth
+      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+      mockAxios.onGet(regexUsers).reply(200, userObj)
+      render(
+        <LoggedInProviders>
+          <NavigationBarContextProvider
+            toggleDrawer={(open: boolean) => () => {
+              // noop
+            }}
+            drawerIsOpen={true}
+          >
+            <AdminMenu />
+          </NavigationBarContextProvider>
+        </LoggedInProviders>,
+      )
+      fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
+      await waitFor(() => {
+        expect(screen.getByText('Systems')).toBeInTheDocument()
+      })
       expect(
-        screen.getByText('Command Publishing Blocklist'),
-      ).toBeInTheDocument()
+        screen.queryByText('Command Publishing Blocklist'),
+      ).not.toBeInTheDocument()
+      expect(screen.queryByText('Users')).not.toBeInTheDocument()
+      expect(screen.queryByText('Gardens')).not.toBeInTheDocument()
     })
-    expect(screen.queryByText('Users')).not.toBeInTheDocument()
   })
 })
