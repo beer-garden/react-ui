@@ -17,10 +17,6 @@ export interface ObjectWithStringKeys {
 
 export type EmptyObject = Record<string, never>
 
-export interface NestedObject {
-  [key: string]: ObjectWithStringKeys
-}
-
 export interface SuccessCallback {
   (response: AxiosResponse): void
 }

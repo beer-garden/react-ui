@@ -5,11 +5,13 @@ import {
   ConnectionFormFields,
   ConnectionFormHeading,
 } from 'components/GardenConnectionForm'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { FieldArray, getIn, useFormikContext } from 'formik'
 import { nanoid } from 'nanoid/non-secure'
 
 const ConnectionStompHeaders = () => {
   const context = useFormikContext<ConnectionFormFields>()
+  const { hasPermission } = PermissionsContainer.useContainer()
 
   return (
     <>
@@ -33,6 +35,7 @@ const ConnectionStompHeaders = () => {
                       name={key}
                       label={'Key'}
                       value={header.key}
+                      disabled={!hasPermission('garden:update')}
                       required
                       error={touchedKey && Boolean(errorsKey)}
                       helperText={touchedKey && errorsKey}
@@ -44,6 +47,7 @@ const ConnectionStompHeaders = () => {
                       name={value}
                       label={'Value'}
                       value={header.value}
+                      disabled={!hasPermission('garden:update')}
                       required
                       error={touchedValue && Boolean(errorsValue)}
                       helperText={touchedValue && errorsValue}
@@ -51,28 +55,34 @@ const ConnectionStompHeaders = () => {
                       onBlur={context.handleBlur}
                     />
 
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        remove(index)
-                      }}
-                      startIcon={<DeleteIcon />}
-                    >
-                      Delete
-                    </Button>
+                    {hasPermission('garden:update') && (
+                      <Button
+                        type="button"
+                        color="error"
+                        onClick={() => {
+                          remove(index)
+                        }}
+                        startIcon={<DeleteIcon />}
+                      >
+                        Delete
+                      </Button>
+                    )}
                     <Divider sx={{ mb: 0.5, mt: 0.5 }} />
                   </div>
                 )
               })}
-              <Button
-                type="button"
-                onClick={() => {
-                  push({ id: nanoid(), key: '', value: '' })
-                }}
-                startIcon={<AddIcon />}
-              >
-                Add Header
-              </Button>
+              {hasPermission('garden:update') && (
+                <Button
+                  type="button"
+                  color="secondary"
+                  onClick={() => {
+                    push({ id: nanoid(), key: '', value: '' })
+                  }}
+                  startIcon={<AddIcon />}
+                >
+                  Add Header
+                </Button>
+              )}
             </div>
           )
         }}

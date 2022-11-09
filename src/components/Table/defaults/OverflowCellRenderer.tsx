@@ -8,7 +8,6 @@ const OverflowCellRenderer = ({
 }: CellProps<ObjectWithStringKeys>) => (
   <Box component="span" display="flex" justifyContent="left">
     <OverflowTooltip
-      color="common.black"
       variant="inherit"
       tooltip={value}
       text={value}

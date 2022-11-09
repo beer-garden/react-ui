@@ -10,7 +10,7 @@ const useGardens = () => {
   const [, execute] = useAxios({}, axiosManualOptions)
 
   const getGardens = () => {
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<Garden[]> = {
       url: '/api/v1/gardens',
       method: 'get',
       withCredentials: authEnabled,
@@ -20,7 +20,7 @@ const useGardens = () => {
   }
 
   const getGarden = (name: string) => {
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<Garden> = {
       url: `/api/v1/gardens/${name}`,
       method: 'get',
       withCredentials: authEnabled,
