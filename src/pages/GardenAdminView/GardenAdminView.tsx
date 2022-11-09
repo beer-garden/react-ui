@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
-import useGardens from 'hooks/useGardens'
 
 const GardenAdminView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
