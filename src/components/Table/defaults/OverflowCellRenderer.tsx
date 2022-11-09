@@ -7,18 +7,13 @@ const OverflowCellRenderer = ({
   cell: { value },
 }: CellProps<ObjectWithStringKeys>) => (
   <>
-    <Box
-      component="span"
-      display="flex"
-      justifyContent="left"
-    >
+    <Box component="span" display="flex" justifyContent="left">
       <OverflowTooltip
-      color="common.black"
-      variant="inherit"
-      tooltip={value}
-      text={value}
-      css={{ py: 0 }}
-    />
+        variant="inherit"
+        tooltip={value}
+        text={value}
+        css={{ py: 0 }}
+      />
     </Box>
   </>
 )
