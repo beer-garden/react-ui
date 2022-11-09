@@ -1,4 +1,5 @@
 import { Button } from '@mui/material'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useSystems } from 'hooks/useSystems'
 import { useCallback, useMemo } from 'react'
 import { Column } from 'react-table'
@@ -76,6 +77,7 @@ const useSystemColumns = () => {
       },
       {
         Header: '',
+        Cell: DefaultCellRenderer,
         accessor: 'choose',
       },
     ],

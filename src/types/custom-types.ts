@@ -117,7 +117,7 @@ export interface CommandIndexTableData
   extends Omit<BlockedCommand, 'id' | 'status'>,
     ObjectWithStringKeys {
   name: string | JSX.Element
-  action?: JSX.Element
+  executeButton?: JSX.Element
   description?: string
   version?: string
 }

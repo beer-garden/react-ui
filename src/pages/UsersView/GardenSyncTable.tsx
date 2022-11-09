@@ -2,6 +2,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import { Typography } from '@mui/material'
 import { Table } from 'components/Table'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { SyncStatus } from 'types/backend-types'
@@ -22,6 +23,7 @@ const useTableColumns = () => {
       },
       {
         Header: 'Synced',
+        Cell: DefaultCellRenderer,
         accessor: 'sync',
         canHide: false,
         width: 75,

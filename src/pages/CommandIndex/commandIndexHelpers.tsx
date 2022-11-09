@@ -1,3 +1,4 @@
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { CommandIndexTableData } from 'types/custom-types'
@@ -29,6 +30,7 @@ const useCommandIndexTableColumns = () => {
       },
       {
         Header: 'Command',
+        Cell: DefaultCellRenderer,
         accessor: 'name',
         minWidth: 90,
         maxWidth: 350,
@@ -43,6 +45,7 @@ const useCommandIndexTableColumns = () => {
       },
       {
         Header: '',
+        Cell: DefaultCellRenderer,
         accessor: 'executeButton',
         disableSortBy: true,
         disableGroupBy: true,
