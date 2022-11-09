@@ -17,6 +17,7 @@ const JobView = () => {
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
+  const [permission, setPermission] = useState(false)
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
@@ -75,9 +76,20 @@ const JobView = () => {
     return undefined
   }, [job])
 
+  useEffect(() => {
+    if (job) {
+      const fetchPermission = async () => {
+        const permCheck = await hasJobPermission('job:update', job)
+        setPermission(permCheck || false)
+      }
+      fetchPermission()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job])
+
   return (
     <>
-      {job && hasJobPermission('job:update', job) && (
+      {job && permission && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
           <Button variant="contained" color="primary" aria-label="update job">
             Update Job

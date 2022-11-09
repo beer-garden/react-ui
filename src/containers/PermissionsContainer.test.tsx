@@ -88,9 +88,9 @@ describe('Permissions Container', () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
         wrapper: AllProviders,
       })
-      await waitFor(() => {
+      await waitFor(async () => {
         expect(
-          result.current.hasJobPermission('user:create', TJob),
+          await result.current.hasJobPermission('user:create', TJob),
         ).toBeTruthy()
       })
     })
@@ -140,8 +140,10 @@ describe('Permissions Container', () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
         wrapper: LoggedInProviders,
       })
-      await waitFor(() => {
-        expect(result.current.hasJobPermission('user:create', TJob)).toBeFalsy()
+      await waitFor(async () => {
+        expect(
+          await result.current.hasJobPermission('user:create', TJob),
+        ).toBeFalsy()
       })
     })
   })
@@ -191,9 +193,9 @@ describe('Permissions Container', () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
         wrapper: LoggedInProviders,
       })
-      await waitFor(() => {
+      await waitFor(async () => {
         expect(
-          result.current.hasJobPermission('user:create', TJob),
+          await result.current.hasJobPermission('user:create', TJob),
         ).toBeTruthy()
       })
     })
@@ -244,8 +246,10 @@ describe('Permissions Container', () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
         wrapper: LoggedInProviders,
       })
-      await waitFor(() => {
-        expect(result.current.hasJobPermission('user:create', TJob)).toBeFalsy()
+      await waitFor(async () => {
+        expect(
+          await result.current.hasJobPermission('user:create', TJob),
+        ).toBeFalsy()
       })
     })
   })

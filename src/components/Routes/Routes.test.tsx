@@ -116,21 +116,21 @@ describe('Routes', () => {
     })
 
     describe('does not have access', () => {
-      // test('Users', async () => {
-      //   render(
-      //     <LoggedInMemory startLocation={['/admin/users']}>
-      //       <Routes />
-      //     </LoggedInMemory>,
-      //   )
-      //   await waitFor(() =>
-      //     expect(
-      //       screen.queryByRole('heading', { name: 'User Management' }),
-      //     ).not.toBeInTheDocument(),
-      //   )
-      //   expect(
-      //     screen.getByRole('heading', { name: 'Systems' }),
-      //   ).toBeInTheDocument()
-      // })
+      test('Users', async () => {
+        render(
+          <LoggedInMemory startLocation={['/admin/users']}>
+            <Routes />
+          </LoggedInMemory>,
+        )
+        await waitFor(() =>
+          expect(
+            screen.queryByRole('heading', { name: 'User Management' }),
+          ).not.toBeInTheDocument(),
+        )
+        expect(
+          screen.getByRole('heading', { name: 'Systems' }),
+        ).toBeInTheDocument()
+      })
 
       test('Job', async () => {
         render(
