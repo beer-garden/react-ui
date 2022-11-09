@@ -44,7 +44,7 @@ const systemMapper = (system: System): SystemIndexTableData => {
 }
 
 const useSystemIndexTableData = (systems: System[]): SystemIndexTableData[] => {
-    return systems.map(systemMapper)
+  return systems.map(systemMapper)
 }
 
 const useSystemIndexTableColumns = () => {

@@ -18,21 +18,17 @@ const SystemsIndex = () => {
   const { getSystems } = useSystems()
 
   useEffect(() => {
-    async function fetchSystems() {
-      getSystems()
-        .then((response) => {
-          setSystems(response.data)
+    getSystems()
+      .then((response) => {
+        setSystems(response.data)
+      })
+      .catch((e) => {
+        setAlert({
+          severity: 'error',
+          message: e,
+          doNotAutoDismiss: true,
         })
-        .catch((e) => {
-          setAlert({
-            severity: 'error',
-            message: e,
-            doNotAutoDismiss: true,
-          })
-        })
-    }
-
-    fetchSystems()
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

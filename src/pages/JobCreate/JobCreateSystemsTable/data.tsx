@@ -1,5 +1,4 @@
 import { Button } from '@mui/material'
-import { useSystems } from 'hooks/useSystems'
 import { useCallback, useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/backend-types'
@@ -44,13 +43,11 @@ const useSystemMapper = (
   )
 }
 
-const useSystemsData = (systemSetter: (system: System) => void) => {
-  const { getSystems } = useSystems()
+const useSystemsData = (
+  systems: System[],
+  systemSetter: (system: System) => void,
+) => {
   const systemMapper = useSystemMapper(systemSetter)
-  let systems: System[] = []
-  getSystems().then((response) => {
-    systems = response.data
-  })
   return systems.map(systemMapper)
 }
 const useSystemColumns = () => {
