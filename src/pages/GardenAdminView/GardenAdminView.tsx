@@ -9,13 +9,13 @@ import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
+import useGardens from 'hooks/useGardens'
 import { GardenAdminInfoCard } from 'pages/GardenAdminView'
 import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
-import useGardens from 'hooks/useGardens'
 
 const GardenAdminView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
