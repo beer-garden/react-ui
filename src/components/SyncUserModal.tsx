@@ -2,6 +2,7 @@ import { CircularProgress, Typography } from '@mui/material'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
 import { useEffect, useMemo, useState } from 'react'
@@ -37,6 +38,7 @@ const useTableColumns = () => {
       },
       {
         Header: 'Sync Status',
+        Cell: DefaultCellRenderer,
         accessor: 'sync',
         disableSortBy: true,
         disableGroupBy: true,

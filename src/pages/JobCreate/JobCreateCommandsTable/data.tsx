@@ -1,4 +1,5 @@
 import { Button } from '@mui/material'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { Command, System } from 'types/backend-types'
@@ -57,6 +58,7 @@ const useCommandsColumns = () => {
       },
       {
         Header: '',
+        Cell: DefaultCellRenderer,
         accessor: 'choose',
         disableFilters: true,
         canHide: false,

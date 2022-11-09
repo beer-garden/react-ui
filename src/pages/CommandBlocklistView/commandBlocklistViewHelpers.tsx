@@ -1,4 +1,5 @@
 import { Box } from '@mui/material'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import {
   ChangeEvent,
   forwardRef,
@@ -134,6 +135,7 @@ const useTableColumns = () => {
       },
       {
         Header: 'Command',
+        Cell: DefaultCellRenderer,
         accessor: 'name',
         minWidth: 200,
         maxWidth: 400,
@@ -148,7 +150,8 @@ const useTableColumns = () => {
       },
       {
         Header: '',
-        accessor: 'action',
+        Cell: DefaultCellRenderer,
+        accessor: 'executeButton',
         disableSortBy: true,
         disableGroupBy: true,
         disableFilters: true,
