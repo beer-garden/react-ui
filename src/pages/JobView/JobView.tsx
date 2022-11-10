@@ -45,7 +45,6 @@ const JobView = () => {
   }
 
   const id = params.id as string
-  const jobButtonCallback = (response: AxiosResponse) => _setJob(response.data)
 
   useEffect(() => {
     if (job) {
