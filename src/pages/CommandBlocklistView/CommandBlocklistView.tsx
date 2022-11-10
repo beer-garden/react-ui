@@ -56,7 +56,7 @@ export const CommandBlocklistView = () => {
         status: command.status,
         command: command.command,
         name: generateCommandName(false, command.command),
-        action: (
+        executeButton: (
           <IconButton
             size="small"
             color="error"
