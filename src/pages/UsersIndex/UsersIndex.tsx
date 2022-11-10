@@ -9,6 +9,7 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import SyncUserModal from 'components/SyncUserModal'
 import { Table } from 'components/Table'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useUsers from 'hooks/useUsers'
@@ -33,12 +34,14 @@ const useTableColumns = (sync: boolean) => {
       return [
         {
           Header: 'Username',
+          Cell: DefaultCellRenderer,
           accessor: 'username',
           filter: 'fuzzyText',
           canHide: false,
         },
         {
           Header: 'Fully Synced',
+          Cell: DefaultCellRenderer,
           accessor: 'sync',
         },
       ]
@@ -46,6 +49,7 @@ const useTableColumns = (sync: boolean) => {
     return [
       {
         Header: 'Username',
+        Cell: DefaultCellRenderer,
         accessor: 'username',
         filter: 'fuzzyText',
         canHide: false,

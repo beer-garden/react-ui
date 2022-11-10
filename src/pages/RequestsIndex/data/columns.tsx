@@ -1,3 +1,4 @@
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { SelectionColumnFilter } from 'components/Table/filters'
 import DateRangeColumnFilter from 'components/Table/filters/DateRangeColumnFilter'
 import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
@@ -9,6 +10,7 @@ const useRequestsIndexTableColumns = () => {
     () => [
       {
         Header: 'Command',
+        Cell: DefaultCellRenderer,
         accessor: 'command',
         width: 120,
         maxWidth: 120,
@@ -36,6 +38,7 @@ const useRequestsIndexTableColumns = () => {
       },
       {
         Header: 'Version',
+        Cell: DefaultCellRenderer,
         accessor: 'version',
         minWidth: 95,
         maxWidth: 120,
