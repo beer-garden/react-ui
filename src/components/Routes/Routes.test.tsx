@@ -33,9 +33,14 @@ describe('Routes', () => {
         <Routes />
       </SuspendedProviders>,
     )
-    const header = await screen.findByRole('heading', { name: 'Systems' })
-    expect(header).toBeInTheDocument()
-    expect(header.textContent).toEqual('Systems')
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Systems' }),
+      ).toBeInTheDocument()
+    })
+    expect(
+      screen.getByRole('heading', { name: 'Systems' }).textContent,
+    ).toEqual('Systems')
   })
 
   describe('auth not enabled', () => {

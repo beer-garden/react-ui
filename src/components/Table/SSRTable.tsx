@@ -9,10 +9,10 @@ import {
 } from '@mui/material'
 import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
 import {
-  DefaultCellRenderer,
   DefaultColumnFilter,
   defaultColumnValues,
   DefaultHeader,
+  OverflowCellRenderer,
 } from 'components/Table/defaults'
 import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
 import { SSRTablePagination } from 'components/Table/ssr-pagination'
@@ -68,7 +68,7 @@ const columnStyle = {
 
 const defaultColumn = {
   Filter: DefaultColumnFilter,
-  Cell: DefaultCellRenderer,
+  Cell: OverflowCellRenderer,
   Header: DefaultHeader,
   minWidth: 90, // minWidth is only used as a limit for resizing
   width: 150, // width is used for both the flex-basis and flex-grow
