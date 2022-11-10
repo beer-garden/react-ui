@@ -42,8 +42,9 @@ const UpdateJobView = () => {
   // update trigger to meet RJSF styling
   let updatedJob: Job
   if (formattedTrigger) {
-    updatedJob = Object.assign(job, {
+    updatedJob = Object.assign({}, job, {
       trigger: formattedTrigger.trigger,
+      ...formattedTrigger.triggerData,
     })
   } else {
     updatedJob = job

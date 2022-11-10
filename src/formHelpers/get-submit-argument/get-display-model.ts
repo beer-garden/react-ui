@@ -8,8 +8,8 @@ import {
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 interface DisplayTrigger {
-  trigger: ObjectWithStringKeys
-  trigger_type: TriggerType
+  trigger: TriggerType
+  triggerData: ObjectWithStringKeys
 }
 
 const formatDateTrigger = (triggerData: DateTrigger): DisplayTrigger => {
@@ -19,8 +19,8 @@ const formatDateTrigger = (triggerData: DateTrigger): DisplayTrigger => {
   }
 
   return {
-    trigger_type: 'date',
-    trigger: trigger,
+    triggerData: trigger,
+    trigger: 'date',
   }
 }
 
@@ -74,8 +74,8 @@ const formatIntervalTrigger = (
     trigger.interval_numb = undefined
   }
   return {
-    trigger_type: 'interval',
-    trigger: trigger,
+    triggerData: trigger,
+    trigger: 'interval',
   }
 }
 
@@ -99,15 +99,15 @@ const formatCronTrigger = (triggerData: CronTrigger): DisplayTrigger => {
   }
 
   return {
-    trigger_type: 'cron',
-    trigger: trigger,
+    triggerData: trigger,
+    trigger: 'cron',
   }
 }
 
 /**
  * Convert server format into RSJF format
- * @param job 
- * @returns 
+ * @param job
+ * @returns
  */
 export const formatTrigger = (job?: Job): DisplayTrigger | null => {
   if (!job || !job.trigger) return null

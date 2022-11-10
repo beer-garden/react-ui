@@ -33,26 +33,26 @@ const jobSchema = {
         title: 'Timeout',
         description: 'Job timeout (in seconds)',
       },
-      trigger_type: {
+      trigger: {
         title: 'Trigger Type',
         type: 'string',
         enum: ['date', 'cron', 'interval'],
       },
     },
-    required: ['name', 'trigger_type'],
+    required: ['name', 'trigger'],
     dependencies: {
-      trigger_type: {
+      trigger: {
         oneOf: [
           {
             properties: {
-              trigger_type: {
+              trigger: {
                 enum: [''],
               },
             },
           },
           {
             properties: {
-              trigger_type: {
+              trigger: {
                 enum: ['date'],
               },
               run_date: {
@@ -72,7 +72,7 @@ const jobSchema = {
           },
           {
             properties: {
-              trigger_type: {
+              trigger: {
                 enum: ['cron'],
               },
               minute: {
@@ -162,7 +162,7 @@ const jobSchema = {
           },
           {
             properties: {
-              trigger_type: {
+              trigger: {
                 enum: ['interval'],
               },
               interval_num: {
