@@ -1,4 +1,10 @@
 import {
+  CommandViewJobModel,
+  CommandViewModel,
+  CommandViewModelParameters,
+  CommandViewRequestModel,
+} from 'pages/CommandView/form-data'
+import {
   CronTrigger,
   DateTrigger,
   IntervalTrigger,
@@ -6,39 +12,20 @@ import {
   RequestTemplate,
   TriggerType,
 } from 'types/backend-types'
-import {
-  AugmentedCommand,
-  EmptyObject,
-  ObjectWithStringKeys,
-} from 'types/custom-types'
+import { AugmentedCommand, ObjectWithStringKeys } from 'types/custom-types'
 
-const getComment = (model: ObjectWithStringKeys) => {
-  if (model && 'comment' in model) {
-    const commentBlock = model.comment as ObjectWithStringKeys
+const getComment = (model: CommandViewRequestModel) => {
+  const commentBlock = model.comment
+  const comment = commentBlock.comment as string | undefined | null
 
-    if (commentBlock && 'comment' in commentBlock) {
-      const comment = commentBlock.comment as string | undefined | null
-
-      if (comment) {
-        return commentBlock as { comment: string }
-      }
-      return { comment: '' }
-    }
-    return null
+  if (comment) {
+    return commentBlock as { comment: string }
   }
-  return null
+  return { comment: '' }
 }
 
-const getInstance = (model: ObjectWithStringKeys) => {
-  if (model && 'instance_names' in model) {
-    const instanceNames = model.instance_names as { instance_name: string }
-
-    if (instanceNames && 'instance_name' in instanceNames) {
-      return instanceNames
-    }
-    return null
-  }
-  return null
+const getInstance = (model: CommandViewRequestModel) => {
+  return model.instance_names
 }
 
 /**
@@ -47,14 +34,10 @@ const getInstance = (model: ObjectWithStringKeys) => {
  * @param model
  * @returns A {parameters: <model parameters>} object
  */
-const getParameters = (model: ObjectWithStringKeys) => {
-  if (model && 'parameters' in model) {
-    return {
-      parameters: model.parameters as ObjectWithStringKeys | EmptyObject,
-    }
+const getParameters = (model: CommandViewRequestModel) => {
+  return {
+    parameters: model.parameters,
   }
-
-  return null
 }
 
 /**
@@ -66,62 +49,53 @@ const getParameters = (model: ObjectWithStringKeys) => {
  * @returns A {parameters: <model parameters>} object with no Bytes parameters
  */
 const getBytesParameters = (
-  model: ObjectWithStringKeys,
+  model: CommandViewRequestModel,
   command: AugmentedCommand,
 ) => {
-  const theCommandsParameters = command.parameters
+  let modelParametersCopy = JSON.parse(
+    JSON.stringify(model.parameters),
+  ) as CommandViewModelParameters
 
-  if (model && 'parameters' in model) {
-    const modelCopy = {
-      ...(model as {
-        parameters: ObjectWithStringKeys
-      }),
-    }
-    const { parameters: modelParameters } = modelCopy
-    let modelParametersCopy = { ...modelParameters } as ObjectWithStringKeys
+  for (const commandParameter of command.parameters) {
+    // TODO: we only go down one level, this can be improved if it's found to
+    // be necessary
+    if (commandParameter.type === 'Bytes') {
+      const { key: commandKey } = commandParameter
 
-    for (const commandParameter of theCommandsParameters) {
-      // TODO: we only go down one level, this can be improved if it's found to
-      // be necessary
-      if (commandParameter.type === 'Bytes') {
-        const { key: commandKey } = commandParameter
+      if (commandKey in modelParametersCopy) {
+        const { [commandKey]: theValue, ...rest } = modelParametersCopy
+        modelParametersCopy = rest as CommandViewModelParameters
+      }
+    } else if (commandParameter.type === 'Dictionary') {
+      const { key } = commandParameter
 
-        if (commandKey in modelParametersCopy) {
-          const { [commandKey]: theValue, ...rest } = modelParametersCopy
-          modelParametersCopy = rest as ObjectWithStringKeys
-        }
-      } else if (commandParameter.type === 'Dictionary') {
-        const { key } = commandParameter
+      if (key in modelParametersCopy) {
+        let theDictionary = modelParametersCopy[key] as ObjectWithStringKeys
 
-        if (key in modelParametersCopy) {
-          let theDictionary = modelParametersCopy[key] as ObjectWithStringKeys
+        for (const subParameter of commandParameter.parameters) {
+          if (subParameter.type === 'Bytes') {
+            const { key: subParameterKey } = subParameter
 
-          for (const subParameter of commandParameter.parameters) {
-            if (subParameter.type === 'Bytes') {
-              const { key: subParameterKey } = subParameter
-
-              if (subParameterKey in theDictionary) {
-                const { [subParameterKey]: theDictionaryValue, ...rest } =
-                  theDictionary
-                theDictionary = rest
-              }
+            if (subParameterKey in theDictionary) {
+              const { [subParameterKey]: theDictionaryValue, ...rest } =
+                theDictionary
+              theDictionary = rest
             }
           }
-          modelParametersCopy = {
-            ...modelParametersCopy,
-            [key]: theDictionary,
-          }
+        }
+        modelParametersCopy = {
+          ...modelParametersCopy,
+          [key]: theDictionary,
         }
       }
     }
-
-    return { parameters: modelParametersCopy }
   }
-  return null
+
+  return { parameters: modelParametersCopy }
 }
 
-const extractRequestTemplate = (
-  model: ObjectWithStringKeys,
+const getRequestPayload = (
+  model: CommandViewRequestModel,
   command: AugmentedCommand,
   hasBytes = false,
 ): RequestTemplate => {
@@ -155,7 +129,7 @@ const extractRequestTemplate = (
   }
 }
 
-const extractJobOptionals = (model: ObjectWithStringKeys) => {
+const extractJobOptionals = (model: CommandViewJobModel) => {
   if (model && 'job' in model) {
     const job = model.job as ObjectWithStringKeys
 
@@ -182,17 +156,8 @@ const extractJobOptionals = (model: ObjectWithStringKeys) => {
   return null
 }
 
-const extractName = (model: ObjectWithStringKeys) => {
-  if (model && 'job' in model) {
-    const job = model.job as ObjectWithStringKeys
-
-    if ('name' in job) {
-      return { name: job.name as string }
-    }
-
-    return null
-  }
-  return null
+const extractName = (model: CommandViewJobModel) => {
+  return { name: model.job.name }
 }
 
 interface CombinedTrigger {
@@ -270,9 +235,7 @@ const getCronTrigger = (triggerData: ObjectWithStringKeys): CombinedTrigger => {
   }
 }
 
-const extractTrigger = (
-  model: ObjectWithStringKeys,
-): CombinedTrigger | null => {
+const extractTrigger = (model: CommandViewJobModel): CombinedTrigger | null => {
   if (model && 'job' in model) {
     const job = model.job as ObjectWithStringKeys
 
@@ -295,10 +258,13 @@ const extractTrigger = (
 }
 
 const getJobPayload = (
-  model: ObjectWithStringKeys,
+  model: CommandViewJobModel,
   command: AugmentedCommand,
 ): Job => {
-  const requestTemplate = extractRequestTemplate(model, command)
+  const requestTemplate = getRequestPayload(
+    model as CommandViewRequestModel,
+    command,
+  )
   const optionals = extractJobOptionals(model)
   const trigger = extractTrigger(model)
   const name = extractName(model)
@@ -319,15 +285,19 @@ const getJobPayload = (
 }
 
 const getSubmitArgument = (
-  model: ObjectWithStringKeys,
+  model: CommandViewModel,
   command: AugmentedCommand,
   isJob: boolean,
   hasBytes: boolean,
 ) => {
   if (isJob) {
-    return getJobPayload(model, command)
+    return getJobPayload(model as CommandViewJobModel, command)
   } else {
-    return extractRequestTemplate(model, command, hasBytes)
+    return getRequestPayload(
+      model as CommandViewRequestModel,
+      command,
+      hasBytes,
+    )
   }
 }
 

@@ -7,6 +7,10 @@ import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import {
+  CommandViewModel,
+  CommandViewRequestModel,
+} from 'pages/CommandView/form-data'
+import {
   createContext,
   createRef,
   Dispatch,
@@ -37,7 +41,7 @@ import {
 interface CommandViewFormProps {
   schema: ObjectWithStringKeys
   uiSchema: Record<string, unknown>
-  initialModel: ObjectWithStringKeys
+  initialModel: CommandViewModel
   command: AugmentedCommand
   isJob: boolean
   validator: <T extends Record<string, unknown>>(
@@ -69,8 +73,8 @@ const CommandViewForm = ({
   const [submitStatus, setSubmitStatus] = useState<SnackbarState | undefined>(
     undefined,
   )
-  const [model, setModel] = useState(initialModel)
-  const [displayModel, setDisplayModel] = useState(model)
+  const [model, setModel] = useState<CommandViewModel>(initialModel)
+  const [displayModel, setDisplayModel] = useState<CommandViewModel>(model)
   const [fileMetaData, setFileMetaData] = useState<FileMetaData[]>([])
   const navigate = useNavigate()
   const hasByteParameters = isByteCommand(command.parameters)
@@ -79,17 +83,27 @@ const CommandViewForm = ({
   const [, execute] = useAxios({}, axiosManualOptions)
 
   const onResetForm = () => {
-    setModel(handleByteParametersReset(initialModel, model, command.parameters))
+    setModel(
+      handleByteParametersReset(
+        initialModel as CommandViewRequestModel,
+        model as CommandViewRequestModel,
+        command.parameters,
+      ),
+    )
   }
 
   const onFormUpdated = (
     changeEvent: IChangeEvent,
     es: ErrorSchema | undefined,
   ) => {
-    const formData = changeEvent.formData
+    const formData = changeEvent.formData as CommandViewModel
     setModel(formData)
 
-    const cleanedModel = cleanModelForDisplay(formData, command.parameters)
+    const cleanedModel = cleanModelForDisplay(
+      formData,
+      command.parameters,
+      isJob,
+    )
     setDisplayModel(cleanedModel)
   }
 
