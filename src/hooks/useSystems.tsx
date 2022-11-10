@@ -8,6 +8,8 @@ import { System } from 'types/backend-types'
 
 const useSystems = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
   const [systems, setSystems] = useState<System[]>([])
   const [{ data, error }, refetch] = useAxios({
     url: '/api/v1/systems',
@@ -25,7 +27,8 @@ const useSystems = () => {
   useEffect(() => {
     addCallback('system_updates', (event) => {
       if (
-        event.name === 'INSTANCE_UPDATED' || event.name === 'SYSTEM_REMOVED'
+        event.name === 'INSTANCE_UPDATED' ||
+        event.name === 'SYSTEM_REMOVED'
       ) {
         refetch()
       }
@@ -36,7 +39,12 @@ const useSystems = () => {
   }, [addCallback, removeCallback, refetch])
 
   const getSystems = () => {
-    return systems
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/systems',
+      method: 'get',
+      withCredentials: authEnabled,
+    }
+    return execute(config)
   }
 
   return {

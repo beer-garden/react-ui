@@ -1,68 +1,85 @@
-import RequestTable from 'components/table'
-import { Link as RouterLink } from 'react-router-dom'
-import { Job } from 'types/backend-types'
+import { DefaultCellRenderer } from 'components/Table/defaults'
+import { useMemo } from 'react'
+import { Column } from 'react-table'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
-const tableHeads = [
-  'Job Name',
-  'Status',
-  'System',
-  'Instance',
-  'Command',
-  'Next Run Time',
-  'Success Count',
-  'Error Count',
-]
-const formatJobs = (jobs: Job[]) => {
-  const formattedJobs: (string | JSX.Element | number | null | undefined)[][] =
-    []
-
-  for (const job of jobs) {
-    const {
-      name,
-      id,
-      status,
-      request_template: {
-        system,
-        namespace,
-        instance_name: instanceName,
-        command,
-      },
-      next_run_time: nextRunTime,
-      success_count: successes,
-      error_count: errors,
-    } = job
-
-    const formattedJob = [
-      <RouterLink key={name} to={'/jobs/' + id}>
-        {name}
-      </RouterLink>,
-      status as string,
-      <RouterLink key={system} to={'/systems/' + namespace + '/' + system} />,
-      instanceName,
-      command,
-      new Date(nextRunTime as number).toString(),
-      successes || 0,
-      errors || 0,
-    ]
-
-    formattedJobs.push(formattedJob)
-  }
-  return formattedJobs
+export interface JobTableData extends ObjectWithStringKeys {
+  name: JSX.Element
+  status: string
+  system: JSX.Element
+  instance: string
+  command: string
+  nextRun: string
+  success: number
+  error: number
 }
 
-const getFormattedTable = (jobs: Job[]) => {
-  return (
-    <RequestTable
-      parentState={{
-        completeDataSet: jobs,
-        formatData: formatJobs,
-        cacheKey: `lastKnown_${window.location.href}`,
-        includePageNav: true,
-        disableSearch: true,
-        tableHeads: tableHeads,
-      }}
-    />
+export const useJobColumns = () => {
+  return useMemo<Column<JobTableData>[]>(
+    () => [
+      {
+        Header: 'Name',
+        Cell: DefaultCellRenderer,
+        accessor: 'name',
+        filter: 'fuzzyText',
+        minWidth: 120,
+        maxWidth: 180,
+        width: 130,
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+        minWidth: 120,
+        maxWidth: 180,
+        width: 130,
+      },
+      {
+        Header: 'System',
+        Cell: DefaultCellRenderer,
+        accessor: 'system',
+        filter: 'fuzzyText',
+        minWidth: 120,
+        maxWidth: 180,
+        width: 130,
+      },
+      {
+        Header: 'Instance',
+        accessor: 'instance',
+        filter: 'fuzzyText',
+        minWidth: 120,
+        maxWidth: 180,
+        width: 130,
+      },
+      {
+        Header: 'Command',
+        accessor: 'command',
+        filter: 'fuzzyText',
+        minWidth: 130,
+        maxWidth: 180,
+        width: 140,
+      },
+      {
+        Header: 'Next Run Time',
+        accessor: 'nextRun',
+        minWidth: 200,
+        maxWidth: 300,
+        width: 250,
+      },
+      {
+        Header: 'Success Count',
+        accessor: 'success',
+        minWidth: 120,
+        maxWidth: 180,
+        width: 145,
+      },
+      {
+        Header: 'Error Count',
+        accessor: 'error',
+        minWidth: 120,
+        maxWidth: 180,
+        width: 130,
+      },
+    ],
+    [],
   )
 }
-
-export { formatJobs, getFormattedTable }
