@@ -33,6 +33,7 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
     <Tooltip title={props.tooltip} disableHoverListener={!isOverflowed}>
       <Typography
         variant={props.variant}
+        component={'span'}
         ref={textElementRef}
         sx={{
           ...props.css,
