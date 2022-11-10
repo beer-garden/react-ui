@@ -6,7 +6,7 @@ import {
   within,
 } from '@testing-library/react'
 import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TJob, TServerAuthConfig } from 'test/test-values'
+import { TJob, TServerAuthConfig, TServerConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 
@@ -18,6 +18,8 @@ jest.mock('react-router-dom', () => ({
     return { id: '123test' }
   },
 }))
+
+const stoppedJob = Object.assign({}, TJob, { status: 'STOPPED' })
 
 describe('JobView', () => {
   afterAll(() => {
@@ -69,6 +71,65 @@ describe('JobView', () => {
     })
     const alert = screen.getByRole('alert')
     expect(within(alert).getByText('Job running...')).toBeInTheDocument()
+  })
+
+  describe('JobButton', () => {
+    test('render pause button when job is running', async () => {
+      render(
+        <AllProviders>
+          <JobView />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Pause job')).toBeInTheDocument()
+      })
+    })
+
+    test('render resume button when job is not running', async () => {
+      mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, stoppedJob)
+      render(
+        <AllProviders>
+          <JobView />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Resume job')).toBeInTheDocument()
+      })
+      mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, TJob)
+    })
+
+    test('pause job on click', async () => {
+      render(
+        <AllProviders>
+          <JobView />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Pause job')).toBeInTheDocument()
+      })
+      mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, stoppedJob)
+      fireEvent.click(screen.getByText('Pause job'))
+      await waitFor(() => {
+        expect(screen.getByText('Resume job')).toBeInTheDocument()
+      })
+    })
+
+    test('resume job on click', async () => {
+      mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, stoppedJob)
+      render(
+        <AllProviders>
+          <JobView />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Resume job')).toBeInTheDocument()
+      })
+      mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, TJob)
+      fireEvent.click(screen.getByText('Resume job'))
+      await waitFor(() => {
+        expect(screen.getByText('Pause job')).toBeInTheDocument()
+      })
+    })
   })
 
   describe('user does not have permission', () => {
@@ -139,6 +200,10 @@ describe('JobView', () => {
     beforeAll(() => {
       mockAxios.onGet('/config').reply(200, TServerAuthConfig)
       mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    })
+
+    afterAll(() => {
+      mockAxios.onGet('/config').reply(200, TServerConfig)
     })
 
     test.skip('renders Delete button', async () => {

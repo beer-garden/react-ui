@@ -1,5 +1,6 @@
 import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
+import { TJob } from 'test/test-values'
 import { ConfigProviders } from 'test/testMocks'
 
 import { useJobs } from './useJobs'
@@ -9,15 +10,12 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.getJobs(jest.fn())
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.getJobs()
+    })
 
     await waitFor(() => {
-      expect(response).toEqual(undefined)
+      expect(response.data).toEqual([TJob])
     })
   })
 
@@ -25,15 +23,12 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.getJob(jest.fn(), '123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.getJob('123test')
+    })
 
     await waitFor(() => {
-      expect(response).toEqual(undefined)
+      expect(response.data).toEqual(TJob)
     })
   })
 
@@ -41,15 +36,12 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.pauseJob(jest.fn(), '123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.pauseJob('123test')
+    })
 
     await waitFor(() => {
-      expect(response).toEqual(undefined)
+      expect(response.data).toEqual(TJob)
     })
   })
 
@@ -57,15 +49,14 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.resumeJob(jest.fn(), '123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.resumeJob('123test')
+    })
 
     await waitFor(() => {
-      expect(response).toEqual(undefined)
+      expect(response.data).toEqual(
+        Object.assign({}, TJob, { status: 'PAUSED' }),
+      )
     })
   })
 
@@ -73,47 +64,12 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.deleteJob(jest.fn(), '123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.deleteJob('123test')
+    })
 
     await waitFor(() => {
-      expect(response).toEqual(undefined)
-    })
-  })
-
-  test('run job', async () => {
-    const { result } = renderHook(() => useJobs(), {
-      wrapper: ConfigProviders,
-    })
-    const response = await waitFor(
-      () => {
-        return result.current.runAdHoc('123test', false)
-      },
-      { timeout: 2500 },
-    )
-
-    await waitFor(() => {
-      expect(response.status).toEqual(200)
-    })
-  })
-
-  test('run interval job', async () => {
-    const { result } = renderHook(() => useJobs(), {
-      wrapper: ConfigProviders,
-    })
-    const response = await waitFor(
-      () => {
-        return result.current.runAdHoc('123test', true)
-      },
-      { timeout: 2500 },
-    )
-
-    await waitFor(() => {
-      expect(response.status).toEqual(200)
+      expect(response.data).toEqual('')
     })
   })
 })

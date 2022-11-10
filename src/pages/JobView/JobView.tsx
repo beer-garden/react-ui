@@ -16,7 +16,6 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
-import { JobButton } from 'pages/JobView'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
@@ -37,7 +36,7 @@ const JobView = () => {
   const { setIsJob, setJob } = useJobRequestCreation()
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
-  const { getJob, deleteJob, runAdHoc } = useJobs()
+  const { getJob, deleteJob, pauseJob, resumeJob, runAdHoc } = useJobs()
   const navigate = useNavigate()
 
   const _setJob = (job: Job) => {
@@ -79,17 +78,42 @@ const JobView = () => {
     )
   }
 
-  useEffect(() => {
+  const errorHandler = (e: string) => {
+    setAlert({
+      severity: 'error',
+      message: e,
+      doNotAutoDismiss: true,
+    })
+  }
+
+  const deleteCallback = () => {
+    deleteJob(id)
+      .then(() => navigate('/jobs'))
+      .catch((e) => {
+        errorHandler(e)
+      })
+  }
+
+  const fetchJob = () => {
     if (id) {
-      getJob((response: AxiosResponse) => {
-        _setJob(response.data)
-        if (response.data) {
-          setDescription(`${response.data.name} ${id}`)
-        } else {
-          setDescription(id)
-        }
-      }, id)
+      getJob(id)
+        .then((response: AxiosResponse) => {
+          _setJob(response.data)
+          if (response.data) {
+            setDescription(`${response.data.name} ${id}`)
+          } else {
+            setDescription(id)
+          }
+        })
+        .catch((e) => {
+          console.log(e)
+          errorHandler(e)
+        })
     }
+  }
+
+  useEffect(() => {
+    fetchJob()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
@@ -103,6 +127,17 @@ const JobView = () => {
       return url
     }
     return undefined
+  }, [job])
+
+  useEffect(() => {
+    if (job) {
+      const fetchPermission = async () => {
+        const permCheck = await hasJobPermission('job:update', job)
+        setPermission(permCheck || false)
+      }
+      fetchPermission()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [job])
 
   return (
@@ -122,11 +157,48 @@ const JobView = () => {
           >
             Update Job
           </Button>
-          <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
+          {job.status === 'RUNNING' ? (
+            <Button
+              variant="contained"
+              color="warning"
+              aria-label="Pause job"
+              onClick={() => {
+                pauseJob(id)
+                  .then((response) => {
+                    _setJob(response.data)
+                    setTimeout(() => fetchJob(), 100)
+                  })
+                  .catch((e) => {
+                    errorHandler(e)
+                  })
+              }}
+            >
+              Pause job
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                resumeJob(id)
+                  .then((response) => {
+                    _setJob(response.data)
+                    setTimeout(() => fetchJob(), 100)
+                  })
+                  .catch((e) => {
+                    errorHandler(e)
+                  })
+              }}
+              aria-label="Resume job"
+            >
+              Resume job
+            </Button>
+          )}
           <Button
             variant="contained"
             color="error"
-            onClick={() => deleteJob(() => navigate('/jobs'), id)}
+            onClick={deleteCallback}
+            aria-label="Delete job"
           >
             Delete Job
           </Button>
