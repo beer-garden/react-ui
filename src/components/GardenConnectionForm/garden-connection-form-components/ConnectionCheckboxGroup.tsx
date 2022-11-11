@@ -1,5 +1,6 @@
 import { Checkbox, FormControlLabel, FormGroup, Tooltip } from '@mui/material'
 import { ConnectionFormFields } from 'components/GardenConnectionForm'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useFormikContext } from 'formik'
 
 interface ConnectionCheckboxGroupProps {
@@ -14,6 +15,7 @@ const ConnectionCheckboxGroup = ({
   tooltip,
 }: ConnectionCheckboxGroupProps) => {
   const context = useFormikContext<ConnectionFormFields>()
+  const { hasPermission } = PermissionsContainer.useContainer()
   return (
     <FormGroup sx={{ width: '20%' }}>
       <Tooltip title={tooltip || ''}>
@@ -21,6 +23,7 @@ const ConnectionCheckboxGroup = ({
           control={
             <Checkbox
               color="secondary"
+              disabled={!hasPermission('garden:update')}
               name={id}
               checked={Boolean(context.values[id])}
               onChange={context.handleChange}

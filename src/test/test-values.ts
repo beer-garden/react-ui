@@ -11,6 +11,7 @@ import {
   RequestTemplate,
   System,
 } from 'types/backend-types'
+import { AugmentedCommand } from 'types/custom-types'
 
 export const TServerConfig = {
   application_name: 'testApp',
@@ -40,22 +41,6 @@ export const TVersionConfig = {
   beer_garden_version: '1.0.0',
   current_api_version: '1.0.1',
   supported_api_versions: ['1.0.0', '1.0.1'],
-}
-
-export const TJob: Job = {
-  coalesce: false,
-  error_count: 0,
-  id: '123test',
-  max_instances: 1,
-  misfire_grace_time: null,
-  name: 'testjob',
-  next_run_time: 1,
-  request_template: {} as RequestTemplate,
-  status: 'RUNNING',
-  success_count: 1,
-  timeout: null,
-  trigger: {} as DateTrigger,
-  trigger_type: 'date',
 }
 
 export const TInstance: Instance = {
@@ -116,6 +101,33 @@ export const TSystem: System = {
   template: 'template',
 }
 
+export const TJob: Job = {
+  coalesce: false,
+  error_count: 0,
+  id: '123test',
+  max_instances: 1,
+  misfire_grace_time: null,
+  name: 'testjob',
+  next_run_time: 1,
+  request_template: {
+    namespace: TSystem.namespace,
+    system: TSystem.name,
+    system_version: TSystem.version,
+  } as RequestTemplate,
+  status: 'RUNNING',
+  success_count: 1,
+  timeout: null,
+  trigger: {} as DateTrigger,
+  trigger_type: 'date',
+}
+
+export const TAugmentedCommand: AugmentedCommand = Object.assign({}, TCommand, {
+  namespace: 'someNamespace',
+  systemName: TSystem.name,
+  systemVersion: TSystem.version,
+  systemId: TSystem.id,
+})
+
 export const TQueue: Queue = {
   version: '1.0.2',
   system: 'default',
@@ -155,5 +167,5 @@ export const TRequest: Request = {
   status: 'SUCCESS',
   system: 'test system',
   system_version: 'test version',
-  updated_at: 1667517254662
+  updated_at: 1667517254662,
 }

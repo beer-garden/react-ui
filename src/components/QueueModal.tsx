@@ -1,6 +1,7 @@
 import { Alert, AlertColor, Button, Stack, Typography } from '@mui/material'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { Table } from 'components/Table'
+import { DefaultCellRenderer } from 'components/Table/defaults'
 import { useInterval } from 'hooks/useInterval'
 import useQueue from 'hooks/useQueue'
 import { get } from 'lodash'
@@ -183,6 +184,7 @@ const useTableColumns = () => {
       },
       {
         Header: '',
+        Cell: DefaultCellRenderer,
         accessor: 'action',
         disableSortBy: true,
         disableGroupBy: true,

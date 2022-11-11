@@ -4,38 +4,63 @@ import { Divider } from 'components/Divider'
 import { JsonCard } from 'components/JsonCard'
 import { LabeledData } from 'components/LabeledData'
 import { PageHeader } from 'components/PageHeader'
+import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
-import { JobButton } from 'pages/JobView'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 
 const JobView = () => {
   const [job, setJob] = useState<Job | null>(null)
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
-  const { hasPermission } = PermissionsContainer.useContainer()
+  const [permission, setPermission] = useState(false)
+  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
-  const { getJob, deleteJob } = useJobs()
+  const { getJob, deleteJob, pauseJob, resumeJob } = useJobs()
   const navigate = useNavigate()
-
   const id = params.id as string
-  const jobButtonCallback = (response: AxiosResponse) => setJob(response.data)
-  const deleteButtonCallback = () => deleteJob(() => navigate('/jobs'), id)
+
+  const errorHandler = (e: string) => {
+    setAlert({
+      severity: 'error',
+      message: e,
+      doNotAutoDismiss: true,
+    })
+  }
+
+  const deleteCallback = () => {
+    deleteJob(id)
+      .then(() => navigate('/jobs'))
+      .catch((e) => {
+        errorHandler(e)
+      })
+  }
+
+  const fetchJob = () => {
+    if (id) {
+      getJob(id)
+        .then((response: AxiosResponse) => {
+          setJob(response.data)
+          if (response.data) {
+            setDescription(`${response.data.name} ${id}`)
+          } else {
+            setDescription(id)
+          }
+        })
+        .catch((e) => {
+          console.log(e)
+          errorHandler(e)
+        })
+    }
+  }
 
   useEffect(() => {
-    if (id) {
-      getJob((response: AxiosResponse) => {
-        setJob(response.data)
-        if (response.data) {
-          setDescription(`${response.data.name} ${id}`)
-        } else {
-          setDescription(id)
-        }
-      }, id)
-    }
+    fetchJob()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
@@ -51,25 +76,70 @@ const JobView = () => {
     return undefined
   }, [job])
 
+  useEffect(() => {
+    if (job) {
+      const fetchPermission = async () => {
+        const permCheck = await hasJobPermission('job:update', job)
+        setPermission(permCheck || false)
+      }
+      fetchPermission()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job])
+
   return (
-    <Box>
-      {/* TODO: this should be hasJobPermission */}
-      {hasPermission('job:update') && (
+    <>
+      {job && permission && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" aria-label="update job">
             Update Job
           </Button>
-          {job && (
-            <JobButton job={job as Job} id={id} callback={jobButtonCallback} />
+          {job.status === 'RUNNING' ? (
+            <Button
+              variant="contained"
+              color="warning"
+              aria-label="Pause job"
+              onClick={() => {
+                pauseJob(id)
+                  .then((response) => {
+                    setJob(response.data)
+                    setTimeout(() => fetchJob(), 100)
+                  })
+                  .catch((e) => {
+                    errorHandler(e)
+                  })
+              }}
+            >
+              Pause job
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                resumeJob(id)
+                  .then((response) => {
+                    setJob(response.data)
+                    setTimeout(() => fetchJob(), 100)
+                  })
+                  .catch((e) => {
+                    errorHandler(e)
+                  })
+              }}
+              aria-label="Resume job"
+            >
+              Resume job
+            </Button>
           )}
           <Button
             variant="contained"
             color="error"
-            onClick={deleteButtonCallback}
+            onClick={deleteCallback}
+            aria-label="Delete job"
           >
             Delete Job
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button variant="contained" color="secondary" aria-label="Run now">
             Run Now
           </Button>
         </Stack>
@@ -144,7 +214,8 @@ const JobView = () => {
           )}
         </Stack>
       </Stack>
-    </Box>
+      {alert && <Snackbar status={alert} />}
+    </>
   )
 }
 

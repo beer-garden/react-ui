@@ -17,9 +17,10 @@ const JobIndex = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    getJobs((response) => {
+    getJobs().then((response) => {
       setJobs(response.data)
     })
+    // TODO: alert catch
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

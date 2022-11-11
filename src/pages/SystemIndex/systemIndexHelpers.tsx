@@ -15,24 +15,6 @@ type SystemIndexTableData = {
   exploreButton: JSX.Element
 }
 
-const formatSystems = (systems: System[]) => {
-  const formattedSystems: (string | JSX.Element | number)[][] = []
-
-  for (const index in systems) {
-    formattedSystems.push([
-      systems[index].namespace,
-      systems[index].name,
-      systems[index].version,
-      systems[index].description,
-      systems[index].commands.length,
-      systems[index].instances.length,
-      ExploreButton(systems[index]),
-    ])
-  }
-
-  return formattedSystems
-}
-
 const systemMapper = (system: System): SystemIndexTableData => {
   return {
     namespace: system.namespace,
@@ -121,4 +103,4 @@ const useSystemIndexTableColumns = () => {
   )
 }
 
-export { formatSystems, useSystemIndexTableColumns, useSystemIndexTableData }
+export { systemMapper, useSystemIndexTableColumns, useSystemIndexTableData }
