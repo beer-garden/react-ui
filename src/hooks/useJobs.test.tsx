@@ -34,12 +34,9 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.getJobs()
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.getJobs()
+    })
 
     await waitFor(() => {
       expect(response.data).toEqual([TJob])
@@ -50,12 +47,9 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.getJob('123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.getJob('123test')
+    })
 
     await waitFor(() => {
       expect(response.data).toEqual(TJob)
@@ -66,12 +60,9 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.pauseJob('123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.pauseJob('123test')
+    })
 
     await waitFor(() => {
       expect(response.data).toEqual(TJob)
@@ -82,12 +73,9 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.resumeJob('123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.resumeJob('123test')
+    })
 
     await waitFor(() => {
       expect(response.data).toEqual(
@@ -100,12 +88,9 @@ describe('useJobs', () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
     })
-    const response = await waitFor(
-      () => {
-        return result.current.deleteJob('123test')
-      },
-      { timeout: 2500 },
-    )
+    const response = await waitFor(() => {
+      return result.current.deleteJob('123test')
+    })
 
     await waitFor(() => {
       expect(response.data).toEqual('')
