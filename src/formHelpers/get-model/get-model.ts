@@ -3,7 +3,7 @@ import {
   CommandViewModel,
   CommandViewModelParameters,
   CommandViewRequestModel,
-} from 'pages/CommandView/form-data'
+} from 'formHelpers'
 import { Instance, Parameter } from 'types/backend-types'
 
 const mergeModels = (a: object, b: object) => {

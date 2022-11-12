@@ -4,7 +4,7 @@ import {
   CommandViewModel,
   CommandViewModelParameters,
   CommandViewRequestModel,
-} from 'pages/CommandView/form-data'
+} from 'formHelpers'
 import { useNavigate } from 'react-router-dom'
 import { Parameter } from 'types/backend-types'
 import {
