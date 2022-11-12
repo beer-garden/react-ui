@@ -112,6 +112,8 @@ export const TJob: Job = {
   request_template: {
     namespace: TSystem.namespace,
     system: TSystem.name,
+    command: TCommand.name,
+    instance_name: TInstance.name,
     system_version: TSystem.version,
   } as RequestTemplate,
   status: 'RUNNING',
