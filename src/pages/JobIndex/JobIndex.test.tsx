@@ -42,6 +42,21 @@ describe('JobIndex', () => {
     )
   })
 
+  test('alerts on failure to get jobs', async () => {
+    mockAxios
+      .onGet('/api/v1/jobs')
+      .reply(404, { message: 'Failure to get jobs' })
+    render(
+      <AllProviders>
+        <JobIndex />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText('ERROR: Failure to get jobs')).toBeInTheDocument()
+    })
+    expect(screen.queryByText(TJob.name)).not.toBeInTheDocument()
+  })
+
   test('create button if permission', async () => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
     mockAxios.onGet(regexUsers).reply(200, TAdmin)
