@@ -1,4 +1,10 @@
 import { Box, Button, Typography } from '@mui/material'
+import {
+  CommandViewJobModel,
+  CommandViewModel,
+  CommandViewModelParameters,
+  CommandViewRequestModel,
+} from 'pages/CommandView/form-data'
 import { useNavigate } from 'react-router-dom'
 import { Parameter } from 'types/backend-types'
 import {
@@ -66,7 +72,7 @@ const checkContext = (
  * @param parameter - the Parameter to check
  * @returns true or false
  */
-const isByte = (parameter: Parameter): boolean => {
+const isByteParameter = (parameter: Parameter): boolean => {
   return (
     parameter.type === 'Bytes' ||
     (parameter.parameters.length > 0
@@ -82,7 +88,7 @@ const isByte = (parameter: Parameter): boolean => {
  * @returns true or false
  */
 const isByteCommand = (parameters: Parameter[]) => {
-  return parameters.map(isByte).some((x) => x)
+  return parameters.map(isByteParameter).some((x) => x)
 }
 
 /**
@@ -122,31 +128,27 @@ const hasDynamicChoices = (parameters: Parameter[]) => {
  * @returns an empty model that retains the values for bytes parameters
  */
 const handleByteParametersReset = (
-  initialData: ObjectWithStringKeys,
-  model: ObjectWithStringKeys,
+  initialData: CommandViewRequestModel,
+  model: CommandViewRequestModel,
   parameters: Parameter[],
-) => {
-  if ('parameters' in model) {
-    const { parameters: updatedParameters } = initialData as {
-      parameters: ObjectWithStringKeys
+): CommandViewRequestModel => {
+  const { parameters: updatedParameters } = initialData
+  const modelParameters = model.parameters
+
+  if (modelParameters) {
+    for (const parameter of parameters) {
+      if (!isByteParameter(parameter)) continue
+
+      const { key } = parameter
+
+      if (key in modelParameters) {
+        updatedParameters[key] = modelParameters[key]
+      }
     }
-    const modelParameters = model.parameters as ObjectWithStringKeys | undefined
 
-    if (modelParameters) {
-      for (const parameter of parameters) {
-        if (!isByte(parameter)) continue
-
-        const { key } = parameter
-
-        if (key in modelParameters) {
-          updatedParameters[key] = modelParameters[key]
-        }
-      }
-
-      return {
-        ...initialData,
-        parameters: updatedParameters,
-      }
+    return {
+      ...initialData,
+      parameters: updatedParameters,
     }
   }
 
@@ -173,71 +175,68 @@ const cleanUrlData = (urlData: string) => {
  * @returns cleaned up model
  */
 const cleanModelForDisplay = (
-  model: ObjectWithStringKeys,
+  model: CommandViewModel,
   parameters: Parameter[],
-) => {
-  if ('parameters' in model) {
-    const modelCopy = {
-      ...(model as {
-        parameters: ObjectWithStringKeys
-      }),
-    }
-    const { parameters: modelParameters } = modelCopy
-    let modelParametersCopy = { ...modelParameters } as ObjectWithStringKeys
+  isJob: boolean,
+): CommandViewModel => {
+  const modelCopy: CommandViewModel = isJob
+    ? (JSON.parse(JSON.stringify(model)) as CommandViewJobModel)
+    : (JSON.parse(JSON.stringify(model)) as CommandViewRequestModel)
+  let modelParametersCopy = JSON.parse(
+    JSON.stringify(model.parameters),
+  ) as CommandViewModelParameters
 
-    for (const parameter of parameters) {
-      // TODO: we only go down one level, this can be improved if it's found to
-      // be necessary
-      if (parameter.type === 'Bytes') {
-        const { key } = parameter
+  for (const parameter of parameters) {
+    // TODO: we only go down one level, this can be improved if it's found to
+    // be necessary
+    if (parameter.type === 'Bytes') {
+      if (isJob)
+        throw new Error('Cannot schedule command with bytes parameters')
+      const { key } = parameter
 
-        if (key in modelParametersCopy) {
-          const value = modelParametersCopy[key]
+      if (key in modelParametersCopy) {
+        const value = modelParametersCopy[key]
 
-          if (value) {
-            modelParametersCopy[key] = cleanUrlData(value as string)
-          }
+        if (value) {
+          modelParametersCopy[key] = cleanUrlData(value as string)
         }
-      } else if (parameter.type === 'Dictionary') {
-        const { key } = parameter
+      }
+    } else if (parameter.type === 'Dictionary') {
+      const { key } = parameter
 
-        if (key in modelParametersCopy) {
-          let theDictionary = modelParametersCopy[key] as ObjectWithStringKeys
+      if (key in modelParametersCopy) {
+        let theDictionary = modelParametersCopy[key] as ObjectWithStringKeys
 
-          for (const subParameter of parameter.parameters) {
-            if (subParameter.type === 'Bytes') {
-              const { key: subParameterKey } = subParameter
+        for (const subParameter of parameter.parameters) {
+          if (subParameter.type === 'Bytes') {
+            const { key: subParameterKey } = subParameter
 
-              if (subParameterKey in theDictionary) {
-                const theDictionaryValue = theDictionary[subParameterKey]
+            if (subParameterKey in theDictionary) {
+              const theDictionaryValue = theDictionary[subParameterKey]
 
-                if (theDictionaryValue) {
-                  theDictionary = {
-                    ...theDictionary,
-                    [subParameterKey]: cleanUrlData(
-                      theDictionaryValue as string,
-                    ),
-                  }
+              if (theDictionaryValue) {
+                theDictionary = {
+                  ...theDictionary,
+                  [subParameterKey]: cleanUrlData(theDictionaryValue as string),
                 }
               }
             }
           }
-          modelParametersCopy = {
-            ...modelParametersCopy,
-            [key]: theDictionary,
-          }
+        }
+        modelParametersCopy = {
+          ...modelParametersCopy,
+          [key]: theDictionary,
         }
       }
     }
-
-    const fixedModel = {
-      ...modelCopy,
-      parameters: modelParametersCopy,
-    }
-
-    return fixedModel
   }
-  return model
+
+  const fixedModel: CommandViewModel = {
+    ...modelCopy,
+    parameters: modelParametersCopy,
+  }
+
+  return fixedModel
 }
 
 const dataUrlToFile = (dataUrl: string) => {

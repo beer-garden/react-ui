@@ -1,11 +1,13 @@
-import { Parameter } from 'types/backend-types'
-
-type ParameterModel = {
-  [key: string]: string | number | boolean | object | null
-}
+import {
+  CommandViewJobModel,
+  CommandViewModel,
+  CommandViewModelParameters,
+  CommandViewRequestModel,
+} from 'pages/CommandView/form-data'
+import { Instance, Parameter } from 'types/backend-types'
 
 const mergeModels = (a: object, b: object) => {
-  const result: ParameterModel | Record<string, never> = { ...a }
+  const result: CommandViewModelParameters | Record<string, never> = { ...a }
 
   for (const [key, value] of Object.entries(b)) {
     if (key in result) {
@@ -26,7 +28,7 @@ const anyDefault = (arg: number | boolean | string | object | null): string => {
 }
 
 const parameterMapper = (parameter: Parameter) => {
-  let model: ParameterModel | Record<string, never> = {}
+  let model: CommandViewModelParameters | Record<string, never> = {}
   const key = parameter.key
 
   if (parameter.nullable && !parameter.optional) {
@@ -117,10 +119,30 @@ const getParametersModel = (parameters: Array<Parameter>) => {
   }, {})
 }
 
-const getModel = (parameters: Array<Parameter>) => {
-  const parameterModel = getParametersModel(parameters)
+const getModel = (
+  parameters: Array<Parameter>,
+  instances: Array<Instance>,
+  isJob: boolean,
+): CommandViewModel => {
+  const requestModel: CommandViewRequestModel = {
+    comment: { comment: '' },
+    instance_names: {
+      instance_name: instances.length === 1 ? instances[0].name : '',
+    },
+    parameters: getParametersModel(parameters),
+  }
 
-  return { parameters: parameterModel }
+  if (!isJob) return requestModel
+
+  const jobModel: CommandViewJobModel = {
+    ...requestModel,
+    job: {
+      name: '',
+      trigger: '',
+    },
+  }
+
+  return jobModel
 }
 
 export { getModel }

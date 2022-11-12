@@ -51,7 +51,7 @@ const CommandView = () => {
     ? getJobSchema(getSchema(instances, parameters))
     : getSchema(instances, parameters)
   const uiSchema = getUiSchema(instances)
-  const model = getModel(parameters)
+  const model = getModel(parameters, theSystem.instances, isJob)
   const validator = getValidator(parameters)
 
   return (
