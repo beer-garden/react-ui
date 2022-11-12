@@ -1,4 +1,4 @@
-import { Instance, Parameter } from 'types/backend-types'
+import { Instance } from 'types/backend-types'
 
 const getInstanceUiSchema = (instances: Array<Instance>) => {
   return instances.length === 1
@@ -6,10 +6,7 @@ const getInstanceUiSchema = (instances: Array<Instance>) => {
     : null
 }
 
-const getUiSchema = (
-  instances: Array<Instance>,
-  parameters: Array<Parameter>,
-) => {
+const getUiSchema = (instances: Array<Instance>) => {
   const baseUiSchema = {
     'ui:order': ['comment', 'instance_names', '*'],
     comment: {

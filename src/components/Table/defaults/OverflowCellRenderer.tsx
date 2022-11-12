@@ -9,8 +9,8 @@ const OverflowCellRenderer = ({
   <Box component="span" display="flex" justifyContent="left">
     <OverflowTooltip
       variant="inherit"
-      tooltip={value}
-      text={value}
+      tooltip={value || ''}
+      text={value || ''}
       css={{ py: 0 }}
     />
   </Box>

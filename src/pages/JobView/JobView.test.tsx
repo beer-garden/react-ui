@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 import { mockAxios, regexUsers } from 'test/axios-mock'
 import { TJob, TServerAuthConfig, TServerConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
@@ -19,6 +25,52 @@ describe('JobView', () => {
   afterAll(() => {
     jest.unmock('react-router-dom')
     jest.clearAllMocks()
+  })
+
+  test('run now runs the job', async () => {
+    render(
+      <AllProviders>
+        <JobView />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Run Now' }))
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    const alert = screen.getByRole('alert')
+    expect(within(alert).getByText('Job running...')).toBeInTheDocument()
+  })
+
+  test('run now gets user permission to run interval job', async () => {
+    mockAxios
+      .onGet(`/api/v1/jobs/${TJob.id}`)
+      .reply(200, Object.assign({}, TJob, { trigger_type: 'interval' }))
+    render(
+      <AllProviders>
+        <JobView />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Run Now' }),
+      ).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Run Now' }))
+    await waitFor(() => {
+      expect(screen.getByText('Reset the Job Interval')).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    const alert = screen.getByRole('alert')
+    expect(within(alert).getByText('Job running...')).toBeInTheDocument()
   })
 
   describe('JobButton', () => {
@@ -217,19 +269,26 @@ describe('JobView', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
     })
+    expect(screen.getByText(TJob.request_template.system)).toBeInTheDocument()
+    expect(screen.getByText('RUNNING')).toBeInTheDocument()
+    expect(screen.getByText('Success Count:')).toBeInTheDocument()
+    expect(screen.getByText('Error Count:')).toBeInTheDocument()
   })
 
   test('renders loading if no job', async () => {
+    mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, undefined)
     render(
       <AllProviders>
         <JobView />
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByTestId('dataLoading')).toBeInTheDocument()
     })
+    // reset mock
+    mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, TJob)
   })
 
   test('renders trigger and template JSON', async () => {
@@ -251,7 +310,11 @@ describe('JobView', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByText('Trigger')).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Expand Area' })[1])
+    await waitFor(() => {
+      expect(screen.queryByText('Trigger')).not.toBeInTheDocument()
     })
   })
 
@@ -262,7 +325,11 @@ describe('JobView', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('Delete Job')).toBeInTheDocument()
+      expect(screen.getByText('Request Template')).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getAllByRole('button', { name: 'Expand Area' })[0])
+    await waitFor(() => {
+      expect(screen.queryByText('Request Template')).not.toBeInTheDocument()
     })
   })
 })

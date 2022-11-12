@@ -1,4 +1,5 @@
 import { Instance, Parameter, ParameterType } from 'types/backend-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 import {
   ChoiceType,
@@ -270,15 +271,27 @@ const getParameterSchema = (parameters: Array<Parameter>) => {
   }
 }
 
+const getJobParameterSchema = (parameters: ObjectWithStringKeys) => {
+  const properties: ObjectWithStringKeys = {}
+  for (const paramKey in parameters) {
+    properties[paramKey] = {
+      title: paramKey,
+      type: 'string',
+      default: parameters[paramKey],
+    }
+  }
+  return properties
+}
+
 const getSchema = (
   instances: Array<Instance>,
-  parameters: Array<Parameter>,
+  parameters?: Array<Parameter>,
+  jobParams?: ObjectWithStringKeys,
 ) => {
   let instancesData: enumType | null = null
-
   if (instances.length > 1) {
     instancesData = { enum: instances.map((x) => x.name) }
-  } else {
+  } else if (instances.length === 1) {
     instancesData = { default: instances[0].name }
   }
 
@@ -309,15 +322,23 @@ const getSchema = (
     },
   }
 
-  const computedParameters =
-    parameters.length === 0
-      ? {
-          type: 'object',
-          properties: {},
-          required: [],
-        }
-      : getParameterSchema(parameters)
-
+  let computedParameters
+  if (parameters) {
+    computedParameters =
+      parameters.length === 0
+        ? {
+            type: 'object',
+            properties: {},
+            required: [],
+          }
+        : getParameterSchema(parameters)
+  } else if (jobParams) {
+    computedParameters = {
+      type: 'object',
+      properties: getJobParameterSchema(jobParams),
+      required: [],
+    }
+  }
   const schema = {
     type: 'object',
     properties: {

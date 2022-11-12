@@ -1,10 +1,8 @@
 import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { formToServerModel } from 'hooks/useJobs/use-jobs-helpers'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { Job, Request } from 'types/backend-types'
-import { ObjectWithStringKeys } from 'types/custom-types'
+import { Job } from 'types/backend-types'
 
 const JOBS_URL = '/api/v1/jobs'
 
@@ -26,16 +24,6 @@ const useJobs = () => {
     const config: AxiosRequestConfig<Job> = {
       url: `${JOBS_URL}/${id}`,
       method: 'get',
-      withCredentials: authEnabled,
-    }
-    return execute(config)
-  }
-
-  const createJob = (request: Request, data: ObjectWithStringKeys) => {
-    const config: AxiosRequestConfig = {
-      url: JOBS_URL,
-      method: 'POST',
-      data: formToServerModel(data, request),
       withCredentials: authEnabled,
     }
     return execute(config)
@@ -88,13 +76,24 @@ const useJobs = () => {
     return execute(config)
   }
 
+  const runAdHoc = (id: string, resetInterval: boolean) => {
+    const config: AxiosRequestConfig = {
+      url: `${JOBS_URL}/${id}/execute`,
+      method: 'POST',
+      data: resetInterval,
+      withCredentials: authEnabled,
+    }
+
+    return execute(config)
+  }
+
   return {
     getJobs,
     getJob,
-    createJob,
     pauseJob,
     deleteJob,
     resumeJob,
+    runAdHoc,
   }
 }
 

@@ -17,6 +17,7 @@ const GardenAdminView = lazy(() => import('pages/GardenAdminView'))
 const JobCreate = lazy(() => import('pages/JobCreate'))
 const JobIndex = lazy(() => import('pages/JobIndex'))
 const JobView = lazy(() => import('pages/JobView'))
+const JobUpdate = lazy(() => import('pages/JobUpdate/UpdateJobView'))
 const RequestsIndex = lazy(() => import('pages/RequestsIndex'))
 const RequestView = lazy(() => import('pages/RequestView'))
 const SystemAdmin = lazy(() => import('pages/SystemAdmin'))
@@ -76,6 +77,10 @@ const Routes = () => {
           <Route index element={<JobIndex />} />
           <Route path="create" element={<JobCreate />} />
           <Route path=":id" element={<JobView />} />
+          <Route
+            path=":namespace/:systemName/:version/:jobName"
+            element={<JobUpdate />}
+          />
         </Route>
       )}
       <Route path="/login" element={<Login />} />
