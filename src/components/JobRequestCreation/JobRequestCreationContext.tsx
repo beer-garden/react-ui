@@ -6,6 +6,7 @@ import {
   useContext,
   useState,
 } from 'react'
+import { Job } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 interface JobRequestCreationProviderProps {
@@ -19,6 +20,8 @@ interface JobRequestCreationProviderState {
   setCommand: Dispatch<SetStateAction<AugmentedCommand | undefined>> | undefined
   isJob: boolean
   setIsJob: Dispatch<SetStateAction<boolean>> | undefined
+  job: Job | undefined
+  setJob: Dispatch<SetStateAction<Job | undefined>> | undefined
 }
 
 const JobRequestCreationContext =
@@ -29,12 +32,15 @@ const JobRequestCreationContext =
     setCommand: undefined,
     isJob: false,
     setIsJob: undefined,
+    job: undefined,
+    setJob: undefined,
   })
 
 const JobRequestCreationProvider = ({
   children,
 }: JobRequestCreationProviderProps) => {
   const [system, setSystem] = useState<StrippedSystem | undefined>(undefined)
+  const [job, setJob] = useState<Job | undefined>(undefined)
   const [command, setCommand] = useState<AugmentedCommand | undefined>(
     undefined,
   )
@@ -47,8 +53,9 @@ const JobRequestCreationProvider = ({
     setCommand,
     isJob,
     setIsJob,
+    job,
+    setJob,
   }
-
   return (
     <JobRequestCreationContext.Provider value={value}>
       {children}
@@ -58,7 +65,6 @@ const JobRequestCreationProvider = ({
 
 const useJobRequestCreation = () => {
   const context = useContext(JobRequestCreationContext)
-
   if (context === undefined) {
     throw new Error(
       'useJobRequestCreation requires a JobRequestCreationProvider',

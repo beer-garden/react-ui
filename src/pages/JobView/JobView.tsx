@@ -1,8 +1,17 @@
-import { Box, Button, CircularProgress, Paper, Stack } from '@mui/material'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Divider } from 'components/Divider'
+import { useJobRequestCreation } from 'components/JobRequestCreation'
 import { JsonCard } from 'components/JsonCard'
 import { LabeledData } from 'components/LabeledData'
+import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
@@ -12,18 +21,61 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
+const isIntervalTrigger = (triggerType: string) => {
+  return triggerType === 'interval'
+}
+
 const JobView = () => {
-  const [job, setJob] = useState<Job | null>(null)
+  const [open, setOpen] = useState<boolean>(false)
+  const [job, setLocalJob] = useState<Job>()
+  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const [description, setDescription] = useState('')
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
   const [permission, setPermission] = useState(false)
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const { setIsJob, setJob } = useJobRequestCreation()
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
-  const { getJob, deleteJob, pauseJob, resumeJob } = useJobs()
+  const { getJob, deleteJob, pauseJob, resumeJob, runAdHoc } = useJobs()
   const navigate = useNavigate()
+
+  const _setJob = (job: Job) => {
+    setJob && setJob(job)
+    setLocalJob(job)
+  }
+
   const id = params.id as string
+
+  useEffect(() => {
+    if (job) {
+      const fetchPermission = async () => {
+        const permCheck = await hasJobPermission('job:update', job)
+        setPermission(permCheck || false)
+      }
+      fetchPermission()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job])
+
+  const runNow = (reset: boolean) => {
+    runAdHoc(id, reset).then(
+      () => {
+        setAlert({
+          severity: 'success',
+          message: 'Job running...',
+          showSeverity: false,
+        })
+        navigate('/jobs')
+      },
+      (e) => {
+        setAlert({
+          severity: 'error',
+          message: e.response.data.message || e,
+          doNotAutoDismiss: true,
+        })
+      },
+    )
+  }
 
   const errorHandler = (e: AxiosError) => {
     setAlert({
@@ -45,7 +97,7 @@ const JobView = () => {
     if (id) {
       getJob(id)
         .then((response: AxiosResponse) => {
-          setJob(response.data)
+          _setJob(response.data)
           if (response.data) {
             setDescription(`${response.data.name} ${id}`)
           } else {
@@ -91,7 +143,17 @@ const JobView = () => {
     <>
       {job && permission && (
         <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
-          <Button variant="contained" color="primary" aria-label="update job">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsJob && setIsJob(true)
+              navigate(
+                `/jobs/${job.request_template.namespace}/${job.request_template.system}` +
+                  `/${job.request_template.system_version}/${job.name}`,
+              )
+            }}
+          >
             Update Job
           </Button>
           {job.status === 'RUNNING' ? (
@@ -102,7 +164,7 @@ const JobView = () => {
               onClick={() => {
                 pauseJob(id)
                   .then((response) => {
-                    setJob(response.data)
+                    _setJob(response.data)
                     setTimeout(() => fetchJob(), 100)
                   })
                   .catch((e) => {
@@ -119,7 +181,7 @@ const JobView = () => {
               onClick={() => {
                 resumeJob(id)
                   .then((response) => {
-                    setJob(response.data)
+                    _setJob(response.data)
                     setTimeout(() => fetchJob(), 100)
                   })
                   .catch((e) => {
@@ -139,9 +201,61 @@ const JobView = () => {
           >
             Delete Job
           </Button>
-          <Button variant="contained" color="secondary" aria-label="Run now">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              if (isIntervalTrigger(job.trigger_type)) {
+                setOpen(true)
+              } else {
+                runNow(false)
+              }
+            }}
+          >
             Run Now
           </Button>
+          <ModalWrapper
+            open={open}
+            header="Reset the Job Interval"
+            onClose={() => {
+              setOpen(false)
+            }}
+            onCancel={() => {
+              setOpen(false)
+            }}
+            onSubmit={() => {
+              runNow(true)
+              setOpen(false)
+            }}
+            customButton={{
+              label: 'Just Run',
+              cb: () => {
+                runNow(false)
+              },
+              color: 'primary',
+            }}
+            styleOverrides={{ size: 'md', top: '-55%' }}
+            content={
+              <>
+                <Typography>
+                  This job has an interval trigger. Choose one of the buttons
+                  below to update when the job should be run again:
+                </Typography>
+                <Typography>
+                  {'Selecting "Submit" updates the next run time of the job ' +
+                    'based on the time right now.'}
+                </Typography>
+                <Typography>
+                  {'Selecting "Just Run" will run the job now but keep the job\'s ' +
+                    'existing next run time.'}
+                </Typography>
+                <Typography>
+                  {'Selecting "Cancel" cancels running the job now and no changes' +
+                    ' will be made to the next run time.'}
+                </Typography>
+              </>
+            }
+          />
         </Stack>
       )}
       <PageHeader title="Job" description={description} />
@@ -158,7 +272,7 @@ const JobView = () => {
                 gap: 2,
               }}
             >
-              <LabeledData label="Name" data={job?.name} />
+              <LabeledData label="Name" data={job.name} />
               <LabeledData
                 label="Command"
                 data={job.request_template.command}
@@ -188,7 +302,7 @@ const JobView = () => {
               )}
             </Box>
           ) : (
-            <CircularProgress />
+            <CircularProgress data-testid="dataLoading" />
           )}
         </Paper>
         <Stack direction={'row'} spacing={2}>

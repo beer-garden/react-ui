@@ -211,6 +211,8 @@ export interface FileTrigger {
   }
 }
 
+export type IntervalType = 'seconds' | 'minutes' | 'hours' | 'days' | 'weeks'
+
 export interface IntervalTrigger {
   weeks: number
   days: number

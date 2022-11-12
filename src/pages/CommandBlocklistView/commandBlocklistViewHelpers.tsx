@@ -105,6 +105,7 @@ const useModalColumns = () => {
       },
       {
         Header: 'Command',
+        Cell: DefaultCellRenderer,
         accessor: 'name',
         minWidth: 200,
         maxWidth: 400,
