@@ -4,7 +4,7 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { formToServerModel } from 'hooks/useJobs/use-jobs-helpers'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { Job, Request } from 'types/backend-types'
-import { ObjectWithStringKeys, SuccessCallback } from 'types/custom-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 
 const JOBS_URL = '/api/v1/jobs'
 
@@ -14,7 +14,6 @@ const useJobs = () => {
   const [, execute] = useAxios({}, axiosManualOptions)
 
   const getJobs = () => {
-    // TODO: get rid of callbacks for all of these and just return the Promises
     const config: AxiosRequestConfig<Job[]> = {
       url: JOBS_URL,
       method: 'get',
@@ -23,29 +22,23 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const getJob = (successCallback: SuccessCallback, id: string) => {
+  const getJob = (id: string) => {
     const config: AxiosRequestConfig<Job> = {
-      url: JOBS_URL + '/' + id,
+      url: `${JOBS_URL}/${id}`,
       method: 'get',
       withCredentials: authEnabled,
     }
-
-    execute(config).then((response) => successCallback(response))
+    return execute(config)
   }
 
-  const createJob = (
-    request: Request,
-    data: ObjectWithStringKeys,
-    successCallback: SuccessCallback,
-  ) => {
+  const createJob = (request: Request, data: ObjectWithStringKeys) => {
     const config: AxiosRequestConfig = {
       url: JOBS_URL,
       method: 'POST',
       data: formToServerModel(data, request),
       withCredentials: authEnabled,
     }
-
-    execute(config).then((response) => successCallback(response))
+    return execute(config)
   }
 
   const importJobs = (fileData: string) => {
@@ -67,7 +60,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const pauseJob = (successCallback: SuccessCallback, id: string) => {
+  const pauseJob = (id: string) => {
     const patchData = {
       operations: [
         {
@@ -78,26 +71,24 @@ const useJobs = () => {
       ],
     }
     const config: AxiosRequestConfig = {
-      url: JOBS_URL + '/' + id,
+      url: `${JOBS_URL}/${id}`,
       method: 'patch',
       data: patchData,
       withCredentials: authEnabled,
     }
-
-    execute(config).then((response) => successCallback(response))
+    return execute(config)
   }
 
-  const deleteJob = (callback: VoidFunction, id: string) => {
+  const deleteJob = (id: string) => {
     const config: AxiosRequestConfig = {
-      url: JOBS_URL + '/' + id,
+      url: `${JOBS_URL}/${id}`,
       method: 'DELETE',
       withCredentials: authEnabled,
     }
-
-    execute(config).then(() => callback())
+    return execute(config)
   }
 
-  const resumeJob = (successCallback: SuccessCallback, id: string) => {
+  const resumeJob = (id: string) => {
     const patchData = {
       operations: [
         {
@@ -108,18 +99,12 @@ const useJobs = () => {
       ],
     }
     const config: AxiosRequestConfig = {
-      url: JOBS_URL + '/' + id,
+      url: `${JOBS_URL}/${id}`,
       method: 'patch',
       data: patchData,
       withCredentials: authEnabled,
     }
-
-    execute(config).then(() => {
-      const callback = () => {
-        setTimeout(() => getJob(successCallback, id), 100)
-      }
-      callback()
-    })
+    return execute(config)
   }
 
   return {

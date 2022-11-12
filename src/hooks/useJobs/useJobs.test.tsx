@@ -29,4 +29,86 @@ describe('useJobs', () => {
       expect(response.data).toEqual([TJob])
     })
   })
+
+  test('gets job list', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(
+      () => {
+        return result.current.getJobs()
+      },
+      { timeout: 2500 },
+    )
+
+    await waitFor(() => {
+      expect(response.data).toEqual([TJob])
+    })
+  })
+
+  test('gets job', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(
+      () => {
+        return result.current.getJob('123test')
+      },
+      { timeout: 2500 },
+    )
+
+    await waitFor(() => {
+      expect(response.data).toEqual(TJob)
+    })
+  })
+
+  test('pause job', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(
+      () => {
+        return result.current.pauseJob('123test')
+      },
+      { timeout: 2500 },
+    )
+
+    await waitFor(() => {
+      expect(response.data).toEqual(TJob)
+    })
+  })
+
+  test('resume job', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(
+      () => {
+        return result.current.resumeJob('123test')
+      },
+      { timeout: 2500 },
+    )
+
+    await waitFor(() => {
+      expect(response.data).toEqual(
+        Object.assign({}, TJob, { status: 'PAUSED' }),
+      )
+    })
+  })
+
+  test('delete job', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(
+      () => {
+        return result.current.deleteJob('123test')
+      },
+      { timeout: 2500 },
+    )
+
+    await waitFor(() => {
+      expect(response.data).toEqual('')
+    })
+  })
 })

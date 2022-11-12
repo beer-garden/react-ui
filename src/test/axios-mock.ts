@@ -15,7 +15,8 @@ const regexQueues = new RegExp(/(\/api\/v1\/instances\/)(\w+[^bad])(\/queues)/)
 // Success GET
 mock.onGet('/config').reply(200, mockData.TServerConfig)
 mock.onGet('/version').reply(200, mockData.TVersionConfig)
-mock.onGet('/api/v1/jobs').reply(200, mockData.TJob)
+mock.onGet('/api/v1/jobs').reply(200, [mockData.TJob])
+mock.onGet(`/api/v1/jobs/${mockData.TJob.id}`).reply(200, mockData.TJob)
 mock.onGet('/api/v1/gardens').reply(200, [TGarden])
 mock.onGet('/api/v1/commandpublishingblocklist').reply(200, mockData.TBlocklist)
 mock.onGet('/api/v1/systems').reply(200, [mockData.TSystem])
@@ -23,6 +24,7 @@ mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
 mock.onGet(regexUsers).reply(200, TUser)
 mock.onGet('/api/v1/roles').reply(200, { roles: [TRole, TAdminRole] })
 mock.onGet('/api/v1/requests/1234').reply(200, mockData.TRequest)
+mock.onGet('/api/v1/namespaces').reply(200, ['test'])
 mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
   // this can be updated to be dynamic by parsing config.url for name
   return [200, { users: [TAdmin] }]
@@ -42,16 +44,28 @@ mock.onPost('/api/v1/token').reply(200, { access: 'admin', refresh: 'none' })
 mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
 mock.onPost('/api/v1/import/jobs').reply(200, { ids: [mockData.TJob.id] })
 mock.onPost('/api/v1/export/jobs').reply(200, [mockData.TJob])
+mock.onPost('/api/v1/jobs').reply(200, mockData.TJob)
+mock.onPost(`/api/v1/jobs/${mockData.TJob.id}/execute`).reply(200, {})
 
 // Success PATCH
 mock.onPatch('/api/v1/gardens').reply(200, {})
 mock.onPatch(regexUsers).reply(200, TUser)
 mock.onPatch('/api/v1/instances/testinst').reply(200, mockData.TInstance)
+mock
+  .onPatch(`/api/v1/jobs/${mockData.TJob.id}`)
+  .reply((config: AxiosRequestConfig) => {
+    const data = JSON.parse(config.data)
+    if (data.operations[0].value === 'PAUSED') {
+      return [200, mockData.TJob]
+    }
+    return [200, Object.assign({}, mockData.TJob, { status: 'PAUSED' })]
+  })
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')
+mock.onDelete(`/api/v1/jobs/${mockData.TJob.id}`).reply(204, '')
 
 // default
-mock.onAny().reply(200, undefined)
+mock.onAny().reply(200, 'undefined axios mock - add to axios-mock.ts')
 
 export { mock as mockAxios }

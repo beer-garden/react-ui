@@ -43,22 +43,6 @@ export const TVersionConfig = {
   supported_api_versions: ['1.0.0', '1.0.1'],
 }
 
-export const TJob: Job = {
-  coalesce: false,
-  error_count: 0,
-  id: '123test',
-  max_instances: 1,
-  misfire_grace_time: null,
-  name: 'testjob',
-  next_run_time: 1,
-  request_template: {} as RequestTemplate,
-  status: 'RUNNING',
-  success_count: 1,
-  timeout: null,
-  trigger: {} as DateTrigger,
-  trigger_type: 'date',
-}
-
 export const TInstance: Instance = {
   description: 'testing an instance',
   id: 'testinst',
@@ -115,6 +99,26 @@ export const TSystem: System = {
   display_name: 'Test System',
   local: false,
   template: 'template',
+}
+
+export const TJob: Job = {
+  coalesce: false,
+  error_count: 0,
+  id: '123test',
+  max_instances: 1,
+  misfire_grace_time: null,
+  name: 'testjob',
+  next_run_time: 1,
+  request_template: {
+    namespace: TSystem.namespace,
+    system: TSystem.name,
+    system_version: TSystem.version,
+  } as RequestTemplate,
+  status: 'RUNNING',
+  success_count: 1,
+  timeout: null,
+  trigger: {} as DateTrigger,
+  trigger_type: 'date',
 }
 
 export const TAugmentedCommand: AugmentedCommand = Object.assign({}, TCommand, {
