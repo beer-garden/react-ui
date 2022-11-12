@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Paper, Stack } from '@mui/material'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { Divider } from 'components/Divider'
 import { JsonCard } from 'components/JsonCard'
 import { LabeledData } from 'components/LabeledData'
@@ -25,10 +25,10 @@ const JobView = () => {
   const navigate = useNavigate()
   const id = params.id as string
 
-  const errorHandler = (e: string) => {
+  const errorHandler = (e: AxiosError) => {
     setAlert({
       severity: 'error',
-      message: e,
+      message: e.response?.data.message,
       doNotAutoDismiss: true,
     })
   }

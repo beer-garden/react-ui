@@ -1,6 +1,7 @@
 import { Button } from '@mui/material'
 import { Divider } from 'components/Divider'
 import { PageHeader } from 'components/PageHeader'
+import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
@@ -8,19 +9,28 @@ import { JobTableData, useJobColumns } from 'pages/JobIndex'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
+import { SnackbarState } from 'types/custom-types'
 import { dateFormatted } from 'utils/date-formatter'
 
 const JobIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const [jobs, setJobs] = useState<Job[]>([])
+  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { getJobs } = useJobs()
   const navigate = useNavigate()
 
   useEffect(() => {
-    getJobs().then((response) => {
-      setJobs(response.data)
-    })
-    // TODO: alert catch
+    getJobs()
+      .then((response) => {
+        setJobs(response.data)
+      })
+      .catch((e) => {
+        setAlert({
+          severity: 'error',
+          message: e.response.data.message || e,
+          doNotAutoDismiss: true,
+        })
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -66,6 +76,7 @@ const JobIndex = () => {
           <Button onClick={createRequestOnClick}>Create</Button>
         )}
       </Table>
+      {alert && <Snackbar status={alert} />}
     </>
   )
 }

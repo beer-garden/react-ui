@@ -115,7 +115,7 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
       .catch((e) => {
         setAlert({
           severity: 'error',
-          message: e,
+          message: e.response.data.message,
           doNotAutoDismiss: true,
         })
       })
@@ -146,7 +146,7 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
             .catch((e) => {
               setAlert({
                 severity: 'error',
-                message: e,
+                message: e.response.data.message,
                 doNotAutoDismiss: true,
               })
             })
