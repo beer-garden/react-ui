@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
@@ -11,8 +11,8 @@ const useJobs = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getJobs = () => {
-    const config: AxiosRequestConfig<Job[]> = {
+  const getJobs = (): AxiosPromise<Job[]> => {
+    const config: AxiosRequestConfig = {
       url: JOBS_URL,
       method: 'get',
       withCredentials: authEnabled,
@@ -20,8 +20,8 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const getJob = (id: string) => {
-    const config: AxiosRequestConfig<Job> = {
+  const getJob = (id: string): AxiosPromise<Job> => {
+    const config: AxiosRequestConfig = {
       url: `${JOBS_URL}/${id}`,
       method: 'get',
       withCredentials: authEnabled,

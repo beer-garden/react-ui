@@ -49,17 +49,19 @@ export const AllProviders = ({ children }: ProviderMocks) => {
 export const MemoryProvider = ({ children, startLocation }: ProviderMocks) => {
   return (
     <MemoryRouter initialEntries={startLocation}>
-      <ServerConfigContainer.Provider>
-        <DebugContainer.Provider>
-          <SocketContainer.Provider>
-            <AuthContainer.Provider>
-              <PermissionsContainer.Provider>
-                <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
-              </PermissionsContainer.Provider>
-            </AuthContainer.Provider>
-          </SocketContainer.Provider>
-        </DebugContainer.Provider>
-      </ServerConfigContainer.Provider>
+      <ErrorBoundary>
+        <ServerConfigContainer.Provider>
+          <DebugContainer.Provider>
+            <SocketContainer.Provider>
+              <AuthContainer.Provider>
+                <PermissionsContainer.Provider>
+                  <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+                </PermissionsContainer.Provider>
+              </AuthContainer.Provider>
+            </SocketContainer.Provider>
+          </DebugContainer.Provider>
+        </ServerConfigContainer.Provider>
+      </ErrorBoundary>
     </MemoryRouter>
   )
 }
@@ -80,19 +82,21 @@ export const LoggedInMemory = ({
 }: ProviderMocks) => {
   return (
     <MemoryRouter initialEntries={startLocation}>
-      <ServerConfigContainer.Provider>
-        <DebugContainer.Provider>
-          <SocketContainer.Provider>
-            <AuthContainer.Provider>
-              <PermissionsContainer.Provider>
-                <LoginProvider user={user} pw={pw}>
-                  <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
-                </LoginProvider>
-              </PermissionsContainer.Provider>
-            </AuthContainer.Provider>
-          </SocketContainer.Provider>
-        </DebugContainer.Provider>
-      </ServerConfigContainer.Provider>
+      <ErrorBoundary>
+        <ServerConfigContainer.Provider>
+          <DebugContainer.Provider>
+            <SocketContainer.Provider>
+              <AuthContainer.Provider>
+                <PermissionsContainer.Provider>
+                  <LoginProvider user={user} pw={pw}>
+                    <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
+                  </LoginProvider>
+                </PermissionsContainer.Provider>
+              </AuthContainer.Provider>
+            </SocketContainer.Provider>
+          </DebugContainer.Provider>
+        </ServerConfigContainer.Provider>
+      </ErrorBoundary>
     </MemoryRouter>
   )
 }

@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { Divider } from 'components/Divider'
 import { useJobRequestCreation } from 'components/JobRequestCreation'
 import { JsonCard } from 'components/JsonCard'
@@ -77,10 +77,10 @@ const JobView = () => {
     )
   }
 
-  const errorHandler = (e: string) => {
+  const errorHandler = (e: AxiosError) => {
     setAlert({
       severity: 'error',
-      message: e,
+      message: e.response?.data.message,
       doNotAutoDismiss: true,
     })
   }

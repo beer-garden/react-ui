@@ -16,14 +16,9 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
 }))
 
-jest.mock('pages/JobIndex/jobIndexHelpers', () => ({
-  getFormattedTable: jest.fn(),
-}))
-
 describe('Routes', () => {
   afterAll(() => {
     jest.unmock('react-router-dom')
-    jest.unmock('pages/JobIndex/jobIndexHelpers')
     jest.clearAllMocks()
   })
 

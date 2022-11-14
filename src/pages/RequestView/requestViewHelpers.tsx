@@ -1,23 +1,9 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { Breadcrumbs, CircularProgress } from '@mui/material'
 import { SupportedColorScheme } from '@mui/material/styles'
-import { DateTimeFormatOptions } from 'luxon'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
-
-const dateFormatted = (date: Date) => {
-  const options: DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    second: 'numeric',
-    minute: 'numeric',
-    hour12: false
-  }
-  return date.toLocaleString(undefined, options)
-}
 
 const outputFormatted = (
   request: Request,
@@ -80,4 +66,4 @@ const getParentLinks = (request: Request): JSX.Element => {
   )
 }
 
-export { dateFormatted,getParentLinks, outputFormatted }
+export { getParentLinks, outputFormatted }
