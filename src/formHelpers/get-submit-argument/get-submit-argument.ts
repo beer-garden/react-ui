@@ -1,10 +1,4 @@
 import {
-  CommandViewJobModel,
-  CommandViewModel,
-  CommandViewModelParameters,
-  CommandViewRequestModel,
-} from 'formHelpers'
-import {
   CronTrigger,
   DateTrigger,
   IntervalTrigger,
@@ -14,6 +8,12 @@ import {
   TriggerType,
 } from 'types/backend-types'
 import { AugmentedCommand, ObjectWithStringKeys } from 'types/custom-types'
+import {
+  CommandViewJobModel,
+  CommandViewModel,
+  CommandViewModelParameters,
+  CommandViewRequestModel,
+} from 'types/form-model-types'
 
 const getComment = (model: CommandViewRequestModel) => {
   const commentBlock = model.comment

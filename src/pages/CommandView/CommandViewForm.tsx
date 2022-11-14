@@ -6,10 +6,6 @@ import useAxios from 'axios-hooks'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
-  CommandViewModel,
-  CommandViewRequestModel,
-} from 'formHelpers/get-model'
-import {
   getSubmitArgument,
   prepareModelForSubmit,
 } from 'formHelpers/get-submit-argument'
@@ -37,6 +33,10 @@ import {
   ObjectWithStringKeys,
   SnackbarState,
 } from 'types/custom-types'
+import {
+  CommandViewModel,
+  CommandViewRequestModel,
+} from 'types/form-model-types'
 
 interface CommandViewFormProps {
   schema: ObjectWithStringKeys

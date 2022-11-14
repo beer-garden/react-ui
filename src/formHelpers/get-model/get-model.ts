@@ -1,10 +1,10 @@
+import { Instance, Parameter } from 'types/backend-types'
 import {
   CommandViewJobModel,
   CommandViewModel,
   CommandViewModelParameters,
   CommandViewRequestModel,
-} from 'formHelpers'
-import { Instance, Parameter } from 'types/backend-types'
+} from 'types/form-model-types'
 
 const mergeModels = (a: object, b: object) => {
   const result: CommandViewModelParameters | Record<string, never> = { ...a }
