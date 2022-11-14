@@ -13,8 +13,7 @@ import {
 } from 'pages/RequestsIndex/data'
 import { useState } from 'react'
 import { Request } from 'types/backend-types'
-
-import {dateFormatted} from './requestViewHelpers'
+import { dateFormatted } from 'utils/date-formatter'
 
 interface RequestViewTableProps {
   request: Request

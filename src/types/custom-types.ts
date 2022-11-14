@@ -94,10 +94,6 @@ export interface CommandParams {
   version: string
 }
 
-export interface TableInterface {
-  parentState: TableState
-}
-
 export interface AugmentedCommand extends Command {
   namespace: string
   systemName: string

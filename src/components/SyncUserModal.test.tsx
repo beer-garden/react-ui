@@ -53,7 +53,7 @@ describe('SyncUser Modal', () => {
     )
     await waitFor(() => {
       expect(
-        screen.getByText('ERROR: Error: Request failed with status code 404'),
+        screen.getByText('ERROR: Failure to return gardens'),
       ).toBeInTheDocument()
     })
     mockAxios.onGet('/api/v1/gardens').reply(200, [TGarden])
@@ -71,7 +71,7 @@ describe('SyncUser Modal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(
-        screen.getByText('ERROR: Error: Request failed with status code 404'),
+        screen.getByText('ERROR: Failure to sync users'),
       ).toBeInTheDocument()
     })
   })
