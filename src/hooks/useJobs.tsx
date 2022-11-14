@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
@@ -29,7 +29,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const importJobs = (fileData: string) => {
+  const importJobs = (fileData: string): AxiosPromise<{ ids: string[] }> => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/import/jobs',
       method: 'POST',
@@ -39,7 +39,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const exportJobs = () => {
+  const exportJobs = (): AxiosPromise<Job[]> => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/export/jobs',
       method: 'POST',

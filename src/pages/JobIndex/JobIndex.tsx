@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { AlertColor, Button } from '@mui/material'
 import { Divider } from 'components/Divider'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
@@ -55,7 +55,7 @@ const JobIndex = () => {
           JSON.parse(result as string)
           setFile((fileData) => [...fileData, result as string])
         } catch (e) {
-          errorHandler('Please upload JSON parsable file(s)')
+          console.error(`${file.name} was not JSON parsable`)
         }
       }
       reader.readAsText(file)
@@ -119,9 +119,19 @@ const JobIndex = () => {
         }}
         styleOverrides={{ size: 'sm', top: '-55%' }}
         content={
-          <>
-            <DropzoneArea useChipsForPreview onChange={handleImport} />
-          </>
+          <DropzoneArea
+            useChipsForPreview
+            // for some reason our exported files don't have a type
+            acceptedFiles={['text/plain', 'application/json', '']}
+            showAlerts={false}
+            onAlert={(message: string, variant: AlertColor) => {
+              setAlert({
+                severity: variant,
+                message,
+              })
+            }}
+            onChange={handleImport}
+          />
         }
       />
       {alert ? <Snackbar status={alert} /> : null}

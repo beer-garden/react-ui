@@ -30,8 +30,12 @@ function createDtWithFiles(files: File[] = []) {
  * @param {string} name
  * @param {string[]} contents
  */
-function createFile(name: string, contents: string[]) {
-  const file = new File(contents, name, { type: 'application/pdf' })
+function createFile(
+  name: string,
+  contents: string[],
+  type = 'application/json',
+) {
+  const file = new File(contents, name, { type })
   Object.defineProperty(file, 'size', {
     get() {
       return 1111
@@ -129,18 +133,20 @@ describe('JobIndex', () => {
       fireEvent.drop(dropzone, data)
       await waitFor(() => {
         expect(
-          screen.getByText('File file1 successfully added.'),
+          screen.getByText('SUCCESS: File file1 successfully added.'),
         ).toBeInTheDocument()
       })
       await waitFor(() => {
         expect(
-          screen.queryByText('ERROR: Please upload JSON parsable file(s)'),
+          screen.queryByText(
+            'ERROR: File file1 was rejected. File type not supported.',
+          ),
         ).not.toBeInTheDocument()
       })
     })
 
     test('error on bad file', async () => {
-      const files = [createFile('file1', [])]
+      const files = [createFile('file1', [], 'img/png')]
       const data = createDtWithFiles(files)
       render(
         <LoggedInProviders>
@@ -158,7 +164,9 @@ describe('JobIndex', () => {
       fireEvent.click(screen.getByText('Submit'))
       await waitFor(() => {
         expect(
-          screen.getByText('ERROR: Please upload JSON parsable file(s)'),
+          screen.getByText(
+            'ERROR: File file1 was rejected. File type not supported.',
+          ),
         ).toBeInTheDocument()
       })
     })
