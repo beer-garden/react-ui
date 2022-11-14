@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
@@ -11,7 +11,7 @@ const useJobs = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getJobs = (): Promise<AxiosResponse<Job[]>> => {
+  const getJobs = (): AxiosPromise<Job[]> => {
     const config: AxiosRequestConfig = {
       url: JOBS_URL,
       method: 'get',
@@ -20,7 +20,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const getJob = (id: string): Promise<AxiosResponse<Job>> => {
+  const getJob = (id: string): AxiosPromise<Job> => {
     const config: AxiosRequestConfig = {
       url: `${JOBS_URL}/${id}`,
       method: 'get',
