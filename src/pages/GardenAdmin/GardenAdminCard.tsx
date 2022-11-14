@@ -31,7 +31,7 @@ const GardenAdminCard = ({
   const [open, setOpen] = useState(false)
 
   const { deleteGarden } = useGardens()
-  const { hasPermission } = PermissionsContainer.useContainer()
+  const { hasGardenPermission } = PermissionsContainer.useContainer()
 
   const modalStyle = {
     position: 'absolute' as const,
@@ -96,27 +96,27 @@ const GardenAdminCard = ({
         {garden.systems.length}
       </CardContent>
       <CardActions>
-        <Button
-          variant="contained"
-          color="secondary"
-          component={RouterLink}
-          to={'/admin/gardens/' + garden.name}
-          sx={{ width: 0.75, mr: 1 }}
-        >
-          Edit configurations
-        </Button>
-        {garden.connection_type !== 'LOCAL' ? (
+        {hasGardenPermission('garden:update', garden) && (
+          <Button
+            variant="contained"
+            color="secondary"
+            component={RouterLink}
+            to={'/admin/gardens/' + garden.name}
+            sx={{ width: 0.75, mr: 1 }}
+          >
+            Edit configurations
+          </Button>
+        )}
+        {(garden.connection_type !== 'LOCAL' &&
+        hasGardenPermission('garden:delete', garden)) ? (
           <>
-            {hasPermission('garden:delete') && (
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => setOpen(true)}
-              >
-                Delete
-              </Button>
-            )}
-
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => setOpen(true)}
+            >
+              Delete
+            </Button>
             <Modal
               open={open}
               onClose={() => setOpen(false)}

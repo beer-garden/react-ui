@@ -48,6 +48,7 @@ export const TAdmin: User = {
     global_permissions: [
       'system:update',
       'user:update',
+      'garden:delete',
       'garden:update',
       'request:create',
       'user:create',
