@@ -51,11 +51,13 @@ const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
           setRequestStatus({
             severity: 'error',
             message: `${error.response.status} ${error.response.statusText}`,
+            doNotAutoDismiss: true,
           })
         } else {
           setRequestStatus({
             severity: 'error',
             message: `${error}`,
+            doNotAutoDismiss: true,
           })
         }
       })

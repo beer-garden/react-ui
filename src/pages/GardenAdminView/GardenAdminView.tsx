@@ -61,28 +61,30 @@ const GardenAdminView = () => {
 
   const formOnSubmit = (garden: Garden) => {
     updateGarden(garden)
-        .then(() =>
-            setRequestStatus({
-              severity: 'success',
-              message: 'Connection update successful',
-              showSeverity: false,
-            }),
-        )
-        .catch((error) => {
-          console.error('ERROR', error)
+      .then(() =>
+        setRequestStatus({
+          severity: 'success',
+          message: 'Connection update successful',
+          showSeverity: false,
+        }),
+      )
+      .catch((error) => {
+        console.error('ERROR', error)
 
-          if (error.response && error.response.statusText) {
-            setRequestStatus({
-              severity: 'error',
-              message: `${error.response.status} ${error.response.statusText}`,
-            })
-          } else {
-            setRequestStatus({
-              severity: 'error',
-              message: `${error}`,
-            })
-          }
-        })
+        if (error.response && error.response.statusText) {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error.response.status} ${error.response.statusText}`,
+            doNotAutoDismiss: true,
+          })
+        } else {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error}`,
+            doNotAutoDismiss: true,
+          })
+        }
+      })
   }
 
   return (
@@ -119,9 +121,13 @@ const GardenAdminView = () => {
               }
             </Alert>
           ) : (
-            garden.connection_params && <GardenConnectionForm garden={garden}
-                                                              title="Update Connection Information"
-                                                              formOnSubmit={formOnSubmit} />
+            garden.connection_params && (
+              <GardenConnectionForm
+                garden={garden}
+                title="Update Connection Information"
+                formOnSubmit={formOnSubmit}
+              />
+            )
           )}
         </>
       ) : (
