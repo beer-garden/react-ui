@@ -5,6 +5,7 @@ import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
+  CommandViewModel,
   getJobSchema,
   getModel,
   getSchema,
@@ -22,7 +23,7 @@ const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { namespace, systemName, version, commandName } = useParams()
   const context = useContext(JobRequestCreationContext)
-  const { system, command, isJob } = context
+  const { system, command, isJob, requestModel } = context
 
   const checkedParams = checkContext(
     namespace,
@@ -51,8 +52,15 @@ const CommandView = () => {
     ? getJobSchema(getSchema(instances, parameters))
     : getSchema(instances, parameters)
   const uiSchema = getUiSchema(instances)
-  const model = getModel(parameters, theSystem.instances, isJob)
   const validator = getValidator(parameters)
+
+  let model: CommandViewModel
+
+  if (requestModel) {
+    model = requestModel
+  } else {
+    model = getModel(parameters, theSystem.instances, isJob)
+  }
 
   return (
     <Box>

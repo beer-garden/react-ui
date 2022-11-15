@@ -8,12 +8,13 @@ import {
 } from 'react'
 import { Job } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
+import { CommandViewRequestModel } from 'types/form-model-types'
 
 interface JobRequestCreationProviderProps {
   children: ReactNode
 }
 
-interface JobRequestCreationProviderState {
+export interface JobRequestCreationProviderState {
   system: StrippedSystem | undefined
   setSystem: Dispatch<SetStateAction<StrippedSystem | undefined>> | undefined
   command: AugmentedCommand | undefined
@@ -22,6 +23,10 @@ interface JobRequestCreationProviderState {
   setIsJob: Dispatch<SetStateAction<boolean>> | undefined
   job: Job | undefined
   setJob: Dispatch<SetStateAction<Job | undefined>> | undefined
+  requestModel: CommandViewRequestModel | undefined
+  setRequestModel:
+    | Dispatch<SetStateAction<CommandViewRequestModel | undefined>>
+    | undefined
 }
 
 const JobRequestCreationContext =
@@ -34,6 +39,8 @@ const JobRequestCreationContext =
     setIsJob: undefined,
     job: undefined,
     setJob: undefined,
+    requestModel: undefined,
+    setRequestModel: undefined,
   })
 
 const JobRequestCreationProvider = ({
@@ -45,8 +52,11 @@ const JobRequestCreationProvider = ({
     undefined,
   )
   const [isJob, setIsJob] = useState(false)
+  const [requestModel, setRequestModel] = useState<
+    CommandViewRequestModel | undefined
+  >(undefined)
 
-  const value = {
+  const value: JobRequestCreationProviderState = {
     system,
     setSystem,
     command,
@@ -55,6 +65,8 @@ const JobRequestCreationProvider = ({
     setIsJob,
     job,
     setJob,
+    requestModel,
+    setRequestModel,
   }
   return (
     <JobRequestCreationContext.Provider value={value}>
