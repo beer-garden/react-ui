@@ -5,7 +5,6 @@ import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
-  CommandViewModel,
   getJobSchema,
   getModel,
   getSchema,
@@ -18,6 +17,7 @@ import { useContext } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
+import { CommandViewModel } from 'types/form-model-types'
 
 const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
