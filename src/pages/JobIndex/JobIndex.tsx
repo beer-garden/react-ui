@@ -19,7 +19,7 @@ const JobIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const [jobs, setJobs] = useState<Job[]>([])
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
-  const [file, setFile] = useState<string[]>([])
+  const [fileList, setFileList] = useState<string[]>([])
   const [openImport, setOpenImport] = useState<boolean>(false)
 
   const { getJobs, importJobs, exportJobs } = useJobs()
@@ -64,9 +64,14 @@ const JobIndex = () => {
         const result = reader.result
         try {
           JSON.parse(result as string)
-          setFile((fileData) => [...fileData, result as string])
+          setFileList((fileData) => [...fileData, result as string])
         } catch (e) {
-          console.error(`${file.name} was not JSON parsable`)
+          setAlert({
+            severity: 'error',
+            message: `${file.name} is not JSON parsable - please remove and choose a different file`,
+            doNotAutoDismiss: true,
+            showSeverity: false,
+          })
         }
       }
       reader.readAsText(file)
@@ -76,7 +81,7 @@ const JobIndex = () => {
   const handleExport = () => {
     exportJobs()
       .then((response) => {
-        const filename = 'JobExport_' + new Date(Date.now()).toISOString()
+        const filename = `JobExport_${new Date(Date.now()).toISOString()}.json`
         const blob = new Blob([JSON.stringify(response.data)], {
           type: 'application/json;charset=utf-8',
         })
@@ -144,7 +149,7 @@ const JobIndex = () => {
           setOpenImport(false)
         }}
         onSubmit={() => {
-          file.forEach((fileData) => {
+          fileList.forEach((fileData) => {
             importJobs(fileData)
               .then(() => {
                 setAlert({
@@ -161,8 +166,7 @@ const JobIndex = () => {
         content={
           <DropzoneArea
             useChipsForPreview
-            // for some reason our exported files don't have a type
-            acceptedFiles={['text/plain', 'application/json', '']}
+            acceptedFiles={['text/plain', 'application/json']}
             showAlerts={false}
             onAlert={(message: string, variant: AlertColor) => {
               setAlert({
