@@ -1,17 +1,10 @@
-import { MenuItem, TextField } from '@mui/material'
+import { FormControl, MenuItem, Select } from '@mui/material'
 import { useMemo } from 'react'
 import { FilterProps } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 const SelectionColumnFilter = ({
-  column: {
-    filterValue,
-    render,
-    setFilter,
-    preFilteredRows,
-    id,
-    selectionOptions,
-  },
+  column: { filterValue, setFilter, preFilteredRows, id, selectionOptions },
 }: FilterProps<ObjectWithStringKeys>) => {
   const options = useMemo(() => {
     let options: Set<string>
@@ -29,21 +22,27 @@ const SelectionColumnFilter = ({
   }, [id, preFilteredRows, selectionOptions])
 
   return (
-    <TextField
-      select
-      label={render('Header')}
-      value={filterValue || ''}
-      onChange={(event) => {
-        setFilter(event.target.value || undefined)
-      }}
-    >
-      <MenuItem value={''}>All</MenuItem>
-      {options.map((option, index) => (
-        <MenuItem key={index} value={option}>
-          {option}
+    <FormControl sx={{ m: 0.1, py: 0.1 }} size="small">
+      <Select
+        sx={{
+          marginRight: '0.5rem',
+          py: 0.1,
+        }}
+        value={filterValue || ''}
+        onChange={(event) => {
+          setFilter(event.target.value || undefined)
+        }}
+      >
+        <MenuItem value={''} dense>
+          All
         </MenuItem>
-      ))}
-    </TextField>
+        {options.map((option, index) => (
+          <MenuItem key={index} value={option} dense>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   )
 }
 

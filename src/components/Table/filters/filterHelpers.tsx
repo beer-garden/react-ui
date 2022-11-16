@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { IdType, Row } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 const getMinAndMax = (
@@ -16,22 +15,4 @@ const getMinAndMax = (
   return [min, max]
 }
 
-const useActiveElement = () => {
-  const [active, setActive] = useState(document.activeElement)
-
-  const handleFocus = () => {
-    setActive(document.activeElement)
-  }
-
-  useEffect(() => {
-    document.addEventListener('focusin', handleFocus)
-
-    return () => {
-      document.removeEventListener('focusin', handleFocus)
-    }
-  }, [])
-
-  return active
-}
-
-export { getMinAndMax, useActiveElement }
+export { getMinAndMax }

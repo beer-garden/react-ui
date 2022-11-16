@@ -1,6 +1,8 @@
 import { DefaultCellRenderer } from 'components/Table/defaults'
-import { SelectionColumnFilter } from 'components/Table/filters'
-import DateRangeColumnFilter from 'components/Table/filters/DateRangeColumnFilter'
+import {
+  DateRangeColumnFilter,
+  SelectionColumnFilter,
+} from 'components/Table/filters'
 import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
@@ -76,7 +78,6 @@ const useRequestsIndexTableColumns = () => {
         filter: 'betweenDates',
         width: 235,
         Filter: DateRangeColumnFilter,
-        isWide: true,
         filterOrder: 7,
       },
       {

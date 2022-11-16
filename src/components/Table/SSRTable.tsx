@@ -8,13 +8,14 @@ import {
   Typography,
 } from '@mui/material'
 import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
+import { defaultColumnValues, DefaultHeader } from 'components/Table/defaults'
 import {
-  DefaultColumnFilter,
-  defaultColumnValues,
-  DefaultHeader,
-  OverflowCellRenderer,
-} from 'components/Table/defaults'
-import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
+  fuzzyTextFilter,
+  InlineFilter,
+  numericTextFilter,
+  TextFilter,
+} from 'components/Table/filters'
+import { OverflowCellRenderer } from 'components/Table/render'
 import { SSRTablePagination } from 'components/Table/ssr-pagination'
 import {
   Table as StyledTable,
@@ -67,7 +68,7 @@ const columnStyle = {
 }
 
 const defaultColumn = {
-  Filter: DefaultColumnFilter,
+  Filter: TextFilter,
   Cell: OverflowCellRenderer,
   Header: DefaultHeader,
   minWidth: 90, // minWidth is only used as a limit for resizing
@@ -373,6 +374,31 @@ const SSRTable = <
           </TableBody>
         ) : (
           <TableBody {...getTableBodyProps()}>
+            {headerGroups.map((headerGroup) => {
+              const {
+                key: headerGroupKey,
+                role: headerGroupRole,
+                ...headerGroupProps
+              } = headerGroup.getHeaderGroupProps()
+              return (
+                <TableRow key={headerGroupKey} {...headerGroupProps}>
+                  <>
+                    {headerGroup.headers.map((column) => {
+                      const {
+                        key: headerKey,
+                        role: headerRole,
+                        ...headerProps
+                      } = column.getHeaderProps(columnStyle)
+                      return (
+                        <TableHeadCell key={headerKey} {...headerProps}>
+                          {column.canFilter && <InlineFilter column={column} />}
+                        </TableHeadCell>
+                      )
+                    })}
+                  </>
+                </TableRow>
+              )
+            })}
             {page.map((row) => {
               prepareRow(row)
               const {

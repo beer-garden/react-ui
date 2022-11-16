@@ -215,3 +215,12 @@ export const LogsProvider = ({ children, logs }: ProviderMocks) => {
     </HashRouter>
   )
 }
+
+/**
+ * Wrapper that only has debug provider - no logs
+ * @param children
+ * @returns
+ */
+export const DebugProvider = ({ children }: ProviderMocks) => {
+  return <DebugContainer.Provider>{children}</DebugContainer.Provider>
+}

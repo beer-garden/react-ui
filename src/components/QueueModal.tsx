@@ -2,6 +2,7 @@ import { Alert, AlertColor, Button, Stack, Typography } from '@mui/material'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { Table } from 'components/Table'
 import { DefaultCellRenderer } from 'components/Table/defaults'
+import { NumberRangeColumnFilter } from 'components/Table/filters'
 import { useInterval } from 'hooks/useInterval'
 import useQueue from 'hooks/useQueue'
 import { get } from 'lodash'
@@ -179,6 +180,8 @@ const useTableColumns = () => {
       },
       {
         Header: 'Message Size',
+        Filter: NumberRangeColumnFilter,
+        filter: 'between',
         accessor: 'size',
         width: 170,
       },
