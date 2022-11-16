@@ -1,6 +1,5 @@
 import { Button } from '@mui/material'
 import { DefaultCellRenderer } from 'components/Table/defaults'
-import { useSystems } from 'hooks/useSystems'
 import { useCallback, useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/backend-types'
@@ -45,12 +44,14 @@ const useSystemMapper = (
   )
 }
 
-const useSystemsData = (systemSetter: (system: System) => void) => {
-  const { systems } = useSystems()
+const useSystemsData = (
+  systems: System[],
+  systemSetter: (system: System) => void,
+) => {
   const systemMapper = useSystemMapper(systemSetter)
-
   return (systems as System[]).map(systemMapper)
 }
+
 const useSystemColumns = () => {
   return useMemo<Column<JobCreateSystemsTableData>[]>(
     () => [

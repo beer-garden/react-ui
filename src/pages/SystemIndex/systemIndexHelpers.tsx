@@ -1,5 +1,4 @@
 import { DefaultCellRenderer } from 'components/Table/defaults'
-import { useSystems } from 'hooks/useSystems'
 import { ExploreButton } from 'pages/SystemIndex'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
@@ -27,10 +26,8 @@ const systemMapper = (system: System): SystemIndexTableData => {
   }
 }
 
-const useSystemIndexTableData = (): SystemIndexTableData[] => {
-  const systemClient = useSystems()
-  const systemList = systemClient.systems
-  return systemList.map(systemMapper)
+const useSystemIndexTableData = (systems: System[]): SystemIndexTableData[] => {
+  return systems.map(systemMapper)
 }
 
 const useSystemIndexTableColumns = () => {

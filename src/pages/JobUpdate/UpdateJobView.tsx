@@ -16,17 +16,20 @@ import { Job, System } from 'types/backend-types'
 const UpdateJobView = () => {
   const [system, setSystem] = useState<System>()
   const { debugEnabled } = ServerConfigContainer.useContainer()
-  const { systems } = useSystems()
+  const { getSystems } = useSystems()
   const { namespace, systemName, version, jobName } = useParams()
   const { isJob, job } = useJobRequestCreation()
 
   useEffect(() => {
-    const foundSystem = systems.find(
-      (systemCheck) => systemCheck.name === systemName,
-    )
-    if (foundSystem) {
-      setSystem(foundSystem)
-    }
+    getSystems().then((response) => {
+      const systems = response.data
+      const foundSystem = systems.find(
+        (systemCheck: System) => systemCheck.name === systemName,
+      )
+      if (foundSystem) {
+        setSystem(foundSystem)
+      }
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [systemName])
 
