@@ -9,6 +9,7 @@ import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
+import useGardens from 'hooks/useGardens'
 import { GardenAdminInfoCard } from 'pages/GardenAdminView'
 import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
 import { useEffect, useState } from 'react'
@@ -21,7 +22,7 @@ const GardenAdminView = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const systemsColumns = useSystemIndexTableColumns()
 
-  const [syncStatus, setSyncStatus] = useState<SnackbarState | undefined>(
+  const [requestStatus, setRequestStatus] = useState<SnackbarState | undefined>(
     undefined,
   )
   const [garden, setGarden] = useState<Garden>()
@@ -56,13 +57,43 @@ const GardenAdminView = () => {
     }
   }, [addCallback, removeCallback, refetch, gardenName])
 
+  const { updateGarden } = useGardens()
+
+  const formOnSubmit = (garden: Garden) => {
+    updateGarden(garden)
+      .then(() =>
+        setRequestStatus({
+          severity: 'success',
+          message: 'Connection update successful',
+          showSeverity: false,
+        }),
+      )
+      .catch((error) => {
+        console.error('ERROR', error)
+
+        if (error.response && error.response.statusText) {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error.response.status} ${error.response.statusText}`,
+            doNotAutoDismiss: true,
+          })
+        } else {
+          setRequestStatus({
+            severity: 'error',
+            message: `${error}`,
+            doNotAutoDismiss: true,
+          })
+        }
+      })
+  }
+
   return (
     <>
       {hasPermission('garden:update') && (
         <Typography style={{ flex: 1, float: 'right' }}>
           <GardenSyncButton
             gardenName={gardenName}
-            setSyncStatus={setSyncStatus}
+            setSyncStatus={setRequestStatus}
           />
         </Typography>
       )}
@@ -90,7 +121,13 @@ const GardenAdminView = () => {
               }
             </Alert>
           ) : (
-            garden.connection_params && <GardenConnectionForm garden={garden} />
+            garden.connection_params && (
+              <GardenConnectionForm
+                garden={garden}
+                title="Update Connection Information"
+                formOnSubmit={formOnSubmit}
+              />
+            )
           )}
         </>
       ) : (
@@ -98,7 +135,7 @@ const GardenAdminView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {syncStatus ? <Snackbar status={syncStatus} /> : null}
+      {requestStatus ? <Snackbar status={requestStatus} /> : null}
     </>
   )
 }

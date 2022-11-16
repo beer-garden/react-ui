@@ -8,36 +8,30 @@ import {
   GardenName,
   useGardenConnectionFormOnSubmit,
 } from 'components/GardenConnectionForm'
-import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { Form, Formik } from 'formik'
 import { GardenConnectionParameters } from 'pages/GardenAdminView'
-import { useState } from 'react'
 import { Garden } from 'types/backend-types'
-import { SnackbarState } from 'types/custom-types'
 
 interface GardenConnectionFormProps {
   garden: Garden
-  isCreateGarden?: boolean
+  title: string
+  formOnSubmit: (garden: Garden) => void
+  includeGardenName?: boolean
 }
 
 const GardenConnectionForm = ({
   garden,
-  isCreateGarden,
+  title,
+  formOnSubmit,
+  includeGardenName,
 }: GardenConnectionFormProps) => {
   const {
     connection_type: conxType,
     connection_params: conxParms,
     name: conxName,
   } = garden
-  const [submissionStatus, setSubmissionStatus] = useState<
-    SnackbarState | undefined
-  >(undefined)
   const { hasPermission } = PermissionsContainer.useContainer()
-
-  const title = isCreateGarden
-    ? 'Create Garden'
-    : 'Update Connection Information'
 
   return (
     <>
@@ -48,16 +42,12 @@ const GardenConnectionForm = ({
           conxParms as GardenConnectionParameters,
         )}
         validationSchema={connectionValidationSchema}
-        onSubmit={useGardenConnectionFormOnSubmit(
-          garden,
-          setSubmissionStatus,
-          isCreateGarden,
-        )}
+        onSubmit={useGardenConnectionFormOnSubmit(garden, formOnSubmit)}
       >
         <Form>
           <fieldset disabled={!hasPermission('garden:update')}>
             <Typography variant="h6">{title}</Typography>
-            {isCreateGarden ? <GardenName /> : null}
+            {includeGardenName ? <GardenName /> : null}
             <ConnectionMethod />
             <Divider sx={{ mt: 2, mb: 1 }} />
             <Box sx={{ p: 1 }}>
@@ -78,7 +68,6 @@ const GardenConnectionForm = ({
           </fieldset>
         </Form>
       </Formik>
-      {submissionStatus ? <Snackbar status={submissionStatus} /> : null}
     </>
   )
 }

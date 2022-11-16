@@ -3,77 +3,23 @@ import {
   StompHeader,
 } from 'components/GardenConnectionForm'
 import { FormikHelpers } from 'formik'
-import useGardens from 'hooks/useGardens'
-import { Dispatch, SetStateAction } from 'react'
 import { Garden } from 'types/backend-types'
-import { SnackbarState } from 'types/custom-types'
 
 /**
  * Return a function to use as the onSubmit for Formik
  * @param garden
- * @param  setSubmissionStatus
- * @param isCreateGarden
+ * @param formOnSubmit
  * @returns An onSubmit function
  */
 const useGardenConnectionFormOnSubmit = (
   garden: Garden,
-  setSubmissionStatus: Dispatch<SetStateAction<SnackbarState | undefined>>,
-  isCreateGarden?: boolean,
+  formOnSubmit: (garden: Garden) => void,
 ) => {
-  const { createGarden, updateGarden } = useGardens()
-
   return (
     connectionParams: ConnectionFormFields,
     formikActions: FormikHelpers<ConnectionFormFields>,
   ) => {
-    isCreateGarden
-      ? createGarden(updateConnection(connectionParams, garden))
-          .then(() =>
-            setSubmissionStatus({
-              severity: 'success',
-              message: 'Garden create successful',
-              showSeverity: false,
-            }),
-          )
-          .catch((error) => {
-            console.error('ERROR', error)
-
-            if (error.response && error.response.statusText) {
-              setSubmissionStatus({
-                severity: 'error',
-                message: `${error.response.status} ${error.response.statusText}`,
-              })
-            } else {
-              setSubmissionStatus({
-                severity: 'error',
-                message: `${error}`,
-              })
-            }
-          })
-      : updateGarden(garden.name, updateConnection(connectionParams, garden))
-          .then(() =>
-            setSubmissionStatus({
-              severity: 'success',
-              message: 'Connection update successful',
-              showSeverity: false,
-            }),
-          )
-          .catch((error) => {
-            console.error('ERROR', error)
-
-            if (error.response && error.response.statusText) {
-              setSubmissionStatus({
-                severity: 'error',
-                message: `${error.response.status} ${error.response.statusText}`,
-              })
-            } else {
-              setSubmissionStatus({
-                severity: 'error',
-                message: `${error}`,
-              })
-            }
-          })
-
+    formOnSubmit(updateConnection(connectionParams, garden))
     formikActions.setSubmitting(false)
   }
 }
