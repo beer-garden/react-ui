@@ -42,6 +42,8 @@ mock
 mock.onPost('/api/v1/requests').reply(200, { id: 'testRequest' })
 mock.onPost('/api/v1/token').reply(200, { access: 'admin', refresh: 'none' })
 mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
+mock.onPost('/api/v1/import/jobs').reply(200, { ids: [mockData.TJob.id] })
+mock.onPost('/api/v1/export/jobs').reply(200, [mockData.TJob])
 mock.onPost('/api/v1/jobs').reply(200, mockData.TJob)
 mock.onPost(`/api/v1/jobs/${mockData.TJob.id}/execute`).reply(200, {})
 

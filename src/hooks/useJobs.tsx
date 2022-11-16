@@ -29,6 +29,25 @@ const useJobs = () => {
     return execute(config)
   }
 
+  const importJobs = (fileData: string): AxiosPromise<{ ids: string[] }> => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/import/jobs',
+      method: 'POST',
+      data: fileData,
+      withCredentials: authEnabled,
+    }
+    return execute(config)
+  }
+
+  const exportJobs = (): AxiosPromise<Job[]> => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/export/jobs',
+      method: 'POST',
+      withCredentials: authEnabled,
+    }
+    return execute(config)
+  }
+
   const pauseJob = (id: string) => {
     const patchData = {
       operations: [
@@ -90,6 +109,8 @@ const useJobs = () => {
   return {
     getJobs,
     getJob,
+    exportJobs,
+    importJobs,
     pauseJob,
     deleteJob,
     resumeJob,

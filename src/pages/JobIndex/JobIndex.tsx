@@ -1,12 +1,15 @@
-import { Button } from '@mui/material'
+import { AlertColor, Button } from '@mui/material'
 import { Divider } from 'components/Divider'
+import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
+import { DropzoneArea } from 'material-ui-dropzone'
 import { JobTableData, useJobColumns } from 'pages/JobIndex'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -16,10 +19,21 @@ const JobIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const [jobs, setJobs] = useState<Job[]>([])
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
-  const { getJobs } = useJobs()
+  const [fileList, setFileList] = useState<string[]>([])
+  const [openImport, setOpenImport] = useState<boolean>(false)
+
+  const { getJobs, importJobs, exportJobs } = useJobs()
   const navigate = useNavigate()
 
-  useEffect(() => {
+  const errorHandler = (e: string) => {
+    setAlert({
+      severity: 'error',
+      message: e,
+      doNotAutoDismiss: true,
+    })
+  }
+
+  const fetchJobs = () => {
     getJobs()
       .then((response) => {
         setJobs(response.data)
@@ -31,12 +45,57 @@ const JobIndex = () => {
           doNotAutoDismiss: true,
         })
       })
+  }
+
+  useEffect(() => {
+    fetchJobs()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // temporary for demo
   const createRequestOnClick = () => {
     navigate('/jobs/create')
+  }
+
+  const handleImport = (files: File[]) => {
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const result = reader.result
+        try {
+          JSON.parse(result as string)
+          setFileList((fileData) => [...fileData, result as string])
+        } catch (e) {
+          setAlert({
+            severity: 'error',
+            message: `${file.name} is not JSON parsable - please remove and choose a different file`,
+            doNotAutoDismiss: true,
+            showSeverity: false,
+          })
+        }
+      }
+      reader.readAsText(file)
+    })
+  }
+
+  const handleExport = () => {
+    exportJobs()
+      .then((response) => {
+        const filename = `JobExport_${new Date(Date.now()).toISOString()}.json`
+        const blob = new Blob([JSON.stringify(response.data)], {
+          type: 'application/json;charset=utf-8',
+        })
+        const url = window.URL.createObjectURL(blob)
+        const downloadLink = document.createElement('a')
+        downloadLink.style.display = 'none'
+        downloadLink.href = url
+        downloadLink.setAttribute('download', filename)
+        document.body.appendChild(downloadLink)
+        downloadLink.click()
+        downloadLink.parentNode?.removeChild(downloadLink)
+        window.URL.revokeObjectURL(url)
+      })
+      .catch((e) => errorHandler(e))
   }
 
   const jobData = useMemo((): JobTableData[] => {
@@ -75,8 +134,51 @@ const JobIndex = () => {
         {hasPermission('job:create') && (
           <Button onClick={createRequestOnClick}>Create</Button>
         )}
+        {hasPermission('job:create') && (
+          <Button onClick={() => setOpenImport(true)}>IMPORT</Button>
+        )}
+        <Button onClick={handleExport}>EXPORT</Button>
       </Table>
-      {alert && <Snackbar status={alert} />}
+      <ModalWrapper
+        open={openImport}
+        header="Import Jobs"
+        onClose={() => {
+          setOpenImport(false)
+        }}
+        onCancel={() => {
+          setOpenImport(false)
+        }}
+        onSubmit={() => {
+          fileList.forEach((fileData) => {
+            importJobs(fileData)
+              .then(() => {
+                setAlert({
+                  severity: 'success',
+                  message: 'File(s) imported',
+                })
+                fetchJobs()
+                setOpenImport(false)
+              })
+              .catch((e) => errorHandler(e))
+          })
+        }}
+        styleOverrides={{ size: 'sm', top: '-55%' }}
+        content={
+          <DropzoneArea
+            useChipsForPreview
+            acceptedFiles={['text/plain', 'application/json']}
+            showAlerts={false}
+            onAlert={(message: string, variant: AlertColor) => {
+              setAlert({
+                severity: variant,
+                message,
+              })
+            }}
+            onChange={handleImport}
+          />
+        }
+      />
+      {alert ? <Snackbar status={alert} /> : null}
     </>
   )
 }

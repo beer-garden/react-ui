@@ -6,6 +6,30 @@ import { ConfigProviders } from 'test/testMocks'
 import { useJobs } from './useJobs'
 
 describe('useJobs', () => {
+  test('import job', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(() => {
+      return result.current.importJobs('123test')
+    })
+    await waitFor(() => {
+      expect(response.data).toEqual({ ids: [TJob.id] })
+    })
+  })
+
+  test('export job', async () => {
+    const { result } = renderHook(() => useJobs(), {
+      wrapper: ConfigProviders,
+    })
+    const response = await waitFor(() => {
+      return result.current.exportJobs()
+    })
+    await waitFor(() => {
+      expect(response.data).toEqual([TJob])
+    })
+  })
+
   test('gets job list', async () => {
     const { result } = renderHook(() => useJobs(), {
       wrapper: ConfigProviders,
