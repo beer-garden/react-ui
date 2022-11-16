@@ -1,4 +1,5 @@
 import { TextField } from '@mui/material'
+import { useDebounce } from 'hooks/useDebounce'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { FilterProps } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
@@ -6,28 +7,16 @@ import { ObjectWithStringKeys } from 'types/custom-types'
 export const TextFilter = ({ column }: FilterProps<ObjectWithStringKeys>) => {
   const { id, filterValue, setFilter } = column
   const [value, setValue] = useState(filterValue || '')
-  const [debounce, setDebounce] = useState<NodeJS.Timeout | undefined>()
 
   useEffect(() => {
     setValue(filterValue || '')
   }, [filterValue])
 
+  const debouncedValue = useDebounce(value, 500)
   useEffect(() => {
-    if (debounce) {
-      clearTimeout(debounce)
-      setDebounce(undefined)
-    }
-    setDebounce(
-      setTimeout(() => {
-        setFilter(value)
-      }, 500),
-    )
-    return () => {
-      clearTimeout(debounce)
-      setDebounce(undefined)
-    }
+    setFilter(debouncedValue)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [debouncedValue])
 
   return (
     <TextField

@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
 import { DefaultCellRenderer } from 'components/Table/defaults'
+import { SelectionColumnFilter } from 'components/Table/filters'
 import {
   ChangeEvent,
   forwardRef,
@@ -145,6 +146,9 @@ const useTableColumns = () => {
       {
         Header: 'Status',
         accessor: 'status',
+        Filter: SelectionColumnFilter,
+        filter: 'includes',
+        selectionOptions: ['CONFIRMED', 'ADD_REQUESTED', 'REMOVE_REQUESTED'],
         minWidth: 120,
         maxWidth: 180,
         width: 130,

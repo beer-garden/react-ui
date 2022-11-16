@@ -84,7 +84,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
     {
       Header: (
         <>
-          Status{' '}
+          {'Status '}
           <Tooltip
             arrow
             placement="right"
@@ -104,6 +104,8 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
       ),
       accessor: 'status',
       Filter: SelectionColumnFilter,
+      filter: 'includes',
+      selectionOptions: ['SUCCESS', 'IN_PROGRESS', 'ERROR', 'CANCELED'],
     },
     {
       Header: 'Created',

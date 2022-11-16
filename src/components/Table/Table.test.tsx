@@ -30,7 +30,6 @@ describe('Table', () => {
       {
         Header: 'Grade',
         accessor: 'secondValue',
-        Cell: undefined,
         minWidth: 120,
         maxWidth: 180,
         width: 130,

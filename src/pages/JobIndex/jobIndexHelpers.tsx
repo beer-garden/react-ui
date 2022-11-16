@@ -2,6 +2,7 @@ import { DefaultCellRenderer } from 'components/Table/defaults'
 import {
   DateRangeColumnFilter,
   NumberRangeColumnFilter,
+  SelectionColumnFilter,
 } from 'components/Table/filters'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
@@ -33,6 +34,9 @@ export const useJobColumns = () => {
       {
         Header: 'Status',
         accessor: 'status',
+        Filter: SelectionColumnFilter,
+        filter: 'includes',
+        selectionOptions: ['RUNNING', 'PAUSED', 'ERROR', 'SUCCESS'],
         minWidth: 120,
         maxWidth: 180,
         width: 130,
