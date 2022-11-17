@@ -17,12 +17,13 @@ import { useContext } from 'react'
 import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
+import { CommandViewModel } from 'types/form-model-types'
 
 const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { namespace, systemName, version, commandName } = useParams()
   const context = useContext(JobRequestCreationContext)
-  const { system, command, isJob } = context
+  const { system, command, isJob, requestModel } = context
 
   const checkedParams = checkContext(
     namespace,
@@ -51,8 +52,15 @@ const CommandView = () => {
     ? getJobSchema(getSchema(instances, parameters))
     : getSchema(instances, parameters)
   const uiSchema = getUiSchema(instances)
-  const model = getModel(parameters, theSystem.instances, isJob)
   const validator = getValidator(parameters)
+
+  let model: CommandViewModel
+
+  if (requestModel) {
+    model = requestModel
+  } else {
+    model = getModel(parameters, theSystem.instances, isJob)
+  }
 
   return (
     <Box>

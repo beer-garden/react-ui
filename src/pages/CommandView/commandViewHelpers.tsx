@@ -1,10 +1,4 @@
 import { Box, Button, Typography } from '@mui/material'
-import {
-  CommandViewJobModel,
-  CommandViewModel,
-  CommandViewModelParameters,
-  CommandViewRequestModel,
-} from 'formHelpers'
 import { useNavigate } from 'react-router-dom'
 import { Parameter } from 'types/backend-types'
 import {
@@ -12,6 +6,12 @@ import {
   ObjectWithStringKeys,
   StrippedSystem,
 } from 'types/custom-types'
+import {
+  CommandViewJobModel,
+  CommandViewModel,
+  CommandViewModelParameters,
+  CommandViewRequestModel,
+} from 'types/form-model-types'
 
 import { parameterHasDynamicChoiceProperties } from './dynamic-form-data'
 
