@@ -21,7 +21,8 @@ describe('SystemIndex', () => {
     const table = screen.getByRole('table')
 
     const rows = within(table).getAllByRole('row')
-    expect(rows.length).toEqual(2)
+    // header, filter, data
+    expect(rows.length).toEqual(3)
 
     const headerRow = rows[0]
     expect(within(headerRow).getByText('Namespace')).toBeInTheDocument()
@@ -31,7 +32,7 @@ describe('SystemIndex', () => {
     expect(within(headerRow).getByText('Commands')).toBeInTheDocument()
     expect(within(headerRow).getByText('Instances')).toBeInTheDocument()
 
-    const dataRow = rows[1]
+    const dataRow = rows[2]
     expect(within(dataRow).getByText('test')).toBeInTheDocument()
     expect(within(dataRow).getByText('testSystem')).toBeInTheDocument()
     expect(within(dataRow).getByText('1.0.0')).toBeInTheDocument()
