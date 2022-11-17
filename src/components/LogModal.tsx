@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/material'
 import { useInstances } from 'hooks/useInstances'
-import { get } from 'lodash'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Instance } from 'types/backend-types'
 
@@ -78,12 +77,13 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
         logID.current = response.headers.request_id
       })
       .catch((e) => {
+        console.log('here')
         logID.current = undefined
         const newAlert: ILogAlert = {
           type: 'error',
           msg:
-            'Something went wrong on the backend: ' +
-            get(e, 'response.data.message', 'Please check the server logs'),
+            'Something went wrong on the backend: ' + e.response.data.message ||
+            'Please check the server logs',
         }
         setAlerts((prev) => [...prev, newAlert])
         setIsLoading(false)
@@ -106,11 +106,12 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
           window.URL.revokeObjectURL(url)
         })
         .catch((e) => {
+          console.log('here2')
           const newAlert: ILogAlert = {
             type: 'error',
             msg:
-              'Error downloading file: ' +
-              get(e, 'response.data.message', 'Please check the server logs'),
+              'Error downloading file: ' + e.response.data.message ||
+              'Please check the server logs',
           }
           setAlerts((prev) => [...prev, newAlert])
         })

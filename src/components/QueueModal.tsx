@@ -5,7 +5,6 @@ import { DefaultCellRenderer } from 'components/Table/defaults'
 import { NumberRangeColumnFilter } from 'components/Table/filters'
 import { useInterval } from 'hooks/useInterval'
 import useQueue from 'hooks/useQueue'
-import { get } from 'lodash'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Column } from 'react-table'
 import { Instance, Queue } from 'types/backend-types'
@@ -66,8 +65,8 @@ const QueueModal = ({ instance }: IQueueModal) => {
         const newAlert: IQueueAlert = {
           type: 'error',
           msg:
-            'Error fetching Queue list: ' +
-            get(e, 'response.data.message', 'Please check the server logs'),
+            'Error fetching Queue list: ' + e.response.data.message ||
+            'Please check the server logs',
         }
         setAlerts((alerts) => [...alerts, newAlert])
       })
@@ -149,8 +148,8 @@ const QueueModal = ({ instance }: IQueueModal) => {
               const newAlert: IQueueAlert = {
                 type: 'error',
                 msg:
-                  'Error clearing Queue list: ' +
-                  get(e, 'data.message', 'Please check the server logs'),
+                  'Error clearing Queue list: ' + e.response.data.message ||
+                  'Please check the server logs',
               }
               setAlerts((alerts) => [...alerts, newAlert])
             })
