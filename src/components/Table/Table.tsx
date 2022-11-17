@@ -8,13 +8,17 @@ import {
   Toolbar,
 } from 'components/Table'
 import {
-  DefaultColumnFilter,
   defaultColumnValues,
   DefaultGlobalFilter,
   DefaultHeader,
-  OverflowCellRenderer,
 } from 'components/Table/defaults'
-import { fuzzyTextFilter, numericTextFilter } from 'components/Table/filters'
+import {
+  fuzzyTextFilter,
+  InlineFilter,
+  numericTextFilter,
+  TextFilter,
+} from 'components/Table/filters'
+import { OverflowCellRenderer } from 'components/Table/render'
 import {
   Table as StyledTable,
   TableBody,
@@ -66,7 +70,7 @@ const columnStyle = {
 }
 
 const defaultColumn = {
-  Filter: DefaultColumnFilter,
+  Filter: TextFilter,
   Cell: OverflowCellRenderer,
   Header: DefaultHeader,
   minWidth: 90, // minWidth is only used as a limit for resizing
@@ -296,6 +300,31 @@ const Table = <T extends ObjectWithStringKeys>(
           })}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
+          {headerGroups.map((headerGroup) => {
+            const {
+              key: headerGroupKey,
+              role: headerGroupRole,
+              ...headerGroupProps
+            } = headerGroup.getHeaderGroupProps()
+            return (
+              <TableRow key={headerGroupKey} {...headerGroupProps}>
+                <>
+                  {headerGroup.headers.map((column) => {
+                    const {
+                      key: headerKey,
+                      role: headerRole,
+                      ...headerProps
+                    } = column.getHeaderProps(columnStyle)
+                    return (
+                      <TableHeadCell key={headerKey} {...headerProps}>
+                        {column.canFilter && <InlineFilter column={column} />}
+                      </TableHeadCell>
+                    )
+                  })}
+                </>
+              </TableRow>
+            )
+          })}
           {page.map((row) => {
             prepareRow(row)
             const {

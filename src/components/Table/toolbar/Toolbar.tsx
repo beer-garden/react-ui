@@ -1,4 +1,3 @@
-import FilterListIcon from '@mui/icons-material/FilterList'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import {
   Box,
@@ -9,7 +8,6 @@ import {
   Typography,
 } from '@mui/material'
 import { ColumnHidePage } from 'components/Table/toolbar/ColumnHidePage'
-import { FilterPage } from 'components/Table/toolbar/FilterPage'
 import {
   MouseEvent as ReactMouseEvent,
   MouseEventHandler,
@@ -81,25 +79,6 @@ const getHideableColumns = <T extends ObjectWithStringKeys>(
   return columns
 }
 
-const getFilterableColumns = <T extends ObjectWithStringKeys>(
-  columns: ColumnInstance<T>[],
-): ColumnInstance<T>[] => {
-  if (columns.length) {
-    const filterableColumns = columns.filter((column) => column.canFilter)
-
-    const filterableSubColumns = columns.map((column) => {
-      if (column.columns) {
-        return column.columns.filter((column) => column.canFilter)
-      }
-      return []
-    })
-
-    return filterableColumns.concat(filterableSubColumns.flat())
-  }
-
-  return columns
-}
-
 const Toolbar = <T extends ObjectWithStringKeys>({
   name,
   instance,
@@ -107,9 +86,7 @@ const Toolbar = <T extends ObjectWithStringKeys>({
   const { columns } = instance
   const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined)
   const [columnsOpen, setColumnsOpen] = useState(false)
-  const [filterOpen, setFilterOpen] = useState(false)
   const hideableColumns = getHideableColumns(columns)
-  const filterableColumns = getFilterableColumns(columns)
 
   const handleColumnsClick = useCallback(
     (event: ReactMouseEvent) => {
@@ -119,17 +96,8 @@ const Toolbar = <T extends ObjectWithStringKeys>({
     [setAnchorEl, setColumnsOpen],
   )
 
-  const handleFilterClick = useCallback(
-    (event: ReactMouseEvent) => {
-      setAnchorEl(event.currentTarget)
-      setFilterOpen(true)
-    },
-    [setAnchorEl, setFilterOpen],
-  )
-
   const handleClose = useCallback(() => {
     setColumnsOpen(false)
-    setFilterOpen(false)
     setAnchorEl(undefined)
   }, [])
 
@@ -146,24 +114,11 @@ const Toolbar = <T extends ObjectWithStringKeys>({
             show={columnsOpen}
             anchorEl={anchorEl}
           />
-          <FilterPage
-            instance={instance}
-            onClose={handleClose}
-            show={filterOpen}
-            anchorEl={anchorEl}
-          />
           {hideableColumns.length > 1 && (
             <SmallIconActionButton
               icon={<ViewColumnIcon />}
               onClick={handleColumnsClick}
               label="Show / hide columns"
-            />
-          )}
-          {filterableColumns.length > 0 && (
-            <SmallIconActionButton
-              icon={<FilterListIcon />}
-              onClick={handleFilterClick}
-              label="Filter by columns"
             />
           )}
         </Box>

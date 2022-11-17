@@ -1,4 +1,9 @@
 import { DefaultCellRenderer } from 'components/Table/defaults'
+import {
+  DateRangeColumnFilter,
+  NumberRangeColumnFilter,
+  SelectionColumnFilter,
+} from 'components/Table/filters'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
@@ -29,6 +34,9 @@ export const useJobColumns = () => {
       {
         Header: 'Status',
         accessor: 'status',
+        Filter: SelectionColumnFilter,
+        filter: 'includes',
+        selectionOptions: ['RUNNING', 'PAUSED', 'ERROR', 'SUCCESS'],
         minWidth: 120,
         maxWidth: 180,
         width: 130,
@@ -60,6 +68,8 @@ export const useJobColumns = () => {
       },
       {
         Header: 'Next Run Time',
+        Filter: DateRangeColumnFilter,
+        filter: 'betweenDates',
         accessor: 'nextRun',
         minWidth: 200,
         maxWidth: 300,
@@ -67,6 +77,8 @@ export const useJobColumns = () => {
       },
       {
         Header: 'Success Count',
+        Filter: NumberRangeColumnFilter,
+        filter: 'between',
         accessor: 'success',
         minWidth: 120,
         maxWidth: 180,
@@ -74,6 +86,8 @@ export const useJobColumns = () => {
       },
       {
         Header: 'Error Count',
+        Filter: NumberRangeColumnFilter,
+        filter: 'between',
         accessor: 'error',
         minWidth: 120,
         maxWidth: 180,
