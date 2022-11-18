@@ -65,7 +65,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
         const newAlert: IQueueAlert = {
           type: 'error',
           msg:
-            'Error fetching Queue list: ' + e.response.data.message ||
+            'Error fetching Queue list: ' + e.response?.data.message ||
             'Please check the server logs',
         }
         setAlerts((alerts) => [...alerts, newAlert])
@@ -148,7 +148,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
               const newAlert: IQueueAlert = {
                 type: 'error',
                 msg:
-                  'Error clearing Queue list: ' + e.response.data.message ||
+                  'Error clearing Queue list: ' + e.response?.data.message ||
                   'Please check the server logs',
               }
               setAlerts((alerts) => [...alerts, newAlert])

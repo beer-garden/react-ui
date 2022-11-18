@@ -70,7 +70,7 @@ const JobView = () => {
       (e) => {
         setAlert({
           severity: 'error',
-          message: e.response.data.message || e,
+          message: e.response?.data.message || e,
           doNotAutoDismiss: true,
         })
       },
