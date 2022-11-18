@@ -26,7 +26,8 @@ const isIntervalTrigger = (triggerType: string) => {
 }
 
 const JobView = () => {
-  const [open, setOpen] = useState<boolean>(false)
+  const [runOpen, setRunOpen] = useState<boolean>(false)
+  const [delOpen, setDeleteOpen] = useState<boolean>(false)
   const [job, setLocalJob] = useState<Job>()
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const [description, setDescription] = useState('')
@@ -177,7 +178,7 @@ const JobView = () => {
           <Button
             variant="contained"
             color="error"
-            onClick={deleteCallback}
+            onClick={() => setDeleteOpen(true)}
             aria-label="Delete job"
           >
             Delete Job
@@ -187,7 +188,7 @@ const JobView = () => {
             color="secondary"
             onClick={() => {
               if (isIntervalTrigger(job.trigger_type)) {
-                setOpen(true)
+                setRunOpen(true)
               } else {
                 runNow(false)
               }
@@ -195,48 +196,6 @@ const JobView = () => {
           >
             Run Now
           </Button>
-          <ModalWrapper
-            open={open}
-            header="Reset the Job Interval"
-            onClose={() => {
-              setOpen(false)
-            }}
-            onCancel={() => {
-              setOpen(false)
-            }}
-            onSubmit={() => {
-              runNow(true)
-              setOpen(false)
-            }}
-            customButton={{
-              label: 'Just Run',
-              cb: () => {
-                runNow(false)
-              },
-              color: 'primary',
-            }}
-            styleOverrides={{ size: 'md', top: '-55%' }}
-            content={
-              <>
-                <Typography>
-                  This job has an interval trigger. Choose one of the buttons
-                  below to update when the job should be run again:
-                </Typography>
-                <Typography>
-                  {'Selecting "Submit" updates the next run time of the job ' +
-                    'based on the time right now.'}
-                </Typography>
-                <Typography>
-                  {'Selecting "Just Run" will run the job now but keep the job\'s ' +
-                    'existing next run time.'}
-                </Typography>
-                <Typography>
-                  {'Selecting "Cancel" cancels running the job now and no changes' +
-                    ' will be made to the next run time.'}
-                </Typography>
-              </>
-            }
-          />
         </Stack>
       )}
       <PageHeader title="Job" description={description} />
@@ -309,6 +268,69 @@ const JobView = () => {
           )}
         </Stack>
       </Stack>
+      <ModalWrapper
+        open={runOpen}
+        header="Reset the Job Interval"
+        onClose={() => {
+          setRunOpen(false)
+        }}
+        onCancel={() => {
+          setRunOpen(false)
+        }}
+        onSubmit={() => {
+          runNow(true)
+          setRunOpen(false)
+        }}
+        customButton={{
+          label: 'Just Run',
+          cb: () => {
+            runNow(false)
+          },
+          color: 'primary',
+        }}
+        styleOverrides={{ size: 'md', top: '-55%' }}
+        content={
+          <>
+            <Typography>
+              This job has an interval trigger. Choose one of the buttons below
+              to update when the job should be run again:
+            </Typography>
+            <Typography>
+              {'Selecting "Submit" updates the next run time of the job ' +
+                'based on the time right now.'}
+            </Typography>
+            <Typography>
+              {'Selecting "Just Run" will run the job now but keep the job\'s ' +
+                'existing next run time.'}
+            </Typography>
+            <Typography>
+              {'Selecting "Cancel" cancels running the job now and no changes' +
+                ' will be made to the next run time.'}
+            </Typography>
+          </>
+        }
+      />
+      <ModalWrapper
+        open={delOpen}
+        header="Delete Job?"
+        onClose={() => {
+          setDeleteOpen(false)
+        }}
+        onCancel={() => {
+          setDeleteOpen(false)
+        }}
+        onSubmit={() => {
+          deleteCallback()
+          setDeleteOpen(false)
+        }}
+        styleOverrides={{ size: 'md', top: '-55%' }}
+        content={
+          <Typography>
+            Remove job {job?.name || id} from the system. This action cannot be
+            undone.
+          </Typography>
+        }
+      />
       {alert && <Snackbar status={alert} />}
     </>
   )
