@@ -105,7 +105,6 @@ const JobView = () => {
           }
         })
         .catch((e) => {
-          console.log(e)
           errorHandler(e)
         })
     }

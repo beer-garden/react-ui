@@ -77,7 +77,6 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
         logID.current = response.headers.request_id
       })
       .catch((e) => {
-        console.log('here')
         logID.current = undefined
         const newAlert: ILogAlert = {
           type: 'error',
@@ -106,7 +105,6 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
           window.URL.revokeObjectURL(url)
         })
         .catch((e) => {
-          console.log('here2')
           const newAlert: ILogAlert = {
             type: 'error',
             msg:
