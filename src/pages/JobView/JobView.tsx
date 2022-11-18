@@ -46,17 +46,6 @@ const JobView = () => {
 
   const id = params.id as string
 
-  useEffect(() => {
-    if (job) {
-      const fetchPermission = async () => {
-        const permCheck = await hasJobPermission('job:update', job)
-        setPermission(permCheck || false)
-      }
-      fetchPermission()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [job])
-
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(
       () => {
@@ -103,6 +92,9 @@ const JobView = () => {
           } else {
             setDescription(id)
           }
+          hasJobPermission('job:update', response.data).then((permCheck) => {
+            setPermission(permCheck || false)
+          })
         })
         .catch((e) => {
           console.log(e)
@@ -126,17 +118,6 @@ const JobView = () => {
       return url
     }
     return undefined
-  }, [job])
-
-  useEffect(() => {
-    if (job) {
-      const fetchPermission = async () => {
-        const permCheck = await hasJobPermission('job:update', job)
-        setPermission(permCheck || false)
-      }
-      fetchPermission()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [job])
 
   return (
