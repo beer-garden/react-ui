@@ -39,11 +39,16 @@ const CommandIndex = () => {
     .filter((x) => !!x)
     .map((x) => String(x))
 
+  let tableKey = 'Commands'
+  if (version) tableKey = version + tableKey
+  if (systemName) tableKey = systemName + tableKey
+  if (namespace) tableKey = namespace + tableKey
+
   return (
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
-      <Table tableKey="Commands" data={commands} columns={columns}>
+      <Table tableKey={tableKey} data={commands} columns={columns}>
         <Box mb={2}>
           <Breadcrumbs breadcrumbs={breadcrumbs} />
           <FormControlLabel

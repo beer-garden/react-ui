@@ -106,7 +106,7 @@ const GardenAdminView = () => {
           <Typography variant="h6">Connected Systems</Typography>
           {garden.status === 'RUNNING' ? (
             <Table
-              tableKey="systems"
+              tableKey={`${gardenName}systems`}
               data={garden.systems.map(systemMapper)}
               columns={systemsColumns}
             />
