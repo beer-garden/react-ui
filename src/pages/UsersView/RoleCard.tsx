@@ -57,7 +57,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
       .catch((e) => {
         setAlert({
           severity: 'error',
-          message: e.response.data.message || e,
+          message: e.response?.data.message || e,
           doNotAutoDismiss: true,
         })
       })
