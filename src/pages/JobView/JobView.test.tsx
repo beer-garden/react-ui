@@ -195,7 +195,6 @@ describe('JobView', () => {
     })
   })
 
-  // TODO: for some reason these tests are broken
   describe('user has permission', () => {
     beforeAll(() => {
       mockAxios.onGet('/config').reply(200, TServerAuthConfig)
@@ -206,7 +205,7 @@ describe('JobView', () => {
       mockAxios.onGet('/config').reply(200, TServerConfig)
     })
 
-    test.skip('renders Delete button', async () => {
+    test('renders Delete button', async () => {
       render(
         <LoggedInProviders>
           <JobView />
@@ -217,7 +216,7 @@ describe('JobView', () => {
       })
     })
 
-    test.skip('renders Update button', async () => {
+    test('renders Update button', async () => {
       render(
         <LoggedInProviders>
           <JobView />
@@ -228,7 +227,7 @@ describe('JobView', () => {
       })
     })
 
-    test.skip('renders Run button', async () => {
+    test('renders Run button', async () => {
       render(
         <LoggedInProviders>
           <JobView />
@@ -250,7 +249,7 @@ describe('JobView', () => {
       })
     })
 
-    test.skip('render Pause button when jobs', async () => {
+    test('render Pause button when jobs', async () => {
       render(
         <LoggedInProviders>
           <JobView />
@@ -330,6 +329,25 @@ describe('JobView', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Expand Area' })[0])
     await waitFor(() => {
       expect(screen.queryByText('Request Template')).not.toBeInTheDocument()
+    })
+  })
+
+  test('makes user confirm to delete job', async () => {
+    render(
+      <AllProviders>
+        <JobView />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Delete job' }),
+      ).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Delete job' }))
+    expect(screen.getByText('Delete Job?')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(screen.queryByText('Delete Job?')).not.toBeInTheDocument()
     })
   })
 })
