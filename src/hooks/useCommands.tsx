@@ -15,7 +15,6 @@ import {
   ObjectWithStringKeys,
   StrippedSystem,
 } from 'types/custom-types'
-import { generateCommandName } from 'utils/generateCommandName'
 
 interface IParam extends ObjectWithStringKeys {
   namespace: string
@@ -86,7 +85,6 @@ const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
     system: command.systemName,
     version: command.systemVersion,
     command: command.name,
-    name: generateCommandName(command.hidden, command.name),
     description: command.description ?? 'No description',
     executeButton: <ExecuteButton system={system} command={command} />,
   }

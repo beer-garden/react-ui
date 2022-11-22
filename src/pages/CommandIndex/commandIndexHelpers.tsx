@@ -1,4 +1,5 @@
 import { DefaultCellRenderer } from 'components/Table/defaults'
+import HiddenRenderer from 'components/Table/render/HiddenRenderer'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { CommandIndexTableData } from 'types/custom-types'
@@ -31,8 +32,8 @@ const useCommandIndexTableColumns = (showExecute = false) => {
         },
         {
           Header: 'Command',
-          Cell: DefaultCellRenderer,
-          accessor: 'name',
+          accessor: 'command',
+          Cell: HiddenRenderer,
           minWidth: 90,
           maxWidth: 350,
           width: 300,
@@ -71,8 +72,8 @@ const useCommandIndexTableColumns = (showExecute = false) => {
         },
         {
           Header: 'Command',
-          Cell: DefaultCellRenderer,
-          accessor: 'name',
+          accessor: 'command',
+          Cell: HiddenRenderer,
           minWidth: 90,
           maxWidth: 350,
           width: 300,

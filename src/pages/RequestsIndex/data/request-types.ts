@@ -63,14 +63,21 @@ interface RequestsSearchApi {
 }
 
 type RequestsIndexTableData = {
-  command: JSX.Element
+  command: string
   namespace: string
   system: string
-  version: JSX.Element
+  version: string
   instance: string
   status: string // TODO
   created: string // TODO
   comment: string | null
+  commandLink?: string
+  versionLink: string
+  id?: string
+  parentId?: string
+  parentCommand?: string
+  hasParent: boolean
+  isHidden: boolean
 }
 
 type RequestsIndexTableHeaders = {

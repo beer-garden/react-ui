@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import { DefaultCellRenderer } from 'components/Table/defaults'
 import { SelectionColumnFilter } from 'components/Table/filters'
+import HiddenRenderer from 'components/Table/render/HiddenRenderer'
 import {
   ChangeEvent,
   forwardRef,
@@ -106,8 +107,8 @@ const useModalColumns = () => {
       },
       {
         Header: 'Command',
-        Cell: DefaultCellRenderer,
-        accessor: 'name',
+        accessor: 'command',
+        Cell: HiddenRenderer,
         minWidth: 200,
         maxWidth: 400,
         width: 300,
@@ -137,8 +138,8 @@ const useTableColumns = () => {
       },
       {
         Header: 'Command',
-        Cell: DefaultCellRenderer,
-        accessor: 'name',
+        accessor: 'command',
+        Cell: HiddenRenderer,
         minWidth: 200,
         maxWidth: 400,
         width: 320,
