@@ -62,6 +62,21 @@ interface RequestsSearchApi {
   start: number
 }
 
+type RequestsViewTableData = {
+  command: string
+  namespace: string
+  system: string
+  version: string
+  instance: string
+  status: string // TODO
+  created: string // TODO
+  updated: string
+  commandLink: string
+  versionLink: string
+  systemLink: string
+  namespaceLink: string
+}
+
 type RequestsIndexTableData = {
   command: string
   namespace: string
@@ -71,7 +86,7 @@ type RequestsIndexTableData = {
   status: string // TODO
   created: string // TODO
   comment: string | null
-  commandLink?: string
+  commandLink: string | undefined
   versionLink: string
   id?: string
   parentId?: string
@@ -97,6 +112,7 @@ export type {
   RequestsIndexTableData,
   RequestsIndexTableHeaders,
   RequestsSearchApi,
+  RequestsViewTableData,
   SearchableColumn,
   SearchableColumnData,
   SearchFilter,
