@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios'
-import { RequestsSearchApi } from 'pages/RequestsIndex/data'
+import { RequestsSearchApi } from 'types/request-types'
 
 enum ActionKind {
   UPDATE_URL = 'UPDATE_URL',

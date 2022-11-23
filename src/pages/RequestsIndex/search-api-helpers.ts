@@ -1,15 +1,15 @@
 import { DateTime } from 'luxon'
+import { defaultColumnsData } from 'pages/RequestsIndex'
+import { Filters } from 'react-table'
 import {
   ColumnData,
-  defaultColumnsData,
   OrderableColumnDirection,
   OrderableColumnIndex,
   RequestsIndexTableData,
   RequestsSearchApi,
   SearchableColumn,
   SearchableColumnData,
-} from 'pages/RequestsIndex/data'
-import { Filters } from 'react-table'
+} from 'types/request-types'
 
 const getIndexBySearchTerm = (
   columns: ColumnData[],

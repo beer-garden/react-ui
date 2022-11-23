@@ -3,9 +3,9 @@ import {
   DateRangeColumnFilter,
   SelectionColumnFilter,
 } from 'components/Table/filters'
-import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
+import { RequestsIndexTableData } from 'types/request-types'
 
 const useRequestsIndexTableColumns = () => {
   return useMemo<Column<RequestsIndexTableData>[]>(

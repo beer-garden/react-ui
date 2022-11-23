@@ -1,19 +1,21 @@
 import useAxios, { Options as AxiosHooksOptions } from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
-  formatBeergardenRequests,
   getUrlFromSearchApi,
+  updateApiOrderBy,
+  updateApiSearchBy,
+  useRequestsReducer,
+} from 'pages/RequestsIndex'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Filters } from 'react-table'
+import { Request } from 'types/backend-types'
+import {
   OrderableColumnDirection,
   RequestsIndexTableData,
   RequestsIndexTableHeaders,
   SearchableColumnData,
-  updateApiOrderBy,
-  updateApiSearchBy,
-  useRequestsReducer,
-} from 'pages/RequestsIndex/data'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Filters } from 'react-table'
-import { Request } from 'types/backend-types'
+} from 'types/request-types'
+import { formatBeergardenRequests } from 'utils/dataHelpers'
 
 const useRequests = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
