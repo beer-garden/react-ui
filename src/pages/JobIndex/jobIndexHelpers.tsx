@@ -1,4 +1,3 @@
-import { DefaultCellRenderer } from 'components/Table/defaults'
 import {
   DateRangeColumnFilter,
   NumberRangeColumnFilter,
