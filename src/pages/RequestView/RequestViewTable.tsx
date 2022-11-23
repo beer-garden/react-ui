@@ -149,6 +149,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
     <>
       <Table
         tableName=""
+        tableKey={`${request.id}RequestIndex`}
         data={data}
         columns={columns}
         hideToolbar={true}
@@ -181,7 +182,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
           </Typography>
           {showChildren ? (
             <Table
-              tableName="Children"
+              tableName={`${request.id}Children`}
               data={childData}
               hideToolbar={true}
               columns={childColumns}

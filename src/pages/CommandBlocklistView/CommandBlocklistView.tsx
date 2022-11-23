@@ -7,7 +7,6 @@ import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
 import { useBlockList } from 'hooks/useBlockList'
 import { useCommands } from 'hooks/useCommands'
-import { differenceWith } from 'lodash'
 import { useModalColumns, useTableColumns } from 'pages/CommandBlocklistView'
 import { useMemo, useState } from 'react'
 import { BlockedCommand } from 'types/backend-types'
@@ -22,19 +21,22 @@ export const CommandBlocklistView = () => {
   // populate data for modal All Commands list table
   const commandListData = useMemo((): CommandIndexTableData[] => {
     // Filter out blocked commands first
-    return differenceWith(commands, blockList, (commandItem, blockItem) => {
-      return (
-        commandItem.namespace === blockItem.namespace &&
-        commandItem.system === blockItem.system &&
-        commandItem.command === blockItem.command
-      )
-    }).map((command: CommandIndexTableData): CommandIndexTableData => {
-      return {
-        namespace: command.namespace,
-        system: command.system,
-        command: command.command,
-      }
-    })
+    return commands
+      .filter((commandItem: CommandIndexTableData) => {
+        return !blockList.some(
+          (blockItem: BlockedCommand) =>
+            commandItem.namespace === blockItem.namespace &&
+            commandItem.system === blockItem.system &&
+            commandItem.command === blockItem.command,
+        )
+      })
+      .map((command: CommandIndexTableData): CommandIndexTableData => {
+        return {
+          namespace: command.namespace,
+          system: command.system,
+          command: command.command,
+        }
+      })
   }, [blockList, commands])
 
   // populate data for main Blocked Commands list table
