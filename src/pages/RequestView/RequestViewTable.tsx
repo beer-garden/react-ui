@@ -148,7 +148,6 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
   return (
     <>
       <Table
-        tableName=""
         tableKey={`${request.id}RequestIndex`}
         data={data}
         columns={columns}
