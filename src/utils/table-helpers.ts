@@ -10,6 +10,8 @@ export const getRowPageOptions = (
   totalRows: number,
 ): (number | { value: number; label: string })[] => {
   const optionList: (number | { value: number; label: string })[] = []
+  if (!totalRows) return optionList
+
   let i = 5
   for (i; i <= maxRows; i += 5) {
     optionList.push(i)
