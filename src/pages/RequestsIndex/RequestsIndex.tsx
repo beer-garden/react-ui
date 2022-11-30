@@ -6,12 +6,9 @@ import { PageHeader } from 'components/PageHeader'
 import { SSRTable } from 'components/Table'
 import {
   defaultOrderingColumnIndex,
-  OrderableColumnDirection,
-  RequestsIndexTableData,
-  SearchableColumnData,
   useRequests,
   useRequestsIndexTableColumns,
-} from 'pages/RequestsIndex/data'
+} from 'pages/RequestsIndex'
 import {
   ChangeEvent as ReactChangeEvent,
   useCallback,
@@ -19,6 +16,11 @@ import {
   useState,
 } from 'react'
 import { Filters, SortingRule } from 'react-table'
+import {
+  OrderableColumnDirection,
+  RequestsIndexTableData,
+  SearchableColumnData,
+} from 'types/request-types'
 
 const RequestsIndex = () => {
   const {

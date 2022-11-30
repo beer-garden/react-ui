@@ -6,13 +6,10 @@ import {
 import { Card, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import { Table } from 'components/Table'
 import { SelectionColumnFilter } from 'components/Table/filters'
-import {
-  formatBeergardenRequests,
-  SystemLink,
-  useRequestsIndexTableColumns,
-} from 'pages/RequestsIndex/data'
+import { useRequestsIndexTableColumns } from 'pages/RequestsIndex'
 import { useState } from 'react'
 import { Request } from 'types/backend-types'
+import { formatBeergardenRequests, SystemLink } from 'utils/dataHelpers'
 import { dateFormatted } from 'utils/date-formatter'
 
 interface RequestViewTableProps {
@@ -148,7 +145,6 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
   return (
     <>
       <Table
-        tableName=""
         tableKey={`${request.id}RequestIndex`}
         data={data}
         columns={columns}

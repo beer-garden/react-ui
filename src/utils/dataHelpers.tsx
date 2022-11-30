@@ -1,9 +1,9 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { Box, Tooltip, Typography } from '@mui/material'
-import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
+import { RequestsIndexTableData } from 'types/request-types'
 
 const RequestLink = (request: Request) => {
   const hasParent = !!request.parent
