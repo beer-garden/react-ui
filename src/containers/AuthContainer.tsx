@@ -2,7 +2,7 @@ import { DebugContainer } from 'containers/DebugContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import { createContainer } from 'unstated-next'
@@ -18,12 +18,14 @@ const useAuth = () => {
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const cookies = new Cookies()
+  const [user, _setUser] = useState<string | null>(cookies.get('user'))
 
   const setUser = useCallback(
     (userName: string | null) => {
       if (DEBUG_LOGIN) {
         console.log('Setting username:', userName)
       }
+      _setUser(userName)
       if (userName) {
         cookies.set('user', userName, { path: '/' })
       } else {
@@ -90,7 +92,7 @@ const useAuth = () => {
   )
 
   return {
-    user: cookies.get('user'),
+    user,
     login,
     logout,
     refreshToken: onTokenRefreshRequired,

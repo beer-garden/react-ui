@@ -1,15 +1,11 @@
 import { useMyAxios } from 'hooks/useMyAxios'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ServerConfig } from 'types/config-types'
 import { createContainer } from 'unstated-next'
 
 const useServerConfig = () => {
   const { axiosInstance } = useMyAxios()
-  const storedConfig = window.localStorage.getItem('config')
-  const configDefault = storedConfig
-    ? (JSON.parse(storedConfig) as ServerConfig)
-    : null
-  const config = useRef<ServerConfig | null>(configDefault)
+  const [config, setConfig] = useState<ServerConfig | null>(null)
 
   useEffect(() => {
     axiosInstance
@@ -20,21 +16,20 @@ const useServerConfig = () => {
         },
       })
       .then((response) => {
-        // window.localStorage.setItem('config', JSON.stringify(response.data))
-        config.current = response.data
+        setConfig(response.data)
       })
   }, [axiosInstance])
 
   const authEnabled = useMemo(() => {
-    return config.current?.auth_enabled ?? false
-  }, [])
+    return config?.auth_enabled ?? false
+  }, [config])
 
   const debugEnabled = useMemo(() => {
-    return config.current?.debug_mode ?? false
-  }, [])
+    return config?.debug_mode ?? false
+  }, [config])
 
   return {
-    config: config.current,
+    config,
     authEnabled,
     debugEnabled,
   }
