@@ -139,7 +139,6 @@ const useTableColumns = () => {
       {
         Header: 'Command',
         accessor: 'command',
-        Cell: HiddenRenderer,
         minWidth: 200,
         maxWidth: 400,
         width: 320,

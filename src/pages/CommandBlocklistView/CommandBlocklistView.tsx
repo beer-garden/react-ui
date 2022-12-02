@@ -35,6 +35,7 @@ export const CommandBlocklistView = () => {
           namespace: command.namespace,
           system: command.system,
           command: command.command,
+          isHidden: command.hidden,
         }
       })
   }, [blockList, commands])

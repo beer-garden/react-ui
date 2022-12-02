@@ -87,6 +87,7 @@ const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
     command: command.name,
     description: command.description ?? 'No description',
     executeButton: <ExecuteButton system={system} command={command} />,
+    isHidden: command.hidden
   }
 }
 
