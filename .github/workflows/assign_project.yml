@@ -1,19 +1,17 @@
-name: Auto Assign to Project(s)
+name: Auto Assign to Project
 
 on:
   issues:
     types: [opened]
-env:
-  MY_GITHUB_TOKEN: ${{ secrets.BUILDBOT_TOKEN }}
 
 jobs:
-  assign_one_project:
+  assign_project:
     runs-on: ubuntu-latest
-    name: Assign to Backlog
+    name: Assign Project
     steps:
-      - name: Assign NEW issues to Backlog project
-        uses: srggrs/assign-one-project-github-action@1.3.1
-        if: github.event.action == 'opened'
+      - name: Assign NEW issues to Dev project
+        uses: KekeHub/auto-assign-project@v1
         with:
-          project: 'https://github.com/orgs/beer-garden/projects/27'
-          column_name: 'To Do'
+          token: ${{ secrets.BUILDBOT_TOKEN }}
+          owner: beer-garden
+          project-id: 27
