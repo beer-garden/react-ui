@@ -1,24 +1,5 @@
-import { Box } from '@mui/material'
-import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
 import { RequestsIndexTableData } from 'types/request-types'
-
-const SystemLink = (label: string, params: string[]) => {
-  return (
-    <Box
-      sx={{
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        width: '120px',
-        display: 'block',
-        overflow: 'hidden',
-      }}
-    >
-      {' '}
-      <RouterLink to={'/systems/' + params.join('/')}>{label}</RouterLink>
-    </Box>
-  )
-}
 
 const requestToFormatted = (request: Request): RequestsIndexTableData => {
   const {
@@ -69,4 +50,4 @@ const formatBeergardenRequests = (
   return requests.map(requestToFormatted)
 }
 
-export { formatBeergardenRequests, SystemLink }
+export { formatBeergardenRequests }

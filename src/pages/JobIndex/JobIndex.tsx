@@ -112,7 +112,7 @@ const JobIndex = () => {
         success: job.success_count || 0,
         error: job.error_count || 0,
         nameLink: `/jobs/${job.id}`,
-        systemLink: `/jobs/${job.request_template.namespace}/${job.request_template.system}`,
+        systemLink: `/systems/${job.request_template.namespace}/${job.request_template.system}/${job.request_template.system_version}`,
       }
     })
   }, [jobs])
