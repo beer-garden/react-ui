@@ -10,15 +10,13 @@ import {
   SelectionColumnFilter,
 } from 'components/Table/filters'
 import CommandIconsRenderer from 'components/Table/render/CommandIconsRenderer'
-import {
-  formatBeergardenRequests,
-  RequestsViewTableData,
-  useRequestsIndexTableColumns,
-} from 'pages/RequestsIndex/data'
+import { useRequestsIndexTableColumns } from 'pages/RequestsIndex'
 import { useState } from 'react'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { Request } from 'types/backend-types'
+import { RequestsViewTableData } from 'types/request-types'
+import { formatBeergardenRequests } from 'utils/dataHelpers'
 import { dateFormatted } from 'utils/date-formatter'
 
 interface RequestViewTableProps {
@@ -182,7 +180,6 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
   return (
     <>
       <Table
-        tableName=""
         tableKey={`${request.id}RequestIndex`}
         data={data}
         columns={useRequestViewTableColumns()}

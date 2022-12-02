@@ -1,13 +1,12 @@
 import { KeyboardArrowUp } from '@mui/icons-material'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import {
-  Box,
   CircularProgress,
   TableSortLabel,
   Tooltip,
   Typography,
 } from '@mui/material'
-import { ColumnResizeHandle, FilterChipBar, Toolbar } from 'components/Table'
+import { ColumnResizeHandle, Toolbar } from 'components/Table'
 import { defaultColumnValues, DefaultHeader } from 'components/Table/defaults'
 import {
   fuzzyTextFilter,
@@ -273,9 +272,13 @@ const SSRTable = <
     <Typography>Error...</Typography>
   ) : (
     <>
-      <Toolbar name={tableName || ''} instance={instance} />
-      <FilterChipBar<T> instance={instance} />
-      <Box {...childProps}>{props.children}</Box>
+      <Toolbar
+        instance={instance}
+        childProps={childProps}
+        name={tableName}
+      >
+        {props.children}
+      </Toolbar>
       <StyledTable {...tableProps}>
         <TableHead>
           {headerGroups.map((headerGroup) => {

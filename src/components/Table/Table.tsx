@@ -1,17 +1,8 @@
 import { KeyboardArrowUp } from '@mui/icons-material'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
-import { Box, Stack, TableSortLabel, Tooltip } from '@mui/material'
-import {
-  ColumnResizeHandle,
-  FilterChipBar,
-  TablePagination,
-  Toolbar,
-} from 'components/Table'
-import {
-  defaultColumnValues,
-  DefaultGlobalFilter,
-  DefaultHeader,
-} from 'components/Table/defaults'
+import { TableSortLabel, Tooltip } from '@mui/material'
+import { ColumnResizeHandle, TablePagination, Toolbar } from 'components/Table'
+import { defaultColumnValues, DefaultHeader } from 'components/Table/defaults'
 import {
   fuzzyTextFilter,
   InlineFilter,
@@ -92,7 +83,8 @@ const hooks = [
   useRowSelect,
 ]
 
-interface TableProps<T extends ObjectWithStringKeys> extends TableOptions<T> {
+export interface TableProps<T extends ObjectWithStringKeys>
+  extends TableOptions<T> {
   data: T[]
   columns: Column<T>[]
   setSelection?: Dispatch<SetStateAction<T[]>>
@@ -158,8 +150,6 @@ const Table = <T extends ObjectWithStringKeys>(
     prepareRow,
     state,
     selectedFlatRows,
-    setGlobalFilter,
-    preGlobalFilteredRows,
   } = instance
 
   const debouncedState = useDebounce(state, 500)
@@ -206,21 +196,15 @@ const Table = <T extends ObjectWithStringKeys>(
 
   return (
     <>
-      {!hideToolbar && <Toolbar name={tableName || ''} instance={instance} />}
-      <FilterChipBar<T> instance={instance} />
-      {(showGlobalFilter || props.children) && (
-        <Box {...childProps}>
-          <Stack direction="row" spacing={3}>
-            {showGlobalFilter && (
-              <DefaultGlobalFilter<T>
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            )}
-            {props.children}
-          </Stack>
-        </Box>
+      {!hideToolbar && (
+        <Toolbar
+          instance={instance}
+          childProps={childProps}
+          name={tableName}
+          showGlobalFilter={showGlobalFilter}
+        >
+          {props.children}
+        </Toolbar>
       )}
       <StyledTable {...tableProps}>
         <TableHead>

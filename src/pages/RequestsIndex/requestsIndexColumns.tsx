@@ -3,9 +3,9 @@ import {
   SelectionColumnFilter,
 } from 'components/Table/filters'
 import CommandIconsRenderer from 'components/Table/render/CommandIconsRenderer'
-import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
+import { RequestsIndexTableData } from 'types/request-types'
 
 const useRequestsIndexTableColumns = () => {
   return useMemo<Column<RequestsIndexTableData>[]>(

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
-import { RequestsIndexTableData } from 'pages/RequestsIndex/data'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
+import { RequestsIndexTableData } from 'types/request-types'
 
 const SystemLink = (label: string, params: string[]) => {
   return (

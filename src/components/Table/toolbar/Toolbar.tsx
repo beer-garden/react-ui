@@ -1,17 +1,13 @@
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
-import {
-  Box,
-  Divider,
-  IconButton,
-  Toolbar as MuiToolbar,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import { FilterChipBar } from 'components/Table'
+import { DefaultGlobalFilter } from 'components/Table/defaults'
 import { ColumnHidePage } from 'components/Table/toolbar/ColumnHidePage'
 import {
   MouseEvent as ReactMouseEvent,
   MouseEventHandler,
   ReactElement,
+  ReactNode,
   useCallback,
   useState,
 } from 'react'
@@ -19,8 +15,11 @@ import { ColumnInstance, TableInstance } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 interface ToolbarProps<T extends ObjectWithStringKeys> {
-  name: string
+  name?: string
   instance: TableInstance<T>
+  showGlobalFilter?: boolean
+  children: ReactNode
+  childProps: ObjectWithStringKeys
 }
 
 type ActionButtonProps = {
@@ -48,9 +47,6 @@ const SmallIconActionButton = ({
             marginTop: '-6px',
             width: 48,
             height: 48,
-            '&:last-of-type': {
-              marginRight: -12,
-            },
           }}
         >
           {icon}
@@ -82,6 +78,9 @@ const getHideableColumns = <T extends ObjectWithStringKeys>(
 const Toolbar = <T extends ObjectWithStringKeys>({
   name,
   instance,
+  showGlobalFilter,
+  children,
+  childProps,
 }: ToolbarProps<T>) => {
   const { columns } = instance
   const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined)
@@ -103,27 +102,38 @@ const Toolbar = <T extends ObjectWithStringKeys>({
 
   return (
     <>
-      <MuiToolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box ml={-3}>
-          <Typography variant="h4">{name}</Typography>
-        </Box>
-        <Box>
-          <ColumnHidePage
-            instance={instance}
-            onClose={handleClose}
-            show={columnsOpen}
-            anchorEl={anchorEl}
-          />
-          {hideableColumns.length > 1 && (
-            <SmallIconActionButton
-              icon={<ViewColumnIcon />}
-              onClick={handleColumnsClick}
-              label="Show / hide columns"
+      {name && <Typography variant="h4">{name}</Typography>}
+      <FilterChipBar<T> instance={instance} />
+      <Box
+        {...childProps}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Stack direction="row" spacing={3}>
+          {showGlobalFilter && (
+            <DefaultGlobalFilter<T>
+              preGlobalFilteredRows={instance.preGlobalFilteredRows}
+              globalFilter={instance.state.globalFilter}
+              setGlobalFilter={instance.setGlobalFilter}
             />
           )}
-        </Box>
-      </MuiToolbar>
-      <Divider />
+          {children}
+        </Stack>
+        {hideableColumns.length > 1 && (
+          <SmallIconActionButton
+            icon={<ViewColumnIcon />}
+            onClick={handleColumnsClick}
+            label="Show / hide columns"
+          />
+        )}
+      </Box>
+      <ColumnHidePage
+        instance={instance}
+        onClose={handleClose}
+        show={columnsOpen}
+        anchorEl={anchorEl}
+      />
     </>
   )
 }
