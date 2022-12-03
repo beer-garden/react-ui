@@ -1,7 +1,8 @@
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
+import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
@@ -14,7 +15,6 @@ import {
 import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
 import { checkContext } from 'pages/CommandView/commandViewHelpers'
 import { useContext } from 'react'
-import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewModel } from 'types/form-model-types'
@@ -78,20 +78,11 @@ const CommandView = () => {
         />
       </Box>
       {debugEnabled && (
-        <Box pt={2} display="flex" alignItems="flex-start">
-          <Box width={1 / 3}>
-            <h3>Command</h3>
-            <ReactJson src={theCommand} />
-          </Box>
-          <Box width={1 / 3}>
-            <h3>Schema</h3>
-            <ReactJson src={schema} />
-          </Box>
-          <Box width={1 / 3}>
-            <h3>UI Schema</h3>
-            <ReactJson src={uiSchema} />
-          </Box>
-        </Box>
+        <Stack direction={'row'} spacing={2}>
+          <JsonCard title="Command" data={theCommand} />
+          <JsonCard title="Schema" data={schema} />
+          <JsonCard title="UI Schema" data={uiSchema} />
+        </Stack>
       )}
     </Box>
   )

@@ -3,6 +3,7 @@ import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
 import { AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
+import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
@@ -25,7 +26,6 @@ import {
   SetStateAction,
   useState,
 } from 'react'
-import ReactJson from 'react-json-view'
 import { useNavigate } from 'react-router-dom'
 import { Job, RequestTemplate } from 'types/backend-types'
 import {
@@ -205,7 +205,7 @@ const CommandViewForm = ({
   const submitFormRef = createRef<HTMLButtonElement>()
 
   return (
-    <Box pt={2} display="flex" alignItems="flex-start">
+    <Box p={2} display="flex" alignItems="flex-start">
       <Box width={3 / 5}>
         <BytesParameterContext.Provider
           value={{ fileMetaData, setFileMetaData }}
@@ -239,8 +239,7 @@ const CommandViewForm = ({
       </Box>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
       <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>
-        <h3>Preview</h3>
-        <ReactJson src={displayModel} />
+        <JsonCard title="Preview" data={displayModel} />
       </Box>
     </Box>
   )

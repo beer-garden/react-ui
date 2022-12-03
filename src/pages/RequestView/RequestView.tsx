@@ -1,23 +1,16 @@
-import {
-  ExpandLess as ExpandLessIcon,
-  ExpandMore as ExpandMoreIcon,
-} from '@mui/icons-material'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
   Alert,
   Backdrop,
-  Box,
   Breadcrumbs,
   Button,
-  Card,
-  CardActions,
-  CardContent,
   CircularProgress,
-  IconButton,
+  Stack,
   Typography,
 } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
+import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -25,7 +18,6 @@ import { SocketContainer } from 'containers/SocketContainer'
 import { RequestViewOutput, RequestViewTable } from 'pages/RequestView'
 import { getParentLinks } from 'pages/RequestView/requestViewHelpers'
 import { useContext, useEffect, useState } from 'react'
-import ReactJson from 'react-json-view'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
 
@@ -54,11 +46,14 @@ const RequestView = () => {
 
   const { addCallback, removeCallback } = SocketContainer.useContainer()
 
-  const [{ data, error }, refetch] = useAxios({
-    url: '/api/v1/requests/' + id,
-    method: 'get',
-    withCredentials: authEnabled,
-  }, {useCache: false})
+  const [{ data, error }, refetch] = useAxios(
+    {
+      url: '/api/v1/requests/' + id,
+      method: 'get',
+      withCredentials: authEnabled,
+    },
+    { useCache: false },
+  )
 
   useEffect(() => {
     addCallback('request complete', (event) => {
@@ -121,7 +116,7 @@ const RequestView = () => {
             </Breadcrumbs>
           ) : null}
           <RequestViewTable request={request} />
-          <Box pt={4} display="flex" alignItems="flex-start">
+          <Stack py={4} direction="row" spacing={2}>
             {!expandParameter ? (
               <RequestViewOutput
                 request={request}
@@ -132,36 +127,16 @@ const RequestView = () => {
               />
             ) : null}
             {!expandOutput ? (
-              <Card sx={{ width: 1 }}>
-                <CardActions>
-                  <Typography style={{ flex: 1, float: 'right' }} variant="h6">
-                    Parameters
-                  </Typography>
-                  <Typography>
-                    <IconButton
-                      size="small"
-                      onClick={() => setExpandParameter(!expandParameter)}
-                      aria-label="start"
-                    >
-                      {expandParameter || expandOutput ? (
-                        <ExpandLessIcon />
-                      ) : (
-                        <ExpandMoreIcon />
-                      )}
-                    </IconButton>
-                  </Typography>
-                </CardActions>
-                <Divider />
-                <CardContent>
-                  <ReactJson
-                    src={request.parameters}
-                    theme={theme === 'dark' ? 'bright' : 'rjv-default'}
-                    style={{ backgroundColor: 'primary' }}
-                  />
-                </CardContent>
-              </Card>
+              <JsonCard
+                title="Parameters"
+                collapseHandler={() => {
+                  setExpandParameter(!expandParameter)
+                }}
+                data={request.parameters}
+                iconTrigger={expandParameter && expandOutput}
+              />
             ) : null}
-          </Box>
+          </Stack>
         </>
       ) : error ? (
         <Alert severity="error">{error.message}</Alert>
