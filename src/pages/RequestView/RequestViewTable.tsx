@@ -3,13 +3,21 @@ import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
 } from '@mui/icons-material'
-import { Card, Divider, IconButton, Tooltip, Typography } from '@mui/material'
+import {
+  Box,
+  Divider,
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import { Divider as MyDivider } from 'components/Divider'
+import { LabeledData } from 'components/LabeledData'
 import { Table } from 'components/Table'
-import { SelectionColumnFilter } from 'components/Table/filters'
 import { useRequestsIndexTableColumns } from 'pages/RequestsIndex'
 import { useState } from 'react'
 import { Request } from 'types/backend-types'
-import { formatBeergardenRequests, SystemLink } from 'utils/dataHelpers'
+import { formatBeergardenRequests } from 'utils/dataHelpers'
 import { dateFormatted } from 'utils/date-formatter'
 
 interface RequestViewTableProps {
@@ -51,37 +59,43 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
 
   const [showChildren, setShowChildren] = useState(false)
 
-  const columns = [
-    {
-      Header: 'Command',
-      accessor: 'command',
-      width: 150,
-      maxWidth: 150,
-    },
-    {
-      Header: 'Namespace',
-      accessor: 'namespace',
-      width: 120,
-    },
-    {
-      Header: 'System',
-      accessor: 'system',
-      width: 150,
-    },
-    {
-      Header: 'Version',
-      accessor: 'version',
-      width: 120,
-    },
-    {
-      Header: 'Instance',
-      accessor: 'instance',
-      width: 100,
-    },
-    {
-      Header: (
-        <>
-          {'Status '}
+  const childColumns = useRequestsIndexTableColumns()
+
+  const childData = formatBeergardenRequests(request.children)
+
+  return (
+    <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, 280px)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        <LabeledData
+          label="Command"
+          data={request.command}
+          link={`/systems/${request.namespace}/${request.system}/${request.system_version}/commands/${request.command}`}
+        />
+        <LabeledData
+          label="Namespace"
+          data={request.namespace}
+          link={`/systems/${request.namespace}`}
+        />
+        <LabeledData
+          label="System"
+          data={request.system}
+          link={`/systems/${request.namespace}/${request.system}`}
+        />
+        <LabeledData
+          label="Version"
+          data={request.system_version}
+          link={`/systems/${request.namespace}/${request.system}/${request.system_version}`}
+        />
+        <LabeledData label="Instance" data={request.instance_name} />
+        <LabeledData label="Status" data={request.status}>
           <Tooltip
             arrow
             placement="right"
@@ -97,71 +111,22 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
           >
             <InfoOutlined fontSize="small" />
           </Tooltip>
-        </>
-      ),
-      accessor: 'status',
-      Filter: SelectionColumnFilter,
-      filter: 'includes',
-      selectionOptions: ['SUCCESS', 'IN_PROGRESS', 'ERROR', 'CANCELED'],
-    },
-    {
-      Header: 'Created',
-      accessor: 'created',
-      width: 235,
-    },
-    {
-      Header: 'Updated',
-      accessor: 'updated',
-      width: 235,
-    },
-  ]
-
-  const childColumns = useRequestsIndexTableColumns()
-
-  const childData = formatBeergardenRequests(request.children)
-
-  const data = [
-    {
-      command: SystemLink(request.command, [
-        request.namespace,
-        request.system,
-        request.system_version,
-        `commands/${request.command}`,
-      ]),
-      namespace: SystemLink(request.namespace, [request.namespace]),
-      system: SystemLink(request.system, [request.namespace, request.system]),
-      version: SystemLink(request.system_version, [
-        request.namespace,
-        request.system,
-        request.system_version,
-      ]),
-      created: dateFormatted(new Date(request.created_at)),
-      instance: request.instance_name,
-      status: request.status,
-      updated: dateFormatted(new Date(request.updated_at)),
-    },
-  ]
-
-  return (
-    <>
-      <Table
-        tableKey={`${request.id}RequestIndex`}
-        data={data}
-        columns={columns}
-        hideToolbar={true}
-        hidePagination={true}
-        hideSort={true}
-      />
-      {request.comment ? (
-        <Card>
-          <b>Comment:</b>
-          <br />
-          {request.comment}
-        </Card>
-      ) : null}
+        </LabeledData>
+        <LabeledData
+          label="Created"
+          data={dateFormatted(new Date(request.created_at))}
+        />
+        <LabeledData
+          label="Updated"
+          data={dateFormatted(new Date(request.updated_at))}
+        />
+        {request.comment && (
+          <LabeledData label="Comment" data={request.comment || ''} />
+        )}
+      </Box>
       {request.children[0] ? (
         <>
-          <Divider />
+          <MyDivider />
           <Typography variant="h6">
             <IconButton
               onClick={() => {
@@ -186,7 +151,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
           ) : null}
         </>
       ) : null}
-    </>
+    </Paper>
   )
 }
 
