@@ -54,11 +54,14 @@ const RequestView = () => {
 
   const { addCallback, removeCallback } = SocketContainer.useContainer()
 
-  const [{ data, error }, refetch] = useAxios({
-    url: '/api/v1/requests/' + id,
-    method: 'get',
-    withCredentials: authEnabled,
-  }, {useCache: false})
+  const [{ data, error }, refetch] = useAxios(
+    {
+      url: '/api/v1/requests/' + id,
+      method: 'get',
+      withCredentials: authEnabled,
+    },
+    { useCache: false },
+  )
 
   useEffect(() => {
     addCallback('request complete', (event) => {
@@ -167,7 +170,7 @@ const RequestView = () => {
         <Alert severity="error">{error.message}</Alert>
       ) : (
         <Backdrop open={true}>
-          <CircularProgress color="inherit" />
+          <CircularProgress data-testid="dataLoading" color="inherit" />
         </Backdrop>
       )}
     </>
