@@ -4,6 +4,7 @@ import { DebugContainer } from 'containers/DebugContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import Cookies from 'universal-cookie'
 
 export interface TokenResponse {
   access: string
@@ -11,7 +12,7 @@ export interface TokenResponse {
 }
 
 export const useToken = (onTokenInvalid: () => void) => {
-  const accessToken = useRef<string>()
+  const cookies = new Cookies()
   const tokenRefreshTimerId = useRef<number>()
   const [tokenExpiration, setTokenExpiration] = useState<Date | undefined>(
     undefined,
@@ -42,13 +43,13 @@ export const useToken = (onTokenInvalid: () => void) => {
       if (DEBUG_AUTH) {
         console.log('setToken invoked')
       }
-      accessToken.current = access
       const exp = jwtDecode<JwtPayload>(access).exp as number
       const expirationDate = new Date(exp * 1000)
-
+      cookies.set('token', access, { path: '/', expires: expirationDate })
       setTokenExpiration(expirationDate)
       setRefreshToken(refresh)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [DEBUG_AUTH, setRefreshToken],
   )
 
@@ -93,23 +94,27 @@ export const useToken = (onTokenInvalid: () => void) => {
   }, [DEBUG_AUTH])
 
   const isAuthenticated = useCallback(() => {
-    return !!accessToken.current
+    return !!cookies.get('token')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const clearToken = useCallback(() => {
     if (DEBUG_AUTH) {
       console.log('clearing token')
     }
-    accessToken.current = ''
+    cookies.remove('token', { path: '/' })
+    cookies.remove('user', { path: '/' })
+    cookies.remove('globalPerms', { path: '/' })
+    cookies.remove('domainPerms', { path: '/' })
     setRefreshToken(null)
     clearAutomaticTokenRefresh()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [DEBUG_AUTH, setRefreshToken, clearAutomaticTokenRefresh])
 
   const requestInterceptor = useCallback(
     (config: AxiosRequestConfig): AxiosRequestConfig => {
       if (!config.headers) config.headers = {}
-
-      config.headers.Authorization = `Bearer ${accessToken.current}`
+      config.headers.Authorization = `Bearer ${cookies.get('token')}`
 
       if (DEBUG_AUTH) {
         console.log('config in requestInterceptor', config)
@@ -117,6 +122,7 @@ export const useToken = (onTokenInvalid: () => void) => {
 
       return config
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [DEBUG_AUTH],
   )
 
@@ -130,14 +136,13 @@ export const useToken = (onTokenInvalid: () => void) => {
           )
         }
       }
-      if (error.response?.status === 401 && accessToken.current) {
-        if (accessToken) {
-          clearToken()
-          onTokenInvalid()
-        }
+      if (error.response?.status === 401 && cookies.get('token')) {
+        clearToken()
+        onTokenInvalid()
       }
       return Promise.reject(error)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [DEBUG_AUTH, clearToken, onTokenInvalid],
   )
 
@@ -172,5 +177,6 @@ export const useToken = (onTokenInvalid: () => void) => {
     setToken,
     isAuthenticated,
     onTokenRefreshRequired,
+    tokenExpiration,
   }
 }

@@ -59,6 +59,7 @@ describe('UsersIndex', () => {
 
   test('no add user button if no permission', async () => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TUser)
     render(
       <LoggedInProviders>
         <UsersIndex />

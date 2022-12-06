@@ -32,9 +32,10 @@ describe('Permissions Container', () => {
     await waitFor(() => {
       expect(result.current.hasPermission('user:create')).toBeTruthy()
     })
-    expect(consoleSpy).toHaveBeenCalledWith('Setting userObj:', null)
+    expect(consoleSpy).toHaveBeenCalledWith('Setting user perms', undefined)
     expect(consoleSpy).toHaveBeenCalledWith('authEnabled', false)
-    expect(consoleSpy).toHaveBeenCalledWith('user object', null)
+    expect(consoleSpy).toHaveBeenCalledWith('globalPerms', [])
+    expect(consoleSpy).toHaveBeenCalledWith('domainPerms', {})
   })
 
   test('no logs if disabled', async () => {
