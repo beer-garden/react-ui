@@ -26,7 +26,7 @@ const Navigator = ({ message, link }: NavigatorProps) => {
     <Box>
       <Typography>ERROR</Typography>
       <Button onClick={() => navigate(link, { replace: true })}>
-        GO TO {`${message}`}
+        {`${message}`}
       </Button>
     </Box>
   )
@@ -41,14 +41,24 @@ const checkContext = (
   commandName: string | undefined,
   system: StrippedSystem | undefined,
   command: AugmentedCommand | undefined,
+  isReplay: boolean,
+  requestModel: CommandViewRequestModel | undefined,
 ): JSX.Element | undefined => {
+  if (isReplay && !requestModel) {
+    return (
+      <Navigator
+        message={'IRRECOVERABLE ERROR IN RE-EXECUTION, GO TO systems'}
+        link={'/systems'}
+      />
+    )
+  }
   if (!namespace) {
-    return <Navigator message={'systems'} link={'/systems'} />
+    return <Navigator message={'GO TO systems'} link={'/systems'} />
   }
   if (!systemName) {
     return (
       <Navigator
-        message={`systems : ${namespace}`}
+        message={`GO TO systems : ${namespace}`}
         link={`/systems/${namespace}`}
       />
     )
@@ -56,7 +66,7 @@ const checkContext = (
   if (!version || !commandName || !system || !command) {
     return (
       <Navigator
-        message={`systems : ${namespace} : ${systemName}`}
+        message={`GO TO systems : ${namespace} : ${systemName}`}
         link={`/systems/${namespace}/${systemName}`}
       />
     )

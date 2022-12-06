@@ -12,7 +12,7 @@ export type CommandViewModelParameters =
     }
   | EmptyObject
 
-interface CommandViewModelComment {
+export interface CommandViewModelComment {
   comment: string
 }
 

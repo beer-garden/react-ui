@@ -22,6 +22,8 @@ describe('CommandView', () => {
       commandName: string | undefined,
       system: StrippedSystem | undefined,
       command: AugmentedCommand | undefined,
+      isReplay: boolean,
+      requestModel: CommandViewRequestModel | undefined,
     ]
   >
 
@@ -63,6 +65,8 @@ describe('CommandView', () => {
       setCommand: undefined,
       isJob: false,
       setIsJob: undefined,
+      isReplay: true,
+      setIsReplay: undefined,
       job: undefined,
       setJob: undefined,
       requestModel: theRequestModel,

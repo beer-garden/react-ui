@@ -185,4 +185,4 @@ const useCommands = () => {
   }
 }
 
-export { commandsFromSystems, useCommands }
+export { commandsFromSystems, commandsPairer, useCommands }

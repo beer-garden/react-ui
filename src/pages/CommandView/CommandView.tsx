@@ -23,7 +23,27 @@ const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { namespace, systemName, version, commandName } = useParams()
   const context = useContext(JobRequestCreationContext)
-  const { system, command, isJob, requestModel } = context
+  const {
+    system,
+    setSystem,
+    command,
+    setCommand,
+    isJob,
+    requestModel,
+    setRequestModel,
+    isReplay,
+    setIsReplay,
+  } = context
+
+  // handle leaving the page for any reason
+  // useEffect(() => {
+  //   return () => {
+  //     setSystem && setSystem(undefined)
+  //     setCommand && setCommand(undefined)
+  //     setRequestModel && setRequestModel(undefined)
+  //     setIsReplay && setIsReplay(false)
+  //   }
+  // }, [setCommand, setIsReplay, setRequestModel, setSystem])
 
   const checkedParams = checkContext(
     namespace,
@@ -32,6 +52,8 @@ const CommandView = () => {
     commandName,
     system,
     command,
+    isReplay,
+    requestModel,
   )
 
   if (checkedParams) return checkedParams
@@ -56,7 +78,7 @@ const CommandView = () => {
 
   let model: CommandViewModel
 
-  if (requestModel) {
+  if (isReplay && requestModel) {
     model = requestModel
   } else {
     model = getModel(parameters, theSystem.instances, isJob)

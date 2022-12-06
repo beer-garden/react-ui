@@ -16,6 +16,7 @@ import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { RequestViewOutput, RequestViewTable } from 'pages/RequestView'
+import { RemakeRequestButton } from 'pages/RequestView'
 import { getParentLinks } from 'pages/RequestView/requestViewHelpers'
 import { useContext, useEffect, useState } from 'react'
 import { Link as RouterLink, useParams } from 'react-router-dom'
@@ -57,8 +58,19 @@ const RequestView = () => {
     }
   }, [data, error])
 
+  if (!request) {
+    return error ? (
+      <Alert severity="error">{error.message}</Alert>
+    ) : (
+      <Backdrop open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
+  }
+
   return (
     <>
+      <RemakeRequestButton request={request} />
       <PageHeader title="Request View" description={String(id)} />
       <Divider />
       {request ? (
