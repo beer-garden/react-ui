@@ -164,7 +164,7 @@ export const TRequest: Request = {
   namespace: 'test namespace',
   output: 'test output',
   output_type: 'STRING',
-  parameters: [],
+  parameters: {},
   parent: null,
   status: 'SUCCESS',
   system: 'test system',

@@ -10,10 +10,9 @@ import {
 import { useParams } from 'react-router-dom'
 import { Command, System } from 'types/backend-types'
 import {
-  AugmentedCommand,
   CommandIndexTableData,
   ObjectWithStringKeys,
-  StrippedSystem,
+  SystemCommandPair,
 } from 'types/custom-types'
 
 interface IParam extends ObjectWithStringKeys {
@@ -70,11 +69,6 @@ export const useCommands = () => {
     includeHidden,
     hiddenOnChange,
   }
-}
-
-type SystemCommandPair = {
-  system: StrippedSystem
-  command: AugmentedCommand
 }
 
 const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
