@@ -21,56 +21,6 @@ interface IParam extends ObjectWithStringKeys {
   version: string
 }
 
-export const useCommands = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const [commands, setCommands] = useState<CommandIndexTableData[]>([])
-  const [systemId, setSystemId] = useState('')
-  const [includeHidden, setIncludeHidden] = useState(false)
-  const { namespace, systemName, version } = useParams() as IParam
-
-  const [{ data, error }] = useAxios({
-    url: '/api/v1/systems',
-    method: 'get',
-    withCredentials: authEnabled,
-  })
-
-  useEffect(() => {
-    if (data && !error) {
-      setCommands(
-        commandsFromSystems(
-          data,
-          includeHidden,
-          namespace,
-          systemName,
-          version,
-        ),
-      )
-
-      const foundSystem = data.find(
-        (system: System) => system.name === systemName,
-      )
-      if (foundSystem) setSystemId(foundSystem.id)
-    }
-  }, [data, error, namespace, version, systemName, includeHidden])
-
-  const hiddenOnChange = useCallback(
-    (event: ReactChangeEvent<HTMLInputElement>) => {
-      setIncludeHidden(event.target.checked)
-    },
-    [],
-  )
-
-  return {
-    commands,
-    namespace,
-    systemName,
-    systemId,
-    version,
-    includeHidden,
-    hiddenOnChange,
-  }
-}
-
 const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
   const { system, command } = pair
 
@@ -81,7 +31,7 @@ const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
     command: command.name,
     description: command.description ?? 'No description',
     executeButton: <ExecuteButton system={system} command={command} />,
-    isHidden: command.hidden
+    isHidden: command.hidden,
   }
 }
 
@@ -134,7 +84,7 @@ const commandsPairer = (system: System): Array<SystemCommandPair> => {
  */
 const commandsFromSystems = (
   systems: System[],
-  includeHidden = false,
+  includeHidden?: boolean,
   namespace?: string,
   systemName?: string,
   version?: string,
@@ -184,3 +134,55 @@ const commandsFromSystems = (
 
   return systemCommandPairs.map(commandMapper)
 }
+
+const useCommands = () => {
+  const { authEnabled } = ServerConfigContainer.useContainer()
+  const [commands, setCommands] = useState<CommandIndexTableData[]>([])
+  const [systemId, setSystemId] = useState('')
+  const [includeHidden, setIncludeHidden] = useState(false)
+  const { namespace, systemName, version } = useParams() as IParam
+
+  const [{ data, error }] = useAxios({
+    url: '/api/v1/systems',
+    method: 'get',
+    withCredentials: authEnabled,
+  })
+
+  useEffect(() => {
+    if (data && !error) {
+      setCommands(
+        commandsFromSystems(
+          data,
+          includeHidden,
+          namespace,
+          systemName,
+          version,
+        ),
+      )
+
+      const foundSystem = data.find(
+        (system: System) => system.name === systemName,
+      )
+      if (foundSystem) setSystemId(foundSystem.id)
+    }
+  }, [data, error, namespace, version, systemName, includeHidden])
+
+  const hiddenOnChange = useCallback(
+    (event: ReactChangeEvent<HTMLInputElement>) => {
+      setIncludeHidden(event.target.checked)
+    },
+    [],
+  )
+
+  return {
+    commands,
+    namespace,
+    systemName,
+    systemId,
+    version,
+    includeHidden,
+    hiddenOnChange,
+  }
+}
+
+export { commandsFromSystems, useCommands }
