@@ -18,17 +18,22 @@ const SystemsIndex = () => {
   const { getSystems } = useSystems()
 
   useEffect(() => {
+    let mounted = true
     getSystems()
       .then((response) => {
-        setSystems(response.data)
+        if (mounted) setSystems(response.data)
       })
       .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e,
-          doNotAutoDismiss: true,
-        })
+        if (mounted)
+          setAlert({
+            severity: 'error',
+            message: e,
+            doNotAutoDismiss: true,
+          })
       })
+    return () => {
+      mounted = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

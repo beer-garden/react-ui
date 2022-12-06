@@ -62,15 +62,37 @@ interface RequestsSearchApi {
   start: number
 }
 
-type RequestsIndexTableData = {
-  command: JSX.Element
+type RequestsViewTableData = {
+  command: string
   namespace: string
   system: string
-  version: JSX.Element
+  version: string
+  instance: string
+  status: string // TODO
+  created: string // TODO
+  updated: string
+  commandLink: string
+  versionLink: string
+  systemLink: string
+  namespaceLink: string
+}
+
+type RequestsIndexTableData = {
+  command: string
+  namespace: string
+  system: string
+  version: string
   instance: string
   status: string // TODO
   created: string // TODO
   comment: string | null
+  commandLink: string | undefined
+  versionLink: string
+  id?: string
+  parentId?: string
+  parentCommand?: string
+  hasParent: boolean
+  isHidden: boolean
 }
 
 type RequestsIndexTableHeaders = {
@@ -90,6 +112,7 @@ export type {
   RequestsIndexTableData,
   RequestsIndexTableHeaders,
   RequestsSearchApi,
+  RequestsViewTableData,
   SearchableColumn,
   SearchableColumnData,
   SearchFilter,

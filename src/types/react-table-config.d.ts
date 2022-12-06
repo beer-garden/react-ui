@@ -114,6 +114,7 @@ declare module 'react-table' {
       UseSortByColumnOptions<D> {
     align?: string
     canHide?: boolean
+    linkKey?: string
   }
 
   export interface ColumnInstance<

@@ -16,6 +16,8 @@ import { LabeledData } from 'components/LabeledData'
 import { Table } from 'components/Table'
 import { useRequestsIndexTableColumns } from 'pages/RequestsIndex'
 import { useState } from 'react'
+import { useMemo } from 'react'
+import { Column } from 'react-table'
 import { Request } from 'types/backend-types'
 import { formatBeergardenRequests } from 'utils/dataHelpers'
 import { dateFormatted } from 'utils/date-formatter'
@@ -60,7 +62,6 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
   const [showChildren, setShowChildren] = useState(false)
 
   const childColumns = useRequestsIndexTableColumns()
-
   const childData = formatBeergardenRequests(request.children)
 
   return (

@@ -1,4 +1,3 @@
-import { DefaultCellRenderer } from 'components/Table/defaults'
 import {
   DateRangeColumnFilter,
   NumberRangeColumnFilter,
@@ -9,14 +8,16 @@ import { Column } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 export interface JobTableData extends ObjectWithStringKeys {
-  name: JSX.Element
+  name: string
   status: string
-  system: JSX.Element
+  system: string
   instance: string
   command: string
   nextRun: string
   success: number
   error: number
+  nameLink: string
+  systemLink: string
 }
 
 export const useJobColumns = () => {
@@ -24,8 +25,8 @@ export const useJobColumns = () => {
     () => [
       {
         Header: 'Name',
-        Cell: DefaultCellRenderer,
         accessor: 'name',
+        linkKey: 'nameLink',
         filter: 'fuzzyText',
         minWidth: 120,
         maxWidth: 180,
@@ -43,9 +44,9 @@ export const useJobColumns = () => {
       },
       {
         Header: 'System',
-        Cell: DefaultCellRenderer,
         accessor: 'system',
         filter: 'fuzzyText',
+        linkKey: 'systemLink',
         minWidth: 120,
         maxWidth: 180,
         width: 130,

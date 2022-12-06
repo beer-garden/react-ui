@@ -128,7 +128,7 @@ describe('Routes', () => {
           ).not.toBeInTheDocument(),
         )
         expect(
-          screen.getByRole('heading', { name: 'Systems' }),
+          screen.getByRole('textbox', { name: 'Username' }),
         ).toBeInTheDocument()
       })
 
@@ -144,7 +144,7 @@ describe('Routes', () => {
           ).not.toBeInTheDocument(),
         )
         expect(
-          screen.getByRole('heading', { name: 'Systems' }),
+          screen.getByRole('textbox', { name: 'Username' }),
         ).toBeInTheDocument()
       })
 
@@ -160,7 +160,7 @@ describe('Routes', () => {
           ).not.toBeInTheDocument(),
         )
         expect(
-          screen.getByRole('heading', { name: 'Systems' }),
+          screen.getByRole('textbox', { name: 'Username' }),
         ).toBeInTheDocument()
       })
 
@@ -176,7 +176,7 @@ describe('Routes', () => {
           ).not.toBeInTheDocument(),
         )
         expect(
-          screen.getByRole('heading', { name: 'Systems' }),
+          screen.getByRole('textbox', { name: 'Username' }),
         ).toBeInTheDocument()
       })
 
@@ -197,7 +197,7 @@ describe('Routes', () => {
           ).not.toBeInTheDocument(),
         )
         expect(
-          screen.getByRole('heading', { name: 'Systems' }),
+          screen.getByRole('textbox', { name: 'Username' }),
         ).toBeInTheDocument()
       })
     })

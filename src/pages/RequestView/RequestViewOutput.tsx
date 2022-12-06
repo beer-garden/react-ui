@@ -36,6 +36,7 @@ const RequestViewOutput = ({
   theme,
 }: RequestViewOutputProps) => {
   const [showAsRawData, setShowAsRawData] = useState(false)
+  const textColor = theme === 'dark' ? 'text.secondary' : 'common.white'
 
   const downloadUrl = window.URL.createObjectURL(
     new Blob([request?.output || '']),
@@ -43,8 +44,12 @@ const RequestViewOutput = ({
 
   return (
     <Card sx={{ width: 1 }}>
-      <CardActions>
-        <Typography style={{ flex: 1 }} variant="h6">
+      <CardActions
+        sx={{
+          backgroundColor: 'primary.main',
+        }}
+      >
+        <Typography style={{ flex: 1 }} color={textColor} variant="h6">
           Output
         </Typography>
         {!['HTML', 'JSON'].includes(request.output_type) ? null : (
@@ -63,6 +68,7 @@ const RequestViewOutput = ({
           />
         )}
         <Link
+          color={textColor}
           href={downloadUrl}
           download={`${request.id}.${
             ['STRING', null].includes(request.output_type)
@@ -70,21 +76,24 @@ const RequestViewOutput = ({
               : request.output_type.toLowerCase()
           }`}
         >
-          <IconButton size="small" aria-label="download output">
+          <IconButton color="inherit" size="small" aria-label="download output">
             <DownloadIcon />
           </IconButton>
         </Link>
-        <IconButton
-          size="small"
-          onClick={() => setExpandOutput(!expandOutput)}
-          aria-label="expand output"
-        >
-          {expandParameter || expandOutput ? (
-            <ExpandLessIcon />
-          ) : (
-            <ExpandMoreIcon />
-          )}
-        </IconButton>
+        <Typography color={textColor}>
+          <IconButton
+            size="small"
+            color="inherit"
+            onClick={() => setExpandOutput(!expandOutput)}
+            aria-label="expand output"
+          >
+            {expandParameter || expandOutput ? (
+              <ExpandMoreIcon />
+            ) : (
+              <ExpandLessIcon />
+            )}
+          </IconButton>
+        </Typography>
       </CardActions>
       <Divider />
       <CardContent>

@@ -4,6 +4,7 @@ import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Cookies from 'universal-cookie'
 import { createContainer } from 'unstated-next'
 
 enum AuthEvents {
@@ -16,7 +17,8 @@ const useAuth = () => {
   const { updateSocketToken } = SocketContainer.useContainer()
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
-  const [user, _setUser] = useState<string | null>(null)
+  const cookies = new Cookies()
+  const [user, _setUser] = useState<string | null>(cookies.get('user'))
 
   const setUser = useCallback(
     (userName: string | null) => {
@@ -24,7 +26,13 @@ const useAuth = () => {
         console.log('Setting username:', userName)
       }
       _setUser(userName)
+      if (userName) {
+        cookies.set('user', userName, { path: '/' })
+      } else {
+        cookies.remove('user', { path: '/' })
+      }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [DEBUG_LOGIN],
   )
 
@@ -32,8 +40,13 @@ const useAuth = () => {
     setUser(null)
   }, [setUser])
 
-  const { clearToken, setToken, isAuthenticated, onTokenRefreshRequired } =
-    useToken(onTokenInvalid)
+  const {
+    clearToken,
+    setToken,
+    isAuthenticated,
+    onTokenRefreshRequired,
+    tokenExpiration,
+  } = useToken(onTokenInvalid)
 
   useEffect(() => {
     window.addEventListener(
@@ -52,7 +65,7 @@ const useAuth = () => {
   const logout = useCallback(() => {
     clearToken()
     setUser(null)
-    navigate('/')
+    navigate('/login')
   }, [clearToken, setUser, navigate])
 
   const login = useCallback(
@@ -80,11 +93,11 @@ const useAuth = () => {
 
   return {
     user,
-    setUser,
     login,
     logout,
     refreshToken: onTokenRefreshRequired,
     isAuthenticated,
+    tokenExpiration,
   }
 }
 
