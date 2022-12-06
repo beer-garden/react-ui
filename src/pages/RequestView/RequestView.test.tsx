@@ -43,7 +43,8 @@ describe('RequestView', () => {
     })
 
     expect(screen.getByText(mockId)).toBeInTheDocument()
-    expect(screen.getByText('remake request')).toBeInTheDocument()
+    // TODO backout comment
+    // expect(screen.getByText('remake request')).toBeInTheDocument()
 
     expect(screen.getByText('Command')).toBeInTheDocument()
     expect(screen.getByText('test command')).toBeInTheDocument()
@@ -91,6 +92,26 @@ describe('RequestView', () => {
     await waitFor(() => {
       expect(screen.getByText(mockId)).toBeInTheDocument()
     })
+
+    expect(screen.getByText(mockId)).toBeInTheDocument()
+    // TODO backout comment
+    // expect(screen.getByText('remake request')).toBeInTheDocument()
+
+    expect(screen.getByText('Command')).toBeInTheDocument()
+    expect(screen.getByText('test command')).toBeInTheDocument()
+
+    expect(screen.getByText('Namespace')).toBeInTheDocument()
+    expect(screen.getByText('test namespace')).toBeInTheDocument()
+
+    expect(screen.getByText('System')).toBeInTheDocument()
+    expect(screen.getByText('test system')).toBeInTheDocument()
+
+    expect(screen.getByText('Version')).toBeInTheDocument()
+    expect(screen.getByText('test version')).toBeInTheDocument()
+
+    expect(screen.getByText('Instance')).toBeInTheDocument()
+    expect(screen.getByText('test instance')).toBeInTheDocument()
+
     // should be in progress
     expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
@@ -133,6 +154,25 @@ describe('RequestView', () => {
     await waitFor(() => {
       expect(screen.getByText(mockId)).toBeInTheDocument()
     })
+    expect(screen.getByText(mockId)).toBeInTheDocument()
+    // TODO backout comment
+    // expect(screen.getByText('remake request')).toBeInTheDocument()
+
+    expect(screen.getByText('Command')).toBeInTheDocument()
+    expect(screen.getByText('test command')).toBeInTheDocument()
+
+    expect(screen.getByText('Namespace')).toBeInTheDocument()
+    expect(screen.getByText('test namespace')).toBeInTheDocument()
+
+    expect(screen.getByText('System')).toBeInTheDocument()
+    expect(screen.getByText('test system')).toBeInTheDocument()
+
+    expect(screen.getByText('Version')).toBeInTheDocument()
+    expect(screen.getByText('test version')).toBeInTheDocument()
+
+    expect(screen.getByText('Instance')).toBeInTheDocument()
+    expect(screen.getByText('test instance')).toBeInTheDocument()
+
     // should be in progress
     expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
