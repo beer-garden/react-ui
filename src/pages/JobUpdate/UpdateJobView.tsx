@@ -1,7 +1,8 @@
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { useJobRequestCreation } from 'components/JobRequestCreation'
+import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { getJobSchema, getSchema, getUiSchema } from 'formHelpers'
@@ -9,7 +10,6 @@ import { formatTrigger } from 'formHelpers/get-submit-argument'
 import { useSystems } from 'hooks/useSystems'
 import { UpdateJobForm } from 'pages/JobUpdate/UpdateJobForm'
 import { useEffect, useState } from 'react'
-import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { Job, System } from 'types/backend-types'
 
@@ -79,20 +79,11 @@ const UpdateJobView = () => {
         />
       </Box>
       {debugEnabled && (
-        <Box pt={2} display="flex" alignItems="flex-start">
-          <Box width={1 / 3}>
-            <h3>Job</h3>
-            <ReactJson src={job || {}} />
-          </Box>
-          <Box width={1 / 3}>
-            <h3>Schema</h3>
-            <ReactJson src={schema} />
-          </Box>
-          <Box width={1 / 3}>
-            <h3>UI Schema</h3>
-            <ReactJson src={uiSchema} />
-          </Box>
-        </Box>
+        <Stack direction="row" spacing={2}>
+          <JsonCard title="Job" data={job || {}} />
+          <JsonCard title="Schema" data={schema} />
+          <JsonCard title="UI Schema" data={uiSchema} />
+        </Stack>
       )}
     </Box>
   )

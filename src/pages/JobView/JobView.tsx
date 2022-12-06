@@ -199,7 +199,7 @@ const JobView = () => {
       )}
       <PageHeader title="Job" description={description} />
       <Divider />
-      <Stack direction={'column'} spacing={2}>
+      <Stack direction="column" spacing={2}>
         <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
           {job ? (
             <Box
@@ -244,7 +244,7 @@ const JobView = () => {
             <CircularProgress data-testid="dataLoading" />
           )}
         </Paper>
-        <Stack direction={'row'} spacing={2}>
+        <Stack direction="row" spacing={2}>
           {showTrigger && (
             <JsonCard
               title="Trigger"

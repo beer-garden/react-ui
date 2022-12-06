@@ -1,10 +1,10 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
+import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
 import { CustomFileWidget } from 'pages/CommandView'
 import { createRef, useState } from 'react'
-import ReactJson from 'react-json-view'
 import { Job } from 'types/backend-types'
 import { ObjectWithStringKeys, SnackbarState } from 'types/custom-types'
 
@@ -137,8 +137,7 @@ const UpdateJobForm = ({
       </Box>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
       <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>
-        <h3>Preview</h3>
-        <ReactJson src={displayModel} />
+        <JsonCard title="Preview" data={displayModel} />
       </Box>
     </Box>
   )
