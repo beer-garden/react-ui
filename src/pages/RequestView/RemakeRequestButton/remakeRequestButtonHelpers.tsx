@@ -1,5 +1,6 @@
 import { Button, Tooltip } from '@material-ui/core'
-import { CommandFormatter, commandsPairer } from 'hooks/useCommands'
+import { CommandFormatter } from 'hooks/useCommandParameterized'
+import { commandsPairer } from 'hooks/useCommands'
 import { Request } from 'types/backend-types'
 import { System } from 'types/backend-types'
 import { SystemCommandPair } from 'types/custom-types'
@@ -31,7 +32,7 @@ interface CannotReExecuteButtonProps {
 
 const CannotReExecuteButton = ({ message }: CannotReExecuteButtonProps) => {
   return (
-    <Tooltip title={message}>
+    <Tooltip title={message} data-testid="cannot-execute-button">
       <Button
         component="div"
         disabled

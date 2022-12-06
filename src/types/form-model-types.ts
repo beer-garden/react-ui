@@ -6,9 +6,21 @@ import {
 } from 'types/backend-types'
 import { EmptyObject } from 'types/custom-types'
 
+export type CommandViewModelParametersArrayValueType = Array<
+  string | number | boolean | object | null
+>
+
+export type CommandViewModelParametersValueType =
+  | string
+  | number
+  | boolean
+  | object
+  | null
+  | CommandViewModelParametersArrayValueType
+
 export type CommandViewModelParameters =
   | {
-      [key: string]: string | number | boolean | object | null
+      [key: string]: CommandViewModelParametersValueType
     }
   | EmptyObject
 

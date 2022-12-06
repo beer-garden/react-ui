@@ -1,6 +1,7 @@
 import { render, waitFor } from '@testing-library/react'
 import { screen } from '@testing-library/react'
 import {
+  emptyJobRequestCreationProviderState,
   JobRequestCreationContext,
   JobRequestCreationProviderState,
 } from 'components/JobRequestCreation'
@@ -59,18 +60,11 @@ describe('CommandView', () => {
       },
     }
     const TContextValues: JobRequestCreationProviderState = {
+      ...emptyJobRequestCreationProviderState,
       system: theSystem as StrippedSystem,
-      setSystem: undefined,
       command: theCommand,
-      setCommand: undefined,
-      isJob: false,
-      setIsJob: undefined,
       isReplay: true,
-      setIsReplay: undefined,
-      job: undefined,
-      setJob: undefined,
       requestModel: theRequestModel,
-      setRequestModel: undefined,
     }
 
     render(

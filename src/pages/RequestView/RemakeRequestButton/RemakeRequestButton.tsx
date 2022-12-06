@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
-import { useCommands } from 'hooks/useCommands'
+import { useCommandsParameterized } from 'hooks/useCommandParameterized'
 import {
   buttonText,
   CannotReExecuteButton,
@@ -34,14 +34,15 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     parameters: theParameters,
     comment: theComment,
   } = request || DummyRequest
-  const { commands: systemCommandPair } = useCommands<SystemCommandPair>(
-    systemCommandPairFromArgs(
-      commandName,
-      systemName,
-      systemVersion,
-      namespace,
-    ),
-  )
+  const { commands: systemCommandPair } =
+    useCommandsParameterized<SystemCommandPair>(
+      systemCommandPairFromArgs(
+        commandName,
+        systemName,
+        systemVersion,
+        namespace,
+      ),
+    )
 
   if (
     !setSystem ||

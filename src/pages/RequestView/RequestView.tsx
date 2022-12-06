@@ -3,7 +3,6 @@ import {
   Alert,
   Backdrop,
   Breadcrumbs,
-  Button,
   CircularProgress,
   Stack,
   Typography,
@@ -19,7 +18,7 @@ import { RequestViewOutput, RequestViewTable } from 'pages/RequestView'
 import { RemakeRequestButton } from 'pages/RequestView'
 import { getParentLinks } from 'pages/RequestView/requestViewHelpers'
 import { useContext, useEffect, useState } from 'react'
-import { Link as RouterLink, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
 
 const RequestView = () => {

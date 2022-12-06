@@ -31,8 +31,8 @@ export interface JobRequestCreationProviderState {
     | undefined
 }
 
-const JobRequestCreationContext =
-  createContext<JobRequestCreationProviderState>({
+export const emptyJobRequestCreationProviderState: JobRequestCreationProviderState =
+  {
     system: undefined,
     setSystem: undefined,
     command: undefined,
@@ -45,7 +45,12 @@ const JobRequestCreationContext =
     setJob: undefined,
     requestModel: undefined,
     setRequestModel: undefined,
-  })
+  }
+
+const JobRequestCreationContext =
+  createContext<JobRequestCreationProviderState>(
+    emptyJobRequestCreationProviderState,
+  )
 
 const JobRequestCreationProvider = ({
   children,

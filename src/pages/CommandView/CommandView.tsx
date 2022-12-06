@@ -13,8 +13,11 @@ import {
   getValidator,
 } from 'formHelpers'
 import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
-import { checkContext } from 'pages/CommandView/commandViewHelpers'
-import { useContext } from 'react'
+import {
+  checkContext,
+  fixReplayAny,
+} from 'pages/CommandView/commandViewHelpers'
+import { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewModel } from 'types/form-model-types'
@@ -36,14 +39,14 @@ const CommandView = () => {
   } = context
 
   // handle leaving the page for any reason
-  // useEffect(() => {
-  //   return () => {
-  //     setSystem && setSystem(undefined)
-  //     setCommand && setCommand(undefined)
-  //     setRequestModel && setRequestModel(undefined)
-  //     setIsReplay && setIsReplay(false)
-  //   }
-  // }, [setCommand, setIsReplay, setRequestModel, setSystem])
+  useEffect(() => {
+    return () => {
+      setSystem && setSystem(undefined)
+      setCommand && setCommand(undefined)
+      setRequestModel && setRequestModel(undefined)
+      setIsReplay && setIsReplay(false)
+    }
+  }, [setCommand, setIsReplay, setRequestModel, setSystem])
 
   const checkedParams = checkContext(
     namespace,
@@ -79,7 +82,7 @@ const CommandView = () => {
   let model: CommandViewModel
 
   if (isReplay && requestModel) {
-    model = requestModel
+    model = fixReplayAny(requestModel, parameters)
   } else {
     model = getModel(parameters, theSystem.instances, isJob)
   }

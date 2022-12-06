@@ -8,7 +8,7 @@ import {
 import { useParams } from 'react-router-dom'
 import { System } from 'types/backend-types'
 
-type CommandFormatter<T> = (
+export type CommandFormatter<T> = (
   systems: System[],
   includeHidden?: boolean,
   namespace?: string,

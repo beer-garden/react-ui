@@ -10,6 +10,8 @@ import {
   CommandViewJobModel,
   CommandViewModel,
   CommandViewModelParameters,
+  CommandViewModelParametersArrayValueType,
+  CommandViewModelParametersValueType,
   CommandViewRequestModel,
 } from 'types/form-model-types'
 
@@ -269,10 +271,98 @@ const dataUrlToFile = (dataUrl: string) => {
   return new File([unsignedByteArray], filename, { type: mimeType })
 }
 
+const _fixReplayAny = (
+  value: CommandViewModelParametersValueType,
+  parameter: Parameter,
+): CommandViewModelParametersValueType => {
+  if (
+    parameter.type === 'Any' ||
+    (parameter.type === 'Dictionary' && parameter.parameters.length === 0)
+  ) {
+    return JSON.stringify(value) as CommandViewModelParametersValueType
+  } else if (
+    parameter.type === 'Dictionary' &&
+    parameter.parameters.length > 0
+  ) {
+    if (!parameter.multi) {
+      let newParams = {}
+
+      for (const theParameter of parameter.parameters) {
+        const paramName = theParameter.key
+        const theValue = value as ObjectWithStringKeys
+
+        if (theValue !== null && paramName in theValue) {
+          const paramValue = theValue[
+            paramName
+          ] as CommandViewModelParametersValueType
+          newParams = {
+            ...newParams,
+            [paramName]: _fixReplayAny(paramValue, theParameter),
+          }
+        }
+      }
+
+      return newParams
+    } else {
+      const theValues = value as CommandViewModelParametersArrayValueType
+      let theResults: CommandViewModelParametersArrayValueType = []
+
+      for (const aValue of theValues) {
+        const aValueAsObject =
+          aValue as unknown as CommandViewModelParametersValueType
+        const theResult = _fixReplayAny(aValueAsObject, {
+          ...parameter,
+          multi: false,
+        })
+        theResults = [...theResults, theResult]
+      }
+
+      return theResults
+    }
+  }
+
+  return value
+}
+
+/**
+ * Fix the troublesome 'Any' and 'Dictionary' types when remaking requests.
+ *
+ * @param requestModel
+ * @param parameters
+ * @returns
+ */
+const fixReplayAny = (
+  requestModel: CommandViewRequestModel,
+  parameters: Parameter[],
+) => {
+  let newParams: CommandViewModelParameters = {}
+
+  for (const parameter of parameters) {
+    const paramName = parameter.key
+    if (paramName in requestModel.parameters) {
+      newParams = {
+        ...newParams,
+        [paramName]: _fixReplayAny(
+          requestModel.parameters[paramName],
+          parameter,
+        ),
+      }
+    }
+  }
+
+  const updatedRequestModel: CommandViewRequestModel = {
+    ...requestModel,
+    parameters: newParams,
+  }
+
+  return updatedRequestModel
+}
+
 export {
   checkContext,
   cleanModelForDisplay,
   dataUrlToFile,
+  fixReplayAny,
   handleByteParametersReset,
   hasDynamicChoices,
   isByteCommand,
