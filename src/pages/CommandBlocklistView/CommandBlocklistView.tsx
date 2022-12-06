@@ -11,7 +11,6 @@ import { useModalColumns, useTableColumns } from 'pages/CommandBlocklistView'
 import { useMemo, useState } from 'react'
 import { BlockedCommand } from 'types/backend-types'
 import { CommandIndexTableData } from 'types/custom-types'
-import { generateCommandName } from 'utils/generateCommandName'
 
 export const CommandBlocklistView = () => {
   const [open, setOpen] = useState(false)
@@ -36,7 +35,7 @@ export const CommandBlocklistView = () => {
           namespace: command.namespace,
           system: command.system,
           command: command.command,
-          name: command.name,
+          isHidden: command.hidden,
         }
       })
   }, [blockList, commands])
@@ -57,7 +56,6 @@ export const CommandBlocklistView = () => {
         system: command.system,
         status: command.status,
         command: command.command,
-        name: generateCommandName(false, command.command),
         executeButton: (
           <IconButton
             size="small"

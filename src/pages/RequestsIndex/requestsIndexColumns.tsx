@@ -1,8 +1,8 @@
-import { DefaultCellRenderer } from 'components/Table/defaults'
 import {
   DateRangeColumnFilter,
   SelectionColumnFilter,
 } from 'components/Table/filters'
+import CommandIconsRenderer from 'components/Table/render/CommandIconsRenderer'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { RequestsIndexTableData } from 'types/request-types'
@@ -12,13 +12,13 @@ const useRequestsIndexTableColumns = () => {
     () => [
       {
         Header: 'Command',
-        Cell: DefaultCellRenderer,
+        Cell: CommandIconsRenderer,
         accessor: 'command',
+        linkKey: 'commandLink',
         width: 120,
         maxWidth: 120,
         minWidth: 95,
         filter: 'fuzzyText',
-        filterOrder: 0,
       },
       {
         Header: 'Namespace',
@@ -27,7 +27,6 @@ const useRequestsIndexTableColumns = () => {
         maxWidth: 140,
         width: 130,
         filter: 'fuzzyText',
-        filterOrder: 1,
       },
       {
         Header: 'System',
@@ -36,16 +35,14 @@ const useRequestsIndexTableColumns = () => {
         maxWidth: 140,
         width: 90,
         filter: 'fuzzyText',
-        filterOrder: 2,
       },
       {
         Header: 'Version',
-        Cell: DefaultCellRenderer,
         accessor: 'version',
+        linkKey: 'versionLink',
         minWidth: 95,
         maxWidth: 120,
         width: 100,
-        filterOrder: 3,
       },
       {
         Header: 'Instance',
@@ -53,7 +50,6 @@ const useRequestsIndexTableColumns = () => {
         minWidth: 95,
         maxWidth: 120,
         width: 100,
-        filterOrder: 4,
       },
       {
         Header: 'Status',
@@ -62,7 +58,6 @@ const useRequestsIndexTableColumns = () => {
         Filter: SelectionColumnFilter,
         filter: 'includes',
         isWide: true,
-        filterOrder: 6,
         selectionOptions: [
           'SUCCESS',
           'ERROR',
@@ -78,13 +73,11 @@ const useRequestsIndexTableColumns = () => {
         filter: 'betweenDates',
         width: 235,
         Filter: DateRangeColumnFilter,
-        filterOrder: 7,
       },
       {
         Header: 'Comment',
         accessor: 'comment',
         width: 250,
-        filterOrder: 5,
       },
     ],
     [],

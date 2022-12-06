@@ -1,5 +1,6 @@
-import { Tooltip, Typography, TypographyTypeMap } from '@mui/material'
+import { Box, Tooltip, Typography, TypographyTypeMap } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 interface OverflowTooltipProps {
   tooltip: string
@@ -7,6 +8,7 @@ interface OverflowTooltipProps {
   css: { [key: string]: unknown }
   variant: TypographyTypeMap['props']['variant']
   color?: string
+  link?: string
 }
 
 const OverflowTooltip = (props: OverflowTooltipProps) => {
@@ -16,7 +18,8 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
   const compareSize = () => {
     if (textElementRef.current) {
       setIsOverflow(
-        textElementRef.current.scrollWidth > textElementRef.current.clientWidth,
+        textElementRef.current.scrollWidth >=
+          textElementRef.current.clientWidth,
       )
     }
   }
@@ -31,20 +34,36 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
 
   return (
     <Tooltip title={props.tooltip} disableHoverListener={!isOverflowed}>
-      <Typography
-        variant={props.variant}
-        component={'span'}
-        ref={textElementRef}
+      <Box
         sx={{
           ...props.css,
           textOverflow: 'ellipsis',
           overflow: 'hidden',
           whiteSpace: 'nowrap',
         }}
-        color={props.color}
       >
-        {props.text}
-      </Typography>
+        {props.link ? (
+          <Link to={props.link}>
+            <Typography
+              variant={props.variant}
+              component={'span'}
+              ref={textElementRef}
+              color={props.color}
+            >
+              {props.text}
+            </Typography>
+          </Link>
+        ) : (
+          <Typography
+            variant={props.variant}
+            component={'span'}
+            ref={textElementRef}
+            color={props.color}
+          >
+            {props.text}
+          </Typography>
+        )}
+      </Box>
     </Tooltip>
   )
 }

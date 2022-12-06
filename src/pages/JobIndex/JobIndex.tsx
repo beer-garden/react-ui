@@ -10,7 +10,7 @@ import { DropzoneArea } from 'material-ui-dropzone'
 import { JobTableData, useJobColumns } from 'pages/JobIndex'
 import { useEffect, useState } from 'react'
 import { useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 import { dateFormatted } from 'utils/date-formatter'
@@ -101,20 +101,9 @@ const JobIndex = () => {
   const jobData = useMemo((): JobTableData[] => {
     return jobs.map((job: Job): JobTableData => {
       return {
-        name: (
-          <Link key={job.name} to={`/jobs/${job.id}`}>
-            {job.name}
-          </Link>
-        ),
+        name: job.name,
         status: job.status || '',
-        system: (
-          <Link
-            key={job.request_template.system}
-            to={`/jobs/${job.request_template.namespace}/${job.request_template.system}`}
-          >
-            {job.request_template.system}
-          </Link>
-        ),
+        system: job.request_template.system,
         instance: job.request_template.instance_name,
         command: job.request_template.command,
         nextRun: job.next_run_time
@@ -122,6 +111,8 @@ const JobIndex = () => {
           : '',
         success: job.success_count || 0,
         error: job.error_count || 0,
+        nameLink: `/jobs/${job.id}`,
+        systemLink: `/systems/${job.request_template.namespace}/${job.request_template.system}/${job.request_template.system_version}`,
       }
     })
   }, [jobs])

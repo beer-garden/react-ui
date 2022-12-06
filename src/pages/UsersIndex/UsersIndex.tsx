@@ -14,7 +14,6 @@ import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useUsers from 'hooks/useUsers'
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Column } from 'react-table'
 import { User } from 'types/backend-types'
 import {
@@ -24,7 +23,7 @@ import {
 } from 'types/custom-types'
 
 interface UserIndexTableData extends ObjectWithStringKeys {
-  username: JSX.Element
+  username: string
   sync?: JSX.Element
 }
 
@@ -34,8 +33,8 @@ const useTableColumns = (sync: boolean) => {
       return [
         {
           Header: 'Username',
-          Cell: DefaultCellRenderer,
           accessor: 'username',
+          linkKey: 'link',
           filter: 'fuzzyText',
           canHide: false,
         },
@@ -49,8 +48,8 @@ const useTableColumns = (sync: boolean) => {
     return [
       {
         Header: 'Username',
-        Cell: DefaultCellRenderer,
         accessor: 'username',
+        linkKey: 'link',
         filter: 'fuzzyText',
         canHide: false,
       },
@@ -110,26 +109,14 @@ export const UsersIndex = () => {
   const userData = useMemo(() => {
     return users.map((user: SyncUser): UserIndexTableData => {
       return {
-        username: (
-          <Box
-            key={`${user.username}_link`}
-            sx={{
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              width: '120px',
-              display: 'block',
-              overflow: 'hidden',
-            }}
-          >
-            <Link to={`/admin/users/${user.username}`}>{user.username}</Link>
-          </Box>
-        ),
+        username: user.username,
         sync:
           syncStatus && user.fullySynced ? (
             <CheckIcon color="success" />
           ) : syncStatus ? (
             <CloseIcon color="error" />
           ) : undefined,
+        link: `/admin/users/${user.username}`,
       }
     })
   }, [syncStatus, users])

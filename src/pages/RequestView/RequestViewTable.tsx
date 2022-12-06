@@ -5,11 +5,18 @@ import {
 } from '@mui/icons-material'
 import { Card, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import { Table } from 'components/Table'
-import { SelectionColumnFilter } from 'components/Table/filters'
+import {
+  DateRangeColumnFilter,
+  SelectionColumnFilter,
+} from 'components/Table/filters'
+import CommandIconsRenderer from 'components/Table/render/CommandIconsRenderer'
 import { useRequestsIndexTableColumns } from 'pages/RequestsIndex'
 import { useState } from 'react'
+import { useMemo } from 'react'
+import { Column } from 'react-table'
 import { Request } from 'types/backend-types'
-import { formatBeergardenRequests, SystemLink } from 'utils/dataHelpers'
+import { RequestsViewTableData } from 'types/request-types'
+import { formatBeergardenRequests } from 'utils/dataHelpers'
 import { dateFormatted } from 'utils/date-formatter'
 
 interface RequestViewTableProps {
@@ -51,94 +58,122 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
 
   const [showChildren, setShowChildren] = useState(false)
 
-  const columns = [
-    {
-      Header: 'Command',
-      accessor: 'command',
-      width: 150,
-      maxWidth: 150,
-    },
-    {
-      Header: 'Namespace',
-      accessor: 'namespace',
-      width: 120,
-    },
-    {
-      Header: 'System',
-      accessor: 'system',
-      width: 150,
-    },
-    {
-      Header: 'Version',
-      accessor: 'version',
-      width: 120,
-    },
-    {
-      Header: 'Instance',
-      accessor: 'instance',
-      width: 100,
-    },
-    {
-      Header: (
-        <>
-          {'Status '}
-          <Tooltip
-            arrow
-            placement="right"
-            title={
-              <>
-                <Typography>
-                  <b>{request.status}</b>
-                </Typography>
-                <Divider />
-                <Typography>{statusMsg}</Typography>
-              </>
-            }
-          >
-            <InfoOutlined fontSize="small" />
-          </Tooltip>
-        </>
-      ),
-      accessor: 'status',
-      Filter: SelectionColumnFilter,
-      filter: 'includes',
-      selectionOptions: ['SUCCESS', 'IN_PROGRESS', 'ERROR', 'CANCELED'],
-    },
-    {
-      Header: 'Created',
-      accessor: 'created',
-      width: 235,
-    },
-    {
-      Header: 'Updated',
-      accessor: 'updated',
-      width: 235,
-    },
-  ]
+  const useRequestViewTableColumns = () => {
+    return useMemo<Column<RequestsViewTableData>[]>(
+      () => [
+        {
+          Header: 'Command',
+          accessor: 'command',
+          Cell: CommandIconsRenderer,
+          linkKey: 'commandLink',
+          width: 120,
+          maxWidth: 120,
+          minWidth: 95,
+          filter: 'fuzzyText',
+        },
+        {
+          Header: 'Namespace',
+          accessor: 'namespace',
+          linkKey: 'namespaceLink',
+          minWidth: 120,
+          maxWidth: 140,
+          width: 130,
+          filter: 'fuzzyText',
+        },
+        {
+          Header: 'System',
+          accessor: 'system',
+          linkKey: 'systemLink',
+          minWidth: 95,
+          maxWidth: 140,
+          width: 90,
+          filter: 'fuzzyText',
+        },
+        {
+          Header: 'Version',
+          accessor: 'version',
+          linkKey: 'versionLink',
+          minWidth: 95,
+          maxWidth: 120,
+          width: 100,
+        },
+        {
+          Header: 'Instance',
+          accessor: 'instance',
+          minWidth: 95,
+          maxWidth: 120,
+          width: 100,
+        },
+        {
+          Header: (
+            <>
+              {'Status '}
+              <Tooltip
+                arrow
+                placement="right"
+                title={
+                  <>
+                    <Typography>
+                      <b>{request.status}</b>
+                    </Typography>
+                    <Divider />
+                    <Typography>{statusMsg}</Typography>
+                  </>
+                }
+              >
+                <InfoOutlined fontSize="small" />
+              </Tooltip>
+            </>
+          ),
+          accessor: 'status',
+          width: 95,
+          Filter: SelectionColumnFilter,
+          filter: 'includes',
+          isWide: true,
+          selectionOptions: [
+            'SUCCESS',
+            'ERROR',
+            'CREATED',
+            'RECEIVED',
+            'IN PROGRESS',
+            'CANCELED',
+          ],
+        },
+        {
+          Header: 'Created',
+          accessor: 'created',
+          filter: 'betweenDates',
+          width: 235,
+          Filter: DateRangeColumnFilter,
+        },
+        {
+          Header: 'Updated',
+          accessor: 'updated',
+          width: 235,
+        },
+      ],
+      [],
+    )
+  }
 
   const childColumns = useRequestsIndexTableColumns()
 
   const childData = formatBeergardenRequests(request.children)
 
-  const data = [
+  const data: RequestsViewTableData[] = [
     {
-      command: SystemLink(request.command, [
-        request.namespace,
-        request.system,
-        request.system_version,
-        `commands/${request.command}`,
-      ]),
-      namespace: SystemLink(request.namespace, [request.namespace]),
-      system: SystemLink(request.system, [request.namespace, request.system]),
-      version: SystemLink(request.system_version, [
-        request.namespace,
-        request.system,
-        request.system_version,
-      ]),
+      command: request.command,
+      namespace: request.namespace,
+      system: request.system,
+      version: request.system_version,
       created: dateFormatted(new Date(request.created_at)),
       instance: request.instance_name,
       status: request.status,
       updated: dateFormatted(new Date(request.updated_at)),
+      commandLink: `/systems/${request.namespace}/${request.system}/${request.system_version}/commands/${request.command}`,
+      systemLink: `/systems/${request.namespace}/${request.system}`,
+      namespaceLink: `/systems/${request.namespace}`,
+      versionLink: `/systems/${request.namespace}/${request.system}/${request.system_version}`,
     },
   ]
 
@@ -147,7 +182,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
       <Table
         tableKey={`${request.id}RequestIndex`}
         data={data}
-        columns={columns}
+        columns={useRequestViewTableColumns()}
         hideToolbar={true}
         hidePagination={true}
         hideSort={true}

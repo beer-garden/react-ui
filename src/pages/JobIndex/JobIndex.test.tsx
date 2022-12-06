@@ -76,7 +76,7 @@ describe('JobIndex', () => {
     expect(links[0].href).toContain(`http://localhost/#/jobs/${TJob.id}`)
     expect(links[1].textContent).toEqual(TJob.request_template.system)
     expect(links[1].href).toContain(
-      `http://localhost/#/jobs/${TJob.request_template.namespace}/${TJob.request_template.system}`,
+      `http://localhost/#/systems/${TJob.request_template.namespace}/${TJob.request_template.system}/${TJob.request_template.system_version}`,
     )
   })
 
