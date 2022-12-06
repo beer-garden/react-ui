@@ -5,13 +5,11 @@ import {
   Card,
   CardActions,
   CardContent,
-  Grid,
-  Modal,
   Toolbar,
   Typography,
 } from '@mui/material'
-import { Divider } from 'components/Divider'
-import { GardenStatusAlert } from 'components/GardenStatusAlert'
+import { LabeledData } from 'components/LabeledData'
+import { ModalWrapper } from 'components/ModalWrapper'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useGardens from 'hooks/useGardens'
 import { Dispatch, SetStateAction, useState } from 'react'
@@ -33,18 +31,6 @@ const GardenAdminCard = ({
   const { deleteGarden } = useGardens()
   const { hasGardenPermission } = PermissionsContainer.useContainer()
 
-  const modalStyle = {
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-    height: 'auto',
-    overflow: 'auto',
-  }
-
   const handleDeleteClick = () => {
     deleteGarden(garden.name)
       .then(() => {
@@ -56,8 +42,6 @@ const GardenAdminCard = ({
         setOpen(false)
       })
       .catch((error) => {
-        console.error('ERROR', error)
-
         if (error.response) {
           setRequestStatus({
             severity: 'error',
@@ -84,16 +68,19 @@ const GardenAdminCard = ({
         </Toolbar>
       </AppBar>
       <CardContent>
-        <Grid container>
-          <Grid>
-            <Box sx={{ mr: 1 }}>Status: </Box>
-          </Grid>
-          <Grid>
-            <GardenStatusAlert status={garden.status} />
-          </Grid>
-        </Grid>
-        Namespaces: {garden.namespaces.length} <br /> Systems:{' '}
-        {garden.systems.length}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, 180px)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
+          <LabeledData label="Status" data={garden.status} alert />
+          <LabeledData label="Namespaces" data={garden.namespaces.length} />
+          <LabeledData label="Systems" data={garden.systems.length} />
+        </Box>
       </CardContent>
       <CardActions>
         {hasGardenPermission('garden:update', garden) && (
@@ -107,48 +94,34 @@ const GardenAdminCard = ({
             Edit configurations
           </Button>
         )}
-        {(garden.connection_type !== 'LOCAL' &&
-        hasGardenPermission('garden:delete', garden)) ? (
-          <>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => setOpen(true)}
-            >
-              Delete
-            </Button>
-            <Modal
-              open={open}
-              onClose={() => setOpen(false)}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={modalStyle}>
-                Confirm Garden Deletion
-                <Divider />
-                Are you sure you want to delete garden: {garden.name}? This will
-                also delete all Systems associated with garden: {garden.name}.
-                <Divider />
-                <Button
-                  onClick={() => handleDeleteClick()}
-                  variant="contained"
-                  color="secondary"
-                  sx={{ mr: 1 }}
-                >
-                  Confirm
-                </Button>
-                <Button
-                  onClick={() => setOpen(false)}
-                  variant="contained"
-                  color="error"
-                >
-                  Cancel
-                </Button>
-              </Box>
-            </Modal>
-          </>
+        {garden.connection_type !== 'LOCAL' &&
+        hasGardenPermission('garden:delete', garden) ? (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => setOpen(true)}
+          >
+            Delete
+          </Button>
         ) : null}
       </CardActions>
+      <ModalWrapper
+        open={open}
+        header="Confirm Garden Deletion"
+        onClose={() => setOpen(false)}
+        onSubmit={() => handleDeleteClick()}
+        onCancel={() => setOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        styleOverrides={{ size: 'sm', top: '-55%' }}
+        content={
+          <Typography variant="body1">
+            {`Are you sure you want to delete garden: ${garden.name}? This
+                  will also delete all Systems associated with garden: 
+                  ${garden.name}.`}
+          </Typography>
+        }
+      />
     </Card>
   )
 }

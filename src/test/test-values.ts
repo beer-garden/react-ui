@@ -171,3 +171,23 @@ export const TRequest: Request = {
   system_version: 'test version',
   updated_at: 1667517254662,
 }
+
+export const TChildRequest: Request = {
+  children: [],
+  command: 'child command',
+  command_type: 'child command type',
+  comment: 'child comment',
+  created_at: 1667517167106,
+  error_class: null,
+  id: 'child1234',
+  instance_name: 'child instance',
+  namespace: 'child namespace',
+  output: 'child output',
+  output_type: 'STRING',
+  parameters: [],
+  parent: TRequest,
+  status: 'ERROR',
+  system: 'child system',
+  system_version: 'child version',
+  updated_at: 1667517244664,
+}

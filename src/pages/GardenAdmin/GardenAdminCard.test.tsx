@@ -13,6 +13,21 @@ import { TAdmin, TUser } from 'test/user-test-values'
 import { GardenAdminCard } from './GardenAdminCard'
 
 describe('GardenAdminCard', () => {
+  test('should render garden data', async () => {
+    mockAxios.onGet(regexUsers).reply(200, TUser)
+    render(
+      <AllProviders>
+        <GardenAdminCard garden={TGarden} setRequestStatus={jest.fn()} />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(`${TGarden.name} (REMOTE)`)).toBeInTheDocument()
+    })
+    expect(screen.getByText(TGarden.status)).toBeInTheDocument()
+    expect(screen.getByText(TGarden.namespaces.length)).toBeInTheDocument()
+    expect(screen.getByText(TGarden.systems.length)).toBeInTheDocument()
+  })
+
   describe('permission checks', () => {
     beforeAll(() => {
       mockAxios.onGet('/config').reply(200, TServerAuthConfig)

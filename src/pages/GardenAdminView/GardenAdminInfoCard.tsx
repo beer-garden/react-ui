@@ -1,15 +1,5 @@
-import {
-  AppBar,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  List,
-  ListItem,
-  Toolbar,
-  Typography,
-} from '@mui/material'
-import { GardenStatusAlert } from 'components/GardenStatusAlert'
+import { Box, List, ListItem, Typography } from '@mui/material'
+import { LabeledData } from 'components/LabeledData'
 import { Garden } from 'types/backend-types'
 
 interface GardenInfoCardProps {
@@ -18,33 +8,35 @@ interface GardenInfoCardProps {
 
 const GardenAdminInfoCard = ({ garden }: GardenInfoCardProps) => {
   return (
-    <Box width={1 / 3}>
-      <Card sx={{ minWidth: 275 }}>
-        <AppBar color="inherit" position="static">
-          <Toolbar>
-            <Typography variant="h6" color="inherit">
-              Garden Info
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <CardContent>
-          Name: {garden.name}
-          <Grid container>
-            <Grid>
-              <Box sx={{ mr: 1 }}>Status: </Box>
-            </Grid>
-            <Grid>
-              <GardenStatusAlert status={garden.status} />
-            </Grid>
-          </Grid>
-          Connection Type: {garden.connection_type} <br />
-          Known Namespaces:
+    <>
+      <Typography variant="h6" color="inherit">
+        Garden Info
+      </Typography>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, 180px)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
+        <LabeledData label="Name" data={garden.name} />
+        <LabeledData label="Status" data={garden.status} alert />
+        <LabeledData label="Connection Type" data={garden.connection_type} />
+        <Box
+          sx={{
+            gridColumnStart: '1',
+          }}
+        >
+          <Typography sx={{ my: 2 }} fontWeight={'bold'} variant="overline">
+            Known Namespaces:
+          </Typography>
           <List
             sx={{
               width: '100%',
               maxHeight: 400,
               maxWidth: 300,
-              ml: 2,
               p: 0,
             }}
           >
@@ -54,9 +46,9 @@ const GardenAdminInfoCard = ({ garden }: GardenInfoCardProps) => {
               </ListItem>
             ))}
           </List>
-        </CardContent>
-      </Card>
-    </Box>
+        </Box>
+      </Box>
+    </>
   )
 }
 

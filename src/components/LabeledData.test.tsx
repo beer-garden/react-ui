@@ -13,6 +13,7 @@ describe('Labeled Data Component', () => {
     expect(screen.getByText('Test Data!')).toBeInTheDocument()
     expect(screen.getByText('Test Label:')).toBeInTheDocument()
     expect(screen.queryByTestId('Test LabelLink')).not.toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
   test('renders link if given', () => {
@@ -25,5 +26,30 @@ describe('Labeled Data Component', () => {
       'href',
       '#/some/link',
     )
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  test('renders children if given', () => {
+    render(
+      <HashRouter>
+        <LabeledData data="Test Data!" label="Test Label">
+          This Is Child
+        </LabeledData>
+      </HashRouter>,
+    )
+    expect(screen.getByText('Test Label: This Is Child')).toBeInTheDocument()
+    expect(screen.queryByTestId('Test LabelLink')).not.toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  test('renders as alert if indicated', () => {
+    render(
+      <HashRouter>
+        <LabeledData data="Test Data!" label="Test Label" alert />
+      </HashRouter>,
+    )
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveClass('MuiAlert-standardSuccess')
+    expect(screen.queryByTestId('Test LabelLink')).not.toBeInTheDocument()
   })
 })

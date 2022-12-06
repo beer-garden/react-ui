@@ -21,14 +21,19 @@ const getSeverity = (status: string) => {
   switch (status) {
     case 'RUNNING':
       return 'success'
+    case 'UNREACHABLE':
+    case 'NOT_CONFIGURED':
+    case 'UNKNOWN':
     case 'STOPPING':
     case 'UNRESPONSIVE':
       return 'warning'
     case 'STARTING':
     case 'INITIALIZING':
+    case 'BLOCKED':
     case 'RELOADING':
       return 'info'
     case 'DEAD':
+    case 'ERROR':
     case 'STOPPED':
       return 'error'
     default:

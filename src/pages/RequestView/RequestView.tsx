@@ -142,7 +142,7 @@ const RequestView = () => {
         <Alert severity="error">{error.message}</Alert>
       ) : (
         <Backdrop open={true}>
-          <CircularProgress color="inherit" />
+          <CircularProgress data-testid="dataLoading" color="inherit" />
         </Backdrop>
       )}
     </>
