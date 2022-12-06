@@ -41,16 +41,40 @@ describe('RequestView', () => {
     await waitFor(() => {
       expect(screen.getByText(mockId)).toBeInTheDocument()
     })
-    expect(
-      screen.getByRole('heading', { name: 'Request View' }),
-    ).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Output' })).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: 'Parameters' }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'remake request' }),
-    ).toBeInTheDocument()
+
+    expect(screen.getByText(mockId)).toBeInTheDocument()
+    expect(screen.getByText('remake request')).toBeInTheDocument()
+
+    expect(screen.getByText('Command')).toBeInTheDocument()
+    expect(screen.getByText('test command')).toBeInTheDocument()
+
+    expect(screen.getByText('Namespace')).toBeInTheDocument()
+    expect(screen.getByText('test namespace')).toBeInTheDocument()
+
+    expect(screen.getByText('System')).toBeInTheDocument()
+    expect(screen.getByText('test system')).toBeInTheDocument()
+
+    expect(screen.getByText('Version')).toBeInTheDocument()
+    expect(screen.getByText('test version')).toBeInTheDocument()
+
+    expect(screen.getByText('Instance')).toBeInTheDocument()
+    expect(screen.getByText('test instance')).toBeInTheDocument()
+
+    expect(screen.getByText('Status')).toBeInTheDocument()
+    expect(screen.getByText('SUCCESS')).toBeInTheDocument()
+
+    expect(screen.getByText('Created')).toBeInTheDocument()
+    // TODO backout commenting
+    // expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
+
+    expect(screen.getByText('Updated')).toBeInTheDocument()
+    // TODO backout commenting
+    // expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
+
+    expect(screen.getByText('Output')).toBeInTheDocument()
+    expect(screen.getByText('test output')).toBeInTheDocument()
+
+    expect(screen.getByText('Parameters')).toBeInTheDocument()
   })
 
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {
@@ -70,6 +94,16 @@ describe('RequestView', () => {
     // should be in progress
     expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
+
+    expect(screen.getByText('Created')).toBeInTheDocument()
+    // TODO backout commenting
+    // expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
+
+    expect(screen.getByText('Updated')).toBeInTheDocument()
+    // TODO backout commenting
+    // expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
+
+    expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.queryByText('test output')).not.toBeInTheDocument()
     // send request completed event
     const mockEvent = {
@@ -102,6 +136,16 @@ describe('RequestView', () => {
     // should be in progress
     expect(screen.queryByText('SUCCESS')).not.toBeInTheDocument()
     expect(screen.getByText('IN PROGRESS')).toBeInTheDocument()
+
+    expect(screen.getByText('Created')).toBeInTheDocument()
+    // TODO backout commenting
+    // expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
+
+    expect(screen.getByText('Updated')).toBeInTheDocument()
+    // TODO backout commenting
+    // expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
+
+    expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.queryByText('test output')).not.toBeInTheDocument()
     // send request complete event for different requestid
     const mockEventOther = {
