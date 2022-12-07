@@ -6,8 +6,7 @@ import { ObjectWithStringKeys } from 'types/custom-types'
 import { DateRangeColumnFilter } from './DateRangeColumnFilter'
 
 describe('DateRangeColumnFilter', () => {
-  test.skip('renders cell string value', () => {
-    // TODO backout skip
+  test('renders cell string value', () => {
     const testProps = {
       column: TDateFilter,
     } as FilterProps<ObjectWithStringKeys>
