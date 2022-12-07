@@ -108,6 +108,22 @@ describe('Routes', () => {
         ).not.toBeInTheDocument(),
       )
     })
+
+    test('Login', async () => {
+      jest
+        .spyOn(Router, 'useParams')
+        .mockReturnValue({ systemName: TSystem.name })
+      render(
+        <MemoryProvider startLocation={['/login']}>
+          <Routes />
+        </MemoryProvider>,
+      )
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: 'Systems' }),
+        ).toBeInTheDocument()
+      })
+    })
   })
 
   describe('auth enabled', () => {
@@ -285,6 +301,25 @@ describe('Routes', () => {
         )
         expect(
           screen.getByRole('heading', { name: 'Command Publishing Blocklist' }),
+        ).toBeInTheDocument()
+      })
+
+      test('Login', async () => {
+        jest
+          .spyOn(Router, 'useParams')
+          .mockReturnValue({ systemName: TSystem.name })
+        render(
+          <MemoryProvider startLocation={['/login']}>
+            <Routes />
+          </MemoryProvider>,
+        )
+        await waitFor(() => {
+          expect(
+            screen.queryByRole('heading', { name: 'Systems' }),
+          ).not.toBeInTheDocument()
+        })
+        expect(
+          screen.getByRole('textbox', { name: 'Username' }),
         ).toBeInTheDocument()
       })
     })

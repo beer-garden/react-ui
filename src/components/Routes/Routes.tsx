@@ -83,7 +83,7 @@ const Routes = () => {
           />
         </Route>
       )}
-      <Route path="/login" element={<Login />} />
+      {authEnabled && <Route path="/login" element={<Login />} />}
       <Route
         path="*"
         element={
