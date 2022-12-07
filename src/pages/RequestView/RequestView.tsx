@@ -1,6 +1,5 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
-  Alert,
   Backdrop,
   Breadcrumbs,
   CircularProgress,
@@ -9,6 +8,7 @@ import {
 } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
@@ -67,7 +67,7 @@ const RequestView = () => {
     )
   }
 
-  return (
+  return request && !error ? (
     <>
       <RemakeRequestButton request={request} />
       <PageHeader title="Request View" description={String(id)} />
@@ -101,6 +101,16 @@ const RequestView = () => {
         ) : null}
       </Stack>
     </>
+  ) : error?.response ? (
+    <ErrorAlert
+      statusCode={error.response?.status}
+      specific="request"
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop title={'dataLoading'} open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

@@ -1,5 +1,7 @@
-import { AlertColor, Button } from '@mui/material'
+import { AlertColor, Backdrop, Button, CircularProgress } from '@mui/material'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
@@ -25,6 +27,8 @@ const JobIndex = () => {
   const { getJobs, importJobs, exportJobs } = useJobs()
   const navigate = useNavigate()
 
+  const [errorFetch, setErrorFetch] = useState<AxiosError>()
+
   const errorHandler = (e: string) => {
     setAlert({
       severity: 'error',
@@ -39,11 +43,7 @@ const JobIndex = () => {
         setJobs(response.data)
       })
       .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e.response?.data.message || e,
-          doNotAutoDismiss: true,
-        })
+        setErrorFetch(e)
       })
   }
 
@@ -117,11 +117,13 @@ const JobIndex = () => {
     })
   }, [jobs])
 
-  return (
+  const jobColumns = useJobColumns()
+
+  return !errorFetch ? (
     <>
       <PageHeader title="Request Scheduler" description="" />
       <Divider />
-      <Table tableKey="JobIndex" data={jobData} columns={useJobColumns()}>
+      <Table tableKey="JobIndex" data={jobData} columns={jobColumns}>
         {hasPermission('job:create') && (
           <Button onClick={createRequestOnClick}>Create</Button>
         )}
@@ -171,6 +173,15 @@ const JobIndex = () => {
       />
       {alert ? <Snackbar status={alert} /> : null}
     </>
+  ) : errorFetch.response ? (
+    <ErrorAlert
+      statusCode={errorFetch.response?.status}
+      errorMsg={errorFetch.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

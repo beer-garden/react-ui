@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Box,
   Button,
   CircularProgress,
@@ -8,6 +9,7 @@ import {
 } from '@mui/material'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { useJobRequestCreation } from 'components/JobRequestCreation'
 import { JsonCard } from 'components/JsonCard'
 import { LabeledData } from 'components/LabeledData'
@@ -47,6 +49,7 @@ const JobView = () => {
   }
 
   const id = params.id as string
+  const [errorFetch, setErrorFetch] = useState<AxiosError>()
 
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(
@@ -99,7 +102,7 @@ const JobView = () => {
           })
         })
         .catch((e) => {
-          errorHandler(e)
+          setErrorFetch(e)
         })
     }
   }
@@ -198,11 +201,12 @@ const JobView = () => {
           </Button>
         </Stack>
       )}
+      {job ? (
+          <>
       <PageHeader title="Job" description={description} />
       <Divider />
       <Stack direction="column" spacing={2}>
         <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
-          {job ? (
             <Box
               sx={{
                 display: 'grid',
@@ -241,9 +245,6 @@ const JobView = () => {
                 />
               )}
             </Box>
-          ) : (
-            <CircularProgress data-testid="dataLoading" />
-          )}
         </Paper>
         <Stack direction="row" spacing={2}>
           {showTrigger && (
@@ -267,7 +268,20 @@ const JobView = () => {
             />
           )}
         </Stack>
+
       </Stack>
+          </>
+      ) : errorFetch?.response ? (
+          <ErrorAlert
+              specific="job"
+              statusCode={errorFetch.response?.status}
+              errorMsg={errorFetch.response.statusText}
+          />
+      ) : (
+          <Backdrop title="loading circle" open={true}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+      )}
       <ModalWrapper
         open={runOpen}
         header="Reset the Job Interval"

@@ -1,7 +1,15 @@
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Box, Button, IconButton, Tooltip } from '@mui/material'
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+} from '@mui/material'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
@@ -15,7 +23,7 @@ import { CommandIndexTableData } from 'types/custom-types'
 export const CommandBlocklistView = () => {
   const [open, setOpen] = useState(false)
   const [selection, setSelection] = useState<CommandIndexTableData[]>([])
-  const { blockList, deleteBlockList, addBlockList } = useBlockList()
+  const { blockList, error, deleteBlockList, addBlockList } = useBlockList()
   const { commands } = useCommands()
 
   // populate data for modal All Commands list table
@@ -70,7 +78,10 @@ export const CommandBlocklistView = () => {
     })
   }, [blockList, deleteBlockList])
 
-  return (
+  const tableColumns = useTableColumns()
+  const modalColumns = useModalColumns()
+
+  return !error ? (
     <Box>
       <Tooltip title="Add command">
         <Button
@@ -103,7 +114,7 @@ export const CommandBlocklistView = () => {
           <Table
             tableKey="BlocklistAdd"
             data={commandListData}
-            columns={useModalColumns()}
+            columns={modalColumns}
             maxrows={10}
             setSelection={setSelection}
           />
@@ -111,11 +122,16 @@ export const CommandBlocklistView = () => {
       />
       <PageHeader title="Command Publishing Blocklist" description="" />
       <Divider />
-      <Table
-        tableKey="Blocklist"
-        data={blocklistData}
-        columns={useTableColumns()}
-      />
+      <Table tableKey="Blocklist" data={blocklistData} columns={tableColumns} />
     </Box>
+  ) : error.response ? (
+    <ErrorAlert
+      errorMsg={error.response.statusText}
+      statusCode={error.response?.status}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }

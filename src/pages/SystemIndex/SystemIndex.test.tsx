@@ -52,11 +52,8 @@ describe('SystemIndex', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByText('Systems')).toBeInTheDocument()
+      expect(screen.getByText('Problem: Wrong identifier')).toBeInTheDocument()
     })
-
-    const errorMessage = 'ERROR: Error: Request failed with status code 404'
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
 
     mockAxios.onGet('/api/v1/systems').reply(200, [TSystem])
   })

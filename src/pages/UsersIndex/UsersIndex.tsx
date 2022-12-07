@@ -2,11 +2,19 @@ import AddIcon from '@mui/icons-material/Add'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import SyncIcon from '@mui/icons-material/Sync'
-import { Alert, Box, Button, Tooltip } from '@mui/material'
+import {
+  Alert,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Tooltip,
+} from '@mui/material'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import NewUserModal from 'components/NewUserModal'
 import { PageHeader } from 'components/PageHeader'
-import { Snackbar } from 'components/Snackbar'
 import SyncUserModal from 'components/SyncUserModal'
 import { Table } from 'components/Table'
 import { DefaultCellRenderer } from 'components/Table/defaults'
@@ -16,11 +24,7 @@ import useUsers from 'hooks/useUsers'
 import { useEffect, useMemo, useState } from 'react'
 import { Column } from 'react-table'
 import { User } from 'types/backend-types'
-import {
-  ObjectWithStringKeys,
-  SnackbarState,
-  SyncUser,
-} from 'types/custom-types'
+import { ObjectWithStringKeys, SyncUser } from 'types/custom-types'
 
 interface UserIndexTableData extends ObjectWithStringKeys {
   username: string
@@ -63,8 +67,8 @@ export const UsersIndex = () => {
   const [openAdd, setOpenAdd] = useState<boolean>(false)
   const [openSync, setOpenSync] = useState<boolean>(false)
   const [syncStatus, setSyncStatus] = useState<boolean>(false)
+  const [errorFetch, setErrorFetch] = useState<AxiosError>()
   const [users, setUsers] = useState<SyncUser[]>([])
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { getUsers } = useUsers()
 
   useEffect(() => {
@@ -94,13 +98,7 @@ export const UsersIndex = () => {
         })
         setUsers(tmpUsers)
       })
-      .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e.response?.data.message || e,
-          doNotAutoDismiss: true,
-        })
-      })
+      .catch((e) => setErrorFetch(e))
   }
 
   /**
@@ -121,7 +119,9 @@ export const UsersIndex = () => {
     })
   }, [syncStatus, users])
 
-  return (
+  const tableColumns = useTableColumns(syncStatus)
+
+  return !errorFetch ? (
     <Box>
       {hasPermission('user:create') && (
         <Tooltip title="Add User">
@@ -167,11 +167,19 @@ export const UsersIndex = () => {
       <Table
         tableKey="Users"
         data={userData}
-        columns={useTableColumns(syncStatus)}
+        columns={tableColumns}
         showGlobalFilter
         hideToolbar
       />
-      {alert && <Snackbar status={alert} />}
     </Box>
+  ) : errorFetch?.response ? (
+    <ErrorAlert
+      statusCode={errorFetch.response?.status}
+      errorMsg={errorFetch.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }

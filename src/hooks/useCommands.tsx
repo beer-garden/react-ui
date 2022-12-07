@@ -182,6 +182,7 @@ const useCommands = () => {
     version,
     includeHidden,
     hiddenOnChange,
+    error,
   }
 }
 

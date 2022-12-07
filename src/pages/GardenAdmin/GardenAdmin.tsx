@@ -1,6 +1,7 @@
-import { Box, Grid } from '@mui/material'
+import { Backdrop, Box, CircularProgress, Grid } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { GardenSyncButton } from 'components/GardenSyncButton'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
@@ -49,7 +50,7 @@ const GardensAdmin = (): JSX.Element => {
     }
   }, [addCallback, removeCallback, refetch])
 
-  return (
+  return !error ? (
     <>
       {hasPermission('garden:create') && (
         <CreateGarden setRequestStatus={setRequestStatus} />
@@ -73,6 +74,15 @@ const GardensAdmin = (): JSX.Element => {
       </Grid>
       {requestStatus ? <Snackbar status={requestStatus} /> : null}
     </>
+  ) : error.response ? (
+    <ErrorAlert
+      statusCode={error.response?.status}
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 
