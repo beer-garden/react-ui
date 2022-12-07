@@ -63,6 +63,15 @@ const SSRTablePagination = <T extends ObjectWithStringKeys>({
       const pageSize = Number(event.target.value)
       handleResultCount(pageSize)
       setPageSize(pageSize)
+      // persist this selection
+      const initialState = window.localStorage.getItem('tableState:Requests')
+      const savedState = initialState
+        ? JSON.parse(initialState)
+        : { pageSize: 10 }
+      window.localStorage.setItem(
+        'tableState:Requests',
+        JSON.stringify(Object.assign(savedState, { pageSize })),
+      )
       gotoPage(0)
     },
     [setPageSize, handleResultCount, gotoPage],
