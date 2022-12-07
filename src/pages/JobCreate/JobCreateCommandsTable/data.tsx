@@ -46,14 +46,12 @@ const useCommandsColumns = () => {
       {
         Header: 'Command name',
         accessor: 'name',
-        disableFilters: true,
         canHide: false,
       },
       {
         Header: 'Description',
         accessor: 'description',
         width: 300,
-        disableFilters: true,
         canHide: false,
       },
       {
