@@ -185,7 +185,7 @@ export const TChildRequest: Request = {
   namespace: 'child namespace',
   output: 'child output',
   output_type: 'STRING',
-  parameters: [],
+  parameters: {},
   parent: TRequest,
   status: 'ERROR',
   system: 'child system',
