@@ -57,49 +57,51 @@ const RequestView = () => {
     }
   }, [data, error])
 
+  if (!request) {
+    return error ? (
+      <Alert severity="error">{error.message}</Alert>
+    ) : (
+      <Backdrop open={true}>
+        <CircularProgress data-testid="dataLoading" color="inherit" />
+      </Backdrop>
+    )
+  }
+
   return (
     <>
       <RemakeRequestButton request={request} />
       <PageHeader title="Request View" description={String(id)} />
       <Divider />
-      {request ? (
-        <>
-          {request.parent ? (
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
-              {getParentLinks(request.parent)}
-              <Typography>{request.command}</Typography>
-            </Breadcrumbs>
+      <>
+        {request.parent ? (
+          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+            {getParentLinks(request.parent)}
+            <Typography>{request.command}</Typography>
+          </Breadcrumbs>
+        ) : null}
+        <RequestViewTable request={request} />
+        <Stack py={4} direction="row" spacing={2}>
+          {!expandParameter ? (
+            <RequestViewOutput
+              request={request}
+              expandParameter={expandParameter}
+              expandOutput={expandOutput}
+              setExpandOutput={setExpandOutput}
+              theme={theme}
+            />
           ) : null}
-          <RequestViewTable request={request} />
-          <Stack py={4} direction="row" spacing={2}>
-            {!expandParameter ? (
-              <RequestViewOutput
-                request={request}
-                expandParameter={expandParameter}
-                expandOutput={expandOutput}
-                setExpandOutput={setExpandOutput}
-                theme={theme}
-              />
-            ) : null}
-            {!expandOutput ? (
-              <JsonCard
-                title="Parameters"
-                collapseHandler={() => {
-                  setExpandParameter(!expandParameter)
-                }}
-                data={request.parameters}
-                iconTrigger={expandParameter && expandOutput}
-              />
-            ) : null}
-          </Stack>
-        </>
-      ) : error ? (
-        <Alert severity="error">{error.message}</Alert>
-      ) : (
-        <Backdrop open={true}>
-          <CircularProgress data-testid="dataLoading" color="inherit" />
-        </Backdrop>
-      )}
+          {!expandOutput ? (
+            <JsonCard
+              title="Parameters"
+              collapseHandler={() => {
+                setExpandParameter(!expandParameter)
+              }}
+              data={request.parameters}
+              iconTrigger={expandParameter && expandOutput}
+            />
+          ) : null}
+        </Stack>
+      </>
     </>
   )
 }

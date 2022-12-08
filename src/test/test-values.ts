@@ -1,4 +1,3 @@
-import { JobRequestCreationProviderState } from 'components/JobRequestCreation'
 import {
   BlockedCommand,
   BlockedList,

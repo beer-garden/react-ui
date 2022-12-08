@@ -49,14 +49,9 @@ describe('useCommandsParameterized', () => {
       }
     })
 
-    const { result, waitForNextUpdate } = renderHook(
-      () => useCommandsParameterized(formatter),
-      {
-        wrapper: ConfigProviders,
-      },
-    )
-
-    await waitForNextUpdate()
+    const { result } = renderHook(() => useCommandsParameterized(formatter), {
+      wrapper: ConfigProviders,
+    })
 
     await waitFor(() => {
       expect(result.current.commands[0].name).toEqual(TCommand.name)
