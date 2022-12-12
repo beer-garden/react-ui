@@ -1,8 +1,10 @@
 import { TablePagination as MuiTablePagination } from '@mui/material'
 import SSRTablePaginationActions from 'components/Table/ssr-pagination/SSRTablePaginationActions'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import { MouseEvent as ReactMouseEvent, useCallback, useEffect } from 'react'
-import { TableInstance } from 'react-table'
+import { TableInstance, TableState } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
+import { RequestsIndexTableData } from 'types/request-types'
 import { getRowPageOptions } from 'utils/table-helpers'
 
 interface SSRPaginationProps<T extends ObjectWithStringKeys> {
@@ -28,6 +30,10 @@ const SSRTablePagination = <T extends ObjectWithStringKeys>({
     setPageSize,
   } = instance
 
+  const [storedTable, setPgSize] = useLocalStorage(
+    'tableState:Requests',
+    {} as Partial<TableState<RequestsIndexTableData>>,
+  )
   const rowMax = recordsFiltered <= 100 ? recordsFiltered : 100
   const rowsPerPageOptions = getRowPageOptions(rowMax, recordsFiltered)
 
@@ -64,17 +70,11 @@ const SSRTablePagination = <T extends ObjectWithStringKeys>({
       handleResultCount(pageSize)
       setPageSize(pageSize)
       // persist this selection
-      const initialState = window.localStorage.getItem('tableState:Requests')
-      const savedState = initialState
-        ? JSON.parse(initialState)
-        : { pageSize: 10 }
-      window.localStorage.setItem(
-        'tableState:Requests',
-        JSON.stringify(Object.assign(savedState, { pageSize })),
-      )
+      const savedState = storedTable ? storedTable : { pageSize: 10 }
+      setPgSize(Object.assign(savedState, { pageSize }))
       gotoPage(0)
     },
-    [setPageSize, handleResultCount, gotoPage],
+    [handleResultCount, setPageSize, storedTable, setPgSize, gotoPage],
   )
 
   const displayRows = (arg: { from: number; to: number; count: number }) => {
