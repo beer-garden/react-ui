@@ -115,6 +115,7 @@ interface TableProps<
   }
   tableName?: string
   tableKey?: string
+  showGlobalFilter?: boolean
 }
 
 const SSRTable = <
@@ -129,6 +130,7 @@ const SSRTable = <
     tableKey,
     data,
     columns,
+    showGlobalFilter,
     fetchStatus: { isLoading, isErrored },
     ssrValues: {
       start: startPage /* the start page index */,
@@ -272,11 +274,7 @@ const SSRTable = <
     <Typography>Error...</Typography>
   ) : (
     <>
-      <Toolbar
-        instance={instance}
-        childProps={childProps}
-        name={tableName}
-      >
+      <Toolbar instance={instance} childProps={childProps} name={tableName}>
         {props.children}
       </Toolbar>
       <StyledTable {...tableProps}>
@@ -377,31 +375,35 @@ const SSRTable = <
           </TableBody>
         ) : (
           <TableBody {...getTableBodyProps()}>
-            {headerGroups.map((headerGroup) => {
-              const {
-                key: headerGroupKey,
-                role: headerGroupRole,
-                ...headerGroupProps
-              } = headerGroup.getHeaderGroupProps()
-              return (
-                <TableRow key={headerGroupKey} {...headerGroupProps}>
-                  <>
-                    {headerGroup.headers.map((column) => {
-                      const {
-                        key: headerKey,
-                        role: headerRole,
-                        ...headerProps
-                      } = column.getHeaderProps(columnStyle)
-                      return (
-                        <TableHeadCell key={headerKey} {...headerProps}>
-                          {column.canFilter && <InlineFilter column={column} />}
-                        </TableHeadCell>
-                      )
-                    })}
-                  </>
-                </TableRow>
-              )
-            })}
+            {!showGlobalFilter
+              ? headerGroups.map((headerGroup) => {
+                  const {
+                    key: headerGroupKey,
+                    role: headerGroupRole,
+                    ...headerGroupProps
+                  } = headerGroup.getHeaderGroupProps()
+                  return (
+                    <TableRow key={headerGroupKey} {...headerGroupProps}>
+                      <>
+                        {headerGroup.headers.map((column) => {
+                          const {
+                            key: headerKey,
+                            role: headerRole,
+                            ...headerProps
+                          } = column.getHeaderProps(columnStyle)
+                          return (
+                            <TableHeadCell key={headerKey} {...headerProps}>
+                              {column.canFilter && (
+                                <InlineFilter column={column} />
+                              )}
+                            </TableHeadCell>
+                          )
+                        })}
+                      </>
+                    </TableRow>
+                  )
+                })
+              : null}
             {page.map((row) => {
               prepareRow(row)
               const {

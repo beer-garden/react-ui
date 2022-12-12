@@ -59,18 +59,21 @@ const useSystemColumns = () => {
         Header: 'Namespace',
         accessor: 'namespace',
         width: 135,
+        disableFilters: true,
         canHide: false,
       },
       {
         Header: 'System Name',
         accessor: 'name',
         width: 150,
+        disableFilters: true,
         canHide: false,
       },
       {
         Header: 'System Version',
         accessor: 'version',
         width: 150,
+        disableFilters: true,
         canHide: false,
       },
       {
