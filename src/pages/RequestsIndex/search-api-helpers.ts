@@ -31,6 +31,7 @@ const updateSearchColumn = (
   }
 }
 
+/** Format date as number into what backend accepts */
 const formatDate = (value: number) =>
   DateTime.fromHTTP(new Date(value).toUTCString()).toFormat('yyyy-MM-dd TT')
 

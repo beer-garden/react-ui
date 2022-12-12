@@ -9,6 +9,7 @@ export const dateFormatted = (date: Date) => {
     second: 'numeric',
     minute: 'numeric',
     hour12: false,
+    timeZoneName: 'short',
   }
   return date.toLocaleString(undefined, options)
 }
