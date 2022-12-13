@@ -80,6 +80,8 @@ const useSystemColumns = () => {
         Header: '',
         Cell: DefaultCellRenderer,
         accessor: 'choose',
+        disableFilters: true,
+        canHide: false,
       },
     ],
     [],

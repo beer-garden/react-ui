@@ -284,31 +284,35 @@ const Table = <T extends ObjectWithStringKeys>(
           })}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {headerGroups.map((headerGroup) => {
-            const {
-              key: headerGroupKey,
-              role: headerGroupRole,
-              ...headerGroupProps
-            } = headerGroup.getHeaderGroupProps()
-            return (
-              <TableRow key={headerGroupKey} {...headerGroupProps}>
-                <>
-                  {headerGroup.headers.map((column) => {
-                    const {
-                      key: headerKey,
-                      role: headerRole,
-                      ...headerProps
-                    } = column.getHeaderProps(columnStyle)
-                    return (
-                      <TableHeadCell key={headerKey} {...headerProps}>
-                        {column.canFilter && <InlineFilter column={column} />}
-                      </TableHeadCell>
-                    )
-                  })}
-                </>
-              </TableRow>
-            )
-          })}
+          {!showGlobalFilter
+            ? headerGroups.map((headerGroup) => {
+                const {
+                  key: headerGroupKey,
+                  role: headerGroupRole,
+                  ...headerGroupProps
+                } = headerGroup.getHeaderGroupProps()
+                return (
+                  <TableRow key={headerGroupKey} {...headerGroupProps}>
+                    <>
+                      {headerGroup.headers.map((column) => {
+                        const {
+                          key: headerKey,
+                          role: headerRole,
+                          ...headerProps
+                        } = column.getHeaderProps(columnStyle)
+                        return (
+                          <TableHeadCell key={headerKey} {...headerProps}>
+                            {column.canFilter && (
+                              <InlineFilter column={column} />
+                            )}
+                          </TableHeadCell>
+                        )
+                      })}
+                    </>
+                  </TableRow>
+                )
+              })
+            : null}
           {page.map((row) => {
             prepareRow(row)
             const {

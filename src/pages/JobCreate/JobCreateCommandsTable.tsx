@@ -1,13 +1,12 @@
 import { Table } from 'components/Table'
-import { PropsWithChildren } from 'react'
-import { Column } from 'react-table'
-import { Command, System } from 'types/backend-types'
-
 import {
   JobCreateCommandsTableData,
   useCommandsColumns,
   useCommandsData,
-} from './data'
+} from 'pages/JobCreate/JobCreateCommandsData'
+import { PropsWithChildren } from 'react'
+import { Column } from 'react-table'
+import { Command, System } from 'types/backend-types'
 
 interface JobCreateCommandsTableProps {
   system: System

@@ -1,11 +1,13 @@
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { useSystems } from 'hooks/useSystems'
+import {
+  useSystemColumns,
+  useSystemsData,
+} from 'pages/JobCreate/JobCreateSystemsData'
 import { PropsWithChildren, useEffect, useState } from 'react'
 import { System } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
-
-import { useSystemColumns, useSystemsData } from './data'
 
 interface JobCreateSystemTableProps {
   systemSetter: (system: System) => void
