@@ -1,10 +1,8 @@
 import { Button } from '@material-ui/core'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
-import { useCommandsParameterized } from 'hooks/useCommandParameterized'
+import { useCommandsParameterized } from 'hooks/useCommandsParameterized'
 import {
-  buttonText,
   CannotReExecuteButton,
-  DummyRequest,
   systemCommandPairFromArgs,
 } from 'pages/RequestView/RemakeRequestButton/remakeRequestButtonHelpers'
 import { useContext } from 'react'
@@ -18,7 +16,7 @@ import {
 } from 'types/form-model-types'
 
 interface RemakeRequestButtonProps {
-  request: Request | undefined
+  request: Request
 }
 
 const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
@@ -33,7 +31,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     instance_name: instanceName,
     parameters: theParameters,
     comment: theComment,
-  } = request || DummyRequest
+  } = request
   const { commands: systemCommandPair } =
     useCommandsParameterized<SystemCommandPair>(
       systemCommandPairFromArgs(
@@ -52,8 +50,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     !setIsReplay
   ) {
     return <CannotReExecuteButton message="ERROR: Unknown error" />
-  }
-  if (!request) {
+  } else if (!request) {
     return <CannotReExecuteButton message="ERROR: Request not available" />
   }
 
@@ -95,7 +92,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
       style={{ float: 'right' }}
       onClick={onClick}
     >
-      {buttonText}
+      {'Remake Request'}
     </Button>
   )
 }

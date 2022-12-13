@@ -8,7 +8,7 @@ import { Command, System } from 'types/backend-types'
 import {
   CommandFormatter,
   useCommandsParameterized,
-} from './useCommandParameterized'
+} from './useCommandsParameterized'
 import * as useSystemsHook from './useSystems'
 
 jest.mock('react-router-dom', () => ({

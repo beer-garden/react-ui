@@ -72,36 +72,34 @@ const RequestView = () => {
       <RemakeRequestButton request={request} />
       <PageHeader title="Request View" description={String(id)} />
       <Divider />
-      <>
-        {request.parent ? (
-          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
-            {getParentLinks(request.parent)}
-            <Typography>{request.command}</Typography>
-          </Breadcrumbs>
+      {request.parent ? (
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+          {getParentLinks(request.parent)}
+          <Typography>{request.command}</Typography>
+        </Breadcrumbs>
+      ) : null}
+      <RequestViewTable request={request} />
+      <Stack py={4} direction="row" spacing={2}>
+        {!expandParameter ? (
+          <RequestViewOutput
+            request={request}
+            expandParameter={expandParameter}
+            expandOutput={expandOutput}
+            setExpandOutput={setExpandOutput}
+            theme={theme}
+          />
         ) : null}
-        <RequestViewTable request={request} />
-        <Stack py={4} direction="row" spacing={2}>
-          {!expandParameter ? (
-            <RequestViewOutput
-              request={request}
-              expandParameter={expandParameter}
-              expandOutput={expandOutput}
-              setExpandOutput={setExpandOutput}
-              theme={theme}
-            />
-          ) : null}
-          {!expandOutput ? (
-            <JsonCard
-              title="Parameters"
-              collapseHandler={() => {
-                setExpandParameter(!expandParameter)
-              }}
-              data={request.parameters}
-              iconTrigger={expandParameter && expandOutput}
-            />
-          ) : null}
-        </Stack>
-      </>
+        {!expandOutput ? (
+          <JsonCard
+            title="Parameters"
+            collapseHandler={() => {
+              setExpandParameter(!expandParameter)
+            }}
+            data={request.parameters}
+            iconTrigger={expandParameter && expandOutput}
+          />
+        ) : null}
+      </Stack>
     </>
   )
 }

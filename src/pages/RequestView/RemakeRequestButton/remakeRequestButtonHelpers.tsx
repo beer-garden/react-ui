@@ -1,30 +1,8 @@
 import { Button, Tooltip } from '@material-ui/core'
-import { CommandFormatter } from 'hooks/useCommandParameterized'
 import { commandsPairer } from 'hooks/useCommands'
-import { Request } from 'types/backend-types'
+import { CommandFormatter } from 'hooks/useCommandsParameterized'
 import { System } from 'types/backend-types'
 import { SystemCommandPair } from 'types/custom-types'
-
-const buttonText = 'Remake Request'
-
-/* This is necessary to satisfy the "law of hooks" in RemakeRequestButton.tsx */
-const DummyRequest: Request = {
-  children: [],
-  command: '',
-  command_type: '',
-  comment: '',
-  created_at: 0,
-  error_class: null,
-  instance_name: '',
-  namespace: '',
-  output_type: '',
-  parameters: {},
-  parent: null,
-  status: '',
-  system: '',
-  system_version: '',
-  updated_at: 0,
-}
 
 interface CannotReExecuteButtonProps {
   message: string
@@ -40,7 +18,7 @@ const CannotReExecuteButton = ({ message }: CannotReExecuteButtonProps) => {
         color="secondary"
         style={{ float: 'right', pointerEvents: 'auto' }}
       >
-        {buttonText}
+        {'Remake Request'}
       </Button>
     </Tooltip>
   )
@@ -48,7 +26,7 @@ const CannotReExecuteButton = ({ message }: CannotReExecuteButtonProps) => {
 
 /**
  * From the arguments, creates a function that returns an array of maximum
- * length 1 of system/command pair that can be passed to usedCommands.
+ * length 1 of system/command pair that can be passed to useCommands.
  *
  * @param commandName
  * @param systemName
@@ -76,9 +54,4 @@ const systemCommandPairFromArgs = (
   }
 }
 
-export {
-  buttonText,
-  CannotReExecuteButton,
-  DummyRequest,
-  systemCommandPairFromArgs,
-}
+export { CannotReExecuteButton, systemCommandPairFromArgs }
