@@ -1,6 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { TGarden } from 'test/garden-test-values'
+import {
+  TBlockedCommand,
+  TBlocklist,
+  TInstance,
+  TSystem,
+} from 'test/system-test-values'
 import * as mockData from 'test/test-values'
 import { TAdmin, TAdminRole, TRole, TUser } from 'test/user-test-values'
 
@@ -18,8 +24,8 @@ mock.onGet('/version').reply(200, mockData.TVersionConfig)
 mock.onGet('/api/v1/jobs').reply(200, [mockData.TJob])
 mock.onGet(`/api/v1/jobs/${mockData.TJob.id}`).reply(200, mockData.TJob)
 mock.onGet('/api/v1/gardens').reply(200, [TGarden])
-mock.onGet('/api/v1/commandpublishingblocklist').reply(200, mockData.TBlocklist)
-mock.onGet('/api/v1/systems').reply(200, [mockData.TSystem])
+mock.onGet('/api/v1/commandpublishingblocklist').reply(200, TBlocklist)
+mock.onGet('/api/v1/systems').reply(200, [TSystem])
 mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
 mock.onGet(regexUsers).reply(200, TUser)
 mock.onGet('/api/v1/roles').reply(200, { roles: [TRole, TAdminRole] })
@@ -31,7 +37,7 @@ mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
 })
 mock.onGet(regexLogs).reply(200, mockData.TLog, { request_id: 'fetchedLog' })
 mock.onGet(regexQueues).reply(200, [mockData.TQueue])
-mock.onGet('/api/v1/instances/testinst').reply(200, mockData.TInstance)
+mock.onGet('/api/v1/instances/testinst').reply(200, TInstance)
 
 // Fail GET
 mock
@@ -46,14 +52,12 @@ mock.onPost('/api/v1/import/jobs').reply(200, { ids: [mockData.TJob.id] })
 mock.onPost('/api/v1/export/jobs').reply(200, [mockData.TJob])
 mock.onPost('/api/v1/jobs').reply(200, mockData.TJob)
 mock.onPost(`/api/v1/jobs/${mockData.TJob.id}/execute`).reply(200, {})
-mock
-  .onPost('/api/v1/commandpublishingblocklist')
-  .reply(200, mockData.TBlocklist)
+mock.onPost('/api/v1/commandpublishingblocklist').reply(200, TBlocklist)
 
 // Success PATCH
 mock.onPatch('/api/v1/gardens').reply(200, {})
 mock.onPatch(regexUsers).reply(200, TUser)
-mock.onPatch('/api/v1/instances/testinst').reply(200, mockData.TInstance)
+mock.onPatch('/api/v1/instances/testinst').reply(200, TInstance)
 mock
   .onPatch(`/api/v1/jobs/${mockData.TJob.id}`)
   .reply((config: AxiosRequestConfig) => {
@@ -70,8 +74,8 @@ mock.onDelete(regexUsers).reply(204, '')
 mock.onDelete(`/api/v1/jobs/${mockData.TJob.id}`).reply(204, '')
 mock.onDelete('/api/v1/systems/testsys').reply(204)
 mock
-  .onDelete(`/api/v1/commandpublishingblocklist/${mockData.TBlockedCommand.id}`)
-  .reply(204, mockData.TBlockedCommand)
+  .onDelete(`/api/v1/commandpublishingblocklist/${TBlockedCommand.id}`)
+  .reply(204, TBlockedCommand)
 
 // default
 mock.onAny().reply(200, 'undefined axios mock - add to axios-mock.ts')

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { TBlockedCommand, TCommand } from 'test/test-values'
+import { mockAxios } from 'test/axios-mock'
+import { TBlockedCommand, TBlocklist } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
 
 import { CommandBlocklistView } from './CommandBlocklistView'
@@ -69,12 +70,17 @@ describe('CommandBlocklistView', () => {
       </AllProviders>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'Add command' }))
-    fireEvent.click(
-      screen.getByRole('checkbox', { name: 'Toggle Row Selected' }),
-    )
+    fireEvent.click(screen.getByRole('checkbox'))
+    mockAxios.onGet('/api/v1/commandpublishingblocklist').reply(200, {
+      command_publishing_blocklist: [
+        TBlockedCommand,
+        Object.assign({}, TBlockedCommand, { command: 'newBlockedCommand' }),
+      ],
+    })
     fireEvent.click(screen.getByText('Submit'))
     await waitFor(() => {
-      expect(screen.getByText(TCommand.name)).toBeInTheDocument()
+      expect(screen.getByText('newBlockedCommand')).toBeInTheDocument()
     })
+    mockAxios.onGet('/api/v1/commandpublishingblocklist').reply(200, TBlocklist)
   })
 })

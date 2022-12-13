@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
 import { mockAxios } from 'test/axios-mock'
-import { TInstance } from 'test/test-values'
+import { TInstance } from 'test/system-test-values'
 import { ConfigProviders } from 'test/testMocks'
 
 import { useInstances } from './useInstances'

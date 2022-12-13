@@ -5,7 +5,7 @@ import {
   JobRequestCreationProviderState,
 } from 'components/JobRequestCreation'
 import * as commandViewHelpers from 'pages/CommandView/commandViewHelpers'
-import { TCommand, TSystem } from 'test/test-values'
+import { TCommand, TSystem } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewRequestModel } from 'types/form-model-types'

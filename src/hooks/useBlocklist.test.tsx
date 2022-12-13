@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
-import { TBlockedCommand, TBlocklist } from 'test/test-values'
+import { TBlockedCommand, TBlocklist } from 'test/system-test-values'
 import { ConfigProviders } from 'test/testMocks'
 import { CommandIndexTableData } from 'types/custom-types'
 
