@@ -2,14 +2,14 @@ import { Box, Chip } from '@mui/material'
 import { useCallback } from 'react'
 import { ColumnInstance, FilterValue, IdType, TableInstance } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
+import { dateFormatted } from 'utils/date-formatter'
 
 interface FilterChipBarProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
 }
 
 const parseDate = (date: number) => {
-  const newDate = new Date(date)
-  return newDate.toISOString()
+  return dateFormatted(new Date(date))
 }
 
 const FilterChipBar = <T extends ObjectWithStringKeys>({

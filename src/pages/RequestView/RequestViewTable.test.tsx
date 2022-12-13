@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { TChildRequest, TRequest } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
+import { dateFormatted } from 'utils/date-formatter'
 
 import { RequestViewTable } from './RequestViewTable'
 
@@ -26,9 +27,9 @@ describe('RequestViewTable', () => {
     expect(screen.getByText('Status:')).toBeInTheDocument()
     expect(screen.getByText('SUCCESS')).toBeInTheDocument()
     expect(screen.getByText('Created:')).toBeInTheDocument()
-    expect(screen.getByText('Nov 3, 2022, 23:12:46')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:12:46 UTC')).toBeInTheDocument()
     expect(screen.getByText('Updated:')).toBeInTheDocument()
-    expect(screen.getByText('Nov 3, 2022, 23:14:14')).toBeInTheDocument()
+    expect(screen.getByText('Nov 3, 2022, 23:14:14 UTC')).toBeInTheDocument()
   })
 
   test('renders links for some data data', async () => {
@@ -112,7 +113,7 @@ describe('RequestViewTable', () => {
       expect(screen.getByText(TChildRequest.instance_name)).toBeInTheDocument()
       expect(screen.getByText(TChildRequest.status)).toBeInTheDocument()
       expect(
-        screen.getByText(new Date(TChildRequest.created_at).toISOString()),
+        screen.getByText(dateFormatted(new Date(TChildRequest.created_at))),
       ).toBeInTheDocument()
     })
   })

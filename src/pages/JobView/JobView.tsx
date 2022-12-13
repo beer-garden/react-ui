@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
+import { dateFormatted } from 'utils/date-formatter'
 
 const isIntervalTrigger = (triggerType: string) => {
   return triggerType === 'interval'
@@ -236,7 +237,7 @@ const JobView = () => {
               {job.next_run_time && (
                 <LabeledData
                   label="Next Run Time"
-                  data={new Date(job.next_run_time).toUTCString()}
+                  data={dateFormatted(new Date(job.next_run_time))}
                 />
               )}
             </Box>
