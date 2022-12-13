@@ -1,76 +1,50 @@
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { useEffect, useState } from 'react'
-import { BlockedCommand } from 'types/backend-types'
+import { BlockedCommand, BlockedList } from 'types/backend-types'
 import { CommandIndexTableData } from 'types/custom-types'
 
 const useBlockList = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const [blockList, setBlocklist] = useState<BlockedCommand[]>([])
-  const [{ data, error }] = useAxios({
-    url: '/api/v1/commandpublishingblocklist',
-    method: 'get',
-    withCredentials: authEnabled,
-  })
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  useEffect(() => {
-    if (data && !error) setBlocklist(data.command_publishing_blocklist)
-  }, [data, error])
-
-  const getBlocklist = () => {
-    execute({
+  const getBlockList = (): AxiosPromise<BlockedList> => {
+    const config: AxiosRequestConfig = {
       url: '/api/v1/commandpublishingblocklist',
       method: 'get',
       withCredentials: authEnabled,
-    })
-      .then((resolved) => {
-        if (resolved) {
-          setBlocklist(resolved.data.command_publishing_blocklist)
-        }
-      })
-      .catch((e) => console.error('Error removing from Blocklist: ', e))
+    }
+    return execute(config)
   }
 
-  const deleteBlockList = (id: string) => {
-    if (blockList) {
-      const indx = blockList.findIndex((elem) => elem.id === id)
-      blockList.splice(indx, 1)
-    }
-
-    execute({
+  const deleteBlockList = (id: string): AxiosPromise<BlockedCommand> => {
+    const config: AxiosRequestConfig = {
       url: `/api/v1/commandpublishingblocklist/${id}`,
       method: 'delete',
       withCredentials: authEnabled,
-    })
-      .then((resolved) => {
-        if (resolved) getBlocklist()
-      })
-      .catch((e) => console.error('Error removing from Blocklist: ', e))
-
-    return blockList
+    }
+    return execute(config)
   }
 
-  const addBlockList = (command: CommandIndexTableData[]) => {
-    execute({
+  const addBlockList = (
+    command: CommandIndexTableData[],
+  ): AxiosPromise<BlockedList> => {
+    const config: AxiosRequestConfig<{
+      command_publishing_blocklist: CommandIndexTableData[]
+    }> = {
       url: '/api/v1/commandpublishingblocklist',
       method: 'post',
       withCredentials: authEnabled,
       data: {
         command_publishing_blocklist: command,
       },
-    })
-      .then((resolved) => {
-        if (resolved) getBlocklist()
-      })
-      .catch((e) => console.error('Error adding to Blocklist: ', e))
-
-    return blockList
+    }
+    return execute(config)
   }
 
-  return { blockList, deleteBlockList, addBlockList }
+  return { getBlockList, deleteBlockList, addBlockList }
 }
 
 export { useBlockList }

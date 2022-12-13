@@ -46,6 +46,9 @@ mock.onPost('/api/v1/import/jobs').reply(200, { ids: [mockData.TJob.id] })
 mock.onPost('/api/v1/export/jobs').reply(200, [mockData.TJob])
 mock.onPost('/api/v1/jobs').reply(200, mockData.TJob)
 mock.onPost(`/api/v1/jobs/${mockData.TJob.id}/execute`).reply(200, {})
+mock
+  .onPost('/api/v1/commandpublishingblocklist')
+  .reply(200, mockData.TBlocklist)
 
 // Success PATCH
 mock.onPatch('/api/v1/gardens').reply(200, {})
@@ -60,12 +63,15 @@ mock
     }
     return [200, Object.assign({}, mockData.TJob, { status: 'PAUSED' })]
   })
-  mock.onPatch('/api/v1/systems/testsys').reply(200, '')
+mock.onPatch('/api/v1/systems/testsys').reply(200, '')
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')
 mock.onDelete(`/api/v1/jobs/${mockData.TJob.id}`).reply(204, '')
 mock.onDelete('/api/v1/systems/testsys').reply(204)
+mock
+  .onDelete(`/api/v1/commandpublishingblocklist/${mockData.TBlockedCommand.id}`)
+  .reply(204, mockData.TBlockedCommand)
 
 // default
 mock.onAny().reply(200, 'undefined axios mock - add to axios-mock.ts')

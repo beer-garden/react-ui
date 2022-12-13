@@ -8,13 +8,40 @@ import {
   OutlinedInput,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { Snackbar } from 'components/Snackbar'
+import useNamespace from 'hooks/useNamespace'
 import { NamespacesSelectedContext } from 'pages/SystemAdmin'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { SnackbarState } from 'types/custom-types'
 
 const NamespaceSelect = () => {
-  const { namespaces, namespacesSelected, setNamespacesSelected } = useContext(
+  const { namespacesSelected, setNamespacesSelected } = useContext(
     NamespacesSelectedContext,
   )
+  const [namespaces, setNamespaces] = useState<string[]>([])
+  const [alert, setAlert] = useState<SnackbarState>()
+  const { getNamespaces } = useNamespace()
+
+  useEffect(() => {
+    let mounted = true
+    getNamespaces()
+      .then((response) => {
+        if (mounted) setNamespaces(response.data)
+      })
+      .catch((e) => {
+        if (mounted)
+          setAlert({
+            severity: 'error',
+            message: e.response?.data.message || e,
+            doNotAutoDismiss: true,
+          })
+      })
+    return () => {
+      mounted = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const handleChange = (event: SelectChangeEvent<typeof namespaces>) => {
     const {
       target: { value },
@@ -73,6 +100,7 @@ const NamespaceSelect = () => {
           </MenuItem>
         ))}
       </Select>
+      {alert ? <Snackbar status={alert} /> : null}
     </FormControl>
   )
 }

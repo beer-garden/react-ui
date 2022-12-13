@@ -5,7 +5,6 @@ import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import useAdmin from 'hooks/useAdmin'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import useNamespace from 'hooks/useNamespace'
 import useQueue from 'hooks/useQueue'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
@@ -18,14 +17,12 @@ const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
 }
 
 interface NamespacesSelectedContextType {
-  namespaces: string[]
   namespacesSelected: string[]
   setNamespacesSelected: (value: string[]) => void
 }
 
 export const NamespacesSelectedContext =
   createContext<NamespacesSelectedContextType>({
-    namespaces: [],
     namespacesSelected: [],
     setNamespacesSelected: () => {
       return
@@ -40,7 +37,6 @@ const SystemAdmin = () => {
   const [open, setOpen] = useState(false)
 
   const contextValue = {
-    namespaces: useNamespace(),
     namespacesSelected: namespacesSelected,
     setNamespacesSelected: setNamespacesSelected,
   }

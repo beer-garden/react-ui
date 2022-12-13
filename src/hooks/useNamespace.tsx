@@ -1,24 +1,23 @@
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
-import { useEffect, useState } from 'react'
+import { useMyAxios } from 'hooks/useMyAxios'
 
 const useNamespace = () => {
-  // TODO: convert this to return a function that returns a Promise
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const [namespaces, setNamespaces] = useState<string[]>([])
-  const [{ data: namespaceData, error: namespaceError }] = useAxios({
-    url: '/api/v1/namespaces',
-    method: 'get',
-    withCredentials: authEnabled,
-  })
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
 
-  useEffect(() => {
-    if (namespaceData && !namespaceError) {
-      setNamespaces(namespaceData)
+  const getNamespaces = (): AxiosPromise<string[]> => {
+    const config: AxiosRequestConfig = {
+      url: '/api/v1/namespaces',
+      method: 'get',
+      withCredentials: authEnabled,
     }
-  }, [namespaceData, namespaceError])
+    return execute(config)
+  }
 
-  return namespaces
+  return { getNamespaces }
 }
 
 export default useNamespace
