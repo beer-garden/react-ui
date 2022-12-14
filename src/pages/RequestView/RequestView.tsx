@@ -57,16 +57,6 @@ const RequestView = () => {
     }
   }, [data, error])
 
-  if (!request) {
-    return error ? (
-      <Alert severity="error">{error.message}</Alert>
-    ) : (
-      <Backdrop open={true}>
-        <CircularProgress data-testid="dataLoading" color="inherit" />
-      </Backdrop>
-    )
-  }
-
   return request && !error ? (
     <>
       <RemakeRequestButton request={request} />
