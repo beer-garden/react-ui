@@ -21,6 +21,8 @@ export interface JobRequestCreationProviderState {
   setCommand: Dispatch<SetStateAction<AugmentedCommand | undefined>> | undefined
   isJob: boolean
   setIsJob: Dispatch<SetStateAction<boolean>> | undefined
+  isReplay: boolean
+  setIsReplay: Dispatch<SetStateAction<boolean>> | undefined
   job: Job | undefined
   setJob: Dispatch<SetStateAction<Job | undefined>> | undefined
   requestModel: CommandViewRequestModel | undefined
@@ -29,19 +31,26 @@ export interface JobRequestCreationProviderState {
     | undefined
 }
 
-const JobRequestCreationContext =
-  createContext<JobRequestCreationProviderState>({
+export const emptyJobRequestCreationProviderState: JobRequestCreationProviderState =
+  {
     system: undefined,
     setSystem: undefined,
     command: undefined,
     setCommand: undefined,
     isJob: false,
     setIsJob: undefined,
+    isReplay: false,
+    setIsReplay: undefined,
     job: undefined,
     setJob: undefined,
     requestModel: undefined,
     setRequestModel: undefined,
-  })
+  }
+
+const JobRequestCreationContext =
+  createContext<JobRequestCreationProviderState>(
+    emptyJobRequestCreationProviderState,
+  )
 
 const JobRequestCreationProvider = ({
   children,
@@ -52,6 +61,7 @@ const JobRequestCreationProvider = ({
     undefined,
   )
   const [isJob, setIsJob] = useState(false)
+  const [isReplay, setIsReplay] = useState(false)
   const [requestModel, setRequestModel] = useState<
     CommandViewRequestModel | undefined
   >(undefined)
@@ -63,6 +73,8 @@ const JobRequestCreationProvider = ({
     setCommand,
     isJob,
     setIsJob,
+    isReplay,
+    setIsReplay,
     job,
     setJob,
     requestModel,

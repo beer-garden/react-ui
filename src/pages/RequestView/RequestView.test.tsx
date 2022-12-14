@@ -48,9 +48,6 @@ describe('RequestView', () => {
     expect(
       screen.getByRole('heading', { name: 'Parameters' }),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'remake request' }),
-    ).toBeInTheDocument()
   })
 
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {

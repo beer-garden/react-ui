@@ -138,7 +138,7 @@ export interface Request {
   namespace: string
   output?: string
   output_type: string
-  parameters: Parameter[]
+  parameters: ObjectWithStringKeys | EmptyObject
   parent: Request | null
   requester?: string
   status: string

@@ -1,14 +1,15 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { System } from 'types/backend-types'
 
 const useSystems = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getSystems = () => {
+  const getSystems = (): AxiosPromise<System[]> => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/systems',
       method: 'get',

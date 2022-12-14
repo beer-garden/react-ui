@@ -13,8 +13,11 @@ import {
   getValidator,
 } from 'formHelpers'
 import { CommandViewForm } from 'pages/CommandView/CommandViewForm'
-import { checkContext } from 'pages/CommandView/commandViewHelpers'
-import { useContext } from 'react'
+import {
+  checkContext,
+  fixReplayAny,
+} from 'pages/CommandView/commandViewHelpers'
+import { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewModel } from 'types/form-model-types'
@@ -23,7 +26,27 @@ const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { namespace, systemName, version, commandName } = useParams()
   const context = useContext(JobRequestCreationContext)
-  const { system, command, isJob, requestModel } = context
+  const {
+    system,
+    setSystem,
+    command,
+    setCommand,
+    isJob,
+    requestModel,
+    setRequestModel,
+    isReplay,
+    setIsReplay,
+  } = context
+
+  // handle leaving the page for any reason
+  useEffect(() => {
+    return () => {
+      setSystem && setSystem(undefined)
+      setCommand && setCommand(undefined)
+      setRequestModel && setRequestModel(undefined)
+      setIsReplay && setIsReplay(false)
+    }
+  }, [setCommand, setIsReplay, setRequestModel, setSystem])
 
   const checkedParams = checkContext(
     namespace,
@@ -32,6 +55,8 @@ const CommandView = () => {
     commandName,
     system,
     command,
+    isReplay,
+    requestModel,
   )
 
   if (checkedParams) return checkedParams
@@ -56,8 +81,8 @@ const CommandView = () => {
 
   let model: CommandViewModel
 
-  if (requestModel) {
-    model = requestModel
+  if (isReplay && requestModel) {
+    model = fixReplayAny(requestModel, parameters)
   } else {
     model = getModel(parameters, theSystem.instances, isJob)
   }
