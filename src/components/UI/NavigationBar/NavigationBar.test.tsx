@@ -7,15 +7,13 @@ import { AllProviders, LoggedInProviders } from 'test/testMocks'
 
 import { NavigationBar } from './NavigationBar'
 
+const originalLocation = Object.assign({}, window.location)
+
 describe('NavigationBar', () => {
   test('renders title bar', async () => {
     render(
       <AllProviders>
-        <NavigationBar
-          setMarginLeft={() => {
-            // do nothing
-          }}
-        />
+        <NavigationBar setMarginLeft={jest.fn()} />
       </AllProviders>,
     )
     // alternate fix to 'code that causes React state updates should be wrapped into act(...):' error
@@ -28,15 +26,14 @@ describe('NavigationBar', () => {
     let warnSpy: jest.SpyInstance
 
     beforeAll(() => {
-      const realLocation = window.location
-      window.location = { ...realLocation, assign: jest.fn() }
       // hides page does not exist warning log we don't really care about
       // since Router handles redirect
       warnSpy = jest.spyOn(console, 'warn')
     })
 
     afterEach(() => {
-      window.location.hash = '/'
+      window.location = { ...originalLocation }
+      window.location.hash = '#/'
       window.location.pathname = '/'
     })
 
@@ -48,11 +45,7 @@ describe('NavigationBar', () => {
       window.location.hash = '#first/requests'
       render(
         <AllProviders>
-          <NavigationBar
-            setMarginLeft={() => {
-              // do nothing
-            }}
-          />
+          <NavigationBar setMarginLeft={jest.fn()} />
         </AllProviders>,
       )
       await waitFor(() => expect(window.location.hash).toEqual('#/requests'))
@@ -65,11 +58,7 @@ describe('NavigationBar', () => {
         render(
           <AllProviders>
             <>
-              <NavigationBar
-                setMarginLeft={() => {
-                  // do nothing
-                }}
-              />
+              <NavigationBar setMarginLeft={jest.fn()} />
               <Suspense fallback={'loading'}>
                 <Routes />
               </Suspense>
@@ -81,18 +70,23 @@ describe('NavigationBar', () => {
     )
 
     test.each(['something', 'other/', '/test/'])(
-      'removes bad pathname %s',
+      'does not remove pathname %s',
       async (url) => {
+        Object.defineProperty(window, 'location', {
+          value: {
+            ...originalLocation,
+            hash: '#/',
+          },
+          writable: true,
+        })
+        window.location.pathname = url
         render(
           <AllProviders>
-            <NavigationBar
-              setMarginLeft={() => {
-                // do nothing
-              }}
-            />
+            <NavigationBar setMarginLeft={jest.fn()} />
           </AllProviders>,
         )
-        await waitFor(() => expect(window.location.pathname).toEqual('/'))
+        await waitFor(() => expect(window.location.pathname).not.toEqual('/'))
+        expect(window.location.pathname).toEqual(url)
       },
     )
   })
@@ -100,11 +94,7 @@ describe('NavigationBar', () => {
   test('no user welcome when not logged in', async () => {
     render(
       <AllProviders>
-        <NavigationBar
-          setMarginLeft={() => {
-            // do nothing
-          }}
-        />
+        <NavigationBar setMarginLeft={jest.fn()} />
       </AllProviders>,
     )
     await waitFor(() =>
@@ -115,14 +105,9 @@ describe('NavigationBar', () => {
   test('adds user welcome when logged in', async () => {
     // change return to enable auth
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-
     render(
       <LoggedInProviders>
-        <NavigationBar
-          setMarginLeft={() => {
-            // do nothing
-          }}
-        />
+        <NavigationBar setMarginLeft={jest.fn()} />
       </LoggedInProviders>,
     )
     const header = await screen.findByRole('heading', { name: 'Hello, admin!' })
