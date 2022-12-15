@@ -45,9 +45,6 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
 
   useEffect(() => {
     // Workaround to make the URL play nice
-    if (window.location.pathname !== '/') {
-      window.location.pathname = '/'
-    }
     if (!window.location.hash.startsWith('#/')) {
       window.location.hash = window.location.hash.replace(/^#[^/]+\//, '#/')
     }
