@@ -5,7 +5,6 @@ import { ParameterAsProperty } from 'formHelpers'
 import { useFormikContext } from 'formik'
 import { nanoid } from 'nanoid/non-secure'
 import {
-  DynamicChoices,
   DynamicChoicesStateManager,
   DynamicExecuteFunction,
   OnChangeFunctionMap,
@@ -56,14 +55,7 @@ const getParameterComponents = (
     },
   ) as ParameterEntry[]
 
-  const dynamicChoices = stateManager.choices.get()
-
-  const mapper = getParameterMapper(
-    onChangeFunctions,
-    execute,
-    dynamicChoices,
-    stateManager,
-  )
+  const mapper = getParameterMapper(onChangeFunctions, execute, stateManager)
   const parameterComponents = parameterEntries.map(mapper)
 
   return parameterComponents
@@ -72,7 +64,6 @@ const getParameterComponents = (
 const getParameterMapper = (
   onChangeFunctions: OnChangeFunctionMap,
   execute: DynamicExecuteFunction,
-  dynamicChoices: DynamicChoices,
   stateManager: DynamicChoicesStateManager,
 ): ParameterMapper => {
   // the following is necessary due to a limitation of eslint

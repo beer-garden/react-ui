@@ -119,3 +119,53 @@ export const TChildRequest: Request = {
   system_version: 'child version',
   updated_at: 1667517244664,
 }
+
+export const TFullSimpleParameter: Parameter = {
+  key: 'aKey',
+  type: 'String',
+  multi: false,
+  display_name: 'display_name',
+  optional: true,
+  default: 'default',
+  description: 'description',
+  choices: undefined,
+  parameters: [],
+  nullable: false,
+  maximum: undefined,
+  minimum: undefined,
+  regex: undefined,
+  form_input_type: undefined,
+  type_info: {},
+}
+
+export const [TAnotherFullSimpleParameter, TThirdFullSimpleParameter] = [
+  { ...TFullSimpleParameter, key: 'anotherKey' },
+  { ...TFullSimpleParameter, key: 'thirdKey' },
+]
+
+export const TSingleInstanceArray: Instance[] = [
+  {
+    name: 'instance1',
+    description: 'description',
+    id: 'id',
+    status: 'status',
+    status_info: {
+      heartbeat: 1000,
+    },
+    queue_type: 'type',
+    queue_info: {
+      looks: 'good',
+      to: 'me',
+    },
+    icon_name: 'icon_name',
+    metadata: null,
+  },
+]
+
+export const TMultiInstanceArray: Instance[] = [
+  ...TSingleInstanceArray,
+  {
+    ...TSingleInstanceArray[0],
+    name: 'instance2',
+  },
+]

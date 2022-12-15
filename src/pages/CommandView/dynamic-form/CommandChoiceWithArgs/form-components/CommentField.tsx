@@ -14,7 +14,7 @@ const CommentField = ({ stateManager }: CommentFieldProps) => {
   const setModel = (newValue: string) => {
     stateManager.model.set({
       ...stateManager.model.get(),
-      comment: value,
+      comment: newValue,
     })
   }
 

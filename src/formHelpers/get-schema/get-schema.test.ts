@@ -1,16 +1,23 @@
-import { Instance, Parameter } from 'types/backend-types'
+import {
+  TAnotherFullSimpleParameter,
+  TFullSimpleParameter,
+  TMultiInstanceArray,
+  TSingleInstanceArray,
+  TThirdFullSimpleParameter,
+} from 'test/test-values'
+import { Parameter } from 'types/backend-types'
 
 import { getSchema } from './get-schema'
 
-describe('common properties', () => {
+describe('Get schema common properties', () => {
   test('result has properties', () => {
-    const schema = getSchema(singleInstanceArray, [simpleParameter])
+    const schema = getSchema(TSingleInstanceArray, [TFullSimpleParameter])
 
     expect(schema).toHaveProperty('properties')
   })
 
   test('comment is inserted into properties', () => {
-    const schema = getSchema(singleInstanceArray, [simpleParameter])
+    const schema = getSchema(TSingleInstanceArray, [TFullSimpleParameter])
 
     expect(schema).toHaveProperty('properties.comment')
     expect(schema).toHaveProperty('properties.comment.title')
@@ -35,7 +42,7 @@ describe('common properties', () => {
   })
 
   test('instance_name is inserted into properties', () => {
-    const schema = getSchema(singleInstanceArray, [simpleParameter])
+    const schema = getSchema(TSingleInstanceArray, [TFullSimpleParameter])
 
     expect(schema).toHaveProperty('properties.instance_names')
     expect(schema).toHaveProperty('properties.instance_names.title')
@@ -47,13 +54,13 @@ describe('common properties', () => {
 
   test('enum is ommitted from instance_name for single instance', () => {
     expect(
-      getSchema(singleInstanceArray, [simpleParameter]),
+      getSchema(TSingleInstanceArray, [TFullSimpleParameter]),
     ).not.toHaveProperty('properties.instance_name.enum')
   })
 
   test('enum is present in instance_name for multiple instances', () => {
-    const schema = getSchema(singleInstanceArray, [simpleParameter])
-    const multiSchema = getSchema(multiInstanceArray, [simpleParameter])
+    const schema = getSchema(TSingleInstanceArray, [TFullSimpleParameter])
+    const multiSchema = getSchema(TMultiInstanceArray, [TFullSimpleParameter])
 
     expect(schema).toHaveProperty('properties.instance_names')
     expect(schema).toHaveProperty('properties.instance_names.title')
@@ -75,8 +82,8 @@ describe('common properties', () => {
   })
 
   test('parameter keys are hoisted into properties correctly', () => {
-    const singleParameterSchema = getSchema(singleInstanceArray, [
-      simpleParameter,
+    const singleParameterSchema = getSchema(TSingleInstanceArray, [
+      TFullSimpleParameter,
     ])
 
     expect(singleParameterSchema).toMatchObject({
@@ -89,9 +96,9 @@ describe('common properties', () => {
       },
     })
 
-    const multiParameterSchema = getSchema(singleInstanceArray, [
-      simpleParameter,
-      anotherSimpleParameter,
+    const multiParameterSchema = getSchema(TSingleInstanceArray, [
+      TFullSimpleParameter,
+      TAnotherFullSimpleParameter,
     ])
 
     expect(multiParameterSchema).toMatchObject({
@@ -106,7 +113,7 @@ describe('common properties', () => {
   })
 
   test('simpleparameter default translated to default in schema', () => {
-    const schema = getSchema(singleInstanceArray, [simpleParameter])
+    const schema = getSchema(TSingleInstanceArray, [TFullSimpleParameter])
 
     expect(schema).toHaveProperty(
       'properties.parameters.properties.aKey.default',
@@ -125,9 +132,9 @@ describe('common properties', () => {
   })
 
   test('boolean default translated to default in schema correctly', () => {
-    const schema = getSchema(singleInstanceArray, [
+    const schema = getSchema(TSingleInstanceArray, [
       {
-        ...simpleParameter,
+        ...TFullSimpleParameter,
         type: 'Boolean',
         default: false,
       },
@@ -150,11 +157,11 @@ describe('common properties', () => {
   })
 })
 
-describe('types', () => {
+describe('Get schema types', () => {
   test('Integer type is number', () => {
-    const schema = getSchema(singleInstanceArray, [
+    const schema = getSchema(TSingleInstanceArray, [
       {
-        ...simpleParameter,
+        ...TFullSimpleParameter,
         type: 'Integer',
       },
     ])
@@ -173,9 +180,9 @@ describe('types', () => {
   })
 
   test('Float type is number', () => {
-    const schema = getSchema(singleInstanceArray, [
+    const schema = getSchema(TSingleInstanceArray, [
       {
-        ...simpleParameter,
+        ...TFullSimpleParameter,
         type: 'Float',
       },
     ])
@@ -194,7 +201,7 @@ describe('types', () => {
   })
 
   test('String type is string', () => {
-    const schema = getSchema(singleInstanceArray, [simpleParameter])
+    const schema = getSchema(TSingleInstanceArray, [TFullSimpleParameter])
 
     expect(schema).toMatchObject({
       properties: {
@@ -210,9 +217,9 @@ describe('types', () => {
   })
 
   test('Boolean type is boolean', () => {
-    const schema = getSchema(singleInstanceArray, [
+    const schema = getSchema(TSingleInstanceArray, [
       {
-        ...simpleParameter,
+        ...TFullSimpleParameter,
         type: 'Boolean',
       },
     ])
@@ -231,9 +238,9 @@ describe('types', () => {
   })
 
   test('Any type is string', () => {
-    const schema = getSchema(singleInstanceArray, [
+    const schema = getSchema(TSingleInstanceArray, [
       {
-        ...simpleParameter,
+        ...TFullSimpleParameter,
         type: 'Any',
       },
     ])
@@ -252,9 +259,9 @@ describe('types', () => {
   })
 
   test('(raw) Dictionary type is string', () => {
-    const schema = getSchema(singleInstanceArray, [
+    const schema = getSchema(TSingleInstanceArray, [
       {
-        ...simpleParameter,
+        ...TFullSimpleParameter,
         type: 'Dictionary',
       },
     ])
@@ -273,8 +280,8 @@ describe('types', () => {
   })
 })
 
-test('no parameters gets schema with empty properties and required', () => {
-  const schema = getSchema(singleInstanceArray, [])
+test('Get schema - no parameters gets schema with empty properties and required', () => {
+  const schema = getSchema(TSingleInstanceArray, [])
 
   expect(schema).toMatchObject({
     properties: {
@@ -286,18 +293,18 @@ test('no parameters gets schema with empty properties and required', () => {
   })
 })
 
-describe('parameter with subparameters and multi but no choices', () => {
+describe('Get schema - parameter with subparameters and multi but no choices', () => {
   let schema: object, basicParameter: Parameter
 
   beforeAll(() => {
-    const { default: theDefault, ...withoutDefault } = simpleParameter
+    const { default: theDefault, ...withoutDefault } = TFullSimpleParameter
     basicParameter = {
       ...withoutDefault,
       multi: true,
-      parameters: [anotherSimpleParameter],
+      parameters: [TAnotherFullSimpleParameter],
       choices: undefined,
     }
-    schema = getSchema(singleInstanceArray, [basicParameter])
+    schema = getSchema(TSingleInstanceArray, [basicParameter])
   })
 
   test('type is array', () => {
@@ -344,7 +351,7 @@ describe('parameter with subparameters and multi but no choices', () => {
       default: undefined,
     }
 
-    const dictSchema = getSchema(singleInstanceArray, [rawDictParameter])
+    const dictSchema = getSchema(TSingleInstanceArray, [rawDictParameter])
 
     expect(dictSchema).toHaveProperty(
       'properties.parameters.properties.aKey.default',
@@ -367,17 +374,17 @@ describe('parameter with subparameters and multi but no choices', () => {
   })
 })
 
-describe('parameter with subparameters but no choices or multi', () => {
+describe('Get schema - parameter with subparameters but no choices or multi', () => {
   let schema: object, basicParameter: Parameter
 
   beforeAll(() => {
     basicParameter = {
-      ...simpleParameter,
+      ...TFullSimpleParameter,
       multi: false,
-      parameters: [anotherSimpleParameter, thirdSimpleParameter],
+      parameters: [TAnotherFullSimpleParameter, TThirdFullSimpleParameter],
       choices: undefined,
     }
-    schema = getSchema(singleInstanceArray, [basicParameter])
+    schema = getSchema(TSingleInstanceArray, [basicParameter])
   })
 
   test('type is object', () => {
@@ -416,7 +423,7 @@ describe('parameter with subparameters but no choices or multi', () => {
   })
 
   test('parameter type Dictionary creates raw_dict default', () => {
-    const dictSchema = getSchema(singleInstanceArray, [
+    const dictSchema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
@@ -442,12 +449,12 @@ describe('parameter with subparameters but no choices or multi', () => {
   })
 })
 
-describe('parameter with choices and multi but no subparameters', () => {
+describe('Get schema - parameter with choices and multi but no subparameters', () => {
   let schema: object, basicParameter: Parameter
 
   beforeAll(() => {
     basicParameter = {
-      ...simpleParameter,
+      ...TFullSimpleParameter,
       multi: true,
       parameters: [],
       choices: {
@@ -458,7 +465,7 @@ describe('parameter with choices and multi but no subparameters', () => {
         details: {},
       },
     }
-    schema = getSchema(singleInstanceArray, [basicParameter])
+    schema = getSchema(TSingleInstanceArray, [basicParameter])
   })
 
   test('type is array', () => {
@@ -506,7 +513,7 @@ describe('parameter with choices and multi but no subparameters', () => {
   })
 
   test('raw_dict default is not created with choices', () => {
-    const dictSchema = getSchema(singleInstanceArray, [
+    const dictSchema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
@@ -527,12 +534,12 @@ describe('parameter with choices and multi but no subparameters', () => {
   })
 })
 
-describe('parameter with choices but no multi and no subparameters', () => {
+describe('Get schema - parameter with choices but no multi and no subparameters', () => {
   let schema: object, basicParameter: Parameter
 
   beforeAll(() => {
     basicParameter = {
-      ...simpleParameter,
+      ...TFullSimpleParameter,
       multi: false,
       parameters: [],
       choices: {
@@ -543,7 +550,7 @@ describe('parameter with choices but no multi and no subparameters', () => {
         details: {},
       },
     }
-    schema = getSchema(singleInstanceArray, [basicParameter])
+    schema = getSchema(TSingleInstanceArray, [basicParameter])
   })
 
   test('type of choices matches parameter type', () => {
@@ -577,7 +584,7 @@ describe('parameter with choices but no multi and no subparameters', () => {
   })
 
   test('raw_dict default is not created with choices', () => {
-    const dictSchema = getSchema(singleInstanceArray, [
+    const dictSchema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
@@ -598,17 +605,17 @@ describe('parameter with choices but no multi and no subparameters', () => {
   })
 })
 
-describe('parameter with multi but no choices and no subparameters', () => {
+describe('Get schema - parameter with multi but no choices and no subparameters', () => {
   let schema: object, basicParameter: Parameter
 
   beforeAll(() => {
     basicParameter = {
-      ...simpleParameter,
+      ...TFullSimpleParameter,
       choices: undefined,
       multi: true,
       parameters: [],
     }
-    schema = getSchema(singleInstanceArray, [basicParameter])
+    schema = getSchema(TSingleInstanceArray, [basicParameter])
   })
 
   test('type of parameter is array', () => {
@@ -642,7 +649,7 @@ describe('parameter with multi but no choices and no subparameters', () => {
   })
 
   test('raw_dict default is created with multi', () => {
-    const dictSchema = getSchema(singleInstanceArray, [
+    const dictSchema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
@@ -669,7 +676,7 @@ describe('parameter with multi but no choices and no subparameters', () => {
   })
 
   test('parameter maximum creates maxItem key', () => {
-    schema = getSchema(singleInstanceArray, [
+    schema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         maximum: 2,
@@ -692,7 +699,7 @@ describe('parameter with multi but no choices and no subparameters', () => {
   })
 
   test('parameter minimum creates minItem key', () => {
-    schema = getSchema(singleInstanceArray, [
+    schema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         minimum: 2,
@@ -715,19 +722,19 @@ describe('parameter with multi but no choices and no subparameters', () => {
   })
 })
 
-describe('parameter with no multi, no choices and no subparameters', () => {
+describe('Get schema - parameter with no multi, no choices and no subparameters', () => {
   let schema: object, otherSchema: object, basicParameter: Parameter
 
   beforeAll(() => {
     basicParameter = {
-      ...simpleParameter,
+      ...TFullSimpleParameter,
       multi: false,
       choices: undefined,
       parameters: [],
       default: undefined,
     }
-    schema = getSchema(singleInstanceArray, [basicParameter])
-    otherSchema = getSchema(singleInstanceArray, [
+    schema = getSchema(TSingleInstanceArray, [basicParameter])
+    otherSchema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         type: 'Integer',
@@ -765,7 +772,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
   })
 
   test('only parameter type Dictionary creates raw_dict default', () => {
-    const dictSchema = getSchema(singleInstanceArray, [
+    const dictSchema = getSchema(TSingleInstanceArray, [
       {
         ...basicParameter,
         type: 'Dictionary',
@@ -792,10 +799,10 @@ describe('parameter with no multi, no choices and no subparameters', () => {
   })
 
   test('parameter maximum/minimum passed through for Integer', () => {
-    const maxSchema = getSchema(singleInstanceArray, [
+    const maxSchema = getSchema(TSingleInstanceArray, [
       { ...basicParameter, type: 'Integer', maximum: 20 },
     ])
-    const minSchema = getSchema(singleInstanceArray, [
+    const minSchema = getSchema(TSingleInstanceArray, [
       { ...basicParameter, type: 'Integer', minimum: 20 },
     ])
 
@@ -830,10 +837,10 @@ describe('parameter with no multi, no choices and no subparameters', () => {
   })
 
   test('parameter maximum/minimum becomes maxLength for String', () => {
-    const maxSchema = getSchema(singleInstanceArray, [
+    const maxSchema = getSchema(TSingleInstanceArray, [
       { ...basicParameter, type: 'String', maximum: 20 },
     ])
-    const minSchema = getSchema(singleInstanceArray, [
+    const minSchema = getSchema(TSingleInstanceArray, [
       { ...basicParameter, type: 'String', minimum: 20 },
     ])
 
@@ -869,7 +876,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
 
   test('parameter with missing description gets empty description', () => {
     const { description, ...withoutDescription } = basicParameter
-    const noDescriptionSchema = getSchema(singleInstanceArray, [
+    const noDescriptionSchema = getSchema(TSingleInstanceArray, [
       withoutDescription,
     ])
 
@@ -900,7 +907,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
         nullable: true,
       }
 
-      otherSchema = getSchema(singleInstanceArray, [
+      otherSchema = getSchema(TSingleInstanceArray, [
         {
           ...basicParameter,
           type: 'Integer',
@@ -908,7 +915,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
       ])
     })
     test('parameter nullable updates simple type to include null', () => {
-      nullableSchema = getSchema(singleInstanceArray, [basicNullableParameter])
+      nullableSchema = getSchema(TSingleInstanceArray, [basicNullableParameter])
 
       expect(nullableSchema).toHaveProperty(
         'properties.parameters.properties.aKey.type',
@@ -927,7 +934,7 @@ describe('parameter with no multi, no choices and no subparameters', () => {
     })
 
     test('parameter nullable with type Any updates type to include null', () => {
-      nullableSchema = getSchema(singleInstanceArray, [
+      nullableSchema = getSchema(TSingleInstanceArray, [
         {
           ...basicNullableParameter,
           type: 'Any',
@@ -952,53 +959,3 @@ describe('parameter with no multi, no choices and no subparameters', () => {
     })
   })
 })
-
-const simpleParameter: Parameter = {
-  key: 'aKey',
-  type: 'String',
-  multi: false,
-  display_name: 'display_name',
-  optional: true,
-  default: 'default',
-  description: 'description',
-  choices: undefined,
-  parameters: [],
-  nullable: false,
-  maximum: undefined,
-  minimum: undefined,
-  regex: undefined,
-  form_input_type: undefined,
-  type_info: {},
-}
-
-const [anotherSimpleParameter, thirdSimpleParameter] = [
-  { ...simpleParameter, key: 'anotherKey' },
-  { ...simpleParameter, key: 'thirdKey' },
-]
-
-const singleInstanceArray: Instance[] = [
-  {
-    name: 'instance1',
-    description: 'description',
-    id: 'id',
-    status: 'status',
-    status_info: {
-      heartbeat: 1000,
-    },
-    queue_type: 'type',
-    queue_info: {
-      looks: 'good',
-      to: 'me',
-    },
-    icon_name: 'icon_name',
-    metadata: null,
-  },
-]
-
-const multiInstanceArray: Instance[] = [
-  ...singleInstanceArray,
-  {
-    ...singleInstanceArray[0],
-    name: 'instance2',
-  },
-]
