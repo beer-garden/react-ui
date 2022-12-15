@@ -14,11 +14,7 @@ const CommentField = ({ stateManager }: CommentFieldProps) => {
   const setModel = (newValue: string) => {
     stateManager.model.set({
       ...stateManager.model.get(),
-<<<<<<< HEAD
       comment: newValue,
-=======
-      comment: value,
->>>>>>> 7cca223 (#138 - Dynamic choices cmd with args)
     })
   }
 
