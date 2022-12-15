@@ -393,7 +393,10 @@ const SSRTable = <
                     ...headerGroupProps
                   } = headerGroup.getHeaderGroupProps()
                   return (
-                    <TableRow key={headerGroupKey} {...headerGroupProps}>
+                    <TableRow
+                      key={headerGroupKey + 'Filter'}
+                      {...headerGroupProps}
+                    >
                       <>
                         {headerGroup.headers.map((column) => {
                           const {
@@ -402,7 +405,10 @@ const SSRTable = <
                             ...headerProps
                           } = column.getHeaderProps(columnStyle)
                           return (
-                            <TableHeadCell key={headerKey} {...headerProps}>
+                            <TableHeadCell
+                              key={headerKey + 'Filter'}
+                              {...headerProps}
+                            >
                               {column.canFilter && (
                                 <InlineFilter column={column} />
                               )}
