@@ -110,7 +110,7 @@ const Toolbar = <T extends ObjectWithStringKeys>({
         justifyContent="space-between"
         alignItems="center"
       >
-        <Stack direction="row" spacing={3}>
+        <Stack direction="row" spacing={1} pb={1}>
           {showGlobalFilter && (
             <DefaultGlobalFilter<T>
               preGlobalFilteredRows={instance.preGlobalFilteredRows}
