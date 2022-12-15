@@ -123,12 +123,33 @@ const JobIndex = () => {
       <Divider />
       <Table tableKey="JobIndex" data={jobData} columns={useJobColumns()}>
         {hasPermission('job:create') && (
-          <Button onClick={createRequestOnClick}>Create</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            aria-label="Create Job"
+            onClick={createRequestOnClick}
+          >
+            Create
+          </Button>
         )}
         {hasPermission('job:create') && (
-          <Button onClick={() => setOpenImport(true)}>IMPORT</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            aria-label="Import Jobs"
+            onClick={() => setOpenImport(true)}
+          >
+            IMPORT
+          </Button>
         )}
-        <Button onClick={handleExport}>EXPORT</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          aria-label="Export Jobs"
+          onClick={handleExport}
+        >
+          EXPORT
+        </Button>
       </Table>
       <ModalWrapper
         open={openImport}
