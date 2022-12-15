@@ -76,7 +76,7 @@ const CommandIndex = () => {
     </Box>
   ) : error.response ? (
     <ErrorAlert
-      statusCode={error.response?.status}
+      statusCode={error.response.status}
       errorMsg={error.response.statusText}
     />
   ) : (

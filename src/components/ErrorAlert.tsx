@@ -1,7 +1,7 @@
 import {
   Alert,
+  Box,
   Card,
-  CardActions,
   CardContent,
   CardHeader,
   Divider,
@@ -9,8 +9,14 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
+export type SpecificErrorType = 'request' | 'job' | 'garden' | 'user'
+export type ErrorStatusCode = 403 | 404 | 500
+type ErrorType = { common: AxiosErrorProblem[] } & {
+  [S in SpecificErrorType]?: AxiosErrorProblem[]
+}
+
 interface ErrorAlertProps {
-  specific?: string
+  specific?: SpecificErrorType
   statusCode: number
   errorMsg: string
 }
@@ -21,9 +27,7 @@ type AxiosErrorProblem = {
   resolution: JSX.Element | string
 }
 
-const errorMap: {
-  [key: number]: { [key: string]: AxiosErrorProblem[] }
-} = {
+const errorMap: { [E in ErrorStatusCode]: ErrorType } = {
   403: {
     common: [
       {
@@ -59,10 +63,10 @@ const errorMap: {
           'Beer Garden can be set to remove requests after several ' +
           'minutes, so this request may have been removed.',
         resolution: (
-          <div>
+          <Box>
             Go back to the list of all{' '}
             <RouterLink to="/requests">requests</RouterLink>.
-          </div>
+          </Box>
         ),
       },
     ],
@@ -71,9 +75,9 @@ const errorMap: {
         problem: 'Job was removed',
         description: 'An authorized user could have deleted the job.',
         resolution: (
-          <div>
+          <Box>
             Go back to the list of <RouterLink to="/jobs">jobs</RouterLink>.
-          </div>
+          </Box>
         ),
       },
     ],
@@ -82,10 +86,10 @@ const errorMap: {
         problem: 'Garden was removed',
         description: 'An authorized user could have deleted the garden.',
         resolution: (
-          <div>
+          <Box>
             Go back to the list of{' '}
             <RouterLink to="/admin/gardens">gardens</RouterLink>.
-          </div>
+          </Box>
         ),
       },
     ],
@@ -94,10 +98,10 @@ const errorMap: {
         problem: 'User was removed',
         description: 'An authorized user could have deleted the user.',
         resolution: (
-          <div>
+          <Box>
             Go back to the list of{' '}
             <RouterLink to="/admin/users">users</RouterLink>.
-          </div>
+          </Box>
         ),
       },
     ],
@@ -116,9 +120,12 @@ const errorMap: {
 }
 
 const ErrorAlert = ({ specific, statusCode, errorMsg }: ErrorAlertProps) => {
-  let problemList = errorMap[statusCode]['common']
-  if (specific && errorMap[statusCode][specific]) {
-    problemList = problemList.concat(errorMap[statusCode][specific])
+  const problems = errorMap[statusCode as ErrorStatusCode]
+  let problemList: AxiosErrorProblem[] = []
+  if (problems) {
+    problemList = problems['common'].concat(
+      (specific && problems[specific]) || [],
+    )
   }
 
   return (
@@ -134,7 +141,7 @@ const ErrorAlert = ({ specific, statusCode, errorMsg }: ErrorAlertProps) => {
           <Divider />
           <CardContent>{problem.description}</CardContent>
           <Divider />
-          <CardActions>{problem.resolution}</CardActions>
+          <CardContent>{problem.resolution}</CardContent>
         </Card>
       ))}
     </>

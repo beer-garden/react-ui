@@ -1,7 +1,12 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { AllProviders } from 'test/testMocks'
 
-import { ErrorAlert, errorMap } from './ErrorAlert'
+import {
+  ErrorAlert,
+  errorMap,
+  ErrorStatusCode,
+  SpecificErrorType,
+} from './ErrorAlert'
 
 describe('ErrorAlert', () => {
   const errorMsg = 'my error message'
@@ -15,7 +20,9 @@ describe('ErrorAlert', () => {
             <ErrorAlert
               statusCode={statusCode}
               errorMsg={errorMsg}
-              specific={specific}
+              specific={
+                specific as 'request' | 'job' | 'garden' | 'user' | undefined
+              }
             />
           </AllProviders>,
         )
@@ -26,15 +33,17 @@ describe('ErrorAlert', () => {
         })
         expect(
           screen.getByText(
-            `Problem: ${errorMap[statusCode]['common'][0].problem}`,
+            `Problem: ${
+              errorMap[statusCode as ErrorStatusCode]['common'][0].problem
+            }`,
           ),
         ).toBeInTheDocument()
-        if (specific) {
+        const specificList =
+          errorMap[statusCode as ErrorStatusCode][specific as SpecificErrorType]
+        if (specificList) {
           // eslint-disable-next-line jest/no-conditional-expect
           expect(
-            screen.getByText(
-              `Problem: ${errorMap[statusCode][specific][0].problem}`,
-            ),
+            screen.getByText(`Problem: ${specificList[0].problem}`),
           ).toBeInTheDocument()
         }
       })

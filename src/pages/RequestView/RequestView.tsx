@@ -93,7 +93,7 @@ const RequestView = () => {
     </>
   ) : error?.response ? (
     <ErrorAlert
-      statusCode={error.response?.status}
+      statusCode={error.response.status}
       specific="request"
       errorMsg={error.response.statusText}
     />

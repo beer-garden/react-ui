@@ -141,7 +141,7 @@ const GardenAdminView = () => {
   ) : error.response ? (
     <ErrorAlert
       specific="garden"
-      statusCode={error.response?.status}
+      statusCode={error.response.status}
       errorMsg={error.response.statusText}
     />
   ) : (

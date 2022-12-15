@@ -127,7 +127,7 @@ export const CommandBlocklistView = () => {
   ) : error.response ? (
     <ErrorAlert
       errorMsg={error.response.statusText}
-      statusCode={error.response?.status}
+      statusCode={error.response.status}
     />
   ) : (
     <Backdrop open={true}>
