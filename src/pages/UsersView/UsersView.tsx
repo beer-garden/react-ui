@@ -39,7 +39,7 @@ export const UsersView = () => {
   const [confirm, setConfirm] = useState<string>('')
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const [roles, setRoles] = useState<RolePatch[]>([])
-  const [sync, setSync] = useState<SyncStatus>()
+  const [sync, setSync] = useState<SyncStatus | null>(null)
   const { hasPermission } = PermissionsContainer.useContainer()
   const { getUser, deleteUser, updateUser } = useUsers()
 

@@ -31,7 +31,7 @@ const RequestView = () => {
 
   const { addCallback, removeCallback } = SocketContainer.useContainer()
 
-  const [{ data, error }, refetch] = useAxios(
+  const [{ data, error }, refetch] = useAxios<Request>(
     {
       url: '/api/v1/requests/' + id,
       method: 'get',

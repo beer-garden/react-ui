@@ -2,7 +2,8 @@ import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { Job } from 'types/backend-types'
+import { Job, PatchOperation } from 'types/backend-types'
+import { EmptyObject } from 'types/custom-types'
 
 const JOBS_URL = '/api/v1/jobs'
 
@@ -30,7 +31,7 @@ const useJobs = () => {
   }
 
   const importJobs = (fileData: string): AxiosPromise<{ ids: string[] }> => {
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<string> = {
       url: '/api/v1/import/jobs',
       method: 'POST',
       data: fileData,
@@ -48,7 +49,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const pauseJob = (id: string) => {
+  const pauseJob = (id: string): AxiosPromise<Job> => {
     const patchData = {
       operations: [
         {
@@ -58,7 +59,7 @@ const useJobs = () => {
         },
       ],
     }
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<PatchOperation> = {
       url: `${JOBS_URL}/${id}`,
       method: 'patch',
       data: patchData,
@@ -67,7 +68,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const deleteJob = (id: string) => {
+  const deleteJob = (id: string): AxiosPromise<EmptyObject> => {
     const config: AxiosRequestConfig = {
       url: `${JOBS_URL}/${id}`,
       method: 'DELETE',
@@ -76,7 +77,7 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const resumeJob = (id: string) => {
+  const resumeJob = (id: string): AxiosPromise<Job> => {
     const patchData = {
       operations: [
         {
@@ -86,7 +87,7 @@ const useJobs = () => {
         },
       ],
     }
-    const config: AxiosRequestConfig = {
+    const config: AxiosRequestConfig<PatchOperation> = {
       url: `${JOBS_URL}/${id}`,
       method: 'patch',
       data: patchData,
@@ -95,8 +96,11 @@ const useJobs = () => {
     return execute(config)
   }
 
-  const runAdHoc = (id: string, resetInterval: boolean) => {
-    const config: AxiosRequestConfig = {
+  const runAdHoc = (
+    id: string,
+    resetInterval: boolean,
+  ): AxiosPromise<EmptyObject> => {
+    const config: AxiosRequestConfig<boolean> = {
       url: `${JOBS_URL}/${id}/execute`,
       method: 'POST',
       data: resetInterval,

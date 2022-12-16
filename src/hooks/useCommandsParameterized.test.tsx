@@ -9,7 +9,6 @@ import {
   CommandFormatter,
   useCommandsParameterized,
 } from './useCommandsParameterized'
-import * as useSystemsHook from './useSystems'
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -23,14 +22,6 @@ describe('useCommandsParameterized', () => {
   })
 
   test('returns commands', async () => {
-    const dummyResponse = {
-      data: [TSystem],
-      status: 200,
-      statusText: '',
-      headers: {},
-      config: {},
-    }
-
     const formatter: CommandFormatter<Command> = (systems: System[]) => {
       return systems[0].commands
     }
@@ -39,14 +30,6 @@ describe('useCommandsParameterized', () => {
       systemName: TSystem.name,
       namespace: TSystem.namespace,
       version: TSystem.version,
-    })
-
-    jest.spyOn(useSystemsHook, 'useSystems').mockImplementation(() => {
-      return {
-        getSystems: () => new Promise((resolve) => resolve(dummyResponse)),
-        reloadSystem: () => new Promise((resolve) => resolve(dummyResponse)),
-        deleteSystem: () => new Promise((resolve) => resolve(dummyResponse)),
-      }
     })
 
     const { result } = renderHook(() => useCommandsParameterized(formatter), {

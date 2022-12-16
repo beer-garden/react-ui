@@ -1,16 +1,17 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { Garden } from 'types/backend-types'
+import { Garden, PatchData } from 'types/backend-types'
+import { EmptyObject } from 'types/custom-types'
 
 const useGardens = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
-  const [, execute] = useAxios({}, axiosManualOptions)
+  const [{ loading }, execute] = useAxios({}, axiosManualOptions)
 
-  const getGardens = () => {
-    const config: AxiosRequestConfig<Garden[]> = {
+  const getGardens = (): AxiosPromise<Garden[]> => {
+    const config: AxiosRequestConfig = {
       url: '/api/v1/gardens',
       method: 'get',
       withCredentials: authEnabled,
@@ -19,8 +20,8 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const getGarden = (name: string) => {
-    const config: AxiosRequestConfig<Garden> = {
+  const getGarden = (name: string): AxiosPromise<Garden> => {
+    const config: AxiosRequestConfig = {
       url: `/api/v1/gardens/${name}`,
       method: 'get',
       withCredentials: authEnabled,
@@ -29,7 +30,7 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const deleteGarden = (name: string) => {
+  const deleteGarden = (name: string): AxiosPromise<EmptyObject> => {
     const config: AxiosRequestConfig = {
       url: `/api/v1/gardens/${name}`,
       method: 'delete',
@@ -39,8 +40,8 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const syncUsers = () => {
-    const config: AxiosRequestConfig = {
+  const syncUsers = (): AxiosPromise<EmptyObject> => {
+    const config: AxiosRequestConfig<PatchData> = {
       url: '/api/v1/gardens',
       method: 'patch',
       withCredentials: authEnabled,
@@ -50,8 +51,19 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const createGarden = (data: Garden) => {
-    const config: AxiosRequestConfig = {
+  const syncGarden = (name: string): AxiosPromise<EmptyObject> => {
+    const config: AxiosRequestConfig<PatchData> = {
+      url: `/api/v1/gardens/${name}`,
+      method: 'patch',
+      withCredentials: authEnabled,
+      data: { path: '', value: '', operation: 'sync' },
+    }
+
+    return execute(config)
+  }
+
+  const createGarden = (data: Garden): AxiosPromise<Garden> => {
+    const config: AxiosRequestConfig<Garden> = {
       url: '/api/v1/gardens',
       method: 'POST',
       data: data,
@@ -64,8 +76,8 @@ const useGardens = () => {
     return execute(config)
   }
 
-  const updateGarden = (garden: Garden) => {
-    const config: AxiosRequestConfig = {
+  const updateGarden = (garden: Garden): AxiosPromise<Garden> => {
+    const config: AxiosRequestConfig<PatchData> = {
       url: `/api/v1/gardens/${garden.name}`,
       method: 'PATCH',
       data: {
@@ -83,9 +95,11 @@ const useGardens = () => {
   }
 
   return {
+    loading,
     getGardens,
     getGarden,
     syncUsers,
+    syncGarden,
     deleteGarden,
     createGarden,
     updateGarden,
