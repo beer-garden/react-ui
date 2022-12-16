@@ -1,5 +1,4 @@
 import { Alert, Backdrop, CircularProgress, Typography } from '@mui/material'
-import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
@@ -7,7 +6,6 @@ import { GardenSyncButton } from 'components/GardenSyncButton'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
@@ -19,9 +17,10 @@ import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
 const GardenAdminView = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
   const { hasPermission } = PermissionsContainer.useContainer()
   const systemsColumns = useSystemIndexTableColumns()
+  const { error, getGarden } = useGardens()
 
   const [requestStatus, setRequestStatus] = useState<SnackbarState | undefined>(
     undefined,
@@ -31,18 +30,21 @@ const GardenAdminView = () => {
 
   const gardenName = String(params.gardenName)
 
-  const [{ data, error }, refetch] = useAxios({
-    url: '/api/v1/gardens/' + gardenName,
-    method: 'get',
-    withCredentials: authEnabled,
-  })
+  const fetchGarden = () =>
+    getGarden(gardenName)
+      .then((response) => setGarden(response.data))
+      .catch((error) => {
+        setRequestStatus({
+          severity: 'error',
+          message: error.response?.data.message || 'Problem fetching gardens',
+          doNotAutoDismiss: true,
+        })
+      })
 
   useEffect(() => {
-    if (data && !error) {
-      setGarden(data)
-    }
-  }, [data, error])
-  const { addCallback, removeCallback } = SocketContainer.useContainer()
+    fetchGarden()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     addCallback('garden_updates', (event) => {
@@ -50,13 +52,14 @@ const GardenAdminView = () => {
         event.name === 'GARDEN_UPDATED' &&
         event.payload.name === gardenName
       ) {
-        refetch()
+        fetchGarden()
       }
     })
     return () => {
       removeCallback('garden_updates')
     }
-  }, [addCallback, removeCallback, refetch, gardenName])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addCallback, removeCallback, gardenName, getGarden])
 
   const { updateGarden } = useGardens()
 

@@ -1,7 +1,7 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
-import { AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
 import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
@@ -27,7 +27,7 @@ import {
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Job, RequestTemplate } from 'types/backend-types'
+import { Job, Request, RequestTemplate } from 'types/backend-types'
 import {
   AugmentedCommand,
   ObjectWithStringKeys,
@@ -174,7 +174,7 @@ const CommandViewForm = ({
       } as AxiosRequestConfig<FormData>
 
       execute(config)
-        .then((response) => {
+        .then((response: AxiosResponse<Request>) => {
           navigate(forwardPath + response.data.id)
         })
         .catch((error) => {
@@ -189,7 +189,7 @@ const CommandViewForm = ({
         data: payload,
         withCredentials: authEnabled,
       })
-        .then((response) => {
+        .then((response: AxiosResponse<Request | Job>) => {
           navigate(forwardPath + response.data.id)
         })
         .catch((error) => {

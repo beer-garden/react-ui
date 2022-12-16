@@ -1,15 +1,16 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { UserPatch } from 'types/backend-types'
+import { Role, User, UserPatch } from 'types/backend-types'
+import { EmptyObject } from 'types/custom-types'
 
 const useUsers = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getUsers = () => {
+  const getUsers = (): AxiosPromise<{ users: User[] }> => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/users',
       method: 'get',
@@ -19,7 +20,7 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const getUser = (name: string) => {
+  const getUser = (name: string): AxiosPromise<User> => {
     const config: AxiosRequestConfig = {
       url: `/api/v1/users/${name}`,
       method: 'get',
@@ -29,7 +30,7 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const deleteUser = (name: string) => {
+  const deleteUser = (name: string): AxiosPromise<EmptyObject> => {
     const config: AxiosRequestConfig = {
       url: `/api/v1/users/${name}`,
       method: 'delete',
@@ -39,8 +40,8 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const updateUser = (name: string, data: UserPatch) => {
-    const config: AxiosRequestConfig = {
+  const updateUser = (name: string, data: UserPatch): AxiosPromise<User> => {
+    const config: AxiosRequestConfig<UserPatch> = {
       url: `/api/v1/users/${name}`,
       method: 'patch',
       withCredentials: authEnabled,
@@ -50,7 +51,7 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const getRoles = () => {
+  const getRoles = (): AxiosPromise<{ roles: Role[] }> => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/roles',
       method: 'get',
@@ -60,8 +61,8 @@ const useUsers = () => {
     return execute(config)
   }
 
-  const createUser = (name: string, pw: string) => {
-    const config: AxiosRequestConfig = {
+  const createUser = (name: string, pw: string): AxiosPromise<User> => {
+    const config: AxiosRequestConfig<{ password: string; username: string }> = {
       url: '/api/v1/users',
       method: 'post',
       withCredentials: authEnabled,

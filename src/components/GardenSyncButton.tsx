@@ -1,5 +1,5 @@
 import LoadingButton from '@mui/lab/LoadingButton'
-import useAxios from 'axios-hooks'
+import useGardens from 'hooks/useGardens'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { SnackbarState } from 'types/custom-types'
 
@@ -12,30 +12,11 @@ const GardenSyncButton = ({
   gardenName,
   setSyncStatus,
 }: GardenSynButtonParams) => {
+  const { loading, syncGarden } = useGardens()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const [{ loading }, execute] = useAxios(
-    {
-      url: '/api/v1/gardens/' + gardenName,
-      method: 'PATCH',
-    },
-    { manual: true },
-  )
-
-  const patchData = {
-    operations: [
-      {
-        operation: 'sync',
-        path: '',
-        value: '',
-      },
-    ],
-  }
-
   const handleClick = () => {
-    execute({
-      data: patchData,
-    })
+    syncGarden(gardenName)
       .then(() => {
         setSyncStatus({
           severity: 'success',
@@ -44,7 +25,6 @@ const GardenSyncButton = ({
         })
       })
       .catch((error) => {
-        console.error('ERROR', error)
         if (error.response) {
           setSyncStatus({
             severity: 'error',

@@ -2,7 +2,8 @@ import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { System } from 'types/backend-types'
+import { PatchData, System } from 'types/backend-types'
+import { EmptyObject } from 'types/custom-types'
 
 const useSystems = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
@@ -19,8 +20,8 @@ const useSystems = () => {
     return execute(config)
   }
 
-  const reloadSystem = (systemId: string) => {
-    const config: AxiosRequestConfig = {
+  const reloadSystem = (systemId: string): AxiosPromise<System> => {
+    const config: AxiosRequestConfig<PatchData> = {
       url: `/api/v1/systems/${systemId}`,
       method: 'patch',
       withCredentials: authEnabled,
@@ -30,7 +31,7 @@ const useSystems = () => {
     return execute(config)
   }
 
-  const deleteSystem = (systemId: string) => {
+  const deleteSystem = (systemId: string): AxiosPromise<EmptyObject> => {
     const config: AxiosRequestConfig = {
       url: `/api/v1/systems/${systemId}`,
       method: 'delete',
