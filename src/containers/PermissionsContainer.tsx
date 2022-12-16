@@ -14,6 +14,9 @@ const usePermissions = () => {
   const { DEBUG_PERMISSION } = DebugContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { user, tokenExpiration } = AuthContainer.useContainer()
+  const [isPermissionsSet, setIsPermissionsSet] = useState<boolean>(
+    cookies.get('isPermissionsSet'),
+  )
   const [globalPerms, setGlobalPerms] = useState<string[]>(
     cookies.get('globalPerms'),
   )
@@ -28,8 +31,10 @@ const usePermissions = () => {
   const resetPerms = () => {
     cookies.remove('globalPerms', { path: '/' })
     cookies.remove('domainPerms', { path: '/' })
+    cookies.remove('isPermissionsSet', { path: '/' })
     setGlobalPerms([])
     setDomainPerms({})
+    setIsPermissionsSet(false)
   }
 
   const getUserObj = useCallback(() => {
@@ -50,6 +55,11 @@ const usePermissions = () => {
           { path: '/', expires: tokenExpiration },
         )
         setDomainPerms(response.data.permissions.domain_permissions)
+        cookies.set('isPermissionsSet', true, {
+          path: '/',
+          expires: tokenExpiration,
+        })
+        setIsPermissionsSet(true)
       })
     } else {
       resetPerms()
@@ -163,6 +173,7 @@ const usePermissions = () => {
     hasGardenPermission,
     hasSystemPermission,
     hasJobPermission,
+    isPermissionsSet,
   }
 }
 

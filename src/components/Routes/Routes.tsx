@@ -27,8 +27,9 @@ const UsersView = lazy(() => import('pages/UsersView'))
 
 const Routes = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const { hasPermission } = PermissionsContainer.useContainer()
 
+  const { hasPermission, isPermissionsSet } =
+    PermissionsContainer.useContainer()
   if (authEnabled === undefined) return null
 
   return (
@@ -84,14 +85,18 @@ const Routes = () => {
         </Route>
       )}
       {authEnabled && <Route path="/login" element={<Login />} />}
-      <Route
-        path="*"
-        element={
-          <RequireAuth>
-            <Navigate replace to="/systems" />
-          </RequireAuth>
-        }
-      />
+      {isPermissionsSet === authEnabled || isPermissionsSet ? (
+        <Route
+          path="*"
+          element={
+            <RequireAuth>
+              <Navigate replace to="/systems" />
+            </RequireAuth>
+          }
+        />
+      ) : (
+        <Route path="*" element={<RequireAuth />} />
+      )}
     </ReactRouterDomRoutes>
   )
 }
