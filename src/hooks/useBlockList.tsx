@@ -70,7 +70,7 @@ const useBlockList = () => {
     return blockList
   }
 
-  return { blockList, deleteBlockList, addBlockList }
+  return { blockList, error, deleteBlockList, addBlockList }
 }
 
 export { useBlockList }

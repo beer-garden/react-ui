@@ -1,7 +1,15 @@
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Checkbox, FormControlLabel } from '@mui/material'
+import {
+  Backdrop,
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+} from '@mui/material'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { SSRTable } from 'components/Table'
 import {
@@ -24,7 +32,7 @@ import {
 
 const RequestsIndex = () => {
   const {
-    requestData: { isLoading, isErrored, requests },
+    requestData: { isLoading, isErrored, requests, error },
     handlers: {
       handleIncludeChildren,
       handleShowHidden,
@@ -105,7 +113,7 @@ const RequestsIndex = () => {
     [searchByOnChange, orderingOnChange, handleResultCount, handleStartPage],
   )
 
-  return (
+  return !error ? (
     <Box>
       <PageHeader title="Requests" description="" />
       <Divider />
@@ -160,6 +168,15 @@ const RequestsIndex = () => {
         )}
       </SSRTable>
     </Box>
+  ) : error?.response ? (
+    <ErrorAlert
+      statusCode={error.response.status}
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

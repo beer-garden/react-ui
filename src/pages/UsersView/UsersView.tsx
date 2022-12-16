@@ -2,15 +2,19 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SaveIcon from '@mui/icons-material/Save'
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Stack,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
@@ -34,6 +38,7 @@ import { SnackbarState } from 'types/custom-types'
 export const UsersView = () => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<boolean>(false)
+  const [errorFetch, setErrorFetch] = useState<AxiosError>()
   const [debounce, setDebounce] = useState<NodeJS.Timeout | undefined>()
   const [password, setPassword] = useState<string>('')
   const [confirm, setConfirm] = useState<string>('')
@@ -58,11 +63,7 @@ export const UsersView = () => {
         setSync(response.data.sync_status)
       })
       .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e.response?.data.message || e,
-          doNotAutoDismiss: true,
-        })
+        setErrorFetch(e)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userName])
@@ -96,7 +97,7 @@ export const UsersView = () => {
     setRoles(allRoles)
   }, [roles])
 
-  return (
+  return !errorFetch ? (
     <>
       {hasPermission('user:delete') && (
         <Tooltip title="Remove User">
@@ -237,5 +238,15 @@ export const UsersView = () => {
       </Tooltip>
       {alert && <Snackbar status={alert} />}
     </>
+  ) : errorFetch?.response ? (
+    <ErrorAlert
+      statusCode={errorFetch.response?.status}
+      specific="user"
+      errorMsg={errorFetch.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }

@@ -1,6 +1,13 @@
-import { Box, Checkbox, FormControlLabel } from '@mui/material'
+import {
+  Backdrop,
+  Box,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+} from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
@@ -20,6 +27,7 @@ const CommandIndex = () => {
     version,
     includeHidden,
     hiddenOnChange,
+    error,
   } = useCommandsParameterized<CommandIndexTableData>(commandsFromSystems)
   const [permission, setPermission] = useState(false)
 
@@ -46,7 +54,7 @@ const CommandIndex = () => {
   if (systemName) tableKey = systemName + tableKey
   if (namespace) tableKey = namespace + tableKey
 
-  return (
+  return !error ? (
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
@@ -66,6 +74,15 @@ const CommandIndex = () => {
         </Box>
       </Table>
     </Box>
+  ) : error.response ? (
+    <ErrorAlert
+      statusCode={error.response.status}
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

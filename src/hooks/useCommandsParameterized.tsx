@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios'
 import { useSystems } from 'hooks/useSystems'
 import {
   ChangeEvent as ReactChangeEvent,
@@ -20,21 +21,32 @@ const useCommandsParameterized = <T,>(formatter: CommandFormatter<T>) => {
   const [commands, setCommands] = useState<T[]>([])
   const [systemId, setSystemId] = useState('')
   const [includeHidden, setIncludeHidden] = useState(false)
+  const [error, setError] = useState<AxiosError>()
   const { namespace, systemName, version } = useParams() as ReturnType<
     typeof useParams
   > & { namespace: string; systemName: string; version: string }
   const { getSystems } = useSystems()
 
   useEffect(() => {
-    getSystems().then((response) => {
-      setCommands(
-        formatter(response.data, includeHidden, namespace, systemName, version),
-      )
-      const foundSystem = response.data.find(
-        (system: System) => system.name === systemName,
-      )
-      if (foundSystem) setSystemId(foundSystem.id)
-    })
+    getSystems()
+      .then((response) => {
+        setCommands(
+          formatter(
+            response.data,
+            includeHidden,
+            namespace,
+            systemName,
+            version,
+          ),
+        )
+        const foundSystem = response.data.find(
+          (system: System) => system.name === systemName,
+        )
+        if (foundSystem) setSystemId(foundSystem.id)
+      })
+      .catch((e) => {
+        setError(e)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [namespace, version, systemName, includeHidden])
 
@@ -53,6 +65,7 @@ const useCommandsParameterized = <T,>(formatter: CommandFormatter<T>) => {
     version,
     includeHidden,
     hiddenOnChange,
+    error,
   }
 }
 

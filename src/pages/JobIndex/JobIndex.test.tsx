@@ -29,6 +29,7 @@ function createDtWithFiles(files: File[] = []) {
  * createFile creates a mock File object
  * @param {string} name
  * @param {string[]} contents
+ * @param {string} type
  */
 function createFile(
   name: string,
@@ -90,7 +91,7 @@ describe('JobIndex', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('ERROR: Failure to get jobs')).toBeInTheDocument()
+      expect(screen.getByText('Problem: Wrong identifier')).toBeInTheDocument()
     })
     expect(screen.queryByText(TJob.name)).not.toBeInTheDocument()
   })
@@ -137,6 +138,7 @@ describe('JobIndex', () => {
     })
 
     test('cancel dialog', async () => {
+      mockAxios.onGet('/api/v1/jobs').reply(200, [])
       render(
         <LoggedInProviders>
           <JobIndex />
@@ -157,6 +159,7 @@ describe('JobIndex', () => {
     })
 
     test('dialog allows adding files', async () => {
+      mockAxios.onGet('/api/v1/jobs').reply(200, [])
       const files = [createFile('file1', [JSON.stringify([TJob])])]
       const data = createDtWithFiles(files)
       render(
@@ -187,6 +190,7 @@ describe('JobIndex', () => {
     })
 
     test('error on bad file', async () => {
+      mockAxios.onGet('/api/v1/jobs').reply(200, [])
       const files = [createFile('file1', [], 'img/png')]
       const data = createDtWithFiles(files)
       render(

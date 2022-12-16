@@ -219,6 +219,7 @@ const useRequests = () => {
       isLoading,
       isErrored,
       requests,
+      error,
     },
     handlers: {
       handleIncludeChildren,

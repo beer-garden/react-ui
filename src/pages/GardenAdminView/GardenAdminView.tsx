@@ -1,6 +1,7 @@
 import { Alert, Backdrop, CircularProgress, Typography } from '@mui/material'
 import useAxios from 'axios-hooks'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
 import { GardenSyncButton } from 'components/GardenSyncButton'
 import { PageHeader } from 'components/PageHeader'
@@ -87,7 +88,7 @@ const GardenAdminView = () => {
       })
   }
 
-  return (
+  return !error ? (
     <>
       {hasPermission('garden:update') && (
         <Typography style={{ flex: 1, float: 'right' }}>
@@ -137,6 +138,16 @@ const GardenAdminView = () => {
       )}
       {requestStatus ? <Snackbar status={requestStatus} /> : null}
     </>
+  ) : error.response ? (
+    <ErrorAlert
+      specific="garden"
+      statusCode={error.response.status}
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

@@ -1,7 +1,9 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CancelIcon from '@mui/icons-material/Cancel'
-import { Box, Button } from '@mui/material'
+import { Backdrop, Box, Button, CircularProgress } from '@mui/material'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { JobCreateCommandsTable } from 'pages/JobCreate/JobCreateCommandsTable'
 import { JobCreateForwarder } from 'pages/JobCreate/JobCreateForwarder'
@@ -15,6 +17,7 @@ const DEBUG_DISPATCH_FUNCTIONS = false
 const JobCreate = () => {
   const [system, _setSystem] = useState<System | undefined>(undefined)
   const [command, _setCommand] = useState<Command | undefined>(undefined)
+  const [error, setError] = useState<AxiosError>()
   const navigate = useNavigate()
 
   const setSystem = (system: System) => {
@@ -41,11 +44,22 @@ const JobCreate = () => {
     </Button>
   )
 
-  return !system ? (
+  return error ? (
+    error.response ? (
+      <ErrorAlert
+        statusCode={error.response.status}
+        errorMsg={error.response.statusText}
+      />
+    ) : (
+      <Backdrop open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
+  ) : !system ? (
     <Box>
       <PageHeader title="Choose System For Job" description="" />
       <Divider />
-      <JobCreateSystemsTable systemSetter={setSystem}>
+      <JobCreateSystemsTable systemSetter={setSystem} errorSetter={setError}>
         {cancelAllSchedulingButton}
       </JobCreateSystemsTable>
     </Box>

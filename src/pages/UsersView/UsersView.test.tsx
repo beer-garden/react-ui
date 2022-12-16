@@ -23,7 +23,7 @@ const rolesUser = Object.assign({}, TUser, {
   role_assignments: [TRoleAssignment, TAdminRoleAssignment],
 })
 
-describe('UsersIndex', () => {
+describe('UsersView', () => {
   afterAll(() => {
     jest.unmock('react-router-dom')
     jest.clearAllMocks()
