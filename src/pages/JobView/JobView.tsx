@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { AxiosError, AxiosResponse } from 'axios'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { useJobRequestCreation } from 'components/JobRequestCreation'
@@ -90,7 +90,7 @@ const JobView = () => {
   const fetchJob = () => {
     if (id) {
       getJob(id)
-        .then((response: AxiosResponse) => {
+        .then((response) => {
           _setJob(response.data)
           if (response.data) {
             setDescription(`${response.data.name} ${id}`)
