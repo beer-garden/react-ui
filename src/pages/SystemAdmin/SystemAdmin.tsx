@@ -1,14 +1,17 @@
-import { Typography } from '@mui/material'
+import { Backdrop, CircularProgress, Typography } from '@mui/material'
 import { Alert, Box, Button, Grid, Tooltip } from '@mui/material'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import useAdmin from 'hooks/useAdmin'
 import { useLocalStorage } from 'hooks/useLocalStorage'
+import { useNamespace } from 'hooks/useNamespace'
 import useQueue from 'hooks/useQueue'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   if (!namespacesSelected.length) {
@@ -17,12 +20,14 @@ const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
 }
 
 interface NamespacesSelectedContextType {
+  namespaces: string[]
   namespacesSelected: string[]
   setNamespacesSelected: (value: string[]) => void
 }
 
 export const NamespacesSelectedContext =
   createContext<NamespacesSelectedContextType>({
+    namespaces: [],
     namespacesSelected: [],
     setNamespacesSelected: () => {
       return
@@ -35,23 +40,41 @@ const SystemAdmin = () => {
     [],
   )
   const [open, setOpen] = useState(false)
-
-  const contextValue = {
-    namespacesSelected: namespacesSelected,
-    setNamespacesSelected: setNamespacesSelected,
-  }
-
+  const [namespaces, setNamespaces] = useState<string[]>([])
+  const [error, setError] = useState<AxiosError>()
+  const { getNamespaces } = useNamespace()
   const { rescanPluginDirectory } = useAdmin()
   const { clearQueues } = useQueue()
 
-  return (
+  useEffect(() => {
+    let mounted = true
+    getNamespaces()
+      .then((response) => {
+        if (mounted) setNamespaces(response.data)
+      })
+      .catch((error) => {
+        if (mounted) setError(error)
+      })
+    return () => {
+      mounted = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return !error ? (
     <Box>
       <Grid alignItems="start" justifyContent="space-between" container>
         <Grid key="header" item>
           <PageHeader title="Systems Management" description="" />
         </Grid>
         <Grid key="filter" item>
-          <NamespacesSelectedContext.Provider value={contextValue}>
+          <NamespacesSelectedContext.Provider
+            value={{
+              namespaces: namespaces,
+              namespacesSelected: namespacesSelected,
+              setNamespacesSelected: setNamespacesSelected,
+            }}
+          >
             <NamespaceSelect />
           </NamespacesSelectedContext.Provider>
         </Grid>
@@ -102,6 +125,15 @@ const SystemAdmin = () => {
       ))}
       {getSelectMessage(namespacesSelected)}
     </Box>
+  ) : error?.response ? (
+    <ErrorAlert
+      statusCode={error.response.status}
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

@@ -20,4 +20,4 @@ const useNamespace = () => {
   return { getNamespaces }
 }
 
-export default useNamespace
+export { useNamespace }

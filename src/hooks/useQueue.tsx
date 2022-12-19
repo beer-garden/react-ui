@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import { AxiosPromise } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
@@ -9,9 +9,7 @@ const useQueue = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getInstanceQueues = (
-    instanceId: string,
-  ): Promise<AxiosResponse<Queue[]>> => {
+  const getInstanceQueues = (instanceId: string): AxiosPromise<Queue[]> => {
     return execute({
       url: `/api/v1/instances/${instanceId}/queues`,
       method: 'get',
@@ -19,7 +17,7 @@ const useQueue = () => {
     })
   }
 
-  const clearQueue = (name: string): Promise<AxiosResponse<Queue[]>> => {
+  const clearQueue = (name: string): AxiosPromise<Queue[]> => {
     return execute({
       url: `/api/v1/queues/${name}`,
       method: 'delete',
@@ -27,7 +25,7 @@ const useQueue = () => {
     })
   }
 
-  const clearQueues = (): Promise<AxiosResponse<Queue[]>> => {
+  const clearQueues = (): AxiosPromise<Queue[]> => {
     return execute({
       url: '/api/v1/queues/',
       method: 'delete',
@@ -35,7 +33,7 @@ const useQueue = () => {
     })
   }
 
-  const getQueues = (): Promise<AxiosResponse<Queue[]>> => {
+  const getQueues = (): AxiosPromise<Queue[]> => {
     return execute({
       url: '/api/v1/queues/',
       method: 'get',

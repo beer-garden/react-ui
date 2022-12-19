@@ -1,5 +1,20 @@
 import { EmptyObject, ObjectWithStringKeys } from './custom-types'
 
+export interface PatchData {
+  operation: string
+  path?: string
+  value?: string | Garden
+}
+
+export interface PatchOperation {
+  operations: PatchData[]
+}
+
+export interface LogData {
+  start_line: number | undefined
+  end_line: number | undefined
+  timeout: number
+}
 export interface Command {
   name: string
   description: string
@@ -138,7 +153,7 @@ export interface Request {
   namespace: string
   output?: string
   output_type: string
-  parameters: Parameter[]
+  parameters: ObjectWithStringKeys | EmptyObject
   parent: Request | null
   requester?: string
   status: string

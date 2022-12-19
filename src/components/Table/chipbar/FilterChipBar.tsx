@@ -1,15 +1,15 @@
-import { Box, Chip } from '@mui/material'
+import { Chip, Typography } from '@mui/material'
 import { useCallback } from 'react'
 import { ColumnInstance, FilterValue, IdType, TableInstance } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
+import { dateFormatted } from 'utils/date-formatter'
 
 interface FilterChipBarProps<T extends ObjectWithStringKeys> {
   instance: TableInstance<T>
 }
 
 const parseDate = (date: number) => {
-  const newDate = new Date(date)
-  return newDate.toISOString()
+  return dateFormatted(new Date(date))
 }
 
 const FilterChipBar = <T extends ObjectWithStringKeys>({
@@ -52,41 +52,34 @@ const FilterChipBar = <T extends ObjectWithStringKeys>({
   )
 
   return Object.keys(filters).length > 0 ? (
-    <Box sx={{ padding: '18px 0 5px 10px', width: '100%' }}>
-      <Box
+    <>
+      <Typography
         component="span"
-        sx={{ color: '#998', fontSize: '14px', paddingRight: 1 }}
+        sx={{ ml: '10px', fontSize: '14px', marginRight: 1 }}
       >
         Active filters:
-      </Box>
+      </Typography>
       {filters &&
         allColumns.map((column) => {
           const filter = filters.find((filter) => filter.id === column.id)
           const value = filter?.value
-
           return (
             value && (
               <Chip
                 key={column.id}
                 label={
-                  <>
-                    <Box
-                      component="span"
-                      sx={{ fontWeight: 500, marginRight: 1 }}
-                    >
-                      {column.render('Header')}:
-                    </Box>
-                    {getFilterValue(column, value)}
-                  </>
+                  <Typography sx={{ fontWeight: 500, marginRight: 1 }}>
+                    {column.render('Header')}: {getFilterValue(column, value)}
+                  </Typography>
                 }
                 onDelete={() => handleDelete(column.id)}
                 variant="outlined"
-                sx={{ marginRight: 0.5, color: '#222' }}
+                sx={{ marginRight: 0.5 }}
               />
             )
           )
         })}
-    </Box>
+    </>
   ) : null
 }
 

@@ -8,7 +8,7 @@ import { CommandIndexTableData } from 'types/custom-types'
 const useBlockList = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
-  const [, execute] = useAxios({}, axiosManualOptions)
+  const [{ error }, execute] = useAxios({}, axiosManualOptions)
 
   const getBlockList = (): AxiosPromise<BlockedList> => {
     const config: AxiosRequestConfig = {
@@ -44,7 +44,7 @@ const useBlockList = () => {
     return execute(config)
   }
 
-  return { getBlockList, deleteBlockList, addBlockList }
+  return { getBlockList, error, deleteBlockList, addBlockList }
 }
 
 export { useBlockList }

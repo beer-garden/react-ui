@@ -1,16 +1,25 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { NamespacesSelectedContext } from 'pages/SystemAdmin'
 import { mockAxios } from 'test/axios-mock'
-import { LoggedInProviders } from 'test/testMocks'
+import { AllProviders } from 'test/testMocks'
 
 import { NamespaceSelect } from './NamespaceSelect'
+
+const context = {
+  namespaces: ['test', 'second', 'other'],
+  namespacesSelected: [],
+  setNamespacesSelected: jest.fn(),
+}
 
 describe('NamespaceSelect', () => {
   test('renders dropdown select', async () => {
     render(
-      <LoggedInProviders>
-        <NamespaceSelect />
-      </LoggedInProviders>,
+      <AllProviders>
+        <NamespacesSelectedContext.Provider value={context}>
+          <NamespaceSelect />
+        </NamespacesSelectedContext.Provider>
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(
@@ -23,13 +32,12 @@ describe('NamespaceSelect', () => {
   })
 
   test('renders list of namespaces to select from', async () => {
-    mockAxios
-      .onGet('/api/v1/namespaces')
-      .reply(200, ['test', 'second', 'other'])
     render(
-      <LoggedInProviders>
-        <NamespaceSelect />
-      </LoggedInProviders>,
+      <AllProviders>
+        <NamespacesSelectedContext.Provider value={context}>
+          <NamespaceSelect />
+        </NamespacesSelectedContext.Provider>
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(
@@ -46,20 +54,6 @@ describe('NamespaceSelect', () => {
     expect(within(optionsPopupEl).getByText('test')).toBeInTheDocument()
     expect(within(optionsPopupEl).getByText('second')).toBeInTheDocument()
     expect(within(optionsPopupEl).getByText('other')).toBeInTheDocument()
-    mockAxios.onGet('/api/v1/namespaces').reply(200, ['test'])
-  })
-
-  test('Alert is shown on error from getNamespaces()', async () => {
-    const errorMessage = 'Failure to return namespaces'
-    mockAxios.onGet('/api/v1/namespaces').reply(404, { message: errorMessage })
-    render(
-      <LoggedInProviders>
-        <NamespaceSelect />
-      </LoggedInProviders>,
-    )
-    await waitFor(() => {
-      expect(screen.getByText(`ERROR: ${errorMessage}`)).toBeInTheDocument()
-    })
     mockAxios.onGet('/api/v1/namespaces').reply(200, ['test'])
   })
 })

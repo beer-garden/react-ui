@@ -127,3 +127,8 @@ export interface SyncGarden extends Garden {
 export interface SyncUser extends User {
   fullySynced: boolean
 }
+
+export type SystemCommandPair = {
+  system: StrippedSystem
+  command: AugmentedCommand
+}

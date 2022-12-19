@@ -2,7 +2,7 @@ import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
 import { ConfigProviders } from 'test/testMocks'
 
-import useNamespace from './useNamespace'
+import { useNamespace } from './useNamespace'
 
 describe('useNamespace', () => {
   test('gets namespace list', async () => {

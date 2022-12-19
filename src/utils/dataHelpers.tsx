@@ -1,5 +1,6 @@
 import { Request } from 'types/backend-types'
 import { RequestsIndexTableData } from 'types/request-types'
+import { dateFormatted } from 'utils/date-formatter'
 
 const requestToFormatted = (request: Request): RequestsIndexTableData => {
   const {
@@ -12,8 +13,6 @@ const requestToFormatted = (request: Request): RequestsIndexTableData => {
     comment,
   } = request
 
-  const createdDate = new Date(createdAt)
-
   return {
     command: request.command,
     namespace,
@@ -21,7 +20,7 @@ const requestToFormatted = (request: Request): RequestsIndexTableData => {
     version: systemVersion,
     instance: instanceName,
     status,
-    created: createdDate.toISOString(),
+    created: dateFormatted(new Date(createdAt)),
     comment,
     id: request.id,
     hasParent: !!request.parent,

@@ -48,9 +48,6 @@ describe('RequestView', () => {
     expect(
       screen.getByRole('heading', { name: 'Parameters' }),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'remake request' }),
-    ).toBeInTheDocument()
   })
 
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {
@@ -137,16 +134,14 @@ describe('RequestView', () => {
 
   test('renders alert if error', async () => {
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
-    mockAxios.onGet('/api/v1/requests/1234').reply(400, {})
+    mockAxios.onGet('/api/v1/requests/1234').reply(404, {})
     render(
       <AllProviders>
         <RequestView />
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(
-        screen.getByText('Request failed with status code 400'),
-      ).toBeInTheDocument()
+      expect(screen.getByText('Problem: Wrong identifier')).toBeInTheDocument()
     })
     mockAxios.onGet('/api/v1/requests/1234').reply(200, TRequest)
   })
@@ -160,7 +155,7 @@ describe('RequestView', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByTestId('dataLoading')).toBeInTheDocument()
+      expect(screen.getByTitle('dataLoading')).toBeInTheDocument()
     })
     mockAxios.onGet('/api/v1/requests/1234').reply(200, TRequest)
   })

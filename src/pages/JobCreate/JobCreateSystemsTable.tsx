@@ -1,21 +1,23 @@
-import { Snackbar } from 'components/Snackbar'
+import { AxiosError } from 'axios'
 import { Table } from 'components/Table'
 import { useSystems } from 'hooks/useSystems'
+import {
+  useSystemColumns,
+  useSystemsData,
+} from 'pages/JobCreate/JobCreateSystemsData'
 import { PropsWithChildren, useEffect, useState } from 'react'
 import { System } from 'types/backend-types'
-import { SnackbarState } from 'types/custom-types'
-
-import { useSystemColumns, useSystemsData } from './data'
 
 interface JobCreateSystemTableProps {
   systemSetter: (system: System) => void
+  errorSetter: (error: AxiosError) => void
 }
 const JobCreateSystemsTable = ({
   systemSetter,
+  errorSetter,
   children,
 }: PropsWithChildren<JobCreateSystemTableProps>) => {
   const [systems, setSystems] = useState<System[]>([])
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { getSystems } = useSystems()
 
   useEffect(() => {
@@ -24,27 +26,20 @@ const JobCreateSystemsTable = ({
         setSystems(response.data)
       })
       .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e,
-          doNotAutoDismiss: true,
-        })
+        errorSetter(e)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <>
-      <Table
-        tableKey="JobSystems"
-        data={useSystemsData(systems, systemSetter)}
-        columns={useSystemColumns()}
-        showGlobalFilter
-      >
-        {children}
-      </Table>
-      {alert && <Snackbar status={alert} />}
-    </>
+    <Table
+      tableKey="JobSystems"
+      data={useSystemsData(systems, systemSetter)}
+      columns={useSystemColumns()}
+      showGlobalFilter
+    >
+      {children}
+    </Table>
   )
 }
 

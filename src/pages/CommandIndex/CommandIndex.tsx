@@ -1,6 +1,13 @@
-import { Box, Checkbox, FormControlLabel } from '@mui/material'
+import {
+  Backdrop,
+  Box,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+} from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
@@ -29,45 +36,52 @@ const CommandIndex = () => {
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
   const [alert, setAlert] = useState<SnackbarState>()
-  const { getSystems } = useSystems()
+  const { error, getSystems } = useSystems()
   const { namespace, systemName, version } = useParams() as IParam
 
   useEffect(() => {
+    let mounted = true
     getSystems()
       .then((response) => {
-        setCommands(
-          commandsFromSystems(
-            response.data,
-            includeHidden,
-            namespace,
-            systemName,
-            version,
-          ),
-        )
-        const foundSystem = response.data.find(
-          (system: System) => system.name === systemName,
-        )
-        if (foundSystem) {
-          const fetchPermission = async () => {
-            const permCheck = await hasSystemPermission(
-              'request:create',
+        if (mounted) {
+          setCommands(
+            commandsFromSystems(
+              response.data,
+              includeHidden,
               namespace,
-              foundSystem.id,
-            )
-            setPermission(permCheck || false)
+              systemName,
+              version,
+            ),
+          )
+          const foundSystem = response.data.find(
+            (system: System) => system.name === systemName,
+          )
+          if (foundSystem) {
+            const fetchPermission = async () => {
+              const permCheck = await hasSystemPermission(
+                'request:create',
+                namespace,
+                foundSystem.id,
+              )
+              if (mounted) setPermission(permCheck || false)
+            }
+            fetchPermission()
           }
-          fetchPermission()
         }
       })
       .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e.response?.data.message || e,
-          doNotAutoDismiss: true,
-        })
+        if (mounted)
+          setAlert({
+            severity: 'error',
+            message: e.response?.data.message || e,
+            doNotAutoDismiss: true,
+          })
       })
+    return () => {
+      mounted = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [includeHidden, namespace, systemName, version])
+  }, [])
 
   const columns = useCommandIndexTableColumns(permission)
   const breadcrumbs = [namespace, systemName, version]
@@ -79,7 +93,7 @@ const CommandIndex = () => {
   if (systemName) tableKey = systemName + tableKey
   if (namespace) tableKey = namespace + tableKey
 
-  return (
+  return !error ? (
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
@@ -102,6 +116,15 @@ const CommandIndex = () => {
       </Table>
       {alert ? <Snackbar status={alert} /> : null}
     </Box>
+  ) : error.response ? (
+    <ErrorAlert
+      statusCode={error.response.status}
+      errorMsg={error.response.statusText}
+    />
+  ) : (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
   )
 }
 

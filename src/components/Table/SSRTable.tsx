@@ -115,6 +115,7 @@ interface TableProps<
   }
   tableName?: string
   tableKey?: string
+  showGlobalFilter?: boolean
 }
 
 const SSRTable = <
@@ -129,6 +130,7 @@ const SSRTable = <
     tableKey,
     data,
     columns,
+    showGlobalFilter,
     fetchStatus: { isLoading, isErrored },
     ssrValues: {
       start: startPage /* the start page index */,
@@ -151,10 +153,13 @@ const SSRTable = <
     {} as Partial<TableState<T>>,
   )
 
-  const pageCount = useMemo(
-    () => (requested ? Math.ceil(recordsFiltered / requested) : 0),
-    [requested, recordsFiltered],
-  )
+  const pageCount = useMemo(() => {
+    return requested > 0
+      ? Math.ceil(recordsFiltered / requested)
+      : initialState.pageSize
+      ? Math.ceil(recordsFiltered / initialState.pageSize)
+      : 0
+  }, [initialState.pageSize, recordsFiltered, requested])
 
   const instance = useTable<T>(
     {
@@ -217,11 +222,17 @@ const SSRTable = <
         }
       }
     }
-
+    const pageSize = debouncedState.pageSize
+      ? debouncedState.pageSize
+      : requested > 0
+      ? requested
+      : initialState.pageSize
+      ? initialState.pageSize
+      : 10
     setInitialState({
       sortBy: ordering ? [ordering] : sortBy,
       filters,
-      pageSize: requested || 10,
+      pageSize,
       pageIndex: startPage || 0,
       hiddenColumns,
     })
@@ -234,6 +245,7 @@ const SSRTable = <
     defaultOrderingColumnIndex,
     setSortBy,
     ordering,
+    initialState.pageSize,
   ])
 
   /**
@@ -272,11 +284,7 @@ const SSRTable = <
     <Typography>Error...</Typography>
   ) : (
     <>
-      <Toolbar
-        instance={instance}
-        childProps={childProps}
-        name={tableName}
-      >
+      <Toolbar instance={instance} childProps={childProps} name={tableName}>
         {props.children}
       </Toolbar>
       <StyledTable {...tableProps}>
@@ -377,31 +385,41 @@ const SSRTable = <
           </TableBody>
         ) : (
           <TableBody {...getTableBodyProps()}>
-            {headerGroups.map((headerGroup) => {
-              const {
-                key: headerGroupKey,
-                role: headerGroupRole,
-                ...headerGroupProps
-              } = headerGroup.getHeaderGroupProps()
-              return (
-                <TableRow key={headerGroupKey} {...headerGroupProps}>
-                  <>
-                    {headerGroup.headers.map((column) => {
-                      const {
-                        key: headerKey,
-                        role: headerRole,
-                        ...headerProps
-                      } = column.getHeaderProps(columnStyle)
-                      return (
-                        <TableHeadCell key={headerKey} {...headerProps}>
-                          {column.canFilter && <InlineFilter column={column} />}
-                        </TableHeadCell>
-                      )
-                    })}
-                  </>
-                </TableRow>
-              )
-            })}
+            {!showGlobalFilter
+              ? headerGroups.map((headerGroup) => {
+                  const {
+                    key: headerGroupKey,
+                    role: headerGroupRole,
+                    ...headerGroupProps
+                  } = headerGroup.getHeaderGroupProps()
+                  return (
+                    <TableRow
+                      key={headerGroupKey + 'Filter'}
+                      {...headerGroupProps}
+                    >
+                      <>
+                        {headerGroup.headers.map((column) => {
+                          const {
+                            key: headerKey,
+                            role: headerRole,
+                            ...headerProps
+                          } = column.getHeaderProps(columnStyle)
+                          return (
+                            <TableHeadCell
+                              key={headerKey + 'Filter'}
+                              {...headerProps}
+                            >
+                              {column.canFilter && (
+                                <InlineFilter column={column} />
+                              )}
+                            </TableHeadCell>
+                          )
+                        })}
+                      </>
+                    </TableRow>
+                  )
+                })
+              : null}
             {page.map((row) => {
               prepareRow(row)
               const {

@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Box,
   Button,
   CircularProgress,
@@ -6,8 +7,9 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { AxiosError, AxiosResponse } from 'axios'
+import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { useJobRequestCreation } from 'components/JobRequestCreation'
 import { JsonCard } from 'components/JsonCard'
 import { LabeledData } from 'components/LabeledData'
@@ -20,6 +22,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
+import { dateFormatted } from 'utils/date-formatter'
 
 const isIntervalTrigger = (triggerType: string) => {
   return triggerType === 'interval'
@@ -46,6 +49,7 @@ const JobView = () => {
   }
 
   const id = params.id as string
+  const [errorFetch, setErrorFetch] = useState<AxiosError>()
 
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(
@@ -86,7 +90,7 @@ const JobView = () => {
   const fetchJob = () => {
     if (id) {
       getJob(id)
-        .then((response: AxiosResponse) => {
+        .then((response) => {
           _setJob(response.data)
           if (response.data) {
             setDescription(`${response.data.name} ${id}`)
@@ -98,7 +102,7 @@ const JobView = () => {
           })
         })
         .catch((e) => {
-          errorHandler(e)
+          setErrorFetch(e)
         })
     }
   }
@@ -197,11 +201,12 @@ const JobView = () => {
           </Button>
         </Stack>
       )}
+      {job ? (
+          <>
       <PageHeader title="Job" description={description} />
       <Divider />
       <Stack direction="column" spacing={2}>
         <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
-          {job ? (
             <Box
               sx={{
                 display: 'grid',
@@ -236,13 +241,10 @@ const JobView = () => {
               {job.next_run_time && (
                 <LabeledData
                   label="Next Run Time"
-                  data={new Date(job.next_run_time).toUTCString()}
+                  data={dateFormatted(new Date(job.next_run_time))}
                 />
               )}
             </Box>
-          ) : (
-            <CircularProgress data-testid="dataLoading" />
-          )}
         </Paper>
         <Stack direction="row" spacing={2}>
           {showTrigger && (
@@ -266,7 +268,20 @@ const JobView = () => {
             />
           )}
         </Stack>
+
       </Stack>
+          </>
+      ) : errorFetch?.response ? (
+          <ErrorAlert
+              specific="job"
+              statusCode={errorFetch.response?.status}
+              errorMsg={errorFetch.response.statusText}
+          />
+      ) : (
+          <Backdrop title="loading circle" open={true}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+      )}
       <ModalWrapper
         open={runOpen}
         header="Reset the Job Interval"

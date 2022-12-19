@@ -284,7 +284,7 @@ describe('JobView', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByTestId('dataLoading')).toBeInTheDocument()
+      expect(screen.getByTitle('loading circle')).toBeInTheDocument()
     })
     // reset mock
     mockAxios.onGet(`/api/v1/jobs/${TJob.id}`).reply(200, TJob)

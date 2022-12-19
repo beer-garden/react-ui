@@ -1,15 +1,6 @@
 import { ExecuteButton } from 'pages/CommandIndex'
 import { Command, System } from 'types/backend-types'
-import {
-  AugmentedCommand,
-  CommandIndexTableData,
-  StrippedSystem,
-} from 'types/custom-types'
-
-type SystemCommandPair = {
-  system: StrippedSystem
-  command: AugmentedCommand
-}
+import { CommandIndexTableData, SystemCommandPair } from 'types/custom-types'
 
 const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
   const { system, command } = pair
@@ -72,9 +63,9 @@ const commandsPairer = (system: System): Array<SystemCommandPair> => {
  * @param version
  * @returns
  */
-export const commandsFromSystems = (
+const commandsFromSystems = (
   systems: System[],
-  includeHidden = false,
+  includeHidden?: boolean,
   namespace?: string,
   systemName?: string,
   version?: string,
@@ -124,3 +115,5 @@ export const commandsFromSystems = (
 
   return systemCommandPairs.map(commandMapper)
 }
+
+export { commandsFromSystems, commandsPairer }

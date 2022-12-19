@@ -1,11 +1,16 @@
-import { AxiosRequestConfig, Method as AxiosMethod } from 'axios'
+import {
+  AxiosPromise,
+  AxiosRequestConfig,
+  AxiosResponse,
+  Method as AxiosMethod,
+} from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { Instance, System } from 'types/backend-types'
+import { Instance, LogData, System } from 'types/backend-types'
 
 const getConfig = (id: string, method: AxiosMethod, authEnabled: boolean) => {
-  const config: AxiosRequestConfig<Instance> = {
+  const config: AxiosRequestConfig = {
     url: `/api/v1/instances/${id}`,
     method: method,
     withCredentials: authEnabled,
@@ -27,11 +32,13 @@ const useFetchStatus = () => {
   const fetchStatus = (id: string) => {
     const config = getConfig(id, 'get', authEnabled)
 
-    const promise = new Promise<string>((resolve, reject) => {
+    const promise = new Promise<string>((resolve) => {
       setTimeout(async () => {
-        const response = execute(config).then(async (resp) => {
-          return resp.data.status
-        })
+        const response = execute(config).then(
+          async (resp: AxiosResponse<Instance>) => {
+            return resp.data.status
+          },
+        )
         resolve(response)
       }, 2000)
     })
@@ -54,7 +61,7 @@ const useToggleInstance = () => {
     const promiseResp = execute({
       ...config,
       data: { operation: operation },
-    }).then(async (resolved) => {
+    }).then(async (resolved: AxiosResponse<Instance>) => {
       return await fetchStatus(resolved.data.id)
     })
 
@@ -91,8 +98,8 @@ const useInstances = () => {
     timeout: number,
     startLine?: number,
     endLine?: number,
-  ) => {
-    const config: AxiosRequestConfig = {
+  ): AxiosPromise<string> => {
+    const config: AxiosRequestConfig<LogData> = {
       url: `/api/v1/instances/${id}/logs`,
       method: 'get',
       withCredentials: authEnabled,
@@ -106,7 +113,7 @@ const useInstances = () => {
     return execute(config)
   }
 
-  const downloadLogs = (id: string) => {
+  const downloadLogs = (id: string): AxiosPromise<Blob> => {
     const config: AxiosRequestConfig = {
       url: `/api/v1/instances/${id}/logs`,
       method: 'get',
