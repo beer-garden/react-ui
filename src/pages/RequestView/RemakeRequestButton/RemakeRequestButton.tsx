@@ -62,7 +62,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   }
 
   const model: CommandViewRequestModel = {
-    comment: { comment: theComment } as CommandViewModelComment,
+    comment: { comment: theComment || '' } as CommandViewModelComment,
     instance_names: { instance_name: instanceName },
     parameters: theParameters as CommandViewModelParameters,
   }
