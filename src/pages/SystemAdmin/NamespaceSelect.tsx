@@ -15,6 +15,7 @@ const NamespaceSelect = () => {
   const { namespaces, namespacesSelected, setNamespacesSelected } = useContext(
     NamespacesSelectedContext,
   )
+
   const handleChange = (event: SelectChangeEvent<typeof namespaces>) => {
     const {
       target: { value },

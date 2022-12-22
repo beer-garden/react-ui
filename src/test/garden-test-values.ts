@@ -1,4 +1,4 @@
-import { TSystem } from 'test/test-values'
+import { TSystem } from 'test/system-test-values'
 import { Garden, System } from 'types/backend-types'
 
 export const TGarden: Garden = {

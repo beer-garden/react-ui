@@ -1,3 +1,3 @@
 export * from './CreateGarden'
-export { GardensAdmin as default } from './GardenAdmin'
+export { GardenAdmin as default } from './GardenAdmin'
 export * from './GardenAdminCard'

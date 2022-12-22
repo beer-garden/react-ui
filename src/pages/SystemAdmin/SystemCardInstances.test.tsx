@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { TInstance, TInstance2 } from 'test/test-values'
+import { TInstance, TInstance2 } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
 
 import SystemCardInstances from './SystemCardInstances'

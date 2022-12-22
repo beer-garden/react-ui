@@ -5,7 +5,8 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react'
-import { TInstance, TLog } from 'test/test-values'
+import { TInstance } from 'test/system-test-values'
+import { TLog } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
 import LogModal from './LogModal'

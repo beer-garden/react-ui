@@ -12,7 +12,7 @@ import {
 const CommandBlocklistView = lazy(() => import('pages/CommandBlocklistView'))
 const CommandIndex = lazy(() => import('pages/CommandIndex'))
 const CommandView = lazy(() => import('pages/CommandView'))
-const GardensAdmin = lazy(() => import('pages/GardenAdmin'))
+const GardenAdmin = lazy(() => import('pages/GardenAdmin'))
 const GardenAdminView = lazy(() => import('pages/GardenAdminView'))
 const JobCreate = lazy(() => import('pages/JobCreate'))
 const JobIndex = lazy(() => import('pages/JobIndex'))
@@ -59,7 +59,7 @@ const Routes = () => {
           )}
           {hasPermission('garden:update') && (
             <Route path="gardens">
-              <Route index element={<GardensAdmin />} />
+              <Route index element={<GardenAdmin />} />
               <Route path=":gardenName" element={<GardenAdminView />} />
             </Route>
           )}

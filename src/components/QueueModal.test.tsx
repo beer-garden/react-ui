@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { TInstance, TQueue } from 'test/test-values'
+import { TInstance } from 'test/system-test-values'
+import { TQueue } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
 import QueueModal from './QueueModal'

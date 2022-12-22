@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TAugmentedCommand, TServerAuthConfig, TSystem } from 'test/test-values'
+import { TSystem } from 'test/system-test-values'
+import { TAugmentedCommand, TServerAuthConfig } from 'test/test-values'
 import { LoggedInProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 

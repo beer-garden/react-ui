@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import Router from 'react-router-dom'
 import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TServerAuthConfig, TSystem } from 'test/test-values'
+import { TSystem } from 'test/system-test-values'
+import { TServerAuthConfig } from 'test/test-values'
 import {
   LoggedInMemory,
   MemoryProvider,

@@ -1,22 +1,22 @@
+import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
-import { useEffect, useState } from 'react'
+import { useMyAxios } from 'hooks/useMyAxios'
 import { VersionConfig } from 'types/config-types'
 
 const useVersion = () => {
-  const [config, setConfig] = useState<VersionConfig>()
-  const [{ data, error }] = useAxios({
-    url: '/version',
-    method: 'GET',
-    withCredentials: false,
-  })
+  const { axiosManualOptions } = useMyAxios()
+  const [, execute] = useAxios({}, axiosManualOptions)
 
-  useEffect(() => {
-    if (data && !error) {
-      setConfig(data)
+  const getVersion = (): AxiosPromise<VersionConfig> => {
+    const config: AxiosRequestConfig = {
+      url: '/version',
+      method: 'get',
+      withCredentials: false,
     }
-  }, [data, error])
+    return execute(config)
+  }
 
-  return config
+  return { getVersion }
 }
 
 export default useVersion

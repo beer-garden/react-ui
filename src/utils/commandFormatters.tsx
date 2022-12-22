@@ -1,25 +1,6 @@
-import useAxios from 'axios-hooks'
-import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ExecuteButton } from 'pages/CommandIndex'
-import {
-  ChangeEvent as ReactChangeEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
-import { useParams } from 'react-router-dom'
 import { Command, System } from 'types/backend-types'
-import {
-  CommandIndexTableData,
-  ObjectWithStringKeys,
-  SystemCommandPair,
-} from 'types/custom-types'
-
-interface IParam extends ObjectWithStringKeys {
-  namespace: string
-  systemName: string
-  version: string
-}
+import { CommandIndexTableData, SystemCommandPair } from 'types/custom-types'
 
 const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
   const { system, command } = pair
@@ -135,55 +116,4 @@ const commandsFromSystems = (
   return systemCommandPairs.map(commandMapper)
 }
 
-const useCommands = () => {
-  const { authEnabled } = ServerConfigContainer.useContainer()
-  const [commands, setCommands] = useState<CommandIndexTableData[]>([])
-  const [systemId, setSystemId] = useState('')
-  const [includeHidden, setIncludeHidden] = useState(false)
-  const { namespace, systemName, version } = useParams() as IParam
-
-  const [{ data, error }] = useAxios({
-    url: '/api/v1/systems',
-    method: 'get',
-    withCredentials: authEnabled,
-  })
-
-  useEffect(() => {
-    if (data && !error) {
-      setCommands(
-        commandsFromSystems(
-          data,
-          includeHidden,
-          namespace,
-          systemName,
-          version,
-        ),
-      )
-
-      const foundSystem = data.find(
-        (system: System) => system.name === systemName,
-      )
-      if (foundSystem) setSystemId(foundSystem.id)
-    }
-  }, [data, error, namespace, version, systemName, includeHidden])
-
-  const hiddenOnChange = useCallback(
-    (event: ReactChangeEvent<HTMLInputElement>) => {
-      setIncludeHidden(event.target.checked)
-    },
-    [],
-  )
-
-  return {
-    commands,
-    namespace,
-    systemName,
-    systemId,
-    version,
-    includeHidden,
-    hiddenOnChange,
-    error,
-  }
-}
-
-export { commandsFromSystems, commandsPairer, useCommands }
+export { commandsFromSystems, commandsPairer }
