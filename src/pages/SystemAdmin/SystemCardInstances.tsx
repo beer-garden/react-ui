@@ -31,9 +31,7 @@ interface ISystemCard {
 
 const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
   const { startInstance, stopInstance } = useInstances()
-
   const [logModal, setLogModal] = useState<boolean>(false)
-
   const [queueModal, setQueueModal] = useState<boolean>(false)
 
   return (
@@ -72,7 +70,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                   <MenuItem
                     dense
                     divider
-                    sx={{ fontSize: '13px' }}
+                    sx={{ fontSize: '0.9375rem' }}
                     key="start"
                     onClick={() => {
                       popupState.close()
@@ -92,7 +90,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                   <MenuItem
                     dense
                     divider
-                    sx={{ fontSize: '13px' }}
+                    sx={{ fontSize: '0.9375rem' }}
                     key="stop"
                     onClick={() => {
                       popupState.close()
@@ -112,7 +110,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                   <MenuItem
                     dense
                     divider
-                    sx={{ fontSize: '13px' }}
+                    sx={{ fontSize: '0.9375rem' }}
                     onClick={() => {
                       setLogModal(true)
                       popupState.close()
@@ -125,8 +123,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                   </MenuItem>
                   <MenuItem
                     dense
-                    divider
-                    sx={{ fontSize: '13px' }}
+                    sx={{ fontSize: '0.9375rem' }}
                     onClick={() => {
                       popupState.close()
                       setQueueModal(true)

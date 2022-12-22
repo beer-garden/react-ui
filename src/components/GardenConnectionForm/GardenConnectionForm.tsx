@@ -57,7 +57,7 @@ const GardenConnectionForm = ({
             </Box>
             {hasPermission('garden:update') && (
               <Button
-                color="secondary"
+                color="primary"
                 variant="contained"
                 fullWidth
                 type="submit"

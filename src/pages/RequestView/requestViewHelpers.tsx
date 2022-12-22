@@ -4,10 +4,12 @@ import { SupportedColorScheme } from '@mui/material/styles'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
+import { darkTheme, lightTheme } from 'utils/customRJVThemes'
 
 const outputFormatted = (
   request: Request,
   theme: SupportedColorScheme,
+  bgColor: string,
   showAsRawData = false,
 ) => {
   if (['SUCCESS', 'CANCELED', 'ERROR'].includes(request.status)) {
@@ -39,7 +41,7 @@ const outputFormatted = (
       return (
         <ReactJson
           src={JSON.parse(output)}
-          theme={theme === 'dark' ? 'bright' : 'rjv-default'}
+          theme={theme === 'dark' ? darkTheme(bgColor) : lightTheme(bgColor)}
           style={{ backgroundColor: 'primary' }}
         />
       )
@@ -47,7 +49,9 @@ const outputFormatted = (
       return <div dangerouslySetInnerHTML={{ __html: output }} />
     }
   } else {
-    return <CircularProgress color="inherit" />
+    return (
+      <CircularProgress color="inherit" aria-label="Request data loading" />
+    )
   }
 }
 

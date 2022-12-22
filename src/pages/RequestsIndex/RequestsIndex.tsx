@@ -175,7 +175,7 @@ const RequestsIndex = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="Request data loading" />
     </Backdrop>
   )
 }

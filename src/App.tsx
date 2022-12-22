@@ -16,7 +16,15 @@ const App = (): JSX.Element => {
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <Layout>
           <ErrorBoundary>
-            <Suspense fallback={<CircularProgress size={25} color="inherit" />}>
+            <Suspense
+              fallback={
+                <CircularProgress
+                  aria-label="Loading Beer Garden"
+                  size={25}
+                  color="inherit"
+                />
+              }
+            >
               <Routes />
             </Suspense>
           </ErrorBoundary>

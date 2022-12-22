@@ -246,7 +246,7 @@ export const UsersView = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="User data loading" />
     </Backdrop>
   )
 }

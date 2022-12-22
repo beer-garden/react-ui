@@ -131,7 +131,7 @@ const ErrorAlert = ({ specific, statusCode, errorMsg }: ErrorAlertProps) => {
   return (
     <>
       <Alert severity="error">
-        <Typography variant="h5" color="inherit">
+        <Typography variant="h2" color="inherit">
           Error: {statusCode} {errorMsg}
         </Typography>
       </Alert>

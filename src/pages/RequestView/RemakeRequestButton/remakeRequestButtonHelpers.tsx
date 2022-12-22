@@ -15,7 +15,7 @@ const CannotReExecuteButton = ({ message }: CannotReExecuteButtonProps) => {
         component="div"
         disabled
         variant="contained"
-        color="secondary"
+        color="primary"
         style={{ float: 'right', pointerEvents: 'auto' }}
       >
         {'Remake Request'}

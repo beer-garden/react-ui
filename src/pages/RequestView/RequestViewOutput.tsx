@@ -13,8 +13,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
-import { SupportedColorScheme } from '@mui/material/styles'
-import { Divider } from 'components/Divider'
+import { SupportedColorScheme, useTheme } from '@mui/material/styles'
 import { outputFormatted } from 'pages/RequestView/requestViewHelpers'
 import { Dispatch, SetStateAction } from 'react'
 import { useState } from 'react'
@@ -36,8 +35,8 @@ const RequestViewOutput = ({
   theme,
 }: RequestViewOutputProps) => {
   const [showAsRawData, setShowAsRawData] = useState(false)
-  const textColor = theme === 'dark' ? 'text.secondary' : 'common.white'
-
+  const colors = useTheme()
+  const bgColor = colors.palette.background.default
   const downloadUrl = window.URL.createObjectURL(
     new Blob([request?.output || '']),
   )
@@ -47,9 +46,10 @@ const RequestViewOutput = ({
       <CardActions
         sx={{
           backgroundColor: 'primary.main',
+          color: 'common.white',
         }}
       >
-        <Typography style={{ flex: 1 }} color={textColor} variant="h6">
+        <Typography style={{ flex: 1 }} color="common.white" variant="h3">
           Output
         </Typography>
         {!['HTML', 'JSON'].includes(request.output_type) ? null : (
@@ -61,28 +61,28 @@ const RequestViewOutput = ({
                 onChange={() => {
                   setShowAsRawData(!showAsRawData)
                 }}
-                inputProps={{ 'aria-label': 'controlled' }}
+                inputProps={{ 'aria-label': 'Format control' }}
               />
             }
             label="Formatted"
           />
         )}
         <Link
-          color={textColor}
+          color="common.white"
           href={downloadUrl}
           download={`${request.id}.${
             ['STRING', null].includes(request.output_type)
               ? 'txt'
               : request.output_type.toLowerCase()
           }`}
+          aria-label="download output"
         >
           <IconButton color="inherit" size="small" aria-label="download output">
             <DownloadIcon />
           </IconButton>
         </Link>
-        <Typography color={textColor}>
+        <Typography color="common.white">
           <IconButton
-            size="small"
             color="inherit"
             onClick={() => setExpandOutput(!expandOutput)}
             aria-label="expand output"
@@ -95,9 +95,8 @@ const RequestViewOutput = ({
           </IconButton>
         </Typography>
       </CardActions>
-      <Divider />
       <CardContent>
-        {outputFormatted(request, theme, showAsRawData)}
+        {outputFormatted(request, theme, bgColor, showAsRawData)}
       </CardContent>
     </Card>
   )

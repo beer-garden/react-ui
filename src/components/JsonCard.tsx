@@ -7,9 +7,11 @@ import {
   IconButton,
   Typography,
 } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { useContext } from 'react'
 import ReactJson from 'react-json-view'
+import { darkTheme, lightTheme } from 'utils/customRJVThemes'
 
 interface IJsonCard {
   title: string
@@ -28,7 +30,8 @@ interface IJsonCard {
  */
 const JsonCard = ({ title, collapseHandler, data, iconTrigger }: IJsonCard) => {
   const theme = useContext(ThemeContext).theme
-  const textColor = theme === 'dark' ? 'text.secondary' : 'common.white'
+  const colors = useTheme()
+  const bgColor = colors.palette.background.default
 
   return (
     <Card sx={{ width: 1 }}>
@@ -37,11 +40,11 @@ const JsonCard = ({ title, collapseHandler, data, iconTrigger }: IJsonCard) => {
           backgroundColor: 'primary.main',
         }}
       >
-        <Typography sx={{ flex: 1 }} color={textColor} variant="h6">
+        <Typography sx={{ flex: 1 }} color="common.white" variant="h3">
           {title}
         </Typography>
         {collapseHandler && (
-          <Typography color={textColor} sx={{ float: 'right' }}>
+          <Typography color="common.white" sx={{ float: 'right' }}>
             <IconButton
               color="inherit"
               size="small"
@@ -57,11 +60,11 @@ const JsonCard = ({ title, collapseHandler, data, iconTrigger }: IJsonCard) => {
         {data ? (
           <ReactJson
             src={data}
-            theme={theme === 'dark' ? 'bright' : 'rjv-default'}
+            theme={theme === 'dark' ? darkTheme(bgColor) : lightTheme(bgColor)}
             style={{ backgroundColor: 'primary' }}
           />
         ) : (
-          <CircularProgress />
+          <CircularProgress aria-label="JSON data loading" />
         )}
       </CardContent>
     </Card>

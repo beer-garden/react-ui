@@ -1,8 +1,7 @@
-import { Button } from '@mui/material'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
+import { LinkButton } from 'components/LinkButton'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useEffect, useState } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 interface IExeButton {
@@ -28,6 +27,15 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [namespace, systemId])
 
+  const linkTo = [
+    '/systems',
+    namespace,
+    systemName,
+    systemVersion,
+    'commands',
+    name,
+  ].join('/')
+
   return (
     <JobRequestCreationContext.Consumer>
       {({ setSystem, setCommand, setIsJob }) => {
@@ -36,26 +44,7 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
           setCommand && setCommand(command)
           setIsJob && setIsJob(false)
         }
-        return (
-          <Button
-            component={RouterLink}
-            to={[
-              '/systems',
-              namespace,
-              systemName,
-              systemVersion,
-              'commands',
-              name,
-            ].join('/')}
-            onClick={onClickCallback}
-            size="small"
-            variant="contained"
-            color="primary"
-            disabled={!permission}
-          >
-            Execute
-          </Button>
-        )
+        return LinkButton('Execute', linkTo, !permission, onClickCallback)
       }}
     </JobRequestCreationContext.Consumer>
   )

@@ -86,7 +86,7 @@ const useCommandIndexTableColumns = (showExecute = false) => {
           width: 300,
         },
         {
-          Header: '',
+          Header: 'Action',
           accessor: 'executeButton',
           Cell: DefaultCellRenderer,
           disableSortBy: true,
@@ -94,8 +94,6 @@ const useCommandIndexTableColumns = (showExecute = false) => {
           disableFilters: true,
           canHide: false,
           width: 95,
-          minWidth: 75,
-          maxWidth: 120,
         },
       ]
     }

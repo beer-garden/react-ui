@@ -22,7 +22,8 @@ export const TextFilter = ({ column }: FilterProps<ObjectWithStringKeys>) => {
         name={id}
         hiddenLabel
         size="small"
-        InputLabelProps={{ htmlFor: id }}
+        InputLabelProps={{ htmlFor: id + 'Filter' }}
+        placeholder={id + ' filter'}
         value={value}
         variant="outlined"
         onKeyDown={(event) => {

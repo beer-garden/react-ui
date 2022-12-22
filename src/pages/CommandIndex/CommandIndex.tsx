@@ -81,7 +81,7 @@ const CommandIndex = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="Command data loading" />
     </Backdrop>
   )
 }

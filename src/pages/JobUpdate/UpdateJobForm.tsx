@@ -4,7 +4,7 @@ import { MuiForm5 as Form } from '@rjsf/material-ui'
 import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
 import { CustomFileWidget } from 'pages/CommandView'
-import { createRef, useState } from 'react'
+import { useState } from 'react'
 import { Job } from 'types/backend-types'
 import { ObjectWithStringKeys, SnackbarState } from 'types/custom-types'
 
@@ -111,8 +111,6 @@ const UpdateJobForm = ({
     FileWidget: CustomFileWidget,
   }
 
-  const submitFormRef = createRef<HTMLButtonElement>()
-
   return (
     <Box pt={2} display="flex" alignItems="flex-start">
       <Box width={3 / 5}>
@@ -126,14 +124,11 @@ const UpdateJobForm = ({
           validate={validator}
           widgets={widgets}
         >
-          <Button ref={submitFormRef} type="submit" sx={{ display: 'none' }} />
+          <ButtonGroup variant="contained" size="large">
+            <Button onClick={onResetForm}>Reset</Button>
+            <Button type="submit">{isJob ? 'Schedule' : 'Execute'}</Button>
+          </ButtonGroup>
         </Form>
-        <ButtonGroup variant="contained" size="large">
-          <Button onClick={onResetForm}>Reset</Button>
-          <Button type="submit" onClick={() => submitFormRef.current?.click()}>
-            {isJob ? 'Schedule' : 'Execute'}
-          </Button>
-        </ButtonGroup>
       </Box>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
       <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>

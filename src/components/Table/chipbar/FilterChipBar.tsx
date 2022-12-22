@@ -53,10 +53,7 @@ const FilterChipBar = <T extends ObjectWithStringKeys>({
 
   return Object.keys(filters).length > 0 ? (
     <>
-      <Typography
-        component="span"
-        sx={{ ml: '10px', fontSize: '14px', marginRight: 1 }}
-      >
+      <Typography component="span" sx={{ ml: '10px', marginRight: 1 }}>
         Active filters:
       </Typography>
       {filters &&

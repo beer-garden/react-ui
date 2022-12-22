@@ -8,7 +8,7 @@ interface PageHeaderProps {
 const PageHeader = ({ title, description }: PageHeaderProps) => {
   return (
     <Box display="flex" alignItems="flex-end">
-      <Typography variant="h4">
+      <Typography variant="h2">
         <b>{title}</b>
       </Typography>
       <Typography pl={1}>{description}</Typography>

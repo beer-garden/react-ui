@@ -57,7 +57,7 @@ const useCommandsColumns = () => {
         canHide: false,
       },
       {
-        Header: '',
+        Header: 'Action',
         Cell: DefaultCellRenderer,
         accessor: 'choose',
         disableFilters: true,

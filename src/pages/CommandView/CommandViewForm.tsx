@@ -19,13 +19,7 @@ import {
   handleByteParametersReset,
   isByteCommand,
 } from 'pages/CommandView'
-import {
-  createContext,
-  createRef,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from 'react'
+import { createContext, Dispatch, SetStateAction, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job, Request, RequestTemplate } from 'types/backend-types'
 import {
@@ -202,8 +196,6 @@ const CommandViewForm = ({
     FileWidget: CustomFileWidget,
   }
 
-  const submitFormRef = createRef<HTMLButtonElement>()
-
   return (
     <Box p={2} display="flex" alignItems="flex-start">
       <Box width={3 / 5}>
@@ -220,27 +212,17 @@ const CommandViewForm = ({
             validate={validator}
             widgets={widgets}
           >
-            <Button
-              ref={submitFormRef}
-              type="submit"
-              sx={{ display: 'none' }}
-            />
+            <ButtonGroup variant="contained" size="large">
+              <Button onClick={onResetForm}>Reset</Button>
+              <Button type="submit">{isJob ? 'Schedule' : 'Execute'}</Button>
+            </ButtonGroup>
           </Form>
-          <ButtonGroup variant="contained" size="large">
-            <Button onClick={onResetForm}>Reset</Button>
-            <Button
-              type="submit"
-              onClick={() => submitFormRef.current?.click()}
-            >
-              {isJob ? 'Schedule' : 'Execute'}
-            </Button>
-          </ButtonGroup>
         </BytesParameterContext.Provider>
       </Box>
-      {submitStatus ? <Snackbar status={submitStatus} /> : null}
       <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>
         <JsonCard title="Preview" data={displayModel} />
       </Box>
+      {submitStatus ? <Snackbar status={submitStatus} /> : null}
     </Box>
   )
 }

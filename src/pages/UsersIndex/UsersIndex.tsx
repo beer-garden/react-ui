@@ -128,7 +128,7 @@ export const UsersIndex = () => {
           <Button
             sx={{ float: 'right', mx: 1 }}
             variant="contained"
-            color="primary"
+            color="secondary"
             aria-label="Add user"
             onClick={() => setOpenAdd(true)}
           >
@@ -179,7 +179,7 @@ export const UsersIndex = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="User data loading" />
     </Backdrop>
   )
 }

@@ -77,7 +77,7 @@ const useSystemColumns = () => {
         canHide: false,
       },
       {
-        Header: '',
+        Header: 'Action',
         Cell: DefaultCellRenderer,
         accessor: 'choose',
         disableFilters: true,

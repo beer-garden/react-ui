@@ -136,7 +136,7 @@ const GardenAdminView = () => {
         </>
       ) : (
         <Backdrop open={true}>
-          <CircularProgress color="inherit" />
+          <CircularProgress color="inherit" aria-label="Garden data loading" />
         </Backdrop>
       )}
       {requestStatus ? <Snackbar status={requestStatus} /> : null}
@@ -149,7 +149,7 @@ const GardenAdminView = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="Garden page loading" />
     </Backdrop>
   )
 }

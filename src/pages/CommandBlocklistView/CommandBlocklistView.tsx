@@ -131,7 +131,7 @@ export const CommandBlocklistView = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="Blocklist data loading" />
     </Backdrop>
   )
 }

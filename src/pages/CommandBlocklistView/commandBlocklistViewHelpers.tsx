@@ -154,7 +154,7 @@ const useTableColumns = () => {
         width: 130,
       },
       {
-        Header: '',
+        Header: 'Action',
         Cell: DefaultCellRenderer,
         accessor: 'executeButton',
         disableSortBy: true,
