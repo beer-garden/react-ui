@@ -14,15 +14,15 @@ const usePermissions = () => {
   const { DEBUG_PERMISSION } = DebugContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { user, tokenExpiration } = AuthContainer.useContainer()
-  const [isPermissionsSet, setIsPermissionsSet] = useState<boolean>(
-    cookies.get('isPermissionsSet'),
-  )
-  const [globalPerms, setGlobalPerms] = useState<string[]>(
+  const [globalPerms, setGlobalPerms] = useState<string[] | undefined>(
     cookies.get('globalPerms'),
   )
-  const [domainPerms, setDomainPerms] = useState<{
-    [key: string]: DomainPermission
-  }>(cookies.get('domainPerms'))
+  const [domainPerms, setDomainPerms] = useState<
+    | {
+        [key: string]: DomainPermission
+      }
+    | undefined
+  >(cookies.get('domainPerms'))
 
   const { getGarden } = useGardens()
   const { getSystems } = useSystems()
@@ -31,10 +31,12 @@ const usePermissions = () => {
   const resetPerms = () => {
     cookies.remove('globalPerms', { path: '/' })
     cookies.remove('domainPerms', { path: '/' })
-    cookies.remove('isPermissionsSet', { path: '/' })
-    setGlobalPerms([])
-    setDomainPerms({})
-    setIsPermissionsSet(false)
+    setGlobalPerms(undefined)
+    setDomainPerms(undefined)
+  }
+
+  const isPermissionsSet = (): boolean => {
+    return globalPerms !== undefined && domainPerms !== undefined
   }
 
   const getUserObj = useCallback(() => {
@@ -55,11 +57,6 @@ const usePermissions = () => {
           { path: '/', expires: tokenExpiration },
         )
         setDomainPerms(response.data.permissions.domain_permissions)
-        cookies.set('isPermissionsSet', true, {
-          path: '/',
-          expires: tokenExpiration,
-        })
-        setIsPermissionsSet(true)
       })
     } else {
       resetPerms()
@@ -99,9 +96,9 @@ const usePermissions = () => {
       return !!baseCheck
     }
     return (
-      globalPerms.includes(permission) ||
+      globalPerms?.includes(permission) ||
       // eslint-disable-next-line no-prototype-builtins
-      !!domainPerms.hasOwnProperty(permission)
+      !!domainPerms?.hasOwnProperty(permission)
     )
   }
 
@@ -110,11 +107,11 @@ const usePermissions = () => {
     if (typeof baseCheck !== 'undefined') {
       return !!baseCheck
     }
-    if (globalPerms.includes(permission)) {
+    if (globalPerms?.includes(permission)) {
       return true
     }
     // eslint-disable-next-line no-prototype-builtins
-    if (garden.id && domainPerms.hasOwnProperty(permission)) {
+    if (garden.id && domainPerms?.hasOwnProperty(permission)) {
       return domainPerms[permission].garden_ids.includes(garden.id)
     }
     return false
@@ -129,7 +126,7 @@ const usePermissions = () => {
     if (typeof baseCheck !== 'undefined') {
       return !!baseCheck
     }
-    if (globalPerms.includes(permission)) {
+    if (globalPerms?.includes(permission)) {
       return true
     }
     const response = await getGarden(namespace)
@@ -138,7 +135,7 @@ const usePermissions = () => {
       return true
     }
     // eslint-disable-next-line no-prototype-builtins
-    if (domainPerms.hasOwnProperty(permission)) {
+    if (domainPerms?.hasOwnProperty(permission)) {
       return domainPerms[permission].system_ids.includes(systemId)
     }
     return false
