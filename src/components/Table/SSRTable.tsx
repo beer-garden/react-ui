@@ -161,7 +161,7 @@ const SSRTable = <
       : 0
   }, [initialState.pageSize, recordsFiltered, requested])
 
-  const instance = useTable<T>(
+  const tableInstance = useTable<T>(
     {
       data,
       columns,
@@ -188,7 +188,7 @@ const SSRTable = <
     state,
     setSortBy,
     gotoPage,
-  } = instance
+  } = tableInstance
 
   /* debounce the state so it can't update too quickly */
   const debouncedState = useDebounce<TableState<T>>(state, 500)
@@ -253,8 +253,8 @@ const SSRTable = <
    */
   useEffect(() => {
     if (!deeplyEqual(debouncedState.filters, filterList)) {
-      gotoPage(0)
       handleSearchBy(debouncedState.filters)
+      gotoPage(0)
     }
   }, [
     debouncedState.filters,
@@ -278,13 +278,35 @@ const SSRTable = <
     }
   }, [handleOrderBy, debouncedState.sortBy, ordering])
 
+  /**
+   * Ensure the data on initial load is filtered and ordered according to the
+   * values from local storage (which we access via the `debouncedState`
+   * variable).
+   */
+  useEffect(() => {
+    const tableSortBy = debouncedState.sortBy.slice().pop()
+    if (tableSortBy) {
+      handleOrderBy(
+        tableSortBy.id as R,
+        tableSortBy.desc ? ('desc' as S) : ('asc' as S),
+      )
+    }
+    handleSearchBy(debouncedState.filters)
+    gotoPage(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const { role: tableRole, ...tableProps } = getTableProps()
 
   return isErrored ? (
     <Typography>Error...</Typography>
   ) : (
     <>
-      <Toolbar instance={instance} childProps={childProps} name={tableName}>
+      <Toolbar
+        instance={tableInstance}
+        childProps={childProps}
+        name={tableName}
+      >
         {props.children}
       </Toolbar>
       <StyledTable {...tableProps}>
@@ -464,7 +486,7 @@ const SSRTable = <
         )}
       </StyledTable>
       <SSRTablePagination
-        instance={instance}
+        instance={tableInstance}
         recordsFiltered={recordsFiltered}
         recordsTotal={recordsTotal}
         handleStartPage={handleStartPage}

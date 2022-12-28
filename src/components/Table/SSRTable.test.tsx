@@ -4,6 +4,7 @@ import {
   DateRangeColumnFilter,
   NumberRangeColumnFilter,
 } from 'components/Table/filters'
+import * as mockUseLocalStorage from 'hooks/useLocalStorage'
 import { Column } from 'react-table'
 import { DebugProvider } from 'test/testMocks'
 import { ObjectWithStringKeys } from 'types/custom-types'
@@ -270,5 +271,78 @@ describe('SSRTable', () => {
     expect(screen.getAllByRole('textbox').length).toEqual(1)
     // todo: test better
     expect(screen.getByText('to')).toBeInTheDocument()
+  })
+
+  describe('sort and filter on load', () => {
+    test('filters on load', () => {
+      const testFilters = [
+        { id: 'myFavoriteTestId', value: 'myFavoriteTestValue' },
+      ]
+      const initialState = {
+        filters: testFilters,
+      }
+
+      jest
+        .spyOn(mockUseLocalStorage, 'useLocalStorage')
+        .mockImplementation((k, i) => [initialState, jest.fn()])
+
+      const mockHandleSearchBy = jest.fn()
+      const filterMockHandlers = {
+        ...mockHandlers,
+        handleSearchBy: mockHandleSearchBy,
+      }
+
+      render(
+        <DebugProvider>
+          <SSRTable<TestData, SearchableColumnData, OrderableColumnDirection>
+            tableKey="Requests"
+            data={tableData}
+            columns={tableColumns}
+            fetchStatus={{ isLoading: false, isErrored: false }}
+            ssrValues={mockSSR}
+            sortAndOrdering={mockSort}
+            handlers={filterMockHandlers}
+          />
+        </DebugProvider>,
+      )
+
+      expect(mockHandleSearchBy).toHaveBeenCalledWith(
+        expect.objectContaining(testFilters),
+      )
+    })
+
+    test('sorts on load', () => {
+      const testId = 'myFavoriteTestId'
+      const testSort = { id: testId, desc: true }
+      const initialState = {
+        sortBy: [testSort],
+      }
+
+      jest
+        .spyOn(mockUseLocalStorage, 'useLocalStorage')
+        .mockImplementation((k, i) => [initialState, jest.fn()])
+
+      const mockHandleSortBy = jest.fn()
+      const sortMockHandlers = {
+        ...mockHandlers,
+        handleOrderBy: mockHandleSortBy,
+      }
+
+      render(
+        <DebugProvider>
+          <SSRTable<TestData, SearchableColumnData, OrderableColumnDirection>
+            tableKey="Requests"
+            data={tableData}
+            columns={tableColumns}
+            fetchStatus={{ isLoading: false, isErrored: false }}
+            ssrValues={mockSSR}
+            sortAndOrdering={mockSort}
+            handlers={sortMockHandlers}
+          />
+        </DebugProvider>,
+      )
+
+      expect(mockHandleSortBy).toHaveBeenCalledWith(testId, 'desc')
+    })
   })
 })
