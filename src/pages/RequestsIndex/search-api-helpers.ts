@@ -51,16 +51,21 @@ const updateApiSearchBy = (
   searchApi: RequestsSearchApi,
   searchFilters: Filters<RequestsIndexTableData>,
 ): RequestsSearchApi => {
+  const lookup: { [key: string]: SearchableColumnData } = {
+    /* translate table names to backend names */
+    version: 'system_version',
+    instance: 'instance_name',
+    created: 'created_at',
+  }
   let newColumns = defaultColumnsData
 
   for (const filter of searchFilters) {
     const { id, value } = filter
-    let filterId = id as string
+    const filterId = lookup[id] ?? (id as SearchableColumnData)
     let filterValue = value as string
 
     if (id === 'created') {
       /* the outlier */
-      filterId = 'created_at'
       const valueArr = value as Array<number>
 
       if (valueArr && valueArr.length) {
@@ -81,7 +86,7 @@ const updateApiSearchBy = (
       filterId as SearchableColumnData,
     )
     const columnToUpdate = newColumns.slice(index, index + 1).pop()
-    const unchangedColumns = newColumns.filter((d) => d.data !== id)
+    const unchangedColumns = newColumns.filter((d) => d.data !== filterId)
     const updatedColumn = updateSearchColumn(
       columnToUpdate as SearchableColumn,
       filterValue,
