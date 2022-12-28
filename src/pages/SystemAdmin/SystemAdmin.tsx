@@ -40,23 +40,26 @@ const SystemAdmin = () => {
     [],
   )
   const [open, setOpen] = useState(false)
-  const { getNamespaces } = useNamespace()
-
   const [namespaces, setNamespaces] = useState<string[]>([])
   const [error, setError] = useState<AxiosError>()
-  useEffect(() => {
-    getNamespaces()
-      .then((response) => {
-        setNamespaces(response.data)
-      })
-      .catch((error) => {
-        setError(error)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+  const { getNamespaces } = useNamespace()
   const { rescanPluginDirectory } = useAdmin()
   const { clearQueues } = useQueue()
+
+  useEffect(() => {
+    let mounted = true
+    getNamespaces()
+      .then((response) => {
+        if (mounted) setNamespaces(response.data)
+      })
+      .catch((error) => {
+        if (mounted) setError(error)
+      })
+    return () => {
+      mounted = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return !error ? (
     <Box>

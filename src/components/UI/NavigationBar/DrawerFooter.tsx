@@ -5,16 +5,38 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
-  MenuList as MuiMenuList,
+  MenuList,
 } from '@mui/material'
+import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import useVersion from 'hooks/useVersion'
+import { useEffect, useState } from 'react'
+import { VersionConfig } from 'types/config-types'
+import { SnackbarState } from 'types/custom-types'
 
 const DrawerFooter = () => {
   const { config } = ServerConfigContainer.useContainer()
-  const versionConfig = useVersion()
+  const [versionConfig, setVersionConfig] = useState<VersionConfig>()
+  const [alert, setAlert] = useState<SnackbarState>()
+  const { getVersion } = useVersion()
+
+  useEffect(() => {
+    getVersion()
+      .then((response) => {
+        setVersionConfig(response.data)
+      })
+      .catch((e) => {
+        setAlert({
+          severity: 'error',
+          message: e.response?.data.message || e,
+          doNotAutoDismiss: true,
+        })
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
-    <MuiMenuList dense style={{ marginTop: 'auto' }}>
+    <MenuList dense style={{ marginTop: 'auto' }}>
       <Divider />
       <MenuItem disabled style={{ opacity: 'unset' }} sx={{ pl: 1 }}>
         <ListItemIcon>
@@ -35,7 +57,8 @@ const DrawerFooter = () => {
         </ListItemIcon>
         <ListItemText>OpenAPI Documentation</ListItemText>
       </MenuItem>
-    </MuiMenuList>
+      {alert ? <Snackbar status={alert} /> : null}
+    </MenuList>
   )
 }
 

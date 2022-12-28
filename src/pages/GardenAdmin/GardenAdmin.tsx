@@ -12,8 +12,9 @@ import { useEffect, useState } from 'react'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
-const GardensAdmin = (): JSX.Element => {
+const GardenAdmin = (): JSX.Element => {
   const { hasPermission } = PermissionsContainer.useContainer()
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
   const { error, getGardens } = useGardens()
   const [gardens, setGardens] = useState<Garden[]>([])
   const [requestStatus, setRequestStatus] = useState<SnackbarState | undefined>(
@@ -31,22 +32,19 @@ const GardensAdmin = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const { addCallback, removeCallback } = SocketContainer.useContainer()
-
   useEffect(() => {
     let mounted = true
-    if (mounted)
-      addCallback('garden_updates', (event) => {
-        if (
-          ['GARDEN_CREATED', 'GARDEN_UPDATED', 'GARDEN_REMOVED'].includes(
-            event.name,
-          )
-        ) {
-          getGardens().then((response) => {
-            if (mounted) setGardens(response.data)
-          })
-        }
-      })
+    addCallback('garden_updates', (event) => {
+      if (
+        ['GARDEN_CREATED', 'GARDEN_UPDATED', 'GARDEN_REMOVED'].includes(
+          event.name,
+        )
+      ) {
+        getGardens().then((response) => {
+          if (mounted) setGardens(response.data)
+        })
+      }
+    })
     return () => {
       mounted = false
       removeCallback('garden_updates')
@@ -90,4 +88,4 @@ const GardensAdmin = (): JSX.Element => {
   )
 }
 
-export { GardensAdmin }
+export { GardenAdmin }

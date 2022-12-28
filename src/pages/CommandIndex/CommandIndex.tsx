@@ -9,40 +9,79 @@ import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
+import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
-import { commandsFromSystems } from 'hooks/useCommands'
-import { useCommandsParameterized } from 'hooks/useCommandsParameterized'
+import { useSystems } from 'hooks/useSystems'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'
-import { useEffect, useState } from 'react'
-import { CommandIndexTableData } from 'types/custom-types'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { System } from 'types/backend-types'
+import {
+  CommandIndexTableData,
+  ObjectWithStringKeys,
+  SnackbarState,
+} from 'types/custom-types'
+import { commandsFromSystems } from 'utils/commandFormatters'
+
+interface IParam extends ObjectWithStringKeys {
+  namespace: string
+  systemName: string
+  version: string
+}
 
 const CommandIndex = () => {
   const { hasSystemPermission } = PermissionsContainer.useContainer()
-  const {
-    commands,
-    namespace,
-    systemName,
-    systemId,
-    version,
-    includeHidden,
-    hiddenOnChange,
-    error,
-  } = useCommandsParameterized<CommandIndexTableData>(commandsFromSystems)
   const [permission, setPermission] = useState(false)
+  const [commands, setCommands] = useState<CommandIndexTableData[]>([])
+  const [includeHidden, setIncludeHidden] = useState(false)
+  const [alert, setAlert] = useState<SnackbarState>()
+  const { error, getSystems } = useSystems()
+  const { namespace, systemName, version } = useParams() as IParam
 
   useEffect(() => {
-    const fetchPermission = async () => {
-      const permCheck = await hasSystemPermission(
-        'request:create',
-        namespace,
-        systemId,
-      )
-      setPermission(permCheck || false)
+    let mounted = true
+    getSystems()
+      .then((response) => {
+        if (mounted) {
+          setCommands(
+            commandsFromSystems(
+              response.data,
+              includeHidden,
+              namespace,
+              systemName,
+              version,
+            ),
+          )
+          const foundSystem = response.data.find(
+            (system: System) => system.name === systemName,
+          )
+          if (foundSystem) {
+            const fetchPermission = async () => {
+              const permCheck = await hasSystemPermission(
+                'request:create',
+                namespace,
+                foundSystem.id,
+              )
+              if (mounted) setPermission(permCheck || false)
+            }
+            fetchPermission()
+          }
+        }
+      })
+      .catch((e) => {
+        if (mounted)
+          setAlert({
+            severity: 'error',
+            message: e.response?.data.message || e,
+            doNotAutoDismiss: true,
+          })
+      })
+    return () => {
+      mounted = false
     }
-    fetchPermission()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [namespace, systemId])
+  }, [])
 
   const columns = useCommandIndexTableColumns(permission)
   const breadcrumbs = [namespace, systemName, version]
@@ -66,13 +105,16 @@ const CommandIndex = () => {
             control={
               <Checkbox
                 checked={includeHidden}
-                onChange={hiddenOnChange}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  setIncludeHidden(event.target.checked)
+                }}
                 color="secondary"
               />
             }
           />
         </Box>
       </Table>
+      {alert ? <Snackbar status={alert} /> : null}
     </Box>
   ) : error.response ? (
     <ErrorAlert

@@ -1,19 +1,17 @@
 import { Button } from '@material-ui/core'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
-import { useCommandsParameterized } from 'hooks/useCommandsParameterized'
-import {
-  CannotReExecuteButton,
-  systemCommandPairFromArgs,
-} from 'pages/RequestView/RemakeRequestButton/remakeRequestButtonHelpers'
-import { useContext } from 'react'
+import { useSystems } from 'hooks/useSystems'
+import { CannotReExecuteButton } from 'pages/RequestView/RemakeRequestButton'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Request } from 'types/backend-types'
+import { Request, System } from 'types/backend-types'
 import { SystemCommandPair } from 'types/custom-types'
 import {
   CommandViewModelComment,
   CommandViewModelParameters,
   CommandViewRequestModel,
 } from 'types/form-model-types'
+import { commandsPairer } from 'utils/commandFormatters'
 
 interface RemakeRequestButtonProps {
   request: Request
@@ -21,6 +19,10 @@ interface RemakeRequestButtonProps {
 
 const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   const navigate = useNavigate()
+  const { getSystems } = useSystems()
+  const [systemCommandPair, setSystemCommandPair] = useState<
+    SystemCommandPair | undefined
+  >()
   const { setSystem, setCommand, setIsJob, setRequestModel, setIsReplay } =
     useContext(JobRequestCreationContext)
   const {
@@ -32,15 +34,25 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     parameters: theParameters,
     comment: theComment,
   } = request
-  const { commands: systemCommandPair } =
-    useCommandsParameterized<SystemCommandPair>(
-      systemCommandPairFromArgs(
-        commandName,
-        systemName,
-        systemVersion,
-        namespace,
-      ),
-    )
+
+  useEffect(() => {
+    getSystems().then((response) => {
+      setSystemCommandPair(
+        response.data
+          .filter(
+            (s: System) =>
+              s.name === systemName &&
+              s.version === systemVersion &&
+              s.namespace === namespace,
+          )
+          .map(commandsPairer)
+          .flat()
+          .filter((p: SystemCommandPair) => p.command.name === commandName)
+          .pop(),
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (
     !setSystem ||
@@ -53,23 +65,21 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   } else if (!request) {
     return <CannotReExecuteButton message="ERROR: Request not available" />
   }
-
-  const pair = systemCommandPair.pop()
-  if (!pair) {
+  if (!systemCommandPair) {
     return (
       <CannotReExecuteButton message="ERROR: System or Command not available" />
     )
   }
 
   const model: CommandViewRequestModel = {
-    comment: { comment: theComment } as CommandViewModelComment,
+    comment: { comment: theComment || '' } as CommandViewModelComment,
     instance_names: { instance_name: instanceName },
     parameters: theParameters as CommandViewModelParameters,
   }
 
   const onClick = () => {
-    setSystem(pair.system)
-    setCommand(pair.command)
+    setSystem(systemCommandPair.system)
+    setCommand(systemCommandPair.command)
     setIsJob(false)
     setIsReplay(true)
     setRequestModel(model)

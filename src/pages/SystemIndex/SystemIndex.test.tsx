@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import { mockAxios } from 'test/axios-mock'
-import { TSystem } from 'test/test-values'
+import { TSystem } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
 
 import { SystemsIndex } from './SystemIndex'

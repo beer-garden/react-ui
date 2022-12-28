@@ -8,7 +8,7 @@ import { EmptyObject } from 'types/custom-types'
 const useSystems = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
-  const [, execute] = useAxios({}, axiosManualOptions)
+  const [{ error }, execute] = useAxios({}, axiosManualOptions)
 
   const getSystems = (): AxiosPromise<System[]> => {
     const config: AxiosRequestConfig = {
@@ -41,11 +41,7 @@ const useSystems = () => {
     return execute(config)
   }
 
-  return {
-    getSystems,
-    reloadSystem,
-    deleteSystem,
-  }
+  return { error, getSystems, reloadSystem, deleteSystem }
 }
 
 export { useSystems }

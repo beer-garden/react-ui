@@ -1,7 +1,8 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import WS from 'jest-websocket-mock'
 import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TInstance, TServerAuthConfig, TSystem } from 'test/test-values'
+import { TInstance, TSystem } from 'test/system-test-values'
+import { TServerAuthConfig } from 'test/test-values'
 import { LoggedInProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 
