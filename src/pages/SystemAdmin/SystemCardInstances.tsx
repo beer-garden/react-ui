@@ -75,10 +75,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                     onClick={() => {
                       popupState.close()
                       startInstance(instance.id).then((resp) => {
-                        // TODO: eventually updates just the button, find a better way
                         instance.status = resp
-                        // TODO: would need to extend instance type
-                        //instance.severity = getSeverity(resp)
                       })
                     }}
                   >
@@ -95,10 +92,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
                     onClick={() => {
                       popupState.close()
                       stopInstance(instance.id).then((resp) => {
-                        // TODO: eventually updates just the button, find a better way
                         instance.status = resp
-                        // TODO: would need to extend instance type
-                        //instance.severity = getSeverity(resp)
                       })
                     }}
                   >

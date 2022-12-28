@@ -107,7 +107,7 @@ const GardenAdminView = () => {
         <>
           <GardenAdminInfoCard garden={garden} />
           <Divider />
-          <Typography variant="h6">Connected Systems</Typography>
+          <Typography variant="h3">Connected Systems</Typography>
           {garden.status === 'RUNNING' ? (
             <Table
               tableKey={`${gardenName}systems`}

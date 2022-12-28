@@ -85,6 +85,7 @@ function getTheme(themeName: SupportedColorScheme) {
       h1: { fontSize: '2rem', fontWeight: 400 },
       h2: { fontSize: '3rem' },
       h3: { fontSize: '1.43rem', fontWeight: 700, lineHeight: 1.6 },
+      h4: { fontSize: '1.25rem' },
       body2: { fontSize: '0.875rem' },
     },
     components: themeName === 'dark' ? components.dark : components.light,

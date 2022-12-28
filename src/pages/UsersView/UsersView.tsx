@@ -149,7 +149,7 @@ export const UsersView = () => {
         {sync && Object.keys(sync).length > 0 && (
           <GardenSyncTable syncObj={sync} />
         )}
-        <Typography variant="h6">Change Password</Typography>
+        <Typography variant="h3">Change Password</Typography>
         <Box component="form" noValidate autoComplete="off">
           <Stack direction="row" spacing={3}>
             <TextField
@@ -174,7 +174,7 @@ export const UsersView = () => {
             />
           </Stack>
         </Box>
-        <Typography variant="h6">Role Assignments</Typography>
+        <Typography variant="h3">Role Assignments</Typography>
         {roles.map((role, index) => {
           return (
             <RoleCard
