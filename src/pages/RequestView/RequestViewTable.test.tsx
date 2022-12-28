@@ -6,6 +6,22 @@ import { dateFormatted } from 'utils/date-formatter'
 import { RequestViewTable } from './RequestViewTable'
 
 describe('RequestViewTable', () => {
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    hour12: false,
+    dateStyle: 'medium',
+    timeStyle: 'long',
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }
+
+  const createdAtLocalDateString = new Intl.DateTimeFormat(
+    'en-US',
+    dateOptions,
+  ).format(new Date(TRequest.created_at))
+  const updatedAtLocalDateString = new Intl.DateTimeFormat(
+    'en-US',
+    dateOptions,
+  ).format(new Date(TRequest.updated_at))
+
   test('renders request data', async () => {
     render(
       <AllProviders>
@@ -27,9 +43,9 @@ describe('RequestViewTable', () => {
     expect(screen.getByText('Status:')).toBeInTheDocument()
     expect(screen.getByText('SUCCESS')).toBeInTheDocument()
     expect(screen.getByText('Created:')).toBeInTheDocument()
-    expect(screen.getByText('Nov 3, 2022, 23:12:46 UTC')).toBeInTheDocument()
+    expect(screen.getByText(createdAtLocalDateString)).toBeInTheDocument()
     expect(screen.getByText('Updated:')).toBeInTheDocument()
-    expect(screen.getByText('Nov 3, 2022, 23:14:14 UTC')).toBeInTheDocument()
+    expect(screen.getByText(updatedAtLocalDateString)).toBeInTheDocument()
   })
 
   test('renders links for some data data', async () => {
