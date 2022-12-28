@@ -9,7 +9,6 @@ import {
   CardContent,
   FormControlLabel,
   IconButton,
-  Link,
   Switch,
   Typography,
 } from '@mui/material'
@@ -67,20 +66,20 @@ const RequestViewOutput = ({
             label="Formatted"
           />
         )}
-        <Link
-          color="common.white"
-          href={downloadUrl}
-          download={`${request.id}.${
-            ['STRING', null].includes(request.output_type)
-              ? 'txt'
-              : request.output_type.toLowerCase()
-          }`}
-          aria-label="download output"
-        >
-          <IconButton color="inherit" size="small" aria-label="download output">
+        <Typography color="common.white">
+          <IconButton
+            href={downloadUrl}
+            download={`${request.id}.${
+              ['STRING', null].includes(request.output_type)
+                ? 'txt'
+                : request.output_type.toLowerCase()
+            }`}
+            color="inherit"
+            aria-label="download output"
+          >
             <DownloadIcon />
           </IconButton>
-        </Link>
+        </Typography>
         <Typography color="common.white">
           <IconButton
             color="inherit"
