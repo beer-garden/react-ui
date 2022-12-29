@@ -25,7 +25,6 @@ import { CommandViewModel } from 'types/form-model-types'
 const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { namespace, systemName, version, commandName } = useParams()
-  const context = useContext(JobRequestCreationContext)
   const {
     system,
     setSystem,
@@ -36,7 +35,9 @@ const CommandView = () => {
     setRequestModel,
     isReplay,
     setIsReplay,
-  } = context
+    job,
+    setJob,
+  } = useContext(JobRequestCreationContext)
 
   // handle leaving the page for any reason
   useEffect(() => {
@@ -45,8 +46,9 @@ const CommandView = () => {
       setCommand && setCommand(undefined)
       setRequestModel && setRequestModel(undefined)
       setIsReplay && setIsReplay(false)
+      setJob && setJob(undefined)
     }
-  }, [setCommand, setIsReplay, setRequestModel, setSystem])
+  }, [setCommand, setIsReplay, setRequestModel, setSystem, setJob])
 
   const checkedParams = checkContext(
     namespace,
@@ -99,6 +101,8 @@ const CommandView = () => {
           initialModel={model}
           command={theCommand}
           isJob={isJob}
+          isReplay={Boolean(isReplay)}
+          jobId={job?.id ?? undefined}
           validator={validator}
         />
       </Box>

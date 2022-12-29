@@ -252,6 +252,8 @@ const prepareModelForSubmit = (
   model: Job | RequestTemplate,
   parameters: Parameter[],
   isJob: boolean,
+  isReplay: boolean,
+  jobId?: string,
 ) => {
   let modelParams: ObjectWithStringKeys
 
@@ -283,6 +285,16 @@ const prepareModelForSubmit = (
     const requestTemplate: RequestTemplate = {
       ...(model as Job).request_template,
       parameters: modelParams,
+    }
+    if (isReplay) {
+      if (!jobId) {
+        throw new Error('Job ID not available during update')
+      }
+      return {
+        ...model,
+        id: jobId,
+        request_template: requestTemplate,
+      } as Job
     }
     return {
       ...model,

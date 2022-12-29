@@ -19,7 +19,13 @@ import {
   handleByteParametersReset,
   isByteCommand,
 } from 'pages/CommandView'
-import { createContext, Dispatch, SetStateAction, useState } from 'react'
+import {
+  createContext,
+  createRef,
+  Dispatch,
+  SetStateAction,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job, Request, RequestTemplate } from 'types/backend-types'
 import {
@@ -38,6 +44,8 @@ interface CommandViewFormProps {
   initialModel: CommandViewModel
   command: AugmentedCommand
   isJob: boolean
+  isReplay: boolean
+  jobId?: string
   validator: <T extends Record<string, unknown>>(
     formData: T,
     errors: FormValidation,
@@ -62,6 +70,8 @@ const CommandViewForm = ({
   initialModel,
   command,
   isJob,
+  isReplay,
+  jobId,
   validator,
 }: CommandViewFormProps) => {
   const [submitStatus, setSubmitStatus] = useState<SnackbarState | undefined>(
@@ -140,6 +150,8 @@ const CommandViewForm = ({
         argumentToSubmit,
         command.parameters,
         isJob,
+        isReplay,
+        jobId,
       )
     } catch (error) {
       raiseError(String(error))
@@ -175,26 +187,70 @@ const CommandViewForm = ({
           raiseError(error.toJSON())
         })
     } else {
-      const path = isJob ? '/api/v1/jobs' : '/api/v1/requests'
-
-      execute({
-        url: path,
-        method: 'post',
-        data: payload,
-        withCredentials: authEnabled,
-      })
-        .then((response: AxiosResponse<Request | Job>) => {
-          navigate(forwardPath + response.data.id)
+      if (isJob) {
+        const path = '/api/v1/jobs'
+        if (isReplay) {
+          // updating a Job is a 'patch'
+          execute({
+            url: path + '/' + jobId,
+            method: 'patch',
+            data: {
+              operations: [
+                {
+                  operation: 'update',
+                  path: '/job',
+                  value: payload,
+                },
+              ],
+            },
+          })
+            .then(() => {
+              navigate(forwardPath + jobId)
+            })
+            .catch((error) => {
+              raiseError(error.toJSON())
+            })
+        } else {
+          execute({
+            url: path,
+            method: 'post',
+            data: payload,
+            withCredentials: authEnabled,
+          })
+            .then((response: AxiosResponse<Request | Job>) => {
+              navigate(forwardPath + response.data.id)
+            })
+            .catch((error) => {
+              raiseError(error.toJSON())
+            })
+        }
+      } else {
+        execute({
+          url: '/api/v1/requests',
+          method: 'post',
+          data: payload,
+          withCredentials: authEnabled,
         })
-        .catch((error) => {
-          raiseError(error.toJSON())
-        })
+          .then((response: AxiosResponse<Request | Job>) => {
+            navigate(forwardPath + response.data.id)
+          })
+          .catch((error) => {
+            raiseError(error.toJSON())
+          })
+      }
     }
   }
 
   const widgets = {
     FileWidget: CustomFileWidget,
   }
+
+  const submitFormRef = createRef<HTMLButtonElement>()
+  const submitFormButtonText = isJob
+    ? isReplay
+      ? 'Update'
+      : 'Schedule'
+    : 'Execute'
 
   return (
     <Box p={2} display="flex" alignItems="flex-start">
@@ -214,7 +270,12 @@ const CommandViewForm = ({
           >
             <ButtonGroup variant="contained" size="large">
               <Button onClick={onResetForm}>Reset</Button>
-              <Button type="submit">{isJob ? 'Schedule' : 'Execute'}</Button>
+              <Button
+                type="submit"
+                onClick={() => submitFormRef.current?.click()}
+              >
+                {submitFormButtonText}
+              </Button>
             </ButtonGroup>
           </Form>
         </BytesParameterContext.Provider>

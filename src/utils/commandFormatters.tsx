@@ -116,4 +116,9 @@ const commandsFromSystems = (
   return systemCommandPairs.map(commandMapper)
 }
 
-export { commandsFromSystems, commandsPairer }
+const systemFilter = (name: string, version: string, namespace: string) => {
+  return (s: System) =>
+    s.name === name && s.version === version && s.namespace === namespace
+}
+
+export { commandsFromSystems, commandsPairer, systemFilter }

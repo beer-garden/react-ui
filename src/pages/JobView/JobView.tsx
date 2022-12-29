@@ -18,6 +18,7 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
+import { UpdateJobButton } from 'pages/JobView/UpdateJobButton'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
@@ -37,7 +38,7 @@ const JobView = () => {
   const [showTrigger, setShowTrigger] = useState(true)
   const [showTemplate, setShowTemplate] = useState(true)
   const [permission, setPermission] = useState(false)
-  const { setIsJob, setJob } = useJobRequestCreation()
+  const { setJob } = useJobRequestCreation()
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
   const { getJob, deleteJob, pauseJob, resumeJob, runAdHoc } = useJobs()
@@ -127,20 +128,8 @@ const JobView = () => {
   return (
     <>
       {job && permission && (
-        <Stack direction="row" spacing={2} sx={{ float: 'right' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setIsJob && setIsJob(true)
-              navigate(
-                `/jobs/${job.request_template.namespace}/${job.request_template.system}` +
-                  `/${job.request_template.system_version}/${job.name}`,
-              )
-            }}
-          >
-            Update Job
-          </Button>
+        <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
+          <UpdateJobButton job={job} />
           {job.status === 'RUNNING' ? (
             <Button
               variant="contained"
