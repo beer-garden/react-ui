@@ -65,7 +65,10 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
         garden: garden.name,
         sync:
           garden.syncStatus === 'IN_PROGRESS' ? (
-            <CircularProgress color="inherit" />
+            <CircularProgress
+              color="inherit"
+              aria-label="Sync status in progress"
+            />
           ) : (
             <Typography>{garden.syncStatus}</Typography>
           ),

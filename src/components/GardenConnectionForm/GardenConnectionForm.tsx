@@ -46,7 +46,7 @@ const GardenConnectionForm = ({
       >
         <Form>
           <fieldset disabled={!hasPermission('garden:update')}>
-            <Typography variant="h6">{title}</Typography>
+            <Typography variant="h3">{title}</Typography>
             {includeGardenName ? <GardenName /> : null}
             <ConnectionMethod />
             <Divider sx={{ mt: 2, mb: 1 }} />
@@ -57,7 +57,7 @@ const GardenConnectionForm = ({
             </Box>
             {hasPermission('garden:update') && (
               <Button
-                color="secondary"
+                color="primary"
                 variant="contained"
                 fullWidth
                 type="submit"

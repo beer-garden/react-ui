@@ -49,7 +49,7 @@ export const GardenSyncTable = ({ syncObj }: { syncObj: SyncStatus }) => {
 
   return (
     <>
-      <Typography variant="h6">Sync Status</Typography>
+      <Typography variant="h3">Sync Status</Typography>
       <Table
         tableName="Sync Status"
         tableKey="UserSync"

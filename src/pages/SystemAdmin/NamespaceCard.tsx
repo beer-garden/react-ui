@@ -111,7 +111,7 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
             onClick={handleExpandClick}
             title="Click to collapse"
           >
-            <Typography variant="h6" color="common.white" p={0.25}>
+            <Typography variant="h3" color="common.white" p={0.25}>
               {namespace}
             </Typography>
           </Alert>

@@ -202,85 +202,84 @@ const JobView = () => {
         </Stack>
       )}
       {job ? (
-          <>
-      <PageHeader title="Job" description={description} />
-      <Divider />
-      <Stack direction="column" spacing={2}>
-        <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, 280px)',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 2,
-              }}
-            >
-              <LabeledData label="Name" data={job.name} />
-              <LabeledData
-                label="Command"
-                data={job.request_template.command}
-              />
-              <LabeledData
-                label="System"
-                data={job.request_template.system}
-                link={getUrl}
-              />
-              <LabeledData
-                label="System Version"
-                data={job.request_template.system_version}
-                link={`${getUrl}/${job.request_template.system_version}`}
-              />
-              <LabeledData
-                label="Instance Name"
-                data={job.request_template.instance_name}
-              />
-              <LabeledData label="Status" data={job.status} />
-              <LabeledData label="Success Count" data={job.success_count} />
-              <LabeledData label="Error Count" data={job.error_count} />
-              {job.next_run_time && (
+        <>
+          <PageHeader title="Job" description={description} />
+          <Divider />
+          <Stack direction="column" spacing={2}>
+            <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, 280px)',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 2,
+                }}
+              >
+                <LabeledData label="Name" data={job.name} />
                 <LabeledData
-                  label="Next Run Time"
-                  data={dateFormatted(new Date(job.next_run_time))}
+                  label="Command"
+                  data={job.request_template.command}
+                />
+                <LabeledData
+                  label="System"
+                  data={job.request_template.system}
+                  link={getUrl}
+                />
+                <LabeledData
+                  label="System Version"
+                  data={job.request_template.system_version}
+                  link={`${getUrl}/${job.request_template.system_version}`}
+                />
+                <LabeledData
+                  label="Instance Name"
+                  data={job.request_template.instance_name}
+                />
+                <LabeledData label="Status" data={job.status} />
+                <LabeledData label="Success Count" data={job.success_count} />
+                <LabeledData label="Error Count" data={job.error_count} />
+                {job.next_run_time && (
+                  <LabeledData
+                    label="Next Run Time"
+                    data={dateFormatted(new Date(job.next_run_time))}
+                  />
+                )}
+              </Box>
+            </Paper>
+            <Stack direction="row" spacing={2}>
+              {showTrigger && (
+                <JsonCard
+                  title="Trigger"
+                  collapseHandler={() => {
+                    setShowTemplate(!showTemplate)
+                  }}
+                  data={job?.trigger}
+                  iconTrigger={showTrigger && showTemplate}
                 />
               )}
-            </Box>
-        </Paper>
-        <Stack direction="row" spacing={2}>
-          {showTrigger && (
-            <JsonCard
-              title="Trigger"
-              collapseHandler={() => {
-                setShowTemplate(!showTemplate)
-              }}
-              data={job?.trigger}
-              iconTrigger={showTrigger && showTemplate}
-            />
-          )}
-          {showTemplate && (
-            <JsonCard
-              title="Request Template"
-              collapseHandler={() => {
-                setShowTrigger(!showTrigger)
-              }}
-              data={job?.request_template}
-              iconTrigger={showTrigger && showTemplate}
-            />
-          )}
-        </Stack>
-
-      </Stack>
-          </>
+              {showTemplate && (
+                <JsonCard
+                  title="Request Template"
+                  collapseHandler={() => {
+                    setShowTrigger(!showTrigger)
+                  }}
+                  data={job?.request_template}
+                  iconTrigger={showTrigger && showTemplate}
+                />
+              )}
+            </Stack>
+          </Stack>
+        </>
       ) : errorFetch?.response ? (
-          <ErrorAlert
-              specific="job"
-              statusCode={errorFetch.response?.status}
-              errorMsg={errorFetch.response.statusText}
-          />
+        <ErrorAlert
+          specific="job"
+          statusCode={errorFetch.response?.status}
+          errorMsg={errorFetch.response.statusText}
+        />
       ) : (
-          <Backdrop title="loading circle" open={true}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
+        <Backdrop title="loading circle" open={true}>
+          <CircularProgress color="inherit" aria-label="Job data loading" />
+        </Backdrop>
       )}
       <ModalWrapper
         open={runOpen}

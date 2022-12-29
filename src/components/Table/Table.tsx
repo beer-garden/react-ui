@@ -284,6 +284,7 @@ const Table = <T extends ObjectWithStringKeys>(
           })}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
+          {/* Filter row */}
           {!showGlobalFilter
             ? headerGroups.map((headerGroup) => {
                 const {
@@ -301,11 +302,11 @@ const Table = <T extends ObjectWithStringKeys>(
                           ...headerProps
                         } = column.getHeaderProps(columnStyle)
                         return (
-                          <TableHeadCell key={headerKey} {...headerProps}>
+                          <TableCell key={headerKey} {...headerProps}>
                             {column.canFilter && (
                               <InlineFilter column={column} />
                             )}
-                          </TableHeadCell>
+                          </TableCell>
                         )
                       })}
                     </>
@@ -320,7 +321,6 @@ const Table = <T extends ObjectWithStringKeys>(
               role: rowRole,
               ...rowProps
             } = row.getRowProps()
-
             return (
               <TableRow key={rowKey} {...rowProps}>
                 {row.cells.map((cell) => {

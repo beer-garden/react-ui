@@ -70,7 +70,7 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h1" sx={{ flexGrow: 1 }}>
             Beer Garden
           </Typography>
           {authEnabled && user && (

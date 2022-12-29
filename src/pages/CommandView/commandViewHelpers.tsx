@@ -27,7 +27,10 @@ const Navigator = ({ message, link }: NavigatorProps) => {
   return (
     <Box>
       <Typography>ERROR</Typography>
-      <Button onClick={() => navigate(link, { replace: true })}>
+      <Button
+        color="secondary"
+        onClick={() => navigate(link, { replace: true })}
+      >
         {message}
       </Button>
     </Box>

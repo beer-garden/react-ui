@@ -52,7 +52,7 @@ const JobCreate = () => {
       />
     ) : (
       <Backdrop open={true}>
-        <CircularProgress color="inherit" />
+        <CircularProgress color="inherit" aria-label="Job data loading" />
       </Backdrop>
     )
   ) : !system ? (

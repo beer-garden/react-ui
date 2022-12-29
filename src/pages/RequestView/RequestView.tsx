@@ -99,7 +99,7 @@ const RequestView = () => {
     />
   ) : (
     <Backdrop title={'dataLoading'} open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="Request data loading" />
     </Backdrop>
   )
 }

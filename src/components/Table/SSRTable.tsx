@@ -401,12 +401,13 @@ const SSRTable = <
           <TableBody>
             <TableRow>
               <TableCell>
-                <CircularProgress />
+                <CircularProgress aria-label="Table data loading" />
               </TableCell>
             </TableRow>
           </TableBody>
         ) : (
           <TableBody {...getTableBodyProps()}>
+            {/* Filter row */}
             {!showGlobalFilter
               ? headerGroups.map((headerGroup) => {
                   const {
@@ -427,14 +428,14 @@ const SSRTable = <
                             ...headerProps
                           } = column.getHeaderProps(columnStyle)
                           return (
-                            <TableHeadCell
+                            <TableCell
                               key={headerKey + 'Filter'}
                               {...headerProps}
                             >
                               {column.canFilter && (
                                 <InlineFilter column={column} />
                               )}
-                            </TableHeadCell>
+                            </TableCell>
                           )
                         })}
                       </>

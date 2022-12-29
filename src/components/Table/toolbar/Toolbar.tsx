@@ -40,6 +40,7 @@ const SmallIconActionButton = ({
     <Tooltip title={label} aria-label={label}>
       <span>
         <IconButton
+          aria-label={label}
           onClick={onClick}
           disabled={!enabled}
           sx={{

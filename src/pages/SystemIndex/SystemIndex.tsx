@@ -52,7 +52,7 @@ const SystemsIndex = () => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="System data loading" />
     </Backdrop>
   )
 }

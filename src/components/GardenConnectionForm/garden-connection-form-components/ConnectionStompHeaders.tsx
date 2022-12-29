@@ -74,7 +74,7 @@ const ConnectionStompHeaders = () => {
               {hasPermission('garden:update') && (
                 <Button
                   type="button"
-                  color="secondary"
+                  color="primary"
                   onClick={() => {
                     push({ id: nanoid(), key: '', value: '' })
                   }}

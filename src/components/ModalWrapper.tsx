@@ -52,7 +52,11 @@ export const ModalWrapper = (props: ModalProps) => {
         sx={{ top: styleOverrides?.top || '0%' }}
         PaperProps={{ style: { maxHeight: '90%' } }}
       >
-        <DialogTitle>{props.header}</DialogTitle>
+        <DialogTitle
+          sx={{ backgroundColor: 'primary.main', color: 'white' }}
+        >
+          {props.header}
+        </DialogTitle>
         <DialogContent dividers>{props.content}</DialogContent>
         <DialogActions>
           {customButton && <ModalButton {...customButton} />}

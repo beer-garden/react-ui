@@ -1,5 +1,5 @@
+import { LinkButton } from 'components/LinkButton'
 import { DefaultCellRenderer } from 'components/Table/defaults'
-import { ExploreButton } from 'pages/SystemIndex'
 import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/backend-types'
@@ -15,6 +15,13 @@ type SystemIndexTableData = {
 }
 
 const systemMapper = (system: System): SystemIndexTableData => {
+  const linkTo = [
+    '/systems',
+    system.namespace,
+    system.name,
+    system.version,
+  ].join('/')
+
   return {
     namespace: system.namespace,
     name: system.name,
@@ -22,7 +29,7 @@ const systemMapper = (system: System): SystemIndexTableData => {
     description: system.description,
     commandCount: system.commands.length,
     instanceCount: system.instances.length,
-    exploreButton: ExploreButton(system),
+    exploreButton: LinkButton('Explore', linkTo),
   }
 }
 
@@ -84,7 +91,7 @@ const useSystemIndexTableColumns = () => {
         disableFilters: true,
       },
       {
-        Header: '',
+        Header: 'Action',
         Cell: DefaultCellRenderer,
         accessor: 'exploreButton',
         disableSortBy: true,

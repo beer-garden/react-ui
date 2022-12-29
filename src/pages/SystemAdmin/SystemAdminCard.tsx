@@ -184,7 +184,6 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
                 variant="body2"
                 color="textSecondary"
                 gutterBottom={false}
-                sx={{ fontSize: '13px' }}
               >
                 {systems[systemIndex].description}
               </Typography>

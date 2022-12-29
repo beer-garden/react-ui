@@ -9,7 +9,7 @@ interface GardenInfoCardProps {
 const GardenAdminInfoCard = ({ garden }: GardenInfoCardProps) => {
   return (
     <>
-      <Typography variant="h6" color="inherit">
+      <Typography variant="h3" color="inherit">
         Garden Info
       </Typography>
       <Box

@@ -9,7 +9,7 @@ const ConnectionFormHeading = ({
   labelText,
   sx,
 }: ConnectionHeadingPropsType) => (
-  <Typography variant="subtitle1" sx={{ ...sx }}>
+  <Typography variant="h4" sx={{ ...sx }}>
     {labelText}
   </Typography>
 )

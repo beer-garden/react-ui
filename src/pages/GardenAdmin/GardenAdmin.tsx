@@ -83,7 +83,7 @@ const GardenAdmin = (): JSX.Element => {
     />
   ) : (
     <Backdrop open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" aria-label="Garden data loading" />
     </Backdrop>
   )
 }

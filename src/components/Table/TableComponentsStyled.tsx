@@ -63,7 +63,7 @@ const TableHeadCell = ({ children, ...rest }: TableProps) => {
       {...rest}
       sx={{
         padding: '16px 1px 16px 16px',
-        fontSize: '0.875rem',
+        fontSize: '1.125rem',
         textAlign: 'left',
         verticalAlign: 'inherit',
         color: theme.palette.text.primary,

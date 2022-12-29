@@ -215,7 +215,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
           Download Logs
         </LoadingButton>
         {isLoading ? (
-          <CircularProgress color="inherit" />
+          <CircularProgress color="inherit" aria-label="Log data loading" />
         ) : (
           <Typography style={{ whiteSpace: 'pre-line' }}>
             {displayLogs.split('<br/>').join('\n')}

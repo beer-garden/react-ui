@@ -61,7 +61,7 @@ const GardenAdminCard = ({
     <Card sx={{ minWidth: 275 }}>
       <AppBar color="inherit" position="static">
         <Toolbar>
-          <Typography variant="h6" color="inherit">
+          <Typography variant="h3" color="inherit">
             {garden.name}{' '}
             {garden.connection_type === 'LOCAL' ? '(LOCAL)' : '(REMOTE)'}
           </Typography>
@@ -86,7 +86,7 @@ const GardenAdminCard = ({
         {hasGardenPermission('garden:update', garden) && (
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             component={RouterLink}
             to={'/admin/gardens/' + garden.name}
             sx={{ width: 0.75, mr: 1 }}
