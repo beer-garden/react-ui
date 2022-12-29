@@ -35,8 +35,8 @@ describe('Permissions Container', () => {
     })
     expect(consoleSpy).toHaveBeenCalledWith('Setting user perms', undefined)
     expect(consoleSpy).toHaveBeenCalledWith('authEnabled', false)
-    expect(consoleSpy).toHaveBeenCalledWith('globalPerms', [])
-    expect(consoleSpy).toHaveBeenCalledWith('domainPerms', {})
+    expect(consoleSpy).toHaveBeenCalledWith('globalPerms', undefined)
+    expect(consoleSpy).toHaveBeenCalledWith('domainPerms', undefined)
   })
 
   test('no logs if disabled', async () => {

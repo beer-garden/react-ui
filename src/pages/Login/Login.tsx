@@ -28,7 +28,7 @@ const Login = () => {
   const navigate = useNavigate()
 
   const from: string =
-    state instanceof Object && 'from' in state ? state['from'] : '/jobs'
+    state instanceof Object && 'from' in state ? state['from'] : '/systems'
   const nextPage = () => {
     navigate(from, { replace: true })
   }

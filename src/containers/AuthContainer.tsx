@@ -3,7 +3,7 @@ import { SocketContainer } from 'containers/SocketContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
 import { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import { createContainer } from 'unstated-next'
 
@@ -62,11 +62,12 @@ const useAuth = () => {
     )
   }, [clearToken, isAuthenticated, onTokenRefreshRequired, setUser])
 
+  const { pathname } = useLocation()
   const logout = useCallback(() => {
     clearToken()
     setUser(null)
-    navigate('/login')
-  }, [clearToken, setUser, navigate])
+    navigate(pathname)
+  }, [clearToken, setUser, navigate, pathname])
 
   const login = useCallback(
     async (username: string, password: string) => {
