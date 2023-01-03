@@ -1,16 +1,17 @@
 import { Button, Tooltip } from '@mui/material'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { useSystems } from 'hooks/useSystems'
-import {
-  MouseEventHandler,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import { MouseEventHandler, useContext, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Job } from 'types/backend-types'
+import {
+  CronTrigger,
+  DateTrigger,
+  FileTrigger,
+  IntervalTrigger,
+  Job,
+  TriggerType,
+} from 'types/backend-types'
+import { ObjectWithStringKeys } from 'types/custom-types'
 import { CommandViewJobModel } from 'types/form-model-types'
 import { commandsPairer, systemFilter } from 'utils/commandFormatters'
 
@@ -18,10 +19,46 @@ interface UpdateJobButtonProps {
   job: Job
 }
 
+const formatTrigger = (
+  type: TriggerType,
+  trigger: CronTrigger | DateTrigger | IntervalTrigger | FileTrigger,
+): ObjectWithStringKeys => {
+  let fixedTrigger = trigger as unknown as ObjectWithStringKeys
+
+  if (type === 'interval') {
+    const { start_date, end_date, ...rest } = trigger as IntervalTrigger
+    fixedTrigger = {
+      ...rest,
+      interval_start_date: new Date(start_date).toISOString(),
+      interval_end_date: new Date(end_date).toISOString(),
+    }
+  } else if (type === 'cron') {
+    const { start_date, end_date, ...rest } = trigger as CronTrigger
+    fixedTrigger = {
+      ...rest,
+      ...(start_date
+        ? { cron_start_date: new Date(start_date).toISOString() }
+        : null),
+      ...(end_date
+        ? { cron_end_date: new Date(end_date).toISOString() }
+        : null),
+    }
+  } else {
+    fixedTrigger = {
+      ...fixedTrigger,
+      run_date: new Date(
+        (trigger as DateTrigger).run_date as number,
+      ).toISOString(),
+    }
+  }
+
+  return fixedTrigger
+}
+
 const extractRequestModel = (job: Job): CommandViewJobModel => {
   return {
     comment: { comment: job.request_template.comment || '' },
-    instance_names: { instance_name: '' },
+    instance_names: { instance_name: job.request_template.instance_name },
     parameters: {},
     job: {
       coalesce: job.coalesce,
@@ -30,7 +67,7 @@ const extractRequestModel = (job: Job): CommandViewJobModel => {
       name: job.name,
       timeout: job.timeout ?? undefined,
       trigger: job.trigger_type,
-      ...job.trigger,
+      ...formatTrigger(job.trigger_type, job.trigger),
     },
   }
 }
