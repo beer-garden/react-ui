@@ -97,23 +97,33 @@ const CommandIndex = () => {
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
-      <Table tableKey={tableKey} data={commands} columns={columns}>
-        <Box mb={2}>
-          <Breadcrumbs breadcrumbs={breadcrumbs} />
-          <FormControlLabel
-            label="Include hidden"
-            control={
-              <Checkbox
-                checked={includeHidden}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  setIncludeHidden(event.target.checked)
-                }}
-                color="secondary"
-              />
-            }
-          />
-        </Box>
-      </Table>
+      {commands.length > 0 ? (
+        <Table tableKey={tableKey} data={commands} columns={columns}>
+          <Box mb={2}>
+            <Breadcrumbs breadcrumbs={breadcrumbs} />
+            <FormControlLabel
+              label="Include hidden"
+              control={
+                <Checkbox
+                  checked={includeHidden}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                    setIncludeHidden(event.target.checked)
+                  }}
+                  color="secondary"
+                />
+              }
+            />
+          </Box>
+        </Table>
+      ) : (
+        <ErrorAlert
+          statusCode={204}
+          errorMsg={
+            `No commands found for ${systemName} system in ${namespace} namespace` +
+            (version ? ` for version ${version}.` : '.')
+          }
+        />
+      )}
       {alert ? <Snackbar status={alert} /> : null}
     </Box>
   ) : error.response ? (
