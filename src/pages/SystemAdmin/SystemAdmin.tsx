@@ -13,6 +13,8 @@ import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
 import { createContext, useEffect, useState } from 'react'
 
+import { UnassociatedRunnersCard } from './unassociatedRunners'
+
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   if (!namespacesSelected.length) {
     return <Alert severity="info">Please select a namespace</Alert>
@@ -120,6 +122,7 @@ const SystemAdmin = () => {
         styleOverrides={{ size: 'sm', top: '-55%' }}
       />
       <Divider />
+      <UnassociatedRunnersCard />
       {namespacesSelected.map((namespace: string) => (
         <NamespaceCard namespace={namespace} key={namespace + 'card'} />
       ))}
