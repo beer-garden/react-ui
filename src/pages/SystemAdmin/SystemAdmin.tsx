@@ -11,9 +11,8 @@ import { useNamespace } from 'hooks/useNamespace'
 import useQueue from 'hooks/useQueue'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
+import { UnassociatedRunnersCard } from 'pages/SystemAdmin/UnassociatedRunners'
 import { createContext, useEffect, useState } from 'react'
-
-import { UnassociatedRunnersCard } from './unassociatedRunners'
 
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   if (!namespacesSelected.length) {

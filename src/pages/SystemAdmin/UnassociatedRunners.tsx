@@ -114,7 +114,7 @@ const UnassociatedRunnersCard = () => {
           title="Click to collapse"
         >
           <Typography variant="h6" color="common.white" p={0.25}>
-            Unnassociated Local Runners
+            Unassociated Local Runners
           </Typography>
         </Alert>
         <Collapse in={expanded} timeout="auto" unmountOnExit>

@@ -5,6 +5,7 @@ import {
   TBlockedCommand,
   TBlocklist,
   TInstance,
+  TRunner,
   TSystem,
 } from 'test/system-test-values'
 import * as mockData from 'test/test-values'
@@ -38,6 +39,7 @@ mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
 mock.onGet(regexLogs).reply(200, mockData.TLog, { request_id: 'fetchedLog' })
 mock.onGet(regexQueues).reply(200, [mockData.TQueue])
 mock.onGet('/api/v1/instances/testinst').reply(200, TInstance)
+mock.onGet('/api/vbeta/runners').reply(200, [TRunner])
 
 // Fail GET
 mock
@@ -68,6 +70,7 @@ mock
     return [200, Object.assign({}, mockData.TJob, { status: 'PAUSED' })]
   })
 mock.onPatch('/api/v1/systems/testsys').reply(200, '')
+mock.onPatch('/api/vbeta/runners').reply(200, [TRunner])
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')
@@ -76,6 +79,7 @@ mock.onDelete('/api/v1/systems/testsys').reply(204)
 mock
   .onDelete(`/api/v1/commandpublishingblocklist/${TBlockedCommand.id}`)
   .reply(204, TBlockedCommand)
+mock.onDelete(`/api/vbeta/runners/${TRunner.id}`).reply(200, TRunner)
 
 // default
 mock.onAny().reply(200, 'undefined axios mock - add to axios-mock.ts')

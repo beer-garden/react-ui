@@ -4,6 +4,7 @@ import {
   Command,
   Instance,
   Parameter,
+  Runner,
   System,
 } from 'types/backend-types'
 
@@ -124,4 +125,24 @@ export const TSystemCommand3 = {
   description: TCommand3.description,
   executeButton: expect.any(Object),
   isHidden: TCommand3.hidden,
+}
+
+export const TRunner: Runner = {
+  name: TSystem.name,
+  id: 'alive runner',
+  path: TSystem.name,
+  instance_id: 'instance id',
+  stopped: false,
+  dead: false,
+  restart: true,
+}
+
+export const TRunner2: Runner = {
+  name: TSystem2.name,
+  id: 'dead runner',
+  path: TSystem2.name,
+  instance_id: '',
+  stopped: false,
+  dead: true,
+  restart: false,
 }
