@@ -164,9 +164,8 @@ describe('CommandIndex', () => {
         </AllProviders>,
       )
       await waitFor(() => {
-        expect(screen.getByText('Commands')).toBeInTheDocument()
+        expect(screen.getByText('Error: 400')).toBeInTheDocument()
       })
-      expect(screen.getByText('Error: 400')).toBeInTheDocument()
       expect(
         screen.queryByText(new RegExp(TSystem.commands[0].name)),
       ).not.toBeInTheDocument()

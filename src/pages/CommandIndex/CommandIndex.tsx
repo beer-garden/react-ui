@@ -9,7 +9,6 @@ import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
-import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useSystems } from 'hooks/useSystems'
@@ -17,11 +16,7 @@ import { useCommandIndexTableColumns } from 'pages/CommandIndex'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { System } from 'types/backend-types'
-import {
-  CommandIndexTableData,
-  ObjectWithStringKeys,
-  SnackbarState,
-} from 'types/custom-types'
+import { CommandIndexTableData, ObjectWithStringKeys } from 'types/custom-types'
 import { commandsFromSystems } from 'utils/commandFormatters'
 
 interface IParam extends ObjectWithStringKeys {
@@ -36,7 +31,6 @@ const CommandIndex = () => {
   const [loading, setLoading] = useState(true)
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
-  const [alert, setAlert] = useState<SnackbarState>()
   const { error, getSystems } = useSystems()
   const { namespace, systemName, version } = useParams() as IParam
 
@@ -72,12 +66,7 @@ const CommandIndex = () => {
         }
       })
       .catch((e) => {
-        if (mounted)
-          setAlert({
-            severity: 'error',
-            message: e.response?.data.message || e,
-            doNotAutoDismiss: true,
-          })
+        if (mounted) setLoading(false)
       })
     return () => {
       mounted = false
@@ -126,7 +115,6 @@ const CommandIndex = () => {
           }
         />
       )}
-      {alert ? <Snackbar status={alert} /> : null}
     </Box>
   ) : error && error.response ? (
     <ErrorAlert
