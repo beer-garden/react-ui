@@ -8,7 +8,7 @@ import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
-import { DropzoneArea } from 'material-ui-dropzone'
+import { DropzoneArea } from 'mui-file-dropzone'
 import { JobTableData, useJobColumns } from 'pages/JobIndex'
 import { useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -179,6 +179,7 @@ const JobIndex = () => {
         styleOverrides={{ size: 'sm', top: '-55%' }}
         content={
           <DropzoneArea
+            fileObjects={fileList}
             useChipsForPreview
             acceptedFiles={['text/plain', 'application/json']}
             showAlerts={false}
