@@ -33,6 +33,7 @@ interface IParam extends ObjectWithStringKeys {
 const CommandIndex = () => {
   const { hasSystemPermission } = PermissionsContainer.useContainer()
   const [permission, setPermission] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
   const [alert, setAlert] = useState<SnackbarState>()
@@ -67,6 +68,7 @@ const CommandIndex = () => {
             }
             fetchPermission()
           }
+          setLoading(false)
         }
       })
       .catch((e) => {
@@ -93,7 +95,7 @@ const CommandIndex = () => {
   if (systemName) tableKey = systemName + tableKey
   if (namespace) tableKey = namespace + tableKey
 
-  return !error ? (
+  return !loading && !error ? (
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
@@ -126,7 +128,7 @@ const CommandIndex = () => {
       )}
       {alert ? <Snackbar status={alert} /> : null}
     </Box>
-  ) : error.response ? (
+  ) : error && error.response ? (
     <ErrorAlert
       statusCode={error.response.status}
       errorMsg={error.response.statusText}
