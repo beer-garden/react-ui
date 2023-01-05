@@ -63,7 +63,9 @@ const Login = () => {
           <Stack spacing={2}>
             <LoginTextField id="username" label="Username" type="text" />
             <LoginTextField id="password" label="Password" type="password" />
-            <Button type="submit">Submit</Button>
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
           </Stack>
         </Form>
       </Formik>
