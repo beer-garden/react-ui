@@ -19,6 +19,8 @@ interface UpdateJobButtonProps {
   job: Job
 }
 
+/* From a backend Trigger definition, format it in a way that it displays
+ * correctly in the frontend form. */
 const formatTrigger = (
   type: TriggerType,
   trigger: CronTrigger | DateTrigger | IntervalTrigger | FileTrigger,
@@ -55,6 +57,8 @@ const formatTrigger = (
   return fixedTrigger
 }
 
+/* From a backend Job definition, format it in a way that it displays
+ * correctly in the frontend form. */
 const extractRequestModel = (job: Job): CommandViewJobModel => {
   return {
     comment: { comment: job.request_template.comment || '' },

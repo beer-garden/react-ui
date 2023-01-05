@@ -204,6 +204,7 @@ describe('CommandIndex', () => {
       isPermissionsSet: jest.fn(),
       hasSystemPermission: () => Promise.resolve(true),
     })
+
     jest.spyOn(Router, 'useParams').mockReturnValue({
       systemName: TSystem.name,
       namespace: TSystem.namespace,
