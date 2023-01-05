@@ -192,6 +192,16 @@ export interface System {
   metadata?: ObjectWithStringKeys | EmptyObject
 }
 
+export interface Runner {
+  name: string
+  id: string
+  path: string
+  instance_id: string
+  stopped: boolean
+  dead: boolean
+  restart: boolean
+}
+
 export type TriggerType = 'cron' | 'interval' | 'date'
 
 export interface CronTrigger {

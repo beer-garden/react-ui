@@ -11,6 +11,7 @@ import { useNamespace } from 'hooks/useNamespace'
 import useQueue from 'hooks/useQueue'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
+import { UnassociatedRunnersCard } from 'pages/SystemAdmin/UnassociatedRunners'
 import { createContext, useEffect, useState } from 'react'
 
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
@@ -120,6 +121,7 @@ const SystemAdmin = () => {
         styleOverrides={{ size: 'sm', top: '-55%' }}
       />
       <Divider />
+      <UnassociatedRunnersCard />
       {namespacesSelected.map((namespace: string) => (
         <NamespaceCard namespace={namespace} key={namespace + 'card'} />
       ))}
