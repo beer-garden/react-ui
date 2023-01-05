@@ -126,7 +126,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
       {request.children[0] ? (
         <>
           <MyDivider />
-          <Typography variant="h6">
+          <Typography variant="h3">
             <IconButton
               onClick={() => {
                 setShowChildren(!showChildren)
