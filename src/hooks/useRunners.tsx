@@ -19,7 +19,7 @@ const useRunners = () => {
     return execute(config)
   }
 
-  const reloadRunner = (path: string) => {
+  const reloadRunner = (path: string): AxiosPromise<Runner[]> => {
     const config: AxiosRequestConfig = {
       url: '/api/vbeta/runners',
       method: 'patch',
@@ -30,7 +30,7 @@ const useRunners = () => {
     return execute(config)
   }
 
-  const stopRunner = (runnerId: string) => {
+  const stopRunner = (runnerId: string): AxiosPromise<Runner> => {
     const config: AxiosRequestConfig = {
       url: `/api/vbeta/runners/${runnerId}`,
       method: 'patch',
@@ -41,7 +41,7 @@ const useRunners = () => {
     return execute(config)
   }
 
-  const startRunner = (runnerId: string) => {
+  const startRunner = (runnerId: string): AxiosPromise<Runner> => {
     const config: AxiosRequestConfig = {
       url: `/api/vbeta/runners/${runnerId}`,
       method: 'patch',
@@ -52,7 +52,7 @@ const useRunners = () => {
     return execute(config)
   }
 
-  const deleteRunner = (runnerId: string) => {
+  const deleteRunner = (runnerId: string): AxiosPromise<Runner> => {
     const config: AxiosRequestConfig = {
       url: `/api/vbeta/runners/${runnerId}`,
       method: 'delete',

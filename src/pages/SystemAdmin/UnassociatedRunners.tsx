@@ -51,27 +51,7 @@ const UnassociatedRunnersCard = () => {
   }
 
   useEffect(() => {
-    let mounted = true
-    getRunners()
-      .then((response) => {
-        if (mounted) {
-          setUnassociatedRunners(
-            response.data.filter((element: Runner) => {
-              return element.instance_id === ''
-            }),
-          )
-        }
-      })
-      .catch((e) => {
-        setAlert({
-          severity: 'error',
-          message: e,
-          doNotAutoDismiss: true,
-        })
-      })
-    return () => {
-      mounted = false
-    }
+    updateRunners()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -86,7 +66,7 @@ const UnassociatedRunnersCard = () => {
       }
     })
     return () => {
-      removeCallback('system_updates')
+      removeCallback('runner_updates')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addCallback, removeCallback])
@@ -113,7 +93,7 @@ const UnassociatedRunnersCard = () => {
           onClick={() => setExpanded(!expanded)}
           title="Click to collapse"
         >
-          <Typography variant="h6" color="common.white" p={0.25}>
+          <Typography variant="h3" color="common.white" p={0.25}>
             Unassociated Local Runners
           </Typography>
         </Alert>
@@ -132,7 +112,7 @@ const UnassociatedRunnersCard = () => {
                       severity="error"
                       title={path}
                     >
-                      <Typography variant="h6" color="common.white" p={0.25}>
+                      <Typography variant="h3" color="common.white" p={0.25}>
                         {path}
                       </Typography>
                     </Alert>
