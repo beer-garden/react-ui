@@ -35,6 +35,7 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
   return (
     <Tooltip title={props.tooltip} disableHoverListener={!isOverflowed}>
       <Box
+        color={props.color}
         sx={{
           ...props.css,
           textOverflow: 'ellipsis',
@@ -48,7 +49,6 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
               variant={props.variant}
               component={'span'}
               ref={textElementRef}
-              color={props.color}
             >
               {props.text}
             </Typography>
@@ -58,7 +58,6 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
             variant={props.variant}
             component={'span'}
             ref={textElementRef}
-            color={props.color}
           >
             {props.text}
           </Typography>
