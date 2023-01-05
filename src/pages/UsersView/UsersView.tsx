@@ -194,6 +194,7 @@ export const UsersView = () => {
                 setRoles(newRoles)
               }}
               role={role}
+              roleKey={`role${index}`}
               setAlert={setAlert}
             />
           )
