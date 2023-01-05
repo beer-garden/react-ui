@@ -344,6 +344,7 @@ export const dynamicUrlWithSingleParameter: Command = {
         display: 'select',
         strict: true,
         type: 'url',
+        //eslint-disable-next-line no-template-curly-in-string
         value: 'http://example.com/api?file=${file}',
         details: {
           address: 'http://example.com/api',
