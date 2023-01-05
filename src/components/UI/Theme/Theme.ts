@@ -111,7 +111,6 @@ function getTheme(themeName: SupportedColorScheme) {
             active: dtext,
             hover: d4,
             disabled: d5,
-            focus: dtext,
           },
         },
       },

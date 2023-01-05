@@ -102,7 +102,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
       style={{ float: 'right' }}
       onClick={onClick}
     >
-      {'Remake Request'}
+      Remake Request
     </Button>
   )
 }
