@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid/non-secure'
-import { GardenConnectionParameters } from 'pages/GardenAdminView'
+import { GardenConnectionParameters } from 'types/garden-admin-view-types'
 import * as Yup from 'yup'
 
 /**

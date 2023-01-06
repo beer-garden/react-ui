@@ -1,7 +1,7 @@
 import { TextField, Tooltip } from '@mui/material'
-import { ConnectionFormFields } from 'components/GardenConnectionForm'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useFormikContext } from 'formik'
+import { ConnectionFormFields } from 'types/garden-connection-form-types'
 
 export type ConnectionTextFieldPropsType = {
   id: string
