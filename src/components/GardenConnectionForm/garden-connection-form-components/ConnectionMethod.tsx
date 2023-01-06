@@ -1,7 +1,7 @@
 import { Box, MenuItem, Stack, TextField } from '@mui/material'
+import { ConnectionFormFields } from 'components/GardenConnectionForm'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from 'types/garden-connection-form-types'
 
 const ConnectionMethod = () => {
   const context = useFormikContext<ConnectionFormFields>()

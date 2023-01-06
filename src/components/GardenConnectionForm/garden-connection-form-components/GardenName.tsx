@@ -1,6 +1,6 @@
 import { Box, Stack, TextField } from '@mui/material'
+import { ConnectionFormFields } from 'components/GardenConnectionForm'
 import { useFormikContext } from 'formik'
-import { ConnectionFormFields } from 'types/garden-connection-form-types'
 
 const GardenName = () => {
   const context = useFormikContext<ConnectionFormFields>()
