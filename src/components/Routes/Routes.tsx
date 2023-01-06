@@ -85,7 +85,7 @@ const Routes = () => {
         </Route>
       )}
       {authEnabled && <Route path="/login" element={<Login />} />}
-      {isPermissionsSet() === authEnabled || isPermissionsSet() ? (
+      {isPermissionsSet() === authEnabled ? (
         <Route
           path="*"
           element={
