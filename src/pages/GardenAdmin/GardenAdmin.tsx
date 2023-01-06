@@ -1,4 +1,4 @@
-import { Backdrop, Box, CircularProgress, Grid } from '@mui/material'
+import { Backdrop, CircularProgress, Grid, Stack } from '@mui/material'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { GardenSyncButton } from 'components/GardenSyncButton'
@@ -54,14 +54,14 @@ const GardenAdmin = (): JSX.Element => {
 
   return !error ? (
     <>
-      {hasPermission('garden:create') && (
-        <CreateGarden setRequestStatus={setRequestStatus} />
-      )}
-      {hasPermission('garden:update') && (
-        <Box style={{ float: 'right' }}>
-          <GardenSyncButton gardenName={''} setSyncStatus={setRequestStatus} />
-        </Box>
-      )}
+      <Stack direction="row" spacing={2} sx={{ float: 'right' }}>
+        {hasPermission('garden:create') && (
+          <CreateGarden setRequestStatus={setRequestStatus} />
+        )}
+        {hasPermission('garden:update') && (
+          <GardenSyncButton gardenName="" setSyncStatus={setRequestStatus} />
+        )}
+      </Stack>
       <PageHeader title="Gardens Management" description="" />
       <Divider />
       <Grid container spacing={3}>
