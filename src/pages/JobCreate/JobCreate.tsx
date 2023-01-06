@@ -39,7 +39,13 @@ const JobCreate = () => {
   }
 
   const cancelAllSchedulingButton = (
-    <Button size="small" onClick={cancelJob} startIcon={<CancelIcon />}>
+    <Button
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={cancelJob}
+      startIcon={<CancelIcon />}
+    >
       Cancel Scheduling
     </Button>
   )
@@ -76,6 +82,8 @@ const JobCreate = () => {
       >
         <Button
           size="small"
+          variant="contained"
+          color="secondary"
           onClick={backToSystem}
           startIcon={<ArrowBackIcon />}
         >
