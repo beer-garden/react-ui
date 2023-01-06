@@ -1,21 +1,9 @@
-import { Box, Button, Modal } from '@mui/material'
+import { Box, Button, Dialog } from '@mui/material'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
 import useGardens from 'hooks/useGardens'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
-
-const modalStyle = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  height: '99%',
-  overflow: 'auto',
-}
 
 interface GardenConnectionFormProps {
   setRequestStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
@@ -72,21 +60,20 @@ const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
       >
         Create Garden
       </Button>
-      <Modal
+      <Dialog
         open={open}
         onClose={() => setOpen(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        maxWidth={'md'}
       >
-        <Box sx={modalStyle}>
-          <GardenConnectionForm
-            garden={garden}
-            title="Create Garden"
-            formOnSubmit={formOnSubmit}
-            includeGardenName={true}
-          />
-        </Box>
-      </Modal>
+        <GardenConnectionForm
+          garden={garden}
+          title="Create Garden"
+          formOnSubmit={formOnSubmit}
+          includeGardenName={true}
+        />
+      </Dialog>
     </Box>
   )
 }

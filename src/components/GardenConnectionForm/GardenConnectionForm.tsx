@@ -45,7 +45,10 @@ const GardenConnectionForm = ({
         onSubmit={useGardenConnectionFormOnSubmit(garden, formOnSubmit)}
       >
         <Form>
-          <fieldset disabled={!hasPermission('garden:update')}>
+          <fieldset
+            style={{ border: 0 }}
+            disabled={!hasPermission('garden:update')}
+          >
             <Typography variant="h3">{title}</Typography>
             {includeGardenName ? <GardenName /> : null}
             <ConnectionMethod />
