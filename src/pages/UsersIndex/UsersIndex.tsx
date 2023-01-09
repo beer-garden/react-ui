@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Stack,
   Tooltip,
 } from '@mui/material'
 import { AxiosError } from 'axios'
@@ -123,32 +124,32 @@ export const UsersIndex = () => {
 
   return !errorFetch ? (
     <Box>
-      {hasPermission('user:create') && (
-        <Tooltip title="Add User">
-          <Button
-            sx={{ float: 'right', mx: 1 }}
-            variant="contained"
-            color="secondary"
-            aria-label="Add user"
-            onClick={() => setOpenAdd(true)}
-          >
-            <AddIcon />
-          </Button>
-        </Tooltip>
-      )}
-      {syncStatus && hasPermission('garden:update') && (
-        <Tooltip title="Sync Users">
-          <Button
-            sx={{ float: 'right', mx: 1 }}
-            variant="contained"
-            color="primary"
-            aria-label="Sync user"
-            onClick={() => setOpenSync(true)}
-          >
-            <SyncIcon />
-          </Button>
-        </Tooltip>
-      )}
+      <Stack direction="row" spacing={2} sx={{ float: 'right' }}>
+        {hasPermission('user:create') && (
+          <Tooltip title="Add User">
+            <Button
+              variant="contained"
+              color="secondary"
+              aria-label="Add user"
+              onClick={() => setOpenAdd(true)}
+            >
+              <AddIcon />
+            </Button>
+          </Tooltip>
+        )}
+        {syncStatus && hasPermission('garden:update') && (
+          <Tooltip title="Sync Users">
+            <Button
+              variant="contained"
+              color="primary"
+              aria-label="Sync user"
+              onClick={() => setOpenSync(true)}
+            >
+              <SyncIcon />
+            </Button>
+          </Tooltip>
+        )}
+      </Stack>
       <NewUserModal
         open={openAdd}
         setOpen={setOpenAdd}
