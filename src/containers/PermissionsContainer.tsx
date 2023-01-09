@@ -33,7 +33,7 @@ const usePermissions = () => {
     cookies.remove('domainPerms', { path: '/' })
     setGlobalPerms(undefined)
     setDomainPerms(undefined)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const isPermissionsSet = (): boolean => {
@@ -62,7 +62,7 @@ const usePermissions = () => {
     } else {
       resetPerms()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [DEBUG_PERMISSION, getUser, resetPerms, tokenExpiration, user])
 
   useEffect(() => {
