@@ -58,7 +58,23 @@ describe('Table', () => {
     ).toBeInTheDocument()
   })
 
-  test('no filter if disabled', async () => {
+  test('no filters if all are disabled', async () => {
+    tableColumns[0].disableFilters = true
+    tableColumns[1].disableFilters = true
+    render(
+      <DebugProvider>
+        <Table
+          tableKey="Test"
+          data={tableData}
+          columns={tableColumns}
+          hideToolbar
+        />
+      </DebugProvider>,
+    )
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+  })
+
+  test('no filter if disabled for a column', async () => {
     tableColumns[1].disableFilters = true
     render(
       <DebugProvider>

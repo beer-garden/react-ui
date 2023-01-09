@@ -285,7 +285,10 @@ const Table = <T extends ObjectWithStringKeys>(
         </TableHead>
         <TableBody {...getTableBodyProps()}>
           {/* Filter row */}
-          {!showGlobalFilter
+          {!showGlobalFilter &&
+          headerGroups.every((headerGroup) =>
+            headerGroup.headers.some((column) => column.canFilter),
+          )
             ? headerGroups.map((headerGroup) => {
                 const {
                   key: headerGroupKey,
