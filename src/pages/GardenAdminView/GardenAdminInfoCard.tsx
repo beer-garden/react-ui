@@ -24,11 +24,7 @@ const GardenAdminInfoCard = ({ garden }: GardenInfoCardProps) => {
         <LabeledData label="Name" data={garden.name} />
         <LabeledData label="Status" data={garden.status} alert />
         <LabeledData label="Connection Type" data={garden.connection_type} />
-        <Box
-          sx={{
-            gridColumnStart: '1',
-          }}
-        >
+        <Box sx={{ gridColumnStart: '1' }}>
           <Typography sx={{ my: 2 }} fontWeight={'bold'} variant="overline">
             Known Namespaces:
           </Typography>
