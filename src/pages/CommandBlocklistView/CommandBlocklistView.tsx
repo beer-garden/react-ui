@@ -62,8 +62,7 @@ export const CommandBlocklistView = () => {
     return () => {
       mounted = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getBlockList, getSystems])
 
   // populate data for modal All Commands list table
   const commandListData = useMemo((): CommandIndexTableData[] => {

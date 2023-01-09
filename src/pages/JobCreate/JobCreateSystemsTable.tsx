@@ -28,8 +28,7 @@ const JobCreateSystemsTable = ({
       .catch((e) => {
         errorSetter(e)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [errorSetter, getSystems])
 
   return (
     <Table

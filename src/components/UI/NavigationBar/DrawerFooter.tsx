@@ -32,8 +32,7 @@ const DrawerFooter = () => {
           doNotAutoDismiss: true,
         })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getVersion])
 
   return (
     <MenuList dense style={{ marginTop: 'auto' }}>

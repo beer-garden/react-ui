@@ -2,6 +2,7 @@ import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { useCallback } from 'react'
 import { Runner } from 'types/backend-types'
 
 const useRunners = () => {
@@ -9,7 +10,7 @@ const useRunners = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getRunners = (): AxiosPromise<Runner[]> => {
+  const getRunners = useCallback((): AxiosPromise<Runner[]> => {
     const config: AxiosRequestConfig = {
       url: '/api/vbeta/runners',
       method: 'get',
@@ -17,50 +18,62 @@ const useRunners = () => {
     }
 
     return execute(config)
-  }
+  }, [authEnabled, execute])
 
-  const reloadRunner = (path: string): AxiosPromise<Runner[]> => {
-    const config: AxiosRequestConfig = {
-      url: '/api/vbeta/runners',
-      method: 'patch',
-      withCredentials: authEnabled,
-      data: { operation: 'reload', path: path },
-    }
+  const reloadRunner = useCallback(
+    (path: string): AxiosPromise<Runner[]> => {
+      const config: AxiosRequestConfig = {
+        url: '/api/vbeta/runners',
+        method: 'patch',
+        withCredentials: authEnabled,
+        data: { operation: 'reload', path: path },
+      }
 
-    return execute(config)
-  }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const stopRunner = (runnerId: string): AxiosPromise<Runner> => {
-    const config: AxiosRequestConfig = {
-      url: `/api/vbeta/runners/${runnerId}`,
-      method: 'patch',
-      withCredentials: authEnabled,
-      data: { operation: 'stop' },
-    }
+  const stopRunner = useCallback(
+    (runnerId: string): AxiosPromise<Runner> => {
+      const config: AxiosRequestConfig = {
+        url: `/api/vbeta/runners/${runnerId}`,
+        method: 'patch',
+        withCredentials: authEnabled,
+        data: { operation: 'stop' },
+      }
 
-    return execute(config)
-  }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const startRunner = (runnerId: string): AxiosPromise<Runner> => {
-    const config: AxiosRequestConfig = {
-      url: `/api/vbeta/runners/${runnerId}`,
-      method: 'patch',
-      withCredentials: authEnabled,
-      data: { operation: 'start' },
-    }
+  const startRunner = useCallback(
+    (runnerId: string): AxiosPromise<Runner> => {
+      const config: AxiosRequestConfig = {
+        url: `/api/vbeta/runners/${runnerId}`,
+        method: 'patch',
+        withCredentials: authEnabled,
+        data: { operation: 'start' },
+      }
 
-    return execute(config)
-  }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const deleteRunner = (runnerId: string): AxiosPromise<Runner> => {
-    const config: AxiosRequestConfig = {
-      url: `/api/vbeta/runners/${runnerId}`,
-      method: 'delete',
-      withCredentials: authEnabled,
-    }
+  const deleteRunner = useCallback(
+    (runnerId: string): AxiosPromise<Runner> => {
+      const config: AxiosRequestConfig = {
+        url: `/api/vbeta/runners/${runnerId}`,
+        method: 'delete',
+        withCredentials: authEnabled,
+      }
 
-    return execute(config)
-  }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
   return {
     getRunners,

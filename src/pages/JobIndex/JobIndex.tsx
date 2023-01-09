@@ -10,7 +10,7 @@ import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
 import { DropzoneArea } from 'mui-file-dropzone'
 import { JobTableData, useJobColumns } from 'pages/JobIndex'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
@@ -37,7 +37,7 @@ const JobIndex = () => {
     })
   }
 
-  const fetchJobs = () => {
+  const fetchJobs = useCallback(() => {
     getJobs()
       .then((response) => {
         setJobs(response.data)
@@ -45,12 +45,11 @@ const JobIndex = () => {
       .catch((e) => {
         setErrorFetch(e)
       })
-  }
+  }, [getJobs])
 
   useEffect(() => {
     fetchJobs()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchJobs])
 
   // temporary for demo
   const createRequestOnClick = () => {

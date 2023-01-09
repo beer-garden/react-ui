@@ -25,6 +25,7 @@ mock.onGet('/version').reply(200, mockData.TVersionConfig)
 mock.onGet('/api/v1/jobs').reply(200, [mockData.TJob])
 mock.onGet(`/api/v1/jobs/${mockData.TJob.id}`).reply(200, mockData.TJob)
 mock.onGet('/api/v1/gardens').reply(200, [TGarden])
+mock.onGet(`/api/v1/gardens/${TGarden.name}`).reply(200, TGarden)
 mock.onGet('/api/v1/commandpublishingblocklist').reply(200, TBlocklist)
 mock.onGet('/api/v1/systems').reply(200, [TSystem])
 mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
@@ -38,6 +39,7 @@ mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
 })
 mock.onGet(regexLogs).reply(200, mockData.TLog, { request_id: 'fetchedLog' })
 mock.onGet(regexQueues).reply(200, [mockData.TQueue])
+mock.onGet('/api/v1/queues').reply(200, [mockData.TQueue])
 mock.onGet('/api/v1/instances/testinst').reply(200, TInstance)
 mock.onGet('/api/vbeta/runners').reply(200, [TRunner])
 
@@ -50,6 +52,7 @@ mock
 mock.onPost('/api/v1/requests').reply(200, { id: 'testRequest' })
 mock.onPost('/api/v1/token').reply(200, { access: 'admin', refresh: 'none' })
 mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
+mock.onPost('/api/v1/gardens').reply(200, TGarden)
 mock.onPost('/api/v1/import/jobs').reply(200, { ids: [mockData.TJob.id] })
 mock.onPost('/api/v1/export/jobs').reply(200, [mockData.TJob])
 mock.onPost('/api/v1/jobs').reply(200, mockData.TJob)
@@ -58,6 +61,16 @@ mock.onPost('/api/v1/commandpublishingblocklist').reply(200, TBlocklist)
 
 // Success PATCH
 mock.onPatch('/api/v1/gardens').reply(200, {})
+mock
+  .onPatch(`/api/v1/gardens/${TGarden.name}`)
+  .reply((config: AxiosRequestConfig) => {
+    const data = JSON.parse(config.data)
+    if (data.operation === 'config') {
+      return [200, TGarden]
+    }
+    return [200, {}]
+  })
+mock.onPatch('/api/v1/admin').reply(204, {})
 mock.onPatch(regexUsers).reply(200, TUser)
 mock.onPatch('/api/v1/instances/testinst').reply(200, TInstance)
 mock
@@ -74,7 +87,12 @@ mock.onPatch('/api/vbeta/runners').reply(200, [TRunner])
 
 // Success DELETE
 mock.onDelete(regexUsers).reply(204, '')
+mock
+  .onDelete(`/api/v1/queues/${mockData.TQueue.name}`)
+  .reply(200, [mockData.TQueue])
+mock.onDelete('/api/v1/queues').reply(200, [mockData.TQueue])
 mock.onDelete(`/api/v1/jobs/${mockData.TJob.id}`).reply(204, '')
+mock.onDelete(`/api/v1/gardens/${TGarden.name}`).reply(204, {})
 mock.onDelete('/api/v1/systems/testsys').reply(204)
 mock
   .onDelete(`/api/v1/commandpublishingblocklist/${TBlockedCommand.id}`)

@@ -61,8 +61,7 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
           doNotAutoDismiss: true,
         })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getRoles, setAlert])
 
   return (
     <Card>

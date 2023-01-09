@@ -65,8 +65,7 @@ export const UsersView = () => {
       .catch((e) => {
         setErrorFetch(e)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userName])
+  }, [getUser, userName])
 
   useEffect(() => {
     if (debounce) {

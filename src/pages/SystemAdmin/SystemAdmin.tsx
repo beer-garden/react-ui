@@ -59,8 +59,7 @@ const SystemAdmin = () => {
     return () => {
       mounted = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getNamespaces])
 
   return !error ? (
     <Box>

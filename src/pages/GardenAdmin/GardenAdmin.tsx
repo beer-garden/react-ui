@@ -29,8 +29,7 @@ const GardenAdmin = (): JSX.Element => {
     return () => {
       mounted = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getGardens])
 
   useEffect(() => {
     let mounted = true
@@ -49,8 +48,7 @@ const GardenAdmin = (): JSX.Element => {
       mounted = false
       removeCallback('garden_updates')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addCallback, removeCallback])
+  }, [addCallback, getGardens, removeCallback])
 
   return !error ? (
     <>

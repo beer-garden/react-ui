@@ -30,8 +30,7 @@ const UpdateJobView = () => {
         setSystem(foundSystem)
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [systemName])
+  }, [getSystems, systemName])
 
   const breadcrumbs = [namespace, systemName, version, jobName].filter(
     (x) => !!x,
