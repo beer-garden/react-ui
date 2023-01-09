@@ -3,7 +3,6 @@ import { AxiosError } from 'axios'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ParameterAsProperty } from 'formHelpers'
 import { useFormikContext } from 'formik'
-import { nanoid } from 'nanoid/non-secure'
 import {
   DynamicChoicesStateManager,
   DynamicExecuteFunction,
@@ -38,7 +37,10 @@ type ParameterEntry = ParameterBasics & {
   enum?: string[]
 }
 
-type ParameterMapper = (parameter: ParameterEntry) => JSX.Element | null
+type ParameterMapper = (
+  parameter: ParameterEntry,
+  index: number,
+) => JSX.Element | null
 
 const getParameterComponents = (
   parameterSchema: ParameterAsProperty,
@@ -68,7 +70,7 @@ const getParameterMapper = (
 ): ParameterMapper => {
   // the following is necessary due to a limitation of eslint
   // eslint-disable-next-line react/display-name
-  return (parameter: ParameterEntry) => {
+  return (parameter: ParameterEntry, index: number) => {
     // TODO: only dropdowns are supported at this time
     if ('enum' in parameter) {
       const {
@@ -81,7 +83,7 @@ const getParameterMapper = (
 
       return !theEnum || theEnum.length <= 1 ? (
         <DynamicChoiceParameterField
-          key={name + '-' + nanoid()}
+          key={name + '-' + index}
           name={name}
           title={title}
           description={description}
@@ -89,7 +91,7 @@ const getParameterMapper = (
         />
       ) : (
         <DropDownParameterField
-          key={name + '-' + nanoid()}
+          key={name + '-' + index}
           name={name}
           title={title}
           description={description}

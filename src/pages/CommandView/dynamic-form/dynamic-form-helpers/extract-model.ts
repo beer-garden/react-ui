@@ -191,16 +191,14 @@ const extractReady = (
   instances: Instance[],
   parameters: Parameter[],
 ): ReadyStatus => {
-  let readyStatus: ReadyStatus = {}
-
-  if (instances.length > 1) {
-    readyStatus = {
-      ...readyStatus,
-      instance_name: {
-        ready: false,
-      },
-    }
-  }
+  let readyStatus: ReadyStatus =
+    instances.length <= 1
+      ? {}
+      : {
+          instance_name: {
+            ready: false,
+          },
+        }
 
   for (const parameter of parameters) {
     if (

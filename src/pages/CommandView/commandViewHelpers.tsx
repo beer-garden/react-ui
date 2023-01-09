@@ -145,7 +145,6 @@ const parameterHasDynamicChoiceProperties = (parameter: Parameter) => {
    dynamic choices in the most lightweight way possible. */
 const commandIsDynamic = <T extends Command>(command: T): boolean => {
   return (
-    command.parameters &&
     command.parameters.length > 0 &&
     command.parameters.map(isDynamicChoiceParameter).some((x) => x)
   )

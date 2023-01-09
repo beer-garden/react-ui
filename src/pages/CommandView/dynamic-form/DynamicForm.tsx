@@ -1,13 +1,13 @@
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
+import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { CommandBasicSchema, getSchema } from 'formHelpers'
 import {
   CommandChoiceWithArgsForm,
   hasCommandChoiceWithArgs,
 } from 'pages/CommandView/dynamic-form'
-import ReactJson from 'react-json-view'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
@@ -49,18 +49,10 @@ const DynamicForm = ({
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       {form}
       {debugEnabled && (
-        <Box pt={2} display="flex" alignItems="flex-start">
-          <Box width={1 / 2}>
-            <h3>Command</h3>
-            <ReactJson src={command} />
-          </Box>
-          {schema ? (
-            <Box width={1 / 2}>
-              <h3>Schema</h3>
-              <ReactJson src={schema} />
-            </Box>
-          ) : null}
-        </Box>
+        <Stack direction={'row'} spacing={2}>
+          <JsonCard title="Command" data={command} />
+          {schema ? <JsonCard title="Schema" data={schema} /> : null}
+        </Stack>
       )}
     </Box>
   )

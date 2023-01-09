@@ -53,7 +53,6 @@ const getOnChangeFunctions = (
           const previous = parametersThatCanInitiateUpdates[
             parameterInitiatingUpdate
           ] as string[]
-
           parametersThatCanInitiateUpdates = {
             ...parametersThatCanInitiateUpdates,
             [parameterInitiatingUpdate]: previous.concat([
@@ -183,18 +182,18 @@ const getOnChangeForDependency = (
       )
     }
 
-    const updateDynamic = () => {
+    const updateDynamicState = () => {
       const functions: VoidFunction[] = []
 
       for (const dynamicChoicesParameter of shouldUpdate) {
         const { args, commandProperties, dependsOn } =
           dynamicChoices[dynamicChoicesParameter]
         const commandParameters: Record<string, unknown> = {}
-        const instanceName = stateManager.model.get()['instance_name']
+        const theModel = stateManager.model.get()
+        const instanceName = theModel['instance_name']
 
         for (const [arg, parameter] of args.map((e, i) => [e, dependsOn[i]])) {
-          commandParameters[arg] =
-            stateManager.model.get().parameters[parameter]
+          commandParameters[arg] = theModel.parameters[parameter]
         }
 
         const { system, version, namespace, command } = commandProperties
@@ -301,7 +300,7 @@ const getOnChangeForDependency = (
             }
           })
 
-          if (canUpdate()) updateDynamic()
+          if (canUpdate()) updateDynamicState()
         }
       }
     }
@@ -352,24 +351,22 @@ const getOnChangeForMustChoose = (
     const canUpdate = () => {
       return (
         otherMustChoose.length === 0 ||
-        otherMustChoose
-          .map((x) => stateManager.ready.get()[x].ready)
-          .every((x) => x)
+        otherMustChoose.every((x) => stateManager.ready.get()[x].ready)
       )
     }
 
-    const updateDynamic = () => {
+    const updateDynamicState = () => {
       const functions: VoidFunction[] = []
 
       for (const dynamicChoicesParameter of shouldUpdate) {
         const { args, commandProperties, dependsOn } =
           dynamicChoices[dynamicChoicesParameter]
         const commandParameters: Record<string, unknown> = {}
-        const instanceName = stateManager.model.get()['instance_name']
+        const theModel = stateManager.model.get()
+        const instanceName = theModel['instance_name']
 
         for (const [arg, parameter] of args.map((e, i) => [e, dependsOn[i]])) {
-          commandParameters[arg] =
-            stateManager.model.get().parameters[parameter]
+          commandParameters[arg] = theModel.parameters[parameter]
         }
 
         const { system, version, namespace, command } = commandProperties
@@ -481,140 +478,11 @@ const getOnChangeForMustChoose = (
             }
           })
 
-          if (canUpdate()) updateDynamic()
+          if (canUpdate()) updateDynamicState()
         }
       }
     }
   }
 }
-// const getOnChangeForMustChoose_old = (
-//   tag: string,
-//   shouldUpdate: string[],
-//   dynamicChoices: Record<string, DynamicProperties>,
-//   mustChoose: string[],
-//   stateForDynamicCommand: MutableRefObject<DynamicModel>,
-//   setStateForDynamicCommand: DynamicModelSetter,
-//   readyStatusForDynamicCommand: MutableRefObject<ReadyStatus | null>,
-//   setReadyStatusForDynamicCommand: ReadyStatusSetter,
-//   theDynamicChoices: DynamicChoices | null,
-//   setTheDynamicChoices: DynamicChoicesSetter,
-// ) => {
-//   /* at this time, we assume every 'must choose' is not actually a proper
-//      parameter of the request -- e.g. 'instance_name' */
-//   const otherMustChoose = mustChoose.filter((x) => x !== tag)
-
-//   return <T extends Record<string, unknown>>(
-//     context: FormikContextType<T>,
-//     execute: (
-//       config?: AxiosRequestConfig<RequestTemplate>,
-//     ) => AxiosPromise<Request>,
-//     onError: (e: AxiosError<T>) => void,
-//     authEnabled: boolean,
-//   ) => {
-//     const canUpdate = () => {
-//       return (
-//         otherMustChoose.length === 0 ||
-//         otherMustChoose.map(
-//           (x) =>
-//             readyStatusForDynamicCommand.current &&
-//             x in readyStatusForDynamicCommand.current &&
-//             (readyStatusForDynamicCommand.current[x]?.ready ?? false),
-//         )
-//       )
-//     }
-
-//     const updateDynamic = () => {
-//       const functions: VoidFunction[] = []
-
-//       for (const dynamicChoicesParameter of shouldUpdate) {
-//         const { args, commandProperties, dependsOn } =
-//           dynamicChoices[dynamicChoicesParameter]
-//         const commandParameters: Record<string, unknown> = {}
-//         const instanceName = stateForDynamicCommand.current['instance_name']
-
-//         for (const [arg, parameter] of args.map((e, i) => [e, dependsOn[i]])) {
-//           commandParameters[arg] =
-//             stateForDynamicCommand.current.parameters[parameter]
-//         }
-
-//         const { system, version, namespace, command } = commandProperties
-//         const request: RequestTemplate = {
-//           system: system,
-//           system_version: version,
-//           instance_name: instanceName,
-//           namespace: namespace,
-//           command: command,
-//           command_type: 'INFO',
-//           parameters: commandParameters,
-//           output_type: 'JSON',
-//         }
-//         const config: AxiosRequestConfig<RequestTemplate> = {
-//           url: '/api/v1/requests?blocking=true',
-//           method: 'post',
-//           data: request,
-//           withCredentials: authEnabled,
-//         }
-
-//         functions.push(() =>
-//           execute(config)
-//             .then((response) => {
-//               // our response provides the values for the dynamic choices
-//               const values = response.data.output
-
-//               try {
-//                 if (values) {
-//                   const parsedValues = JSON.parse(values)
-
-//                   setTheDynamicChoices((prev) => {
-//                     return {
-//                       ...prev,
-//                       [dynamicChoicesParameter]: {
-//                         enum: parsedValues,
-//                       },
-//                     }
-//                   })
-//                 }
-//               } catch (e) {
-//                 // noop
-//               }
-//             })
-//             .catch((e) => onError(e)),
-//         )
-//       }
-
-//       functions.map((f) => f())
-//     }
-
-//     return (event: ChangeEvent<HTMLInputElement>) => {
-//       if ('target' in event) {
-//         const target = event.target
-
-//         if ('value' in target && 'name' in target) {
-//           const { value, name } = target as EventTarget & {
-//             value: string
-//             name: string
-//           }
-
-//           context.setFieldValue(name, value)
-//           setReadyStatusForDynamicCommand((prev) => {
-//             return {
-//               ...prev,
-//               [name]: {
-//                 ready: true,
-//               },
-//             }
-//           })
-//           setStateForDynamicCommand((prev) => {
-//             return {
-//               ...prev,
-//               [name]: value,
-//             }
-//           })
-//         }
-//       }
-//       if (canUpdate()) updateDynamic()
-//     }
-//   }
-// }
 
 export { getOnChangeFunctions }

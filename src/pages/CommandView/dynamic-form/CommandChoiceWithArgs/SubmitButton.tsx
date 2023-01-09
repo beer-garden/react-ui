@@ -27,9 +27,7 @@ const SubmitButton = ({
     if (parametersRequired.length > 0) {
       const params = stateManager.model.get().parameters
       mustChoose = mustChoose.concat(parametersRequired)
-      canSubmit &&= parametersRequired
-        .map((p) => params[p] !== '')
-        .every((r) => r)
+      canSubmit &&= parametersRequired.every((p) => params[p] !== '')
     }
 
     return [canSubmit, mustChoose]

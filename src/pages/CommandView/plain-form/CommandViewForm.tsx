@@ -1,9 +1,8 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
-import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { CommandBasicSchema, JobPropertiesSchema } from 'formHelpers'
@@ -29,12 +28,14 @@ import {
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Job, RequestTemplate } from 'types/backend-types'
+import { Job, Request, RequestTemplate } from 'types/backend-types'
 import { AugmentedCommand, SnackbarState } from 'types/custom-types'
 import {
   CommandViewModel,
   CommandViewRequestModel,
 } from 'types/form-model-types'
+
+import { JobRequestFormModelPreview } from '../dynamic-form'
 
 interface CommandViewFormProps {
   schema: CommandBasicSchema | JobPropertiesSchema
@@ -178,11 +179,11 @@ const CommandViewForm = ({
       }
 
       execute(config)
-        .then((response) => {
+        .then((response: AxiosResponse<Request>) => {
           navigate(forwardPath + response.data.id)
         })
-        .catch((error) => {
-          raiseError(error.toJSON())
+        .catch((error: AxiosError) => {
+          raiseError(JSON.stringify(error.toJSON()))
         })
     } else {
       if (isJob) {
@@ -278,10 +279,8 @@ const CommandViewForm = ({
           </Form>
         </BytesParameterContext.Provider>
       </Box>
-      <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>
-        <JsonCard title="Preview" data={displayModel} />
-      </Box>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
+      <JobRequestFormModelPreview data={displayModel} />
     </Box>
   )
 }

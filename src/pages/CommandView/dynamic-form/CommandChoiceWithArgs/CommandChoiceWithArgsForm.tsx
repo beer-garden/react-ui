@@ -1,5 +1,5 @@
-import { Box, Button } from '@mui/material'
-import { AxiosError, AxiosRequestConfig } from 'axios'
+import { Box, Button, ButtonGroup } from '@mui/material'
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -9,16 +9,16 @@ import { useMyAxios } from 'hooks/useMyAxios'
 import {
   extractModel,
   getOnChangeFunctions,
-  ModelPreview,
+  JobRequestFormModelPreview,
   OnChangeFunctionMap,
   SystemProperties,
   useChoicesState,
 } from 'pages/CommandView/dynamic-form'
 import { SubmitButton } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs'
 import { getFormComponents } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs/form-components/getFormComponents'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { RequestTemplate } from 'types/backend-types'
+import { Request, RequestTemplate } from 'types/backend-types'
 import {
   AugmentedCommand,
   SnackbarState,
@@ -54,6 +54,10 @@ const CommandChoiceWithArgsForm = (
 
   const model = extractModel(parametersSchema, instancesSchema)
   const [stateManager, resetAll] = useChoicesState(system, command)
+  const previewModel = useMemo(
+    () => stateManager.model.get(),
+    [stateManager.model],
+  )
 
   const onChangeFunctions: OnChangeFunctionMap = getOnChangeFunctions(
     parameters,
@@ -83,7 +87,7 @@ const CommandChoiceWithArgsForm = (
     }
 
     execute(config)
-      .then((response) => {
+      .then((response: AxiosResponse<Request>) => {
         navigate('/requests/' + response.data.id)
       })
       .catch((error: AxiosError) => {
@@ -100,10 +104,10 @@ const CommandChoiceWithArgsForm = (
   }
 
   return (
-    <>
+    <Box p={2} display="flex" alignItems="flex-start">
       <Formik onSubmit={onSubmit} initialValues={model}>
-        <Box pt={2} display="flex" alignItems="flex-start">
-          <Box pr={2} width={1 / 2}>
+        <>
+          <Box width={3 / 5}>
             <Form>
               {getFormComponents(
                 parametersSchema,
@@ -112,22 +116,20 @@ const CommandChoiceWithArgsForm = (
                 execute,
                 stateManager,
               )}
-              <Button color="secondary" variant="contained" onClick={resetAll}>
-                Reset
-              </Button>
-              <SubmitButton
-                schemaProperties={schema.properties}
-                stateManager={stateManager}
-              />
+              <ButtonGroup variant="contained" size="large">
+                <Button onClick={resetAll}>Reset</Button>
+                <SubmitButton
+                  schemaProperties={schema.properties}
+                  stateManager={stateManager}
+                />
+              </ButtonGroup>
             </Form>
           </Box>
-          <Box width={1 / 2}>
-            <ModelPreview getData={stateManager.model.get} />
-          </Box>
-        </Box>
+          <JobRequestFormModelPreview data={previewModel} />
+        </>
       </Formik>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
-    </>
+    </Box>
   )
 }
 
