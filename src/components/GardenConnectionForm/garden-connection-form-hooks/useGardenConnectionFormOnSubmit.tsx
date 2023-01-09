@@ -1,9 +1,9 @@
+import { FormikHelpers } from 'formik'
+import { Garden } from 'types/backend-types'
 import {
   ConnectionFormFields,
   StompHeader,
-} from 'components/GardenConnectionForm'
-import { FormikHelpers } from 'formik'
-import { Garden } from 'types/backend-types'
+} from 'types/garden-connection-form-types'
 
 /**
  * Return a function to use as the onSubmit for Formik
