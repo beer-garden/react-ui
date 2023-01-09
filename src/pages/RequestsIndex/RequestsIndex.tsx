@@ -158,6 +158,7 @@ const RequestsIndex = () => {
           <LoadingButton
             size="small"
             color="secondary"
+            variant="contained"
             loadingIndicator="Loading..."
             loading={isLoading}
             startIcon={<RefreshIcon />}
