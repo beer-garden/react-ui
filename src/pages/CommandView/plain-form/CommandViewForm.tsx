@@ -186,7 +186,7 @@ const CommandViewForm = ({
       }
 
       execute(config)
-        .then((response) => {
+        .then((response: AxiosResponse<Request>) => {
           navigate(forwardPath + response.data.id)
         })
         .catch((error: AxiosError) => {
