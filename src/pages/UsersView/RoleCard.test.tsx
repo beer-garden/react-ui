@@ -11,6 +11,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={TRolePatch}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={jest.fn()}
           removeRole={jest.fn()}
@@ -31,6 +32,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={TRolePatch}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={jest.fn()}
           removeRole={mockFN}
@@ -52,6 +54,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={TRolePatch}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={mockFN}
           removeRole={jest.fn()}
@@ -76,6 +79,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={TRolePatch}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={mockFN}
           removeRole={jest.fn()}
@@ -102,6 +106,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={testRole}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={jest.fn()}
           removeRole={jest.fn()}
@@ -123,6 +128,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={testRole}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={jest.fn()}
           removeRole={jest.fn()}
@@ -143,6 +149,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={TRolePatch}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={jest.fn()}
           removeRole={jest.fn()}
@@ -175,6 +182,7 @@ describe('RoleCard', () => {
         <AllProviders>
           <RoleCard
             role={testRole}
+            roleKey="1"
             setAlert={jest.fn()}
             setRole={mockFN}
             removeRole={jest.fn()}
@@ -205,6 +213,7 @@ describe('RoleCard', () => {
       <AllProviders>
         <RoleCard
           role={testRole}
+          roleKey="1"
           setAlert={jest.fn()}
           setRole={mockFN}
           removeRole={jest.fn()}
