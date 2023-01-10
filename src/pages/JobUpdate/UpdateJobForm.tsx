@@ -112,7 +112,7 @@ const UpdateJobForm = ({
   }
 
   return (
-    <Box pt={2} display="flex" alignItems="flex-start">
+    <Box p={2} display="flex" alignItems="flex-start">
       <Box width={3 / 5}>
         <Form
           schema={schema}
