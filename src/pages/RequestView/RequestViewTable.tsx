@@ -120,13 +120,15 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
           data={dateFormatted(new Date(request.updated_at))}
         />
         {request.comment && (
-          <LabeledData label="Comment" data={request.comment || ''} />
+          <Box sx={{ gridColumnStart: '1', gridColumnEnd: -1 }}>
+            <LabeledData label="Comment" data={request.comment || ''} />
+          </Box>
         )}
       </Box>
       {request.children[0] ? (
         <>
           <MyDivider />
-          <Typography variant="h6">
+          <Typography variant="h3">
             <IconButton
               onClick={() => {
                 setShowChildren(!showChildren)

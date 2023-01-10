@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import Router from 'react-router-dom'
+import { mockAxios } from 'test/axios-mock'
 import { TSystem } from 'test/system-test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
 
@@ -17,19 +18,157 @@ describe('CommandIndex', () => {
     jest.clearAllMocks()
   })
 
-  test('render table of commands', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({
-      systemName: TSystem.name,
-      namespace: TSystem.namespace,
-      version: TSystem.version,
+  describe('renders table for', () => {
+    test('valid namespace/system/version', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: TSystem.name,
+        namespace: TSystem.namespace,
+        version: TSystem.version,
+      })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Commands')).toBeInTheDocument()
+      })
+      expect(screen.getByText(TSystem.commands[0].name)).toBeInTheDocument()
+      expect(screen.queryByText(/Error:/)).not.toBeInTheDocument()
     })
-    render(
-      <AllProviders>
-        <CommandIndex />
-      </AllProviders>,
-    )
-    await waitFor(() => {
-      expect(screen.getByText('Commands')).toBeInTheDocument()
+
+    test('valid namespace/system', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: TSystem.name,
+        namespace: TSystem.namespace,
+        version: undefined,
+      })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Commands')).toBeInTheDocument()
+      })
+      expect(screen.getByText(TSystem.commands[0].name)).toBeInTheDocument()
+      expect(screen.queryByText(/Error:/)).not.toBeInTheDocument()
+    })
+
+    test('valid namespace', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: undefined,
+        namespace: TSystem.namespace,
+        version: undefined,
+      })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Commands')).toBeInTheDocument()
+      })
+      expect(screen.getByText(TSystem.commands[0].name)).toBeInTheDocument()
+      expect(screen.queryByText(/Error:/)).not.toBeInTheDocument()
+    })
+  })
+
+  describe('renders alert for', () => {
+    test('invalid namespace', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: undefined,
+        namespace: 'notExistent',
+        version: undefined,
+      })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Commands')).toBeInTheDocument()
+      })
+      expect(
+        screen.getByText(
+          `Error: 204 No commands found for ${undefined} system in ` +
+            `${'notExistent'} namespace.`,
+        ),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByText(new RegExp(TSystem.commands[0].name)),
+      ).not.toBeInTheDocument()
+    })
+
+    test('invalid system', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: 'notExistent',
+        namespace: TSystem.namespace,
+        version: undefined,
+      })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Commands')).toBeInTheDocument()
+      })
+      expect(
+        screen.getByText(
+          `Error: 204 No commands found for ${'notExistent'} system in ` +
+            `${TSystem.namespace} namespace.`,
+        ),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByText(new RegExp(TSystem.commands[0].name)),
+      ).not.toBeInTheDocument()
+    })
+
+    test('invalid version', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: TSystem.name,
+        namespace: TSystem.namespace,
+        version: 'notExistent',
+      })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Commands')).toBeInTheDocument()
+      })
+      expect(
+        screen.getByText(
+          `Error: 204 No commands found for ${TSystem.name} system in ` +
+            `${TSystem.namespace} namespace for version ${'notExistent'}.`,
+        ),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByText(new RegExp(TSystem.commands[0].name)),
+      ).not.toBeInTheDocument()
+    })
+
+    test('axios fail', async () => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({
+        systemName: TSystem.name,
+        namespace: TSystem.namespace,
+        version: TSystem.version,
+      })
+      mockAxios.onGet('/api/v1/systems').reply(400, { message: 'Bad return' })
+      render(
+        <AllProviders>
+          <CommandIndex />
+        </AllProviders>,
+      )
+      await waitFor(() => {
+        expect(screen.getByText('Error: 400')).toBeInTheDocument()
+      })
+      expect(
+        screen.queryByText(new RegExp(TSystem.commands[0].name)),
+      ).not.toBeInTheDocument()
+      mockAxios.onGet('/api/v1/systems').reply(200, [TSystem])
     })
   })
 
@@ -46,6 +185,7 @@ describe('CommandIndex', () => {
       namespace: TSystem.namespace,
       version: TSystem.version,
     })
+    mockAxios.onGet('/api/v1/systems').reply(200, [TSystem])
     render(
       <LoggedInProviders>
         <CommandIndex />

@@ -23,12 +23,13 @@ import { SnackbarState } from 'types/custom-types'
 
 interface ICard {
   role: RolePatch
+  roleKey: string
   setRole: (n: string, s: DomainScope, i: RoleIdentifier) => void
   removeRole: () => void
   setAlert: (a: SnackbarState) => void
 }
 
-const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
+const RoleCard = ({ role, setAlert, roleKey, removeRole, setRole }: ICard) => {
   const [roleNames, setRoles] = useState<string[]>([])
 
   const { getRoles } = useUsers()
@@ -75,10 +76,10 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
         </IconButton>
         <Stack direction="row" spacing={3}>
           <FormControl size="small">
-            <InputLabel id="role-label">Role</InputLabel>
+            <InputLabel id={`${roleKey}-role-label`}>Role</InputLabel>
             <Select
               sx={{ minWidth: 100 }}
-              labelId="role-label"
+              labelId={`${roleKey}-role-label`}
               variant="outlined"
               value={roleNames.length > 0 ? role.role_name : ''}
               label="Role"
@@ -98,10 +99,10 @@ const RoleCard = ({ role, setAlert, removeRole, setRole }: ICard) => {
             </Select>
           </FormControl>
           <FormControl size="small">
-            <InputLabel id="scope-label">Scope</InputLabel>
+            <InputLabel id={`${roleKey}-scope-label`}>Scope</InputLabel>
             <Select
               sx={{ minWidth: 110 }}
-              labelId="scope-label"
+              labelId={`${roleKey}-scope-label`}
               variant="outlined"
               value={role.domain.scope || ''}
               label="Scope"

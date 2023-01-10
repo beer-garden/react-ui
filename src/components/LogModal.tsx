@@ -161,7 +161,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
           <LoadingButton
             size="small"
             color="secondary"
-            variant="outlined"
+            variant="contained"
             loadingPosition="start"
             startIcon={<InsertDriveFile />}
             loading={isLoading}
@@ -200,7 +200,7 @@ const LogModal = ({ instance, fileHeader }: ILogModal) => {
         </Stack>
         <LoadingButton
           color="secondary"
-          variant="outlined"
+          variant="contained"
           loadingPosition="start"
           disabled={displayLogs.length === 0}
           startIcon={<FileDownload />}

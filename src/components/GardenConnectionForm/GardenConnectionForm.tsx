@@ -10,8 +10,8 @@ import {
 } from 'components/GardenConnectionForm'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { Form, Formik } from 'formik'
-import { GardenConnectionParameters } from 'pages/GardenAdminView'
 import { Garden } from 'types/backend-types'
+import { GardenConnectionParameters } from 'types/garden-admin-view-types'
 
 interface GardenConnectionFormProps {
   garden: Garden

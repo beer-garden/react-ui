@@ -127,7 +127,7 @@ const JobView = () => {
   return (
     <>
       {job && permission && (
-        <Stack direction="row" spacing={1} sx={{ float: 'right' }}>
+        <Stack direction="row" spacing={2} sx={{ float: 'right' }}>
           <Button
             variant="contained"
             color="primary"

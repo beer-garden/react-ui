@@ -126,7 +126,7 @@ const JobIndex = () => {
         {hasPermission('job:create') && (
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             aria-label="Create Job"
             onClick={createRequestOnClick}
           >
@@ -136,7 +136,7 @@ const JobIndex = () => {
         {hasPermission('job:create') && (
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             aria-label="Import Jobs"
             onClick={() => setOpenImport(true)}
           >
@@ -145,7 +145,7 @@ const JobIndex = () => {
         )}
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           aria-label="Export Jobs"
           onClick={handleExport}
         >

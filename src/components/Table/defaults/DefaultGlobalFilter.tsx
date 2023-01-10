@@ -28,7 +28,9 @@ const DefaultGlobalFilter = <T extends ObjectWithStringKeys>({
     <Box>
       <TextField
         type="search"
-        variant="filled"
+        variant="outlined"
+        size="small"
+        color="secondary"
         value={value || ''}
         onChange={(event) => {
           setValue(event.target.value)
@@ -37,7 +39,6 @@ const DefaultGlobalFilter = <T extends ObjectWithStringKeys>({
         placeholder={`Search ${count} records...`}
         sx={{
           fontSize: '1.1rem',
-          border: '0',
         }}
       />
     </Box>

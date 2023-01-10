@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, Typography } from '@mui/material'
+import { Backdrop, CircularProgress, Stack, Typography } from '@mui/material'
 import { Alert, Box, Button, Grid, Tooltip } from '@mui/material'
 import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
@@ -79,26 +79,26 @@ const SystemAdmin = () => {
           </NamespacesSelectedContext.Provider>
         </Grid>
         <Grid key="actions" item>
-          <Tooltip arrow title="Clear All Queues">
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ mx: 1 }}
-              onClick={() => setOpen(true)}
-            >
-              Clear
-            </Button>
-          </Tooltip>
-          <Tooltip arrow title="Rescan Plugin Directory">
-            <Button
-              onClick={rescanPluginDirectory}
-              variant="contained"
-              color="primary"
-              sx={{ mx: 1 }}
-            >
-              Rescan
-            </Button>
-          </Tooltip>
+          <Stack direction="row" spacing={2}>
+            <Tooltip arrow title="Clear All Queues">
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => setOpen(true)}
+              >
+                Clear
+              </Button>
+            </Tooltip>
+            <Tooltip arrow title="Rescan Plugin Directory">
+              <Button
+                onClick={rescanPluginDirectory}
+                variant="contained"
+                color="primary"
+              >
+                Rescan
+              </Button>
+            </Tooltip>
+          </Stack>
         </Grid>
       </Grid>
       <ModalWrapper

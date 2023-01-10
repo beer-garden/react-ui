@@ -82,7 +82,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
         >
           <OverflowTooltip
             color="common.white"
-            variant="h6"
+            variant="h3"
             tooltip={systems[systemIndex].name}
             text={systems[systemIndex].name}
             css={{ py: 0 }}

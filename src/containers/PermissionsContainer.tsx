@@ -98,8 +98,7 @@ const usePermissions = () => {
     }
     return (
       globalPerms?.includes(permission) ||
-      // eslint-disable-next-line no-prototype-builtins
-      !!domainPerms?.hasOwnProperty(permission)
+      Object.prototype.hasOwnProperty.call(domainPerms, permission)
     )
   }
 
@@ -111,8 +110,11 @@ const usePermissions = () => {
     if (globalPerms?.includes(permission)) {
       return true
     }
-    // eslint-disable-next-line no-prototype-builtins
-    if (garden.id && domainPerms?.hasOwnProperty(permission)) {
+    if (
+      garden.id &&
+      domainPerms &&
+      Object.prototype.hasOwnProperty.call(domainPerms, permission)
+    ) {
       return domainPerms[permission].garden_ids.includes(garden.id)
     }
     return false
@@ -135,8 +137,10 @@ const usePermissions = () => {
     if (garden && hasGardenPermission(permission, garden)) {
       return true
     }
-    // eslint-disable-next-line no-prototype-builtins
-    if (domainPerms?.hasOwnProperty(permission)) {
+    if (
+      domainPerms &&
+      Object.prototype.hasOwnProperty.call(domainPerms, permission)
+    ) {
       return domainPerms[permission].system_ids.includes(systemId)
     }
     return false
