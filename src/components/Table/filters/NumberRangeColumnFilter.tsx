@@ -1,4 +1,5 @@
-import { Box, TextField } from '@mui/material'
+import { Search as SearchIcon } from '@mui/icons-material'
+import { Box, InputAdornment, TextField } from '@mui/material'
 import { getMinAndMax } from 'components/Table/filters/filterHelpers'
 import { useMemo } from 'react'
 import { FilterProps } from 'react-table'
@@ -24,7 +25,15 @@ const NumberRangeColumnFilter = ({
         id={`${id}_1`}
         value={filterValue[0] || ''}
         type="number"
-        variant="outlined"
+        variant="standard"
+        sx={{ my: -0.5 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
         size="small"
         onChange={(event) => {
           const value = event.target.value
@@ -43,7 +52,15 @@ const NumberRangeColumnFilter = ({
         id={`${id}_2`}
         value={filterValue[1] || ''}
         type="number"
-        variant="outlined"
+        variant="standard"
+        sx={{ my: -0.5 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
         size="small"
         onChange={(event) => {
           const value = event.target.value
