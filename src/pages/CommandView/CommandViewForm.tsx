@@ -217,7 +217,7 @@ const CommandViewForm = ({
             data: payload,
             withCredentials: authEnabled,
           })
-            .then((response: AxiosResponse<Request | Job>) => {
+            .then((response: AxiosResponse<Job>) => {
               navigate(forwardPath + response.data.id)
             })
             .catch((error) => {
@@ -231,7 +231,7 @@ const CommandViewForm = ({
           data: payload,
           withCredentials: authEnabled,
         })
-          .then((response: AxiosResponse<Request | Job>) => {
+          .then((response: AxiosResponse<Request>) => {
             navigate(forwardPath + response.data.id)
           })
           .catch((error) => {

@@ -8,7 +8,7 @@ import {
   MemoryProvider,
   SuspendedProviders,
 } from 'test/testMocks'
-import { TAdmin } from 'test/user-test-values'
+import { TAdmin, TUser } from 'test/user-test-values'
 
 import { Routes } from './Routes'
 
@@ -16,6 +16,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
 }))
+
+afterAll(() => {
+  jest.unmock('react-router-dom')
+  jest.clearAllMocks()
+})
 
 describe('Routes basics', () => {
   test('Systems is default page', async () => {
@@ -206,7 +211,7 @@ describe('Routes with auth enabled, has access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('Login should be accessible', async () => {
+  test('Login should be accessible', async () => {
     jest
       .spyOn(Router, 'useParams')
       .mockReturnValue({ systemName: TSystem.name })
@@ -229,6 +234,7 @@ describe('Routes with auth enabled, has access', () => {
 describe('Routes with auth enabled, no access', () => {
   beforeAll(() => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TUser)
   })
   test('Users should not be accessible', async () => {
     render(
@@ -246,7 +252,7 @@ describe('Routes with auth enabled, no access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('Job should not be accessible', async () => {
+  test('Job should not be accessible', async () => {
     render(
       <LoggedInMemory startLocation={['/jobs']}>
         <Routes />
@@ -262,7 +268,7 @@ describe('Routes with auth enabled, no access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('System Admin should not be accessible', async () => {
+  test('System Admin should not be accessible', async () => {
     render(
       <LoggedInMemory startLocation={['/admin/systems']}>
         <Routes />
@@ -278,7 +284,7 @@ describe('Routes with auth enabled, no access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('Garden Admin should not be accessible', async () => {
+  test('Garden Admin should not be accessible', async () => {
     render(
       <LoggedInMemory startLocation={['/admin/gardens']}>
         <Routes />
@@ -294,7 +300,7 @@ describe('Routes with auth enabled, no access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('Command Blocklist should not be accessible', async () => {
+  test('Command Blocklist should not be accessible', async () => {
     jest
       .spyOn(Router, 'useParams')
       .mockReturnValue({ systemName: TSystem.name })
