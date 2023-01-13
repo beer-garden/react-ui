@@ -20,7 +20,7 @@ import { Snackbar } from 'components/Snackbar'
 import { SocketContainer } from 'containers/SocketContainer'
 import { useRunners } from 'hooks/useRunners'
 import { alertStyle } from 'pages/SystemAdmin'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Runner } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
@@ -32,7 +32,7 @@ const UnassociatedRunnersCard = () => {
   const { getRunners, startRunner, stopRunner, reloadRunner, deleteRunner } =
     useRunners()
 
-  const updateRunners = () => {
+  const updateRunners = useCallback(() => {
     getRunners()
       .then((response) => {
         setUnassociatedRunners(
@@ -48,12 +48,11 @@ const UnassociatedRunnersCard = () => {
           doNotAutoDismiss: true,
         })
       })
-  }
+  }, [getRunners])
 
   useEffect(() => {
     updateRunners()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [updateRunners])
 
   useEffect(() => {
     addCallback('runner_updates', (event) => {

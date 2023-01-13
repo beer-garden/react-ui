@@ -28,12 +28,13 @@ const usePermissions = () => {
   const { getSystems } = useSystems()
   const { getUser } = useUsers()
 
-  const resetPerms = () => {
+  const resetPerms = useCallback(() => {
     cookies.remove('globalPerms', { path: '/' })
     cookies.remove('domainPerms', { path: '/' })
     setGlobalPerms(undefined)
     setDomainPerms(undefined)
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const isPermissionsSet = (): boolean => {
     return globalPerms !== undefined && domainPerms !== undefined
@@ -62,7 +63,7 @@ const usePermissions = () => {
       resetPerms()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [DEBUG_PERMISSION, user])
+  }, [DEBUG_PERMISSION, getUser, resetPerms, tokenExpiration, user])
 
   useEffect(() => {
     const storageListener = async (event: WindowEventMap['storage']) => {

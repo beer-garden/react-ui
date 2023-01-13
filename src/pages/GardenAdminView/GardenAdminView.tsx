@@ -11,7 +11,7 @@ import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
 import { GardenAdminInfoCard } from 'pages/GardenAdminView'
 import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -30,7 +30,7 @@ const GardenAdminView = () => {
 
   const gardenName = String(params.gardenName)
 
-  const fetchGarden = () =>
+  const fetchGarden = useCallback(() => {
     getGarden(gardenName)
       .then((response) => setGarden(response.data))
       .catch((error) => {
@@ -40,11 +40,11 @@ const GardenAdminView = () => {
           doNotAutoDismiss: true,
         })
       })
+  }, [gardenName, getGarden])
 
   useEffect(() => {
     fetchGarden()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchGarden])
 
   useEffect(() => {
     addCallback('garden_updates', (event) => {
@@ -58,8 +58,7 @@ const GardenAdminView = () => {
     return () => {
       removeCallback('garden_updates')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addCallback, removeCallback, gardenName, getGarden])
+  }, [addCallback, removeCallback, gardenName, getGarden, fetchGarden])
 
   const { updateGarden } = useGardens()
 

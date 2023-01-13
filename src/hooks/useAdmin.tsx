@@ -2,6 +2,7 @@ import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { useCallback } from 'react'
 import { PatchData } from 'types/backend-types'
 import { EmptyObject } from 'types/custom-types'
 
@@ -10,7 +11,7 @@ const useAdmin = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const rescanPluginDirectory = (): AxiosPromise<EmptyObject> => {
+  const rescanPluginDirectory = useCallback((): AxiosPromise<EmptyObject> => {
     const patchData = {
       operation: 'rescan',
     }
@@ -22,7 +23,8 @@ const useAdmin = () => {
     }
 
     return execute(config)
-  }
+  }, [authEnabled, execute])
+
   return { rescanPluginDirectory }
 }
 

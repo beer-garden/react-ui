@@ -71,8 +71,8 @@ const CommandIndex = () => {
     return () => {
       mounted = false
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [includeHidden, namespace, systemName, version])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getSystems, includeHidden, namespace, systemName, version])
 
   const columns = useCommandIndexTableColumns(permission)
   const breadcrumbs = [namespace, systemName, version]

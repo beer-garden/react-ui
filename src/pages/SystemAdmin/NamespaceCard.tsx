@@ -17,7 +17,7 @@ import {
   systemsSeverity,
 } from 'pages/SystemAdmin'
 import SystemCard from 'pages/SystemAdmin/SystemAdminCard'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { System } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
@@ -33,17 +33,21 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const { addCallback, removeCallback } = SocketContainer.useContainer()
 
-  const fetchPermissions = (systems: System[]) => {
-    if (systems[0]) {
-      hasSystemPermission('system:update', namespace, systems[0].id).then(
-        (response) => {
-          setPermission(response || false)
-        },
-      )
-    }
-  }
+  const fetchPermissions = useCallback(
+    (systems: System[]) => {
+      if (systems[0]) {
+        hasSystemPermission('system:update', namespace, systems[0].id).then(
+          (response) => {
+            setPermission(response || false)
+          },
+        )
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [namespace],
+  )
 
-  const updateSystems = () => {
+  const updateSystems = useCallback(() => {
     getSystems()
       .then((response) => {
         return response.data
@@ -70,7 +74,7 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
           doNotAutoDismiss: true,
         })
       })
-  }
+  }, [fetchPermissions, getSystems, namespace])
 
   useEffect(() => {
     addCallback('system_updates', (event) => {
@@ -84,13 +88,11 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
     return () => {
       removeCallback('system_updates')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addCallback, removeCallback])
+  }, [addCallback, removeCallback, updateSystems])
 
   useEffect(() => {
     updateSystems()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [updateSystems])
 
   const handleExpandClick = () => {
     setExpanded(!expanded)

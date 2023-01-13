@@ -1,10 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import Router from 'react-router-dom'
-import { mockAxios, regexUsers } from 'test/axios-mock'
+import { mockAxios } from 'test/axios-mock'
 import { TSystem } from 'test/system-test-values'
-import { TServerAuthConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
-import { TAdmin, TUser } from 'test/user-test-values'
 
 import { CommandIndex } from './CommandIndex'
 
@@ -174,8 +173,13 @@ describe('CommandIndex', () => {
   })
 
   test('execute button column if permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasPermission: jest.fn(),
+      hasGardenPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+      hasSystemPermission: () => Promise.resolve(true),
+    })
     jest.spyOn(Router, 'useParams').mockReturnValue({
       systemName: TSystem.name,
       namespace: TSystem.namespace,
@@ -193,8 +197,13 @@ describe('CommandIndex', () => {
   })
 
   test('no execute column if no permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TUser)
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasPermission: jest.fn(),
+      hasGardenPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+      hasSystemPermission: () => Promise.resolve(true),
+    })
     jest.spyOn(Router, 'useParams').mockReturnValue({
       systemName: TSystem.name,
       namespace: TSystem.namespace,

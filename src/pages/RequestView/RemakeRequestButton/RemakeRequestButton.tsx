@@ -51,8 +51,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
           .pop(),
       )
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [commandName, getSystems, namespace, systemName, systemVersion])
 
   if (
     !setSystem ||

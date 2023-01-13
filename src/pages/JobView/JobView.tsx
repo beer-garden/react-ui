@@ -18,7 +18,7 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -87,7 +87,7 @@ const JobView = () => {
       })
   }
 
-  const fetchJob = () => {
+  const fetchJob = useCallback(() => {
     if (id) {
       getJob(id)
         .then((response) => {
@@ -105,12 +105,12 @@ const JobView = () => {
           setErrorFetch(e)
         })
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getJob, id])
 
   useEffect(() => {
     fetchJob()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [fetchJob, id])
 
   const getUrl = useMemo(() => {
     if (job) {

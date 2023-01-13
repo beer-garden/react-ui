@@ -22,7 +22,7 @@ import { DefaultCellRenderer } from 'components/Table/defaults'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useUsers from 'hooks/useUsers'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Column } from 'react-table'
 import { User } from 'types/backend-types'
 import { ObjectWithStringKeys, SyncUser } from 'types/custom-types'
@@ -72,15 +72,10 @@ export const UsersIndex = () => {
   const [users, setUsers] = useState<SyncUser[]>([])
   const { getUsers } = useUsers()
 
-  useEffect(() => {
-    updateUsers()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   /**
    * Fetch fresh list of users and set to useState
    */
-  const updateUsers = () => {
+  const updateUsers = useCallback(() => {
     getUsers()
       .then((response) => {
         const tmpUsers: SyncUser[] = []
@@ -100,7 +95,11 @@ export const UsersIndex = () => {
         setUsers(tmpUsers)
       })
       .catch((e) => setErrorFetch(e))
-  }
+  }, [getUsers])
+
+  useEffect(() => {
+    updateUsers()
+  }, [updateUsers])
 
   /**
    * Populate table data

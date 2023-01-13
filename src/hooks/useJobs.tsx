@@ -2,6 +2,7 @@ import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import useAxios from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { useCallback } from 'react'
 import { Job, PatchOperation } from 'types/backend-types'
 import { EmptyObject } from 'types/custom-types'
 
@@ -12,103 +13,118 @@ const useJobs = () => {
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
 
-  const getJobs = (): AxiosPromise<Job[]> => {
+  const getJobs = useCallback((): AxiosPromise<Job[]> => {
     const config: AxiosRequestConfig = {
       url: JOBS_URL,
       method: 'get',
       withCredentials: authEnabled,
     }
     return execute(config)
-  }
+  }, [authEnabled, execute])
 
-  const getJob = (id: string): AxiosPromise<Job> => {
-    const config: AxiosRequestConfig = {
-      url: `${JOBS_URL}/${id}`,
-      method: 'get',
-      withCredentials: authEnabled,
-    }
-    return execute(config)
-  }
+  const getJob = useCallback(
+    (id: string): AxiosPromise<Job> => {
+      const config: AxiosRequestConfig = {
+        url: `${JOBS_URL}/${id}`,
+        method: 'get',
+        withCredentials: authEnabled,
+      }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const importJobs = (fileData: string): AxiosPromise<{ ids: string[] }> => {
-    const config: AxiosRequestConfig<string> = {
-      url: '/api/v1/import/jobs',
-      method: 'POST',
-      data: fileData,
-      withCredentials: authEnabled,
-    }
-    return execute(config)
-  }
+  const importJobs = useCallback(
+    (fileData: string): AxiosPromise<{ ids: string[] }> => {
+      const config: AxiosRequestConfig<string> = {
+        url: '/api/v1/import/jobs',
+        method: 'POST',
+        data: fileData,
+        withCredentials: authEnabled,
+      }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const exportJobs = (): AxiosPromise<Job[]> => {
+  const exportJobs = useCallback((): AxiosPromise<Job[]> => {
     const config: AxiosRequestConfig = {
       url: '/api/v1/export/jobs',
       method: 'POST',
       withCredentials: authEnabled,
     }
     return execute(config)
-  }
+  }, [authEnabled, execute])
 
-  const pauseJob = (id: string): AxiosPromise<Job> => {
-    const patchData = {
-      operations: [
-        {
-          operation: 'update',
-          path: '/status',
-          value: 'PAUSED',
-        },
-      ],
-    }
-    const config: AxiosRequestConfig<PatchOperation> = {
-      url: `${JOBS_URL}/${id}`,
-      method: 'patch',
-      data: patchData,
-      withCredentials: authEnabled,
-    }
-    return execute(config)
-  }
+  const pauseJob = useCallback(
+    (id: string): AxiosPromise<Job> => {
+      const patchData = {
+        operations: [
+          {
+            operation: 'update',
+            path: '/status',
+            value: 'PAUSED',
+          },
+        ],
+      }
+      const config: AxiosRequestConfig<PatchOperation> = {
+        url: `${JOBS_URL}/${id}`,
+        method: 'patch',
+        data: patchData,
+        withCredentials: authEnabled,
+      }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const deleteJob = (id: string): AxiosPromise<EmptyObject> => {
-    const config: AxiosRequestConfig = {
-      url: `${JOBS_URL}/${id}`,
-      method: 'DELETE',
-      withCredentials: authEnabled,
-    }
-    return execute(config)
-  }
+  const deleteJob = useCallback(
+    (id: string): AxiosPromise<EmptyObject> => {
+      const config: AxiosRequestConfig = {
+        url: `${JOBS_URL}/${id}`,
+        method: 'DELETE',
+        withCredentials: authEnabled,
+      }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const resumeJob = (id: string): AxiosPromise<Job> => {
-    const patchData = {
-      operations: [
-        {
-          operation: 'update',
-          path: '/status',
-          value: 'RUNNING',
-        },
-      ],
-    }
-    const config: AxiosRequestConfig<PatchOperation> = {
-      url: `${JOBS_URL}/${id}`,
-      method: 'patch',
-      data: patchData,
-      withCredentials: authEnabled,
-    }
-    return execute(config)
-  }
+  const resumeJob = useCallback(
+    (id: string): AxiosPromise<Job> => {
+      const patchData = {
+        operations: [
+          {
+            operation: 'update',
+            path: '/status',
+            value: 'RUNNING',
+          },
+        ],
+      }
+      const config: AxiosRequestConfig<PatchOperation> = {
+        url: `${JOBS_URL}/${id}`,
+        method: 'patch',
+        data: patchData,
+        withCredentials: authEnabled,
+      }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
-  const runAdHoc = (
-    id: string,
-    resetInterval: boolean,
-  ): AxiosPromise<EmptyObject> => {
-    const config: AxiosRequestConfig<boolean> = {
-      url: `${JOBS_URL}/${id}/execute`,
-      method: 'POST',
-      data: resetInterval,
-      withCredentials: authEnabled,
-    }
+  const runAdHoc = useCallback(
+    (id: string, resetInterval: boolean): AxiosPromise<EmptyObject> => {
+      const config: AxiosRequestConfig<boolean> = {
+        url: `${JOBS_URL}/${id}/execute`,
+        method: 'POST',
+        data: resetInterval,
+        withCredentials: authEnabled,
+      }
 
-    return execute(config)
-  }
+      return execute(config)
+    },
+    [authEnabled, execute],
+  )
 
   return {
     getJobs,

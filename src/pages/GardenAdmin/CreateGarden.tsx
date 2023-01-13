@@ -33,8 +33,6 @@ const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
         setOpen(false)
       })
       .catch((error) => {
-        console.error('ERROR', error)
-
         if (error.response && error.response.statusText) {
           setRequestStatus({
             severity: 'error',
