@@ -4,14 +4,14 @@ import { useSystems } from 'hooks/useSystems'
 import { CannotReExecuteButton } from 'pages/RequestView/RemakeRequestButton'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Request, System } from 'types/backend-types'
+import { Request } from 'types/backend-types'
 import { SystemCommandPair } from 'types/custom-types'
 import {
   CommandViewModelComment,
   CommandViewModelParameters,
   CommandViewRequestModel,
 } from 'types/form-model-types'
-import { commandsPairer } from 'utils/commandFormatters'
+import { commandsPairer, systemFilter } from 'utils/commandFormatters'
 
 interface RemakeRequestButtonProps {
   request: Request
@@ -39,12 +39,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     getSystems().then((response) => {
       setSystemCommandPair(
         response.data
-          .filter(
-            (s: System) =>
-              s.name === systemName &&
-              s.version === systemVersion &&
-              s.namespace === namespace,
-          )
+          .filter(systemFilter(systemName, systemVersion, namespace))
           .map(commandsPairer)
           .flat()
           .filter((p: SystemCommandPair) => p.command.name === commandName)

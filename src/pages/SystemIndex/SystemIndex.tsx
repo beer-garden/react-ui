@@ -18,16 +18,16 @@ const SystemsIndex = () => {
   const { getSystems } = useSystems()
 
   useEffect(() => {
-    let mounted = true
+    let isMounted = true
     getSystems()
       .then((response) => {
-        if (mounted) setSystems(response.data)
+        if (isMounted) setSystems(response.data)
       })
       .catch((e) => {
-        if (mounted) setError(e)
+        if (isMounted) setError(e)
       })
     return () => {
-      mounted = false
+      isMounted = false
     }
   }, [getSystems])
 

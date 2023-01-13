@@ -7,7 +7,7 @@ import {
 } from 'types/backend-types'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
-interface DisplayTrigger {
+export interface DisplayTrigger {
   trigger: TriggerType
   triggerData: ObjectWithStringKeys
 }

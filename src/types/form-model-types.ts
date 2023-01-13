@@ -38,7 +38,7 @@ export interface CommandViewRequestModel {
   parameters: CommandViewModelParameters
 }
 
-type CommandViewJob = {
+export type CommandViewJob = {
   coalesce?: boolean
   max_instances?: number
   misfire_grace_time?: number
