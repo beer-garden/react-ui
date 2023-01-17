@@ -6,6 +6,7 @@ import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import {
+  getContext,
   getJobSchema,
   getModel,
   getSchema,
@@ -91,8 +92,9 @@ const CommandView = () => {
   const schema = isJob
     ? getJobSchema(getSchema(instances, parameters))
     : getSchema(instances, parameters)
-  const uiSchema = getUiSchema(instances)
+  const uiSchema = getUiSchema(instances, theCommand)
   const validator = getValidator(parameters)
+  const context = getContext(parameters)
 
   let model: CommandViewModel
 
@@ -117,6 +119,7 @@ const CommandView = () => {
           isReplay={Boolean(isReplay)}
           jobId={job?.id ?? undefined}
           validator={validator}
+          context={context}
         />
       </Box>
       {debugEnabled && (

@@ -149,7 +149,7 @@ const extractSubParameters = (
 
 const extractChoices = (
   parameter: StrippedParameter,
-): ParameterWithChoicesSchema => {
+): ParameterWithChoicesSchema | ParameterBasicCommonSchema => {
   /* 'multi' can be true or not; we ignore subparameters */
   const choiceType = lookupChoiceType[parameter.type as ChoiceType]
   // TODO: this only handles arrays; need objects and strings too (?)
@@ -158,8 +158,11 @@ const extractChoices = (
     : new Set([])
   const choiceArray = Array.from(choices)
   const emptyChoice = [''] as Array<string | number | object | null>
+  const isTypeAheadChoices = parameter.choices?.display === 'typeahead' ?? false
 
-  const enumObject = { enum: emptyChoice.concat(choiceArray) }
+  const enumObject = isTypeAheadChoices
+    ? []
+    : { enum: emptyChoice.concat(choiceArray) }
 
   const baseResult = getCommonResult(parameter)
 
@@ -170,7 +173,9 @@ const extractChoices = (
       items: {
         type: choiceType,
         title: parameter.display_name,
-        ...enumObject,
+        ...(enumObject as unknown as {
+          enum: (string | number | object | null)[]
+        }),
       },
     }
   } else {
@@ -251,7 +256,7 @@ const extractPlain = (parameter: StrippedParameter): ParametersPlain => {
   return plain
 }
 
-const extractProperties = (parameter: StrippedParameter) => {
+const extractProperties = (key: string, parameter: StrippedParameter) => {
   const hasSubParameters = parameter.parameters.length > 0
   const hasChoices = !(
     typeof parameter.choices === 'undefined' || parameter.choices === null
@@ -279,7 +284,10 @@ const extractProperties = (parameter: StrippedParameter) => {
     extractedProperties = extractPlain(parameter)
   }
 
-  return extractedProperties
+  return {
+    id: key,
+    ...extractedProperties,
+  }
 }
 
 const parametersToProperties = (
@@ -293,7 +301,7 @@ const parametersToProperties = (
     */
   return parameters.reduce((accumulator, parameter) => {
     const { key, ...rest } = parameter
-    return { ...accumulator, [key]: { ...extractProperties(rest) } }
+    return { ...accumulator, [key]: { ...extractProperties(key, rest) } }
   }, {})
 }
 
