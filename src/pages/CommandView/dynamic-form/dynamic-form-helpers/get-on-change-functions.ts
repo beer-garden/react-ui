@@ -3,6 +3,7 @@ import { FormikContextType } from 'formik'
 import {
   DynamicChoicesStateManager,
   isCommandChoiceWithArgs,
+  isSimpleCommandChoice,
 } from 'pages/CommandView/dynamic-form'
 import {
   DynamicProperties,
@@ -33,7 +34,11 @@ const getOnChangeFunctions = (
   )
 
   for (const parameter of parameters) {
-    if (parameter.choices && isCommandChoiceWithArgs(parameter.choices)) {
+    if (
+      parameter.choices &&
+      (isCommandChoiceWithArgs(parameter.choices) ||
+        isSimpleCommandChoice(parameter.choices))
+    ) {
       const dynamicChoiceParameterToBeUpdatedName = parameter.key
       const dynamicChoiceCommandDetails = parameter.choices
         .details as DynamicChoiceCommandDetails

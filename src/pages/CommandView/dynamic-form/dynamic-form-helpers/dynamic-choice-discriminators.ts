@@ -10,7 +10,7 @@ type factoryType = <T extends Command>(
 ) => (c: T) => boolean
 
 /* type predicate for run time */
-const isDynamicChoiceCommandValue = (
+export const isDynamicChoiceCommandValue = (
   arg: unknown,
 ): arg is DynamicChoiceCommandValue => {
   return (
@@ -29,7 +29,7 @@ const isDynamicChoiceCommandValue = (
 
 /* choices is populated by running a BG command without parameters; the
    command is determined solely by its name */
-const isSimpleCommandChoice = (choice: Choice) => {
+export const isSimpleCommandChoice = (choice: Choice) => {
   if (choice.type === 'command' && typeof choice.value === 'string') {
     return (
       'args' in choice.details &&
@@ -43,7 +43,7 @@ const isSimpleCommandChoice = (choice: Choice) => {
 
 /* choices is populated by running a BG command without parameters; the
    command is determined by its name, system, version and instance */
-const isSimpleCommandFullySpecified = (choice: Choice) => {
+export const isSimpleCommandFullySpecified = (choice: Choice) => {
   if (choice.type === 'command' && typeof choice.value !== 'string') {
     return (
       isDynamicChoiceCommandValue(choice.value) &&
@@ -88,7 +88,7 @@ export const isCommandChoiceWithArgs = (choice: Choice) => {
 }
 
 /* choices is populated by retrieving a URL without query args */
-const isSimpleUrlChoice = (choice: Choice) => {
+export const isSimpleUrlChoice = (choice: Choice) => {
   return (
     choice.type === 'url' &&
     typeof choice.value === 'string' &&
@@ -100,7 +100,7 @@ const isSimpleUrlChoice = (choice: Choice) => {
 }
 
 /* choices is populated by retrieving a URL with query args */
-const isUrlChoiceWithArgs = (choice: Choice) => {
+export const isUrlChoiceWithArgs = (choice: Choice) => {
   if (choice.type === 'url') {
     /*
      * regular expression to match a string that looks like:

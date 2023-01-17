@@ -15,6 +15,7 @@ import {
   DynamicChoices,
   DynamicModel,
   isCommandChoiceWithArgs,
+  isSimpleCommandChoice,
   ReadyStatus,
 } from 'pages/CommandView/dynamic-form'
 import { Instance, Parameter } from 'types/backend-types'
@@ -226,7 +227,10 @@ const extractDynamicChoices = (
   for (const parameter of parameters) {
     const choice = parameter.choices
 
-    if (typeof choice !== 'undefined' && isCommandChoiceWithArgs(choice)) {
+    if (
+      typeof choice !== 'undefined' &&
+      (isCommandChoiceWithArgs(choice) || isSimpleCommandChoice(choice))
+    ) {
       dynamicChoices = {
         ...dynamicChoices,
         [parameter.key]: {
