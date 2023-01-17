@@ -87,7 +87,6 @@ const CommandIndex = () => {
   return !loading && !error ? (
     <Box>
       <PageHeader title="Commands" description="" />
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Divider />
       {commands.length > 0 ? (
         <Table tableKey={tableKey} data={commands} columns={columns}>
