@@ -1,11 +1,12 @@
+import { ParameterSchemaBasicType, ParameterSchemaType } from 'formHelpers'
 import { ParameterType } from 'types/backend-types'
 
-const lookupType: { [K in ParameterType]: string } = {
-  Base64: 'string', // TODO
+const lookupType: { [K in ParameterType]: ParameterSchemaBasicType } = {
+  Base64: 'string',
   String: 'string',
   Float: 'number',
   Integer: 'number',
-  Bytes: 'string', // TODO
+  Bytes: 'string',
   Dictionary: 'string',
   Date: 'string',
   DateTime: 'string',
@@ -13,7 +14,7 @@ const lookupType: { [K in ParameterType]: string } = {
   Any: 'string', // we treat this as a special case
 }
 
-type ChoiceType = 'String' | 'Float' | 'Integer' | 'Boolean'
+export type ChoiceType = 'String' | 'Float' | 'Integer' | 'Boolean'
 
 const lookupChoiceType: Pick<typeof lookupType, ChoiceType> = {
   String: 'string',
@@ -26,7 +27,7 @@ const getParameterType = (
   type: ParameterType,
   nullable: boolean,
   multi: boolean,
-) => {
+): ParameterSchemaType => {
   if (multi) {
     if (nullable) {
       return ['array', 'null']
@@ -35,9 +36,11 @@ const getParameterType = (
   }
 
   const resultType = lookupType[type]
-  const computedType = nullable ? [resultType, 'null'] : resultType
+  const computedType: ParameterSchemaType = nullable
+    ? [resultType, 'null']
+    : resultType
 
   return computedType
 }
 
-export { type ChoiceType, getParameterType, lookupChoiceType, lookupType }
+export { getParameterType, lookupChoiceType, lookupType }

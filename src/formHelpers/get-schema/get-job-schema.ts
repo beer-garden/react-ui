@@ -1,4 +1,4 @@
-import { getSchema } from './get-schema'
+import { getSchema, JobPropertiesSchema } from 'formHelpers'
 
 const jobSchema = {
   job: {
@@ -217,13 +217,19 @@ const jobSchema = {
   },
 }
 
-const getJobSchema = (baseSchema: ReturnType<typeof getSchema>) => {
-  return {
+export type JobPropertiesBasicSchema = typeof jobSchema
+
+const getJobSchema = (
+  baseSchema: ReturnType<typeof getSchema>,
+): JobPropertiesSchema => {
+  const result: JobPropertiesSchema = {
     properties: {
       ...baseSchema.properties,
       ...jobSchema,
     },
   }
+
+  return result
 }
 
 export { getJobSchema }

@@ -5,7 +5,9 @@ import {
   Parameter,
 } from 'types/backend-types'
 
-type factoryType = (c: (c: Choice) => boolean) => (c: Command) => boolean
+type factoryType = <T extends Command>(
+  c: (c: Choice) => boolean,
+) => (c: T) => boolean
 
 /* type predicate for run time */
 const isDynamicChoiceCommandValue = (
@@ -54,7 +56,7 @@ const isSimpleCommandFullySpecified = (choice: Choice) => {
   return false
 }
 
-const isCommandChoiceWithArgs = (choice: Choice) => {
+export const isCommandChoiceWithArgs = (choice: Choice) => {
   if (choice.type === 'command') {
     /*
      * regular expression to match a string that looks like:
@@ -130,7 +132,7 @@ const isUrlChoiceWithArgs = (choice: Choice) => {
 
 /* this is the odd man out, as the choice type is 'static' but we must
    process it as a dynamic choice */
-const isDictionaryChoice = (choice: Choice) => {
+export const isDictionaryChoice = (choice: Choice) => {
   if (
     typeof choice.value !== 'string' &&
     !Array.isArray(choice.value) &&
@@ -153,22 +155,6 @@ const isDictionaryChoice = (choice: Choice) => {
   return false
 }
 
-const parameterHasDynamicChoiceProperties = (parameter: Parameter) => {
-  return (
-    typeof parameter.choices !== 'undefined' &&
-    (parameter.choices.type !== 'static' ||
-      isDictionaryChoice(parameter.choices))
-  )
-}
-
-/* This is a shortcut function that determines whether a command has
-   dynamic choices in the most lightweight way possible. */
-const commandIsDynamic = (command: Command) => {
-  return command.parameters
-    .map(parameterHasDynamicChoiceProperties)
-    .some((x) => x)
-}
-
 /**
  * Given one of our Choice => boolean predicates, generates a
  * Command => boolean function that checks all parameters and sub-parameters
@@ -176,8 +162,10 @@ const commandIsDynamic = (command: Command) => {
  * @param func
  * @returns
  */
-const discriminatorCreator: factoryType = (func) => {
-  return (command: Command) => {
+const discriminatorCreator: factoryType = <T extends Command>(
+  func: (c: Choice) => boolean,
+) => {
+  return (command: T) => {
     const decideParameterAndSubParameters = (p: Parameter) => {
       return (
         (p.choices && func(p.choices)) ||
@@ -201,5 +189,3 @@ export const hasSimpleCommandFullySpecified = discriminatorCreator(
 export const hasSimpleUrlChoice = discriminatorCreator(isSimpleUrlChoice)
 export const hasUrlChoiceWithArgs = discriminatorCreator(isUrlChoiceWithArgs)
 export const hasDynamicDictionary = discriminatorCreator(isDictionaryChoice)
-
-export { commandIsDynamic, parameterHasDynamicChoiceProperties }

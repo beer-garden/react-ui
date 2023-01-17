@@ -1,11 +1,10 @@
 import {
   dictWithDynamicInstanceKeyCommand,
   dictWithDynamicNonInstanceKeyCommand,
+  dynamicCommandsList,
   dynamicCommandWithMultipleParameters,
   dynamicCommandWithSingleParameter,
   dynamicUrlWithSingleParameter,
-  paramNoChoices,
-  paramWithStaticChoice,
   selfReferringCommand,
   simpleDynamicCommand,
   simpleDynamicCommandFullySpecified,
@@ -15,49 +14,13 @@ import {
 } from 'test/dynamic-choice-discriminators.test-values'
 
 import {
-  commandIsDynamic,
   hasCommandChoiceWithArgs,
   hasDynamicDictionary,
   hasSimpleCommandChoice,
   hasSimpleCommandFullySpecified,
   hasSimpleUrlChoice,
   hasUrlChoiceWithArgs,
-  parameterHasDynamicChoiceProperties,
 } from './dynamic-choice-discriminators'
-
-const dynamicCommandsList = [
-  dictWithDynamicInstanceKeyCommand,
-  dictWithDynamicNonInstanceKeyCommand,
-  dynamicCommandWithMultipleParameters,
-  dynamicCommandWithSingleParameter,
-  dynamicUrlWithSingleParameter,
-  simpleDynamicCommand,
-  simpleDynamicCommandFullySpecified,
-  simpleDynamicCommandWithTypeahead,
-  simpleDynamicUrl,
-  simpleDynamicUrlNullable,
-  selfReferringCommand,
-]
-
-describe('hasDynamicChoiceProperties', () => {
-  describe('rejects non-dynamic parameters', () => {
-    test('no choices', () => {
-      expect(parameterHasDynamicChoiceProperties(paramNoChoices)).toBe(false)
-    })
-
-    test('parameter with only static choices', () => {
-      expect(parameterHasDynamicChoiceProperties(paramWithStaticChoice)).toBe(
-        false,
-      )
-    })
-  })
-})
-
-describe('commandIsDynamic', () => {
-  describe('accepts known dynamic commands from example plugins repo', () => {
-    expect(dynamicCommandsList.every(commandIsDynamic)).toBe(true)
-  })
-})
 
 describe('individual command predicates', () => {
   test('hasSimpleCommandChoice', () => {
@@ -68,8 +31,8 @@ describe('individual command predicates', () => {
     )
     expect(hasSimpleCommandChoice(simpleDynamicCommand)).toBe(true)
     expect(hasSimpleCommandChoice(simpleDynamicCommandWithTypeahead)).toBe(true)
-    expect(withoutSimpleDynamicCommands.some(hasSimpleCommandChoice)).toBe(
-      false,
+    expect(!withoutSimpleDynamicCommands.some(hasSimpleCommandChoice)).toBe(
+      true,
     )
   })
 
@@ -82,10 +45,10 @@ describe('individual command predicates', () => {
       hasSimpleCommandFullySpecified(simpleDynamicCommandFullySpecified),
     ).toBe(true)
     expect(
-      withoutFullySpecifiedSimpleDynamicCommand.some(
+      !withoutFullySpecifiedSimpleDynamicCommand.some(
         hasSimpleCommandFullySpecified,
       ),
-    ).toBe(false)
+    ).toBe(true)
   })
 
   test('hasSimpleUrlChoice', () => {
@@ -94,7 +57,7 @@ describe('individual command predicates', () => {
     )
     expect(hasSimpleUrlChoice(simpleDynamicUrl)).toBe(true)
     expect(hasSimpleUrlChoice(simpleDynamicUrlNullable)).toBe(true)
-    expect(withoutSimpleUrlDynamicCommands.some(hasSimpleUrlChoice)).toBe(false)
+    expect(!withoutSimpleUrlDynamicCommands.some(hasSimpleUrlChoice)).toBe(true)
   })
 
   test('hasCommandChoiceWithArgs', () => {
@@ -111,7 +74,7 @@ describe('individual command predicates', () => {
       true,
     )
     expect(hasCommandChoiceWithArgs(selfReferringCommand)).toBe(true)
-    expect(withoutCommandWithArgs.some(hasCommandChoiceWithArgs)).toBe(false)
+    expect(!withoutCommandWithArgs.some(hasCommandChoiceWithArgs)).toBe(true)
   })
 
   test('hasUrlChoiceWithArgs', () => {
@@ -119,7 +82,7 @@ describe('individual command predicates', () => {
       (item) => item !== dynamicUrlWithSingleParameter,
     )
     expect(hasUrlChoiceWithArgs(dynamicUrlWithSingleParameter)).toBe(true)
-    expect(withoutUrlChoiceWithArgs.some(hasUrlChoiceWithArgs)).toBe(false)
+    expect(!withoutUrlChoiceWithArgs.some(hasUrlChoiceWithArgs)).toBe(true)
   })
 
   test('hasDynamicDictionary', () => {
@@ -132,6 +95,6 @@ describe('individual command predicates', () => {
     expect(hasDynamicDictionary(dictWithDynamicNonInstanceKeyCommand)).toBe(
       true,
     )
-    expect(withoutDictionaryCommands.some(hasDynamicDictionary)).toBe(false)
+    expect(!withoutDictionaryCommands.some(hasDynamicDictionary)).toBe(true)
   })
 })

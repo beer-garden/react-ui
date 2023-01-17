@@ -15,6 +15,7 @@ const useDebugContainer = (
   const DEBUG_LOCAL_STORAGE = initialState.LOCAL_STORAGE
   const DEBUG_PERMISSION = initialState.PERMISSION
   const DEBUG_SOCKET = initialState.SOCKET
+  const DEBUG_DYNAMIC_COMMANDS = true
 
   return {
     DEBUG_LOGIN,
@@ -22,6 +23,7 @@ const useDebugContainer = (
     DEBUG_LOCAL_STORAGE,
     DEBUG_PERMISSION,
     DEBUG_SOCKET,
+    DEBUG_DYNAMIC_COMMANDS,
   }
 }
 

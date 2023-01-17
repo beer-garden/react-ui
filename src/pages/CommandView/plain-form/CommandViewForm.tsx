@@ -1,16 +1,17 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
 import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
-import { JsonCard } from 'components/JsonCard'
 import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { CommandBasicSchema, JobPropertiesSchema } from 'formHelpers'
 import {
   getSubmitArgument,
   prepareModelForSubmit,
 } from 'formHelpers/get-submit-argument'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { JSONSchema7 } from 'json-schema'
 import {
   cleanModelForDisplay,
   CustomFileWidget,
@@ -28,18 +29,16 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job, Request, RequestTemplate } from 'types/backend-types'
-import {
-  AugmentedCommand,
-  ObjectWithStringKeys,
-  SnackbarState,
-} from 'types/custom-types'
+import { AugmentedCommand, SnackbarState } from 'types/custom-types'
 import {
   CommandViewModel,
   CommandViewRequestModel,
 } from 'types/form-model-types'
 
+import { JobRequestFormModelPreview } from '../dynamic-form'
+
 interface CommandViewFormProps {
-  schema: ObjectWithStringKeys
+  schema: CommandBasicSchema | JobPropertiesSchema
   uiSchema: Record<string, unknown>
   initialModel: CommandViewModel
   command: AugmentedCommand
@@ -171,20 +170,20 @@ const CommandViewForm = ({
         data.append(fileData.parameterName as string, file, file.name)
       }
 
-      const config = {
+      const config: AxiosRequestConfig<FormData> = {
         url: '/api/v1/requests',
         method: 'post',
         data: data,
         headers: { 'Content-type': 'multipart/form-data' },
         withCredentials: authEnabled,
-      } as AxiosRequestConfig<FormData>
+      }
 
       execute(config)
         .then((response: AxiosResponse<Request>) => {
           navigate(forwardPath + response.data.id)
         })
-        .catch((error) => {
-          raiseError(error.toJSON())
+        .catch((error: AxiosError) => {
+          raiseError(JSON.stringify(error.toJSON()))
         })
     } else {
       if (isJob) {
@@ -259,7 +258,7 @@ const CommandViewForm = ({
           value={{ fileMetaData, setFileMetaData }}
         >
           <Form
-            schema={schema}
+            schema={schema as unknown as JSONSchema7}
             uiSchema={uiSchema}
             formData={model}
             onChange={onFormUpdated}
@@ -280,10 +279,8 @@ const CommandViewForm = ({
           </Form>
         </BytesParameterContext.Provider>
       </Box>
-      <Box pl={1} width={2 / 5} style={{ verticalAlign: 'top' }}>
-        <JsonCard title="Preview" data={displayModel} />
-      </Box>
       {submitStatus ? <Snackbar status={submitStatus} /> : null}
+      <JobRequestFormModelPreview data={displayModel} />
     </Box>
   )
 }

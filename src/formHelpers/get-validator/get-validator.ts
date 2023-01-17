@@ -7,7 +7,7 @@ import { getIntegerValidators } from './get-integer-validators'
 
 const getValidator = <T extends Record<string, unknown>>(
   parameters: Array<Parameter>,
-) => {
+): ((formData: T, errors: FormValidation) => FormValidation) => {
   const validators = [
     getAnyValidators(parameters),
     getDictionaryValidators(parameters),
