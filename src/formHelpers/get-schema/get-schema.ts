@@ -183,6 +183,7 @@ const extractChoices = (
       ...baseResult,
       type: choiceType,
       ...enumObject,
+      ...(isTypeAhead ? { isTypeAhead: true } : null),
     }
   }
 }
