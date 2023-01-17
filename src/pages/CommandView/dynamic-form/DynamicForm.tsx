@@ -7,6 +7,7 @@ import { CommandBasicSchema, getSchema } from 'formHelpers'
 import {
   CommandChoiceWithArgsForm,
   hasCommandChoiceWithArgs,
+  hasSimpleCommandChoice,
 } from 'pages/CommandView/dynamic-form'
 import { useParams } from 'react-router-dom'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
@@ -32,7 +33,7 @@ const DynamicForm = ({
     command.parameters,
   )
 
-  if (hasCommandChoiceWithArgs(command)) {
+  if (hasCommandChoiceWithArgs(command) || hasSimpleCommandChoice(command)) {
     form = CommandChoiceWithArgsForm(system, command, isJob)
   }
 
