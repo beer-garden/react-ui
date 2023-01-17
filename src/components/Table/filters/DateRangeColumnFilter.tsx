@@ -1,4 +1,5 @@
-import { Box, TextField } from '@mui/material'
+import { Search as SearchIcon } from '@mui/icons-material'
+import { Box, InputAdornment, TextField } from '@mui/material'
 import { DateTime } from 'luxon'
 import { useState } from 'react'
 import { FilterProps } from 'react-table'
@@ -53,6 +54,7 @@ const DateRangeColumnFilter = ({
       }}
     >
       <TextField
+        variant="standard"
         id={`${id}_1_datetime`}
         type="datetime-local"
         value={startDate}
@@ -64,12 +66,18 @@ const DateRangeColumnFilter = ({
           setStartDate(input)
           setStart(utc)
         }}
-        style={{
-          marginRight: '0.5rem',
+        sx={{ my: -0.5, ml: -1 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
         }}
       />
       to
       <TextField
+        variant="standard"
         id={`${id}_2_datetime`}
         type="datetime-local"
         value={endDate}
@@ -81,8 +89,13 @@ const DateRangeColumnFilter = ({
           setEndDate(input)
           setEnd(utc)
         }}
-        style={{
-          marginLeft: '0.5rem',
+        sx={{ my: -0.5, mr: -2 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
         }}
       />
     </Box>

@@ -1,4 +1,5 @@
-import { TextField, Tooltip } from '@mui/material'
+import { Search as SearchIcon } from '@mui/icons-material'
+import { InputAdornment, TextField, Tooltip } from '@mui/material'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { FilterProps } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
@@ -22,10 +23,18 @@ export const TextFilter = ({ column }: FilterProps<ObjectWithStringKeys>) => {
         name={id}
         hiddenLabel
         size="small"
+        sx={{ my: -0.5 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
         InputLabelProps={{ htmlFor: id + 'Filter' }}
         placeholder={id + ' filter'}
         value={value}
-        variant="outlined"
+        variant="standard"
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
             setFilter(value || undefined)
