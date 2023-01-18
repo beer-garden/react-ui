@@ -79,7 +79,7 @@ const getParameterMapper = (
   // the following is necessary due to a limitation of eslint
   // eslint-disable-next-line react/display-name
   return (parameter: ParameterEntry, index: number) => {
-    if ('enum' in parameter) {
+    if ('enum' in parameter || parameter.isTypeAhead) {
       const {
         name,
         title,
@@ -88,7 +88,6 @@ const getParameterMapper = (
         enum: theEnum,
         isTypeAhead,
       } = parameter
-
       return !theEnum || theEnum.length <= 1 ? (
         <DynamicChoiceParameterField
           key={name + '-' + index}
