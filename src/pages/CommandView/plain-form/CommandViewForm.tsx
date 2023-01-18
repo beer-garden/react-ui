@@ -19,6 +19,7 @@ import {
   FileMetaData,
   handleByteParametersReset,
   isByteCommand,
+  TypeAheadChoicesWidget,
 } from 'pages/CommandView'
 import {
   createContext,
@@ -29,7 +30,11 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job, Request, RequestTemplate } from 'types/backend-types'
-import { AugmentedCommand, SnackbarState } from 'types/custom-types'
+import {
+  AugmentedCommand,
+  ObjectWithStringKeys,
+  SnackbarState,
+} from 'types/custom-types'
 import {
   CommandViewModel,
   CommandViewRequestModel,
@@ -49,6 +54,7 @@ interface CommandViewFormProps {
     formData: T,
     errors: FormValidation,
   ) => FormValidation
+  context: ObjectWithStringKeys
 }
 
 type BytesParametersContextType = {
@@ -72,6 +78,7 @@ const CommandViewForm = ({
   isReplay,
   jobId,
   validator,
+  context,
 }: CommandViewFormProps) => {
   const [submitStatus, setSubmitStatus] = useState<SnackbarState | undefined>(
     undefined,
@@ -242,6 +249,7 @@ const CommandViewForm = ({
 
   const widgets = {
     FileWidget: CustomFileWidget,
+    TypeAheadChoices: TypeAheadChoicesWidget,
   }
 
   const submitFormRef = createRef<HTMLButtonElement>()
@@ -266,6 +274,7 @@ const CommandViewForm = ({
             onError={handleError}
             validate={validator}
             widgets={widgets}
+            formContext={context}
           >
             <ButtonGroup variant="contained" size="large">
               <Button onClick={onResetForm}>Reset</Button>

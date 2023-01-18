@@ -66,6 +66,7 @@ export interface ParameterBasicCommonSchema {
   title: string
   description: string
   default: ParameterSchemaDefaultType
+  id?: string
 }
 
 export type ParameterWithSubParametersMultiSchema =
