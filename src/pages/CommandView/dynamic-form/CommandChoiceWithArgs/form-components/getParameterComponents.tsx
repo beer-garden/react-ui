@@ -1,4 +1,10 @@
-import { MenuItem, TextField } from '@mui/material'
+import {
+  Autocomplete,
+  AutocompleteChangeReason,
+  AutocompleteInputChangeReason,
+  MenuItem,
+  TextField,
+} from '@mui/material'
 import { AxiosError } from 'axios'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ParameterAsProperty } from 'formHelpers'
@@ -8,7 +14,7 @@ import {
   DynamicExecuteFunction,
   OnChangeFunctionMap,
 } from 'pages/CommandView/dynamic-form'
-import { ChangeEvent, useMemo } from 'react'
+import { ChangeEvent, SyntheticEvent, useMemo } from 'react'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 interface ParameterBasics {
@@ -31,10 +37,12 @@ type DynamicChoiceParameterFieldProps = Omit<
   'type' | 'default'
 > & {
   stateManager: DynamicChoicesStateManager
+  isTypeAhead?: boolean
 }
 
 type ParameterEntry = ParameterBasics & {
   enum?: string[]
+  isTypeAhead?: boolean
 }
 
 type ParameterMapper = (
@@ -71,16 +79,15 @@ const getParameterMapper = (
   // the following is necessary due to a limitation of eslint
   // eslint-disable-next-line react/display-name
   return (parameter: ParameterEntry, index: number) => {
-    // TODO: only dropdowns are supported at this time
-    if ('enum' in parameter) {
+    if ('enum' in parameter || parameter.isTypeAhead) {
       const {
         name,
         title,
         description,
         default: theDefault,
         enum: theEnum,
+        isTypeAhead,
       } = parameter
-
       return !theEnum || theEnum.length <= 1 ? (
         <DynamicChoiceParameterField
           key={name + '-' + index}
@@ -88,6 +95,7 @@ const getParameterMapper = (
           title={title}
           description={description}
           stateManager={stateManager}
+          isTypeAhead={Boolean(isTypeAhead)}
         />
       ) : (
         <DropDownParameterField
@@ -165,6 +173,7 @@ const DynamicChoiceParameterField = ({
   title,
   description,
   stateManager,
+  isTypeAhead,
 }: DynamicChoiceParameterFieldProps) => {
   const context = useFormikContext<Record<string, unknown>>()
 
@@ -221,6 +230,61 @@ const DynamicChoiceParameterField = ({
     // we known the name won't change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateManager.choices])
+
+  if (isTypeAhead) {
+    const update = (newValue: string) => {
+      context.setFieldValue('parameters', {
+        ...(context.values.parameters as ObjectWithStringKeys),
+        [name]: newValue,
+      })
+      stateManager.model.set((prev) => {
+        return {
+          ...prev,
+          parameters: {
+            ...prev.parameters,
+            [name]: newValue,
+          },
+        }
+      })
+    }
+    const handleSelection = (
+      event: SyntheticEvent<Element, Event>,
+      value: string | null,
+      reason: AutocompleteChangeReason,
+    ) => {
+      if (reason === 'selectOption') {
+        update(value ?? '')
+      } else {
+        update('')
+      }
+    }
+    const onInputChange = (
+      event: SyntheticEvent<Element, Event>,
+      value: string,
+      reason: AutocompleteInputChangeReason,
+    ) => {
+      if (reason === 'clear') {
+        update('')
+      } else {
+        update(value)
+      }
+    }
+
+    return (
+      <Autocomplete
+        freeSolo
+        selectOnFocus
+        handleHomeEndKeys
+        autoComplete
+        autoHighlight
+        disabled={isDisabled}
+        renderInput={(params) => <TextField {...params} label={title} />}
+        options={values}
+        onChange={handleSelection}
+        onInputChange={onInputChange}
+      />
+    )
+  }
 
   return (
     <TextField

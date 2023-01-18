@@ -158,9 +158,9 @@ const extractChoices = (
     : new Set([])
   const choiceArray = Array.from(choices)
   const emptyChoice = [''] as Array<string | number | object | null>
-  const isTypeAheadChoices = parameter.choices?.display === 'typeahead' ?? false
+  const isTypeAhead = parameter.choices?.display === 'typeahead' ?? false
 
-  const enumObject = isTypeAheadChoices
+  const enumObject = isTypeAhead
     ? []
     : { enum: emptyChoice.concat(choiceArray) }
 
@@ -183,6 +183,7 @@ const extractChoices = (
       ...baseResult,
       type: choiceType,
       ...enumObject,
+      ...(isTypeAhead ? { isTypeAhead: true } : null),
     }
   }
 }
