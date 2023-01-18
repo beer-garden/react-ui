@@ -12,7 +12,6 @@ import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
-import { sanitize } from 'dompurify'
 import { useSystems } from 'hooks/useSystems'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -34,7 +33,7 @@ const CommandIndex = () => {
   const [loading, setLoading] = useState(true)
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
-  const [template, setTemplate] = useState<string>()
+  const [template, setTemplate] = useState<JSX.Element>()
   const { error, getSystems } = useSystems()
   const { namespace, systemName, version } = useParams() as IParam
 
@@ -68,11 +67,21 @@ const CommandIndex = () => {
 
             if (foundSystem.template) {
               if (config?.execute_javascript) {
-                setTemplate(
-                  sanitize(foundSystem.template, { ALLOWED_TAGS: ['script'] }),
-                )
+                // Trigger page loading and hide table
+                setTemplate(<></>)
+                setLoading(false)
+                // Dangerously set HTML with <script> etc intact and executed
+                const scriptEl = document
+                  .createRange()
+                  .createContextualFragment(foundSystem.template)
+                const mydiv = document.getElementById('dangerousPlaceholder')
+                mydiv?.append(scriptEl)
               } else {
-                setTemplate(sanitize(foundSystem.template))
+                setTemplate(
+                  <div
+                    dangerouslySetInnerHTML={{ __html: foundSystem.template }}
+                  />,
+                )
               }
             }
           }
@@ -102,8 +111,9 @@ const CommandIndex = () => {
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
+      <div id="dangerousPlaceholder" />
       {template ? (
-        <div dangerouslySetInnerHTML={{ __html: template }} />
+        template
       ) : commands.length > 0 ? (
         <Table tableKey={tableKey} data={commands} columns={columns}>
           <Box mb={2}>
