@@ -10,7 +10,9 @@ import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { sanitize } from 'dompurify'
 import { useSystems } from 'hooks/useSystems'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -26,11 +28,13 @@ interface IParam extends ObjectWithStringKeys {
 }
 
 const CommandIndex = () => {
+  const { config } = ServerConfigContainer.useContainer()
   const { hasSystemPermission } = PermissionsContainer.useContainer()
   const [permission, setPermission] = useState(false)
   const [loading, setLoading] = useState(true)
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
+  const [template, setTemplate] = useState<string>()
   const { error, getSystems } = useSystems()
   const { namespace, systemName, version } = useParams() as IParam
 
@@ -61,6 +65,16 @@ const CommandIndex = () => {
               if (mounted) setPermission(permCheck || false)
             }
             fetchPermission()
+
+            if (foundSystem.template) {
+              if (config?.execute_javascript) {
+                setTemplate(
+                  sanitize(foundSystem.template, { ALLOWED_TAGS: ['script'] }),
+                )
+              } else {
+                setTemplate(sanitize(foundSystem.template))
+              }
+            }
           }
           setLoading(false)
         }
@@ -88,7 +102,9 @@ const CommandIndex = () => {
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
-      {commands.length > 0 ? (
+      {template ? (
+        <div dangerouslySetInnerHTML={{ __html: template }} />
+      ) : commands.length > 0 ? (
         <Table tableKey={tableKey} data={commands} columns={columns}>
           <Box mb={2}>
             <Breadcrumbs breadcrumbs={breadcrumbs} />

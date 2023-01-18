@@ -1,6 +1,7 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { Breadcrumbs, CircularProgress } from '@mui/material'
 import { SupportedColorScheme } from '@mui/material/styles'
+import { sanitize } from 'dompurify'
 import ReactJson from 'react-json-view'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
@@ -46,7 +47,8 @@ const outputFormatted = (
         />
       )
     } else if (output_type === 'HTML') {
-      return <div dangerouslySetInnerHTML={{ __html: output }} />
+      const template = sanitize(output, { ALLOWED_TAGS: ['script'] })
+      return <div dangerouslySetInnerHTML={{ __html: template }} />
     }
   } else {
     return (
