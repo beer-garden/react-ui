@@ -65,7 +65,7 @@ const CommandIndex = () => {
             }
             fetchPermission()
 
-            if (foundSystem.template) {
+            if (foundSystem.template.length > 0) {
               if (config?.execute_javascript) {
                 // Trigger page loading and hide table
                 setTemplate(<></>)
@@ -111,7 +111,7 @@ const CommandIndex = () => {
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
-      <div id="dangerousPlaceholder" />
+      <div id="dangerousPlaceholder" data-testid="dangerous" />
       {template ? (
         template
       ) : commands.length > 0 ? (

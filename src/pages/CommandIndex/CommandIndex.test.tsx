@@ -1,8 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import Router from 'react-router-dom'
 import { mockAxios } from 'test/axios-mock'
 import { TSystem } from 'test/system-test-values'
+import { TServerConfig } from 'test/test-values'
 import { AllProviders, LoggedInProviders } from 'test/testMocks'
 
 import { CommandIndex } from './CommandIndex'
@@ -11,6 +13,12 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
 }))
+
+const templateHTML =
+  '<p>I am a template</p><div id="js-msg"></div>' +
+  '<script> document.getElementById("js-msg").innerHTML = "<p>... with JS!</p>" </script>'
+
+const templateSystem = { ...TSystem, template: templateHTML }
 
 describe('CommandIndex', () => {
   afterAll(() => {
@@ -172,6 +180,53 @@ describe('CommandIndex', () => {
     })
   })
 
+  test('system template no JS', async () => {
+    jest.spyOn(Router, 'useParams').mockReturnValue({
+      systemName: TSystem.name,
+      namespace: TSystem.namespace,
+      version: TSystem.version,
+    })
+    mockAxios.onGet('/api/v1/systems').reply(200, [templateSystem])
+    render(
+      <AllProviders>
+        <CommandIndex />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText('Commands')).toBeInTheDocument()
+    })
+    expect(screen.getByText('I am a template')).toBeInTheDocument()
+    expect(screen.queryByText('... with JS!')).not.toBeInTheDocument()
+    expect(screen.queryByText(TSystem.commands[0].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Error:/)).not.toBeInTheDocument()
+  })
+
+  test('system template with JS', async () => {
+    jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+      config: { ...TServerConfig, execute_javascript: true },
+      authEnabled: false,
+      debugEnabled: false,
+    })
+    jest.spyOn(Router, 'useParams').mockReturnValue({
+      systemName: TSystem.name,
+      namespace: TSystem.namespace,
+      version: TSystem.version,
+    })
+    mockAxios.onGet('/api/v1/systems').reply(200, [templateSystem])
+    render(
+      <AllProviders>
+        <CommandIndex />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText('Commands')).toBeInTheDocument()
+    })
+    expect(screen.getByText('I am a template')).toBeInTheDocument()
+    expect(screen.getByTestId('dangerous')).toHaveTextContent('... with JS!')
+    expect(screen.queryByText(TSystem.commands[0].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Error:/)).not.toBeInTheDocument()
+  })
+
   test('execute button column if permission', async () => {
     jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
       hasPermission: jest.fn(),
@@ -179,6 +234,11 @@ describe('CommandIndex', () => {
       hasJobPermission: jest.fn(),
       isPermissionsSet: jest.fn(),
       hasSystemPermission: () => Promise.resolve(true),
+    })
+    jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+      config: TServerConfig,
+      authEnabled: true,
+      debugEnabled: false,
     })
     jest.spyOn(Router, 'useParams').mockReturnValue({
       systemName: TSystem.name,
@@ -204,7 +264,11 @@ describe('CommandIndex', () => {
       isPermissionsSet: jest.fn(),
       hasSystemPermission: () => Promise.resolve(true),
     })
-
+    jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+      config: TServerConfig,
+      authEnabled: true,
+      debugEnabled: false,
+    })
     jest.spyOn(Router, 'useParams').mockReturnValue({
       systemName: TSystem.name,
       namespace: TSystem.namespace,
