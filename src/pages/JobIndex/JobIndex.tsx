@@ -8,6 +8,7 @@ import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
+import { useMountedState } from 'hooks/useMountedState'
 import { DropzoneArea } from 'mui-file-dropzone'
 import { JobTableData, useJobColumns } from 'pages/JobIndex'
 import { useCallback, useEffect, useState } from 'react'
@@ -19,15 +20,14 @@ import { dateFormatted } from 'utils/date-formatter'
 
 const JobIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
-  const [jobs, setJobs] = useState<Job[]>([])
+  const [jobs, setJobs] = useMountedState<Job[]>([])
   const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
   const [fileList, setFileList] = useState<string[]>([])
   const [openImport, setOpenImport] = useState<boolean>(false)
 
   const { getJobs, importJobs, exportJobs } = useJobs()
   const navigate = useNavigate()
-
-  const [errorFetch, setErrorFetch] = useState<AxiosError>()
+  const [errorFetch, setErrorFetch] = useMountedState<AxiosError>()
 
   const errorHandler = (e: string) => {
     setAlert({
@@ -45,7 +45,7 @@ const JobIndex = () => {
       .catch((e) => {
         setErrorFetch(e)
       })
-  }, [getJobs])
+  }, [getJobs, setErrorFetch, setJobs])
 
   useEffect(() => {
     fetchJobs()
@@ -98,22 +98,24 @@ const JobIndex = () => {
   }
 
   const jobData = useMemo((): JobTableData[] => {
-    return jobs.map((job: Job): JobTableData => {
-      return {
-        name: job.name,
-        status: job.status || '',
-        system: job.request_template.system,
-        instance: job.request_template.instance_name,
-        command: job.request_template.command,
-        nextRun: job.next_run_time
-          ? dateFormatted(new Date(job.next_run_time))
-          : '',
-        success: job.success_count || 0,
-        error: job.error_count || 0,
-        nameLink: `/jobs/${job.id}`,
-        systemLink: `/systems/${job.request_template.namespace}/${job.request_template.system}/${job.request_template.system_version}`,
-      }
-    })
+    return jobs
+      ? jobs.map((job: Job): JobTableData => {
+          return {
+            name: job.name,
+            status: job.status || '',
+            system: job.request_template.system,
+            instance: job.request_template.instance_name,
+            command: job.request_template.command,
+            nextRun: job.next_run_time
+              ? dateFormatted(new Date(job.next_run_time))
+              : '',
+            success: job.success_count || 0,
+            error: job.error_count || 0,
+            nameLink: `/jobs/${job.id}`,
+            systemLink: `/systems/${job.request_template.namespace}/${job.request_template.system}/${job.request_template.system_version}`,
+          }
+        })
+      : []
   }, [jobs])
 
   const jobColumns = useJobColumns()
