@@ -121,6 +121,23 @@ const getOnChangeFunctions = (
           ),
         }
       }
+    } else if (
+      (isCommandChoiceWithArgs(parameter.choices) ||
+        isSimpleCommandChoice(parameter.choices)) &&
+      parameter.choices.display === 'typeahead'
+    ) {
+      if (parameterName in parametersThatCanInitiateUpdates) {
+        onChangeFunctions = {
+          ...onChangeFunctions,
+          [parameterName]: getOnChangeForDependency(
+            parameterName,
+            parametersThatCanInitiateUpdates[parameterName],
+            dynamicChoices,
+            parametersThatMustBeUpdatedNames,
+            stateManager,
+          ),
+        }
+      }
     }
   }
 
@@ -187,9 +204,8 @@ const getOnChangeForDependency = (
       )
     }
 
-    const updateDynamicState = () => {
+    const updateDynamicState = (selfRefers = false) => {
       const functions: VoidFunction[] = []
-
       for (const dynamicChoicesParameter of shouldUpdate) {
         const { args, commandProperties, dependsOn } =
           dynamicChoices[dynamicChoicesParameter]
@@ -208,9 +224,7 @@ const getOnChangeForDependency = (
           instance_name: instanceName,
           namespace: namespace,
           command: command,
-          command_type: 'INFO',
           parameters: commandParameters,
-          output_type: 'JSON',
         }
         const config: AxiosRequestConfig<RequestTemplate> = {
           url: '/api/v1/requests?blocking=true',
@@ -231,27 +245,28 @@ const getOnChangeForDependency = (
                   // update the model's value for the dynamic choice, the
                   // current value of the dynamic choice component and the
                   // form library's context for the dynamic parameter to zeroes
-                  stateManager.model.set((prev) => {
-                    return {
-                      ...prev,
-                      parameters: {
-                        ...prev.parameters,
-                        [dynamicChoicesParameter]: '',
-                      },
-                    }
-                  })
-                  stateManager.choice.set((prev) => {
-                    return {
-                      ...prev,
-                      [dynamicChoicesParameter]: {
-                        choice: '',
-                      },
-                    }
-                  })
-                  context.setFieldValue('parameters', {
-                    ...(context.values['parameters'] as ObjectWithStringKeys),
-                    [dynamicChoicesParameter]: '',
-                  })
+                  if (!selfRefers) {
+                    stateManager.model.set((prev) => {
+                      return {
+                        ...prev,
+                        parameters: {
+                          ...prev.parameters,
+                          [dynamicChoicesParameter]: '',
+                        },
+                      }
+                    })
+                  }
+
+                  if (!selfRefers) {
+                    stateManager.choice.set((prev) => {
+                      return {
+                        ...prev,
+                        [dynamicChoicesParameter]: {
+                          choice: '',
+                        },
+                      }
+                    })
+                  }
 
                   // update the choices that will be shown for the dynamic
                   // choices component
@@ -277,7 +292,7 @@ const getOnChangeForDependency = (
       }
     }
 
-    return (event: ChangeEvent<HTMLInputElement>) => {
+    return (event: ChangeEvent) => {
       if ('target' in event) {
         const target = event.target
 
@@ -286,13 +301,6 @@ const getOnChangeForDependency = (
             value: string
             name: string
           }
-
-          // update the form library's context object
-          const newContextParameters = {
-            ...(context.values['parameters'] as ObjectWithStringKeys),
-            [name]: value,
-          }
-          context.setFieldValue('parameters', newContextParameters)
 
           // update our tracked 'model' state
           stateManager.model.set((prev) => {
@@ -305,7 +313,11 @@ const getOnChangeForDependency = (
             }
           })
 
-          if (canUpdate()) updateDynamicState()
+          if (canUpdate()) {
+            const selfRefers =
+              'selfRefers' in target && Boolean(target['selfRefers'])
+            updateDynamicState(selfRefers)
+          }
         }
       }
     }
@@ -381,9 +393,7 @@ const getOnChangeForMustChoose = (
           instance_name: instanceName,
           namespace: namespace,
           command: command,
-          command_type: 'INFO',
           parameters: commandParameters,
-          output_type: 'JSON',
         }
         const config: AxiosRequestConfig<RequestTemplate> = {
           url: '/api/v1/requests?blocking=true',
@@ -422,10 +432,6 @@ const getOnChangeForMustChoose = (
                       },
                     }
                   })
-                  context.setFieldValue('parameters', {
-                    ...(context.values['parameters'] as ObjectWithStringKeys),
-                    [dynamicChoicesParameter]: '',
-                  })
 
                   // update the choices that will be shown for the dynamic
                   // choices component
@@ -451,7 +457,7 @@ const getOnChangeForMustChoose = (
       }
     }
 
-    return (event: ChangeEvent<HTMLInputElement>) => {
+    return (event: ChangeEvent) => {
       if ('target' in event) {
         const target = event.target
 
@@ -460,9 +466,6 @@ const getOnChangeForMustChoose = (
             value: string
             name: string
           }
-
-          // update the form library's context object
-          context.setFieldValue(name, value)
 
           // update our tracked 'ready' state
           stateManager.ready.set((prev) => {
