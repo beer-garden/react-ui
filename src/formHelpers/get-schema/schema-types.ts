@@ -1,4 +1,3 @@
-import { BasePickerProps } from '@mui/x-date-pickers/internals'
 import { JobPropertiesBasicSchema } from 'formHelpers'
 
 interface SingleInstance {

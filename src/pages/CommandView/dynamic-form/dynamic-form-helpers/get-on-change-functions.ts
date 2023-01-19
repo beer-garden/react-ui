@@ -17,7 +17,6 @@ import {
   Request,
   RequestTemplate,
 } from 'types/backend-types'
-import { ObjectWithStringKeys } from 'types/custom-types'
 
 const getOnChangeFunctions = (
   parameters: Parameter[],
