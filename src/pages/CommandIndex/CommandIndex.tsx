@@ -10,6 +10,7 @@ import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useSystems } from 'hooks/useSystems'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'
@@ -26,11 +27,13 @@ interface IParam extends ObjectWithStringKeys {
 }
 
 const CommandIndex = () => {
+  const { config } = ServerConfigContainer.useContainer()
   const { hasSystemPermission } = PermissionsContainer.useContainer()
   const [permission, setPermission] = useState(false)
   const [loading, setLoading] = useState(true)
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
+  const [template, setTemplate] = useState<JSX.Element>()
   const { error, getSystems } = useSystems()
   const { namespace, systemName, version } = useParams() as IParam
 
@@ -61,6 +64,26 @@ const CommandIndex = () => {
               if (mounted) setPermission(permCheck || false)
             }
             fetchPermission()
+
+            if (foundSystem.template.length > 0) {
+              if (config?.execute_javascript) {
+                // Trigger page loading and hide table
+                setTemplate(<></>)
+                setLoading(false)
+                // Dangerously set HTML with <script> etc intact and executed
+                const scriptEl = document
+                  .createRange()
+                  .createContextualFragment(foundSystem.template)
+                const mydiv = document.getElementById('dangerousPlaceholder')
+                mydiv?.append(scriptEl)
+              } else {
+                setTemplate(
+                  <div
+                    dangerouslySetInnerHTML={{ __html: foundSystem.template }}
+                  />,
+                )
+              }
+            }
           }
           setLoading(false)
         }
@@ -88,7 +111,10 @@ const CommandIndex = () => {
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />
-      {commands.length > 0 ? (
+      <div id="dangerousPlaceholder" data-testid="dangerous" />
+      {template ? (
+        template
+      ) : commands.length > 0 ? (
         <Table tableKey={tableKey} data={commands} columns={columns}>
           <Box mb={2}>
             <Breadcrumbs breadcrumbs={breadcrumbs} />

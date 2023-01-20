@@ -70,7 +70,7 @@ export const TSystem: System = {
   icon_name: 'trashcan',
   display_name: 'Test System',
   local: false,
-  template: 'template',
+  template: '',
 }
 
 export const TSystem2 = Object.assign({}, TSystem, {
