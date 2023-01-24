@@ -1,11 +1,5 @@
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useState,
-} from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { createContext, ReactNode, useContext } from 'react'
 import { Job } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewRequestModel } from 'types/form-model-types'
@@ -16,18 +10,18 @@ interface JobRequestCreationProviderProps {
 
 export interface JobRequestCreationProviderState {
   system: StrippedSystem | undefined
-  setSystem: Dispatch<SetStateAction<StrippedSystem | undefined>> | undefined
+  setSystem: ((arg0: StrippedSystem | undefined) => void) | undefined
   command: AugmentedCommand | undefined
-  setCommand: Dispatch<SetStateAction<AugmentedCommand | undefined>> | undefined
+  setCommand: ((arg0: AugmentedCommand | undefined) => void) | undefined
   isJob: boolean
-  setIsJob: Dispatch<SetStateAction<boolean>> | undefined
+  setIsJob: ((arg0: boolean) => void) | undefined
   isReplay: boolean
-  setIsReplay: Dispatch<SetStateAction<boolean>> | undefined
+  setIsReplay: ((arg0: boolean) => void) | undefined
   job: Job | undefined
-  setJob: Dispatch<SetStateAction<Job | undefined>> | undefined
+  setJob: ((arg0: Job | undefined) => void) | undefined
   requestModel: CommandViewRequestModel | undefined
   setRequestModel:
-    | Dispatch<SetStateAction<CommandViewRequestModel | undefined>>
+    | ((arg0: CommandViewRequestModel | undefined) => void)
     | undefined
 }
 
@@ -55,16 +49,14 @@ const JobRequestCreationContext =
 const JobRequestCreationProvider = ({
   children,
 }: JobRequestCreationProviderProps) => {
-  const [system, setSystem] = useState<StrippedSystem | undefined>(undefined)
-  const [job, setJob] = useState<Job | undefined>(undefined)
-  const [command, setCommand] = useState<AugmentedCommand | undefined>(
-    undefined,
-  )
-  const [isJob, setIsJob] = useState(false)
-  const [isReplay, setIsReplay] = useState(false)
-  const [requestModel, setRequestModel] = useState<
+  const [system, setSystem] = useMountedState<StrippedSystem | undefined>()
+  const [job, setJob] = useMountedState<Job | undefined>()
+  const [command, setCommand] = useMountedState<AugmentedCommand | undefined>()
+  const [isJob, setIsJob] = useMountedState(false)
+  const [isReplay, setIsReplay] = useMountedState(false)
+  const [requestModel, setRequestModel] = useMountedState<
     CommandViewRequestModel | undefined
-  >(undefined)
+  >()
 
   const value: JobRequestCreationProviderState = {
     system,

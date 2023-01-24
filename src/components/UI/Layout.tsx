@@ -3,8 +3,8 @@ import {
   closedDrawerWidth,
   openedDrawerWidth,
 } from 'components/UI/NavigationBar'
+import { useMountedState } from 'hooks/useMountedState'
 import { PropsWithChildren } from 'react'
-import * as React from 'react'
 
 const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
   let drawerIsPinned = localStorage.getItem('drawerIsPinned')
@@ -12,7 +12,7 @@ const Layout = ({ children }: PropsWithChildren<Record<never, never>>) => {
     drawerIsPinned = JSON.parse(drawerIsPinned)
   }
 
-  const [marginLeft, setMarginLeft] = React.useState(
+  const [marginLeft, setMarginLeft] = useMountedState<number>(
     drawerIsPinned ? openedDrawerWidth : closedDrawerWidth,
   )
 

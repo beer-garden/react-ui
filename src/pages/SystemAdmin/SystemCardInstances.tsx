@@ -19,9 +19,9 @@ import { ModalWrapper } from 'components/ModalWrapper'
 import OverflowTooltip from 'components/OverflowTooltip'
 import QueueModal from 'components/QueueModal'
 import { useInstances } from 'hooks/useInstances'
+import { useMountedState } from 'hooks/useMountedState'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { alertStyle, getSeverity } from 'pages/SystemAdmin'
-import { useState } from 'react'
 import { Instance } from 'types/backend-types'
 
 interface ISystemCard {
@@ -31,8 +31,8 @@ interface ISystemCard {
 
 const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
   const { startInstance, stopInstance } = useInstances()
-  const [logModal, setLogModal] = useState<boolean>(false)
-  const [queueModal, setQueueModal] = useState<boolean>(false)
+  const [logModal, setLogModal] = useMountedState<boolean>(false)
+  const [queueModal, setQueueModal] = useMountedState<boolean>(false)
 
   return (
     <>

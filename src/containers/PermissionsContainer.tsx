@@ -2,9 +2,10 @@ import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
 import useGardens from 'hooks/useGardens'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import useUsers from 'hooks/useUsers'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { DomainPermission, Garden, Job, System } from 'types/backend-types'
 import Cookies from 'universal-cookie'
 import { createContainer } from 'unstated-next'
@@ -14,10 +15,10 @@ const usePermissions = () => {
   const { DEBUG_PERMISSION } = DebugContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { user, tokenExpiration } = AuthContainer.useContainer()
-  const [globalPerms, setGlobalPerms] = useState<string[] | undefined>(
+  const [globalPerms, setGlobalPerms] = useMountedState<string[] | undefined>(
     cookies.get('globalPerms'),
   )
-  const [domainPerms, setDomainPerms] = useState<
+  const [domainPerms, setDomainPerms] = useMountedState<
     | {
         [key: string]: DomainPermission
       }

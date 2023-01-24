@@ -1,8 +1,9 @@
 import { Box, Stack, TextField } from '@mui/material'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { Snackbar } from 'components/Snackbar'
+import { useMountedState } from 'hooks/useMountedState'
 import useUsers from 'hooks/useUsers'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect } from 'react'
 import { SnackbarState } from 'types/custom-types'
 
 interface ModalProps {
@@ -12,12 +13,12 @@ interface ModalProps {
 }
 
 const NewUserModal = ({ open, setOpen, updateUsers }: ModalProps) => {
-  const [debounce, setDebounce] = useState<NodeJS.Timeout | undefined>()
-  const [error, setError] = useState<boolean>(false)
-  const [name, setName] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [confirm, setConfirm] = useState<string>('')
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [debounce, setDebounce] = useMountedState<NodeJS.Timeout | undefined>()
+  const [error, setError] = useMountedState<boolean>(false)
+  const [name, setName] = useMountedState<string>('')
+  const [password, setPassword] = useMountedState<string>('')
+  const [confirm, setConfirm] = useMountedState<string>('')
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
 
   const { createUser } = useUsers()
 

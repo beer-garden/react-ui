@@ -4,7 +4,8 @@ import {
   SnackbarProps as MuiSnackbarProps,
 } from '@mui/material'
 import { AlertColor, AlertProps } from '@mui/material/Alert'
-import { forwardRef, SyntheticEvent, useEffect, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { forwardRef, SyntheticEvent, useEffect } from 'react'
 import { SnackbarState } from 'types/custom-types'
 
 interface SnackbarArgs {
@@ -44,11 +45,11 @@ SnackbarAlert.displayName = 'SnackbarAlert'
 const Snackbar = (props: SnackbarProps) => {
   const { status, ...muiSnackbarProps } = props
   const { severity, message, showSeverity, doNotAutoDismiss } = status
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useMountedState<boolean>(true)
 
   useEffect(() => {
     setIsOpen(true)
-  }, [status])
+  }, [setIsOpen, status])
 
   const handleClose = (event: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') return

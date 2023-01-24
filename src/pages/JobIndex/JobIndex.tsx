@@ -21,13 +21,13 @@ import { dateFormatted } from 'utils/date-formatter'
 const JobIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const [jobs, setJobs] = useMountedState<Job[]>([])
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
   const [fileList, setFileList] = useState<string[]>([])
-  const [openImport, setOpenImport] = useState<boolean>(false)
+  const [openImport, setOpenImport] = useMountedState<boolean>(false)
 
   const { getJobs, importJobs, exportJobs } = useJobs()
   const navigate = useNavigate()
-  const [errorFetch, setErrorFetch] = useMountedState<AxiosError>()
+  const [errorFetch, setErrorFetch] = useMountedState<AxiosError | undefined>()
 
   const errorHandler = (e: string) => {
     setAlert({

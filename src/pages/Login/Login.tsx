@@ -2,8 +2,8 @@ import { Box, Button, Stack } from '@mui/material'
 import { Snackbar } from 'components/Snackbar'
 import { AuthContainer } from 'containers/AuthContainer'
 import { Form, Formik, FormikHelpers } from 'formik'
+import { useMountedState } from 'hooks/useMountedState'
 import { LoginTextField } from 'pages/Login'
-import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { SnackbarState } from 'types/custom-types'
 import * as Yup from 'yup'
@@ -23,7 +23,7 @@ const loginValidationSchema = () =>
 const Login = () => {
   const initialValues: LoginFormValues = { username: '', password: '' }
   const { login } = AuthContainer.useContainer()
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
   const { state } = useLocation()
   const navigate = useNavigate()
 

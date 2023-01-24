@@ -23,6 +23,7 @@ import {
 import OverflowTooltip from 'components/OverflowTooltip'
 import { Snackbar } from 'components/Snackbar'
 import { useInstances } from 'hooks/useInstances'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import {
   alertStyle,
@@ -31,7 +32,6 @@ import {
   systemsSeverity,
 } from 'pages/SystemAdmin'
 import SystemCardInstances from 'pages/SystemAdmin/SystemCardInstances'
-import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { System } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -39,8 +39,8 @@ import { SnackbarState } from 'types/custom-types'
 const SystemAdminCard = ({ systems }: { systems: System[] }) => {
   const { startAllInstances, stopAllInstances } = useInstances()
   const { reloadSystem, deleteSystem } = useSystems()
-  const [systemIndex, setSystemIndex] = useState(0)
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [systemIndex, setSystemIndex] = useMountedState<number>(0)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
 
   const handleChange = (event: SelectChangeEvent) => {
     setSystemIndex(parseInt(event.target.value))

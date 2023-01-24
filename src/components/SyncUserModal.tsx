@@ -5,6 +5,7 @@ import { Table } from 'components/Table'
 import { DefaultCellRenderer } from 'components/Table/defaults'
 import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
+import { useMountedState } from 'hooks/useMountedState'
 import { useEffect, useMemo, useState } from 'react'
 import { Column } from 'react-table'
 import { Garden } from 'types/backend-types'
@@ -51,7 +52,7 @@ const useTableColumns = () => {
 
 const SyncUserModal = ({ open, setOpen }: ModalProps) => {
   const [gardens, setGardens] = useState<SyncGarden[]>([])
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
 
   const { getGardens, syncUsers } = useGardens()
   const { addCallback, removeCallback } = SocketContainer.useContainer()
@@ -90,7 +91,7 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
     return () => {
       removeCallback('sync_users')
     }
-  }, [addCallback, gardens, removeCallback])
+  }, [addCallback, gardens, removeCallback, setGardens])
 
   useEffect(() => {
     setGardens([])
@@ -122,8 +123,9 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
           doNotAutoDismiss: true,
         })
       })
+    // adding 'gardens' causes infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getGardens, setAlert])
 
   return (
     <>
