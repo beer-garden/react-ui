@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  AutocompleteChangeReason,
   AutocompleteInputChangeReason,
   MenuItem,
   TextField,
@@ -9,6 +8,7 @@ import { AxiosError } from 'axios'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ParameterAsProperty } from 'formHelpers'
 import { useFormikContext } from 'formik'
+import { useDebounceOnEventFunction } from 'hooks/useDebounce'
 import {
   DynamicChoicesStateManager,
   DynamicExecuteFunction,
@@ -255,53 +255,7 @@ const DynamicChoiceParameterField = ({
       })
     }
 
-    let handleSelection = null
-
-    if (!selfRefers) {
-      handleSelection = (
-        event: SyntheticEvent<Element, Event>,
-        value: string | null,
-        reason: AutocompleteChangeReason,
-      ) => {
-        if (reason === 'selectOption') {
-          update(value ?? '')
-        } else {
-          update('')
-        }
-      }
-    } else {
-      handleSelection = (
-        event: SyntheticEvent<Element, Event>,
-        value: unknown,
-        reason: AutocompleteChangeReason,
-      ) => {
-        let theValue = ''
-        if (value !== null) theValue = value as string
-
-        if (name in onChangeFunctions) {
-          const onChangeFromMap = onChangeFunctions[name](
-            context,
-            execute,
-            (e: AxiosError<Record<string, unknown>>) =>
-              console.error(e.toJSON()),
-            authEnabled,
-          )
-          if (reason === 'selectOption') {
-            onChangeFromMap({
-              target: { value: theValue, name: name, selfRefers: true },
-            } as unknown as ChangeEvent)
-            update(theValue)
-          } else {
-            onChangeFromMap({
-              target: { value: '', name: name },
-            } as unknown as ChangeEvent)
-            update('')
-          }
-        }
-      }
-    }
-
-    let onInputChange = null
+    let onInputChange
 
     if (!selfRefers) {
       onInputChange = (
@@ -339,6 +293,9 @@ const DynamicChoiceParameterField = ({
       }
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const onInputChangeDebounce = useDebounceOnEventFunction(onInputChange, 500)
+
     return (
       <Autocomplete
         id={name + '-autocomplete'}
@@ -355,8 +312,7 @@ const DynamicChoiceParameterField = ({
           </li>
         )}
         options={values}
-        onChange={handleSelection}
-        onInputChange={onInputChange}
+        onInputChange={onInputChangeDebounce}
         filterOptions={(x) => x}
       />
     )

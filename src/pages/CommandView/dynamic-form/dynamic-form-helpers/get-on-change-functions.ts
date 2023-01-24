@@ -254,9 +254,7 @@ const getOnChangeForDependency = (
                         },
                       }
                     })
-                  }
 
-                  if (!selfRefers) {
                     stateManager.choice.set((prev) => {
                       return {
                         ...prev,
