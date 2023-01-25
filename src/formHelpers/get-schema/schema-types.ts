@@ -95,6 +95,7 @@ export type ParameterWithChoicesNonArraySchema = {
   type: ParameterSchemaBasicType
   enum: Array<string | number | object | null>
   isTypeAhead?: boolean
+  selfRefers?: boolean
 }
 
 export type ParameterWithChoicesSchema = ParameterBasicCommonSchema &

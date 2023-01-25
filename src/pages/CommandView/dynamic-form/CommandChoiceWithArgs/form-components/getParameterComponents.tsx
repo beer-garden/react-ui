@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  AutocompleteChangeReason,
   AutocompleteInputChangeReason,
   MenuItem,
   TextField,
@@ -9,6 +8,7 @@ import { AxiosError } from 'axios'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { ParameterAsProperty } from 'formHelpers'
 import { useFormikContext } from 'formik'
+import { useDebounceOnEventFunction } from 'hooks/useDebounce'
 import {
   DynamicChoicesStateManager,
   DynamicExecuteFunction,
@@ -36,13 +36,17 @@ type DynamicChoiceParameterFieldProps = Omit<
   ParameterBasics,
   'type' | 'default'
 > & {
+  onChangeFunctions: OnChangeFunctionMap
+  execute: DynamicExecuteFunction
   stateManager: DynamicChoicesStateManager
   isTypeAhead?: boolean
+  selfRefers?: boolean
 }
 
 type ParameterEntry = ParameterBasics & {
   enum?: string[]
   isTypeAhead?: boolean
+  selfRefers?: boolean
 }
 
 type ParameterMapper = (
@@ -87,6 +91,7 @@ const getParameterMapper = (
         default: theDefault,
         enum: theEnum,
         isTypeAhead,
+        selfRefers,
       } = parameter
       return !theEnum || theEnum.length <= 1 ? (
         <DynamicChoiceParameterField
@@ -94,8 +99,11 @@ const getParameterMapper = (
           name={name}
           title={title}
           description={description}
+          onChangeFunctions={onChangeFunctions}
+          execute={execute}
           stateManager={stateManager}
           isTypeAhead={Boolean(isTypeAhead)}
+          selfRefers={Boolean(selfRefers)}
         />
       ) : (
         <DropDownParameterField
@@ -172,10 +180,14 @@ const DynamicChoiceParameterField = ({
   name,
   title,
   description,
+  onChangeFunctions,
+  execute,
   stateManager,
   isTypeAhead,
+  selfRefers,
 }: DynamicChoiceParameterFieldProps) => {
   const context = useFormikContext<Record<string, unknown>>()
+  const { authEnabled } = ServerConfigContainer.useContainer()
 
   const onChange: (e: ChangeEvent<HTMLInputElement>) => void = (
     event: ChangeEvent<HTMLInputElement>,
@@ -227,16 +239,13 @@ const DynamicChoiceParameterField = ({
       return dynamicChoices[name].enum
     }
     return ['']
-    // we known the name won't change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateManager.choices])
+  }, [name, stateManager.choices])
+
+  let onInputChange
 
   if (isTypeAhead) {
     const update = (newValue: string) => {
-      context.setFieldValue('parameters', {
-        ...(context.values.parameters as ObjectWithStringKeys),
-        [name]: newValue,
-      })
       stateManager.model.set((prev) => {
         return {
           ...prev,
@@ -247,31 +256,50 @@ const DynamicChoiceParameterField = ({
         }
       })
     }
-    const handleSelection = (
-      event: SyntheticEvent<Element, Event>,
-      value: string | null,
-      reason: AutocompleteChangeReason,
-    ) => {
-      if (reason === 'selectOption') {
-        update(value ?? '')
-      } else {
-        update('')
-      }
-    }
-    const onInputChange = (
-      event: SyntheticEvent<Element, Event>,
-      value: string,
-      reason: AutocompleteInputChangeReason,
-    ) => {
-      if (reason === 'clear') {
-        update('')
-      } else {
-        update(value)
-      }
-    }
 
+    if (!selfRefers) {
+      onInputChange = (
+        event: SyntheticEvent<Element, Event>,
+        value: string,
+        reason: AutocompleteInputChangeReason,
+      ) => {
+        if (reason === 'clear') {
+          update('')
+        } else {
+          update(value)
+        }
+      }
+    } else {
+      onInputChange = (
+        event: SyntheticEvent<Element, Event>,
+        value: string,
+        reason: AutocompleteInputChangeReason,
+      ) => {
+        if (name in onChangeFunctions) {
+          let theValue = ''
+          if (value !== null) theValue = value as string
+          const onChangeFromMap = onChangeFunctions[name](
+            context,
+            execute,
+            (e: AxiosError<Record<string, unknown>>) =>
+              console.error(e.toJSON()),
+            authEnabled,
+          )
+
+          onChangeFromMap({
+            target: { value: theValue, name: name, selfRefers: true },
+          } as unknown as ChangeEvent)
+        }
+      }
+    }
+  }
+
+  const onInputChangeDebounce = useDebounceOnEventFunction(onInputChange, 500)
+
+  if (isTypeAhead) {
     return (
       <Autocomplete
+        id={name + '-autocomplete'}
         freeSolo
         selectOnFocus
         handleHomeEndKeys
@@ -279,9 +307,14 @@ const DynamicChoiceParameterField = ({
         autoHighlight
         disabled={isDisabled}
         renderInput={(params) => <TextField {...params} label={title} />}
+        renderOption={(props, option) => (
+          <li {...props} key={option}>
+            {option}
+          </li>
+        )}
         options={values}
-        onChange={handleSelection}
-        onInputChange={onInputChange}
+        onInputChange={onInputChangeDebounce}
+        filterOptions={(x) => x}
       />
     )
   }

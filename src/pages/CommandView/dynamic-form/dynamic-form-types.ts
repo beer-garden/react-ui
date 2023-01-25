@@ -19,7 +19,7 @@ export interface DynamicProperties {
   dependsOn: string[]
 }
 
-export type OnChangeFunction = (e: ChangeEvent<HTMLInputElement>) => void
+export type OnChangeFunction = (e: ChangeEvent) => void
 
 export type OnChangeGetterFunction = <T extends Record<string, unknown>>(
   context: FormikContextType<T>,

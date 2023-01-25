@@ -169,11 +169,11 @@ export interface RequestTemplate {
   instance_name: string
   namespace: string
   command: string
-  command_type: CommandType
+  command_type?: CommandType
   parameters: ObjectWithStringKeys | EmptyObject
   comment?: string
   metadata?: EmptyObject
-  output_type: OutputType
+  output_type?: OutputType
 }
 
 export interface System {
