@@ -1,7 +1,10 @@
+import { Close as CloseIcon } from '@mui/icons-material'
 import {
   Box,
   Checkbox,
   FormControlLabel,
+  Grid,
+  IconButton,
   Popover,
   Typography,
 } from '@mui/material'
@@ -50,15 +53,37 @@ const ColumnHidePage = <T extends ObjectWithStringKeys>({
         sx={{ padding: 24 }}
       >
         <Box sx={{ padding: 2 }}>
-          <Typography
-            sx={{
-              fontWeight: 500,
-              padding: '0 24px 24px 0',
-              textTransform: 'uppercase',
-            }}
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            Visible Columns
-          </Typography>
+            <Grid item>
+              <Typography
+                sx={{
+                  fontWeight: 500,
+                  padding: '0 24px 24px 0',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Visible Columns
+              </Typography>
+            </Grid>
+            <Grid item>
+              <IconButton
+                onClick={() => {
+                  onClose()
+                }}
+                sx={{ mt: -3 }}
+                size="small"
+                aria-label="close"
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
           <Box
             sx={{
               display: 'grid',
