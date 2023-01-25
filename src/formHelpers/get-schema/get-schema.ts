@@ -148,6 +148,7 @@ const extractSubParameters = (
 }
 
 const extractChoices = (
+  key: string,
   parameter: StrippedParameter,
 ): ParameterWithChoicesSchema | ParameterBasicCommonSchema => {
   /* 'multi' can be true or not; we ignore subparameters */
@@ -159,6 +160,13 @@ const extractChoices = (
   const choiceArray = Array.from(choices)
   const emptyChoice = [''] as Array<string | number | object | null>
   const isTypeAhead = parameter.choices?.display === 'typeahead' ?? false
+  const commandWithArgsRegex =
+    /^.+\(.+=\$\{.+\}(?:,\p{White_space}*.+=\$\{.+\})*\)$/
+  const selfRefers =
+    parameter.choices &&
+    typeof parameter.choices.value === 'string' &&
+    parameter.choices.value.match(commandWithArgsRegex) &&
+    parameter.choices.value.includes('${' + key + '}')
 
   const enumObject = isTypeAhead
     ? []
@@ -184,6 +192,7 @@ const extractChoices = (
       type: choiceType,
       ...enumObject,
       ...(isTypeAhead ? { isTypeAhead: true } : null),
+      ...(selfRefers ? { selfRefers: true } : null),
     }
   }
 }
@@ -276,7 +285,7 @@ const extractProperties = (key: string, parameter: StrippedParameter) => {
   if (hasSubParameters) {
     extractedProperties = extractSubParameters(parameter)
   } else if (hasChoices) {
-    extractedProperties = extractChoices(parameter)
+    extractedProperties = extractChoices(key, parameter)
   } else if (isMulti) {
     /* i.e. doesn't have sub params or choices */
     extractedProperties = extractMulti(parameter)
