@@ -25,7 +25,9 @@ const CommentField = ({ stateManager }: CommentFieldProps) => {
   useEffect(() => {
     context.setFieldValue('comment', value)
     setModel(value)
-  }, [context, setModel, value])
+    // context causes infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setModel, value])
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value)
