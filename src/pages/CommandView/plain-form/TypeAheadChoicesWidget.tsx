@@ -1,7 +1,5 @@
 import {
   Autocomplete,
-  AutocompleteChangeDetails,
-  AutocompleteChangeReason,
   AutocompleteInputChangeReason,
   TextField,
 } from '@mui/material'
@@ -17,8 +15,6 @@ const TypeAheadChoicesWidget = (props: WidgetProps) => {
   const handleSelection = (
     event: SyntheticEvent<Element, Event>,
     value: string | null,
-    reason: AutocompleteChangeReason,
-    details?: AutocompleteChangeDetails<string>,
   ) => {
     props.onChange(value)
   }

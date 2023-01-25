@@ -12,15 +12,13 @@ const CommentField = ({ stateManager }: CommentFieldProps) => {
 
   const [value, setValue] = useMountedState<string>('')
 
-  const setModel = useCallback(
-    (newValue: string) => {
-      stateManager.model.set({
-        ...stateManager.model.get(),
-        comment: newValue,
-      })
-    },
-    [stateManager.model],
-  )
+  const setModel = useCallback((newValue: string) => {
+    stateManager.model.set({
+      ...stateManager.model.get(),
+      comment: newValue,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     context.setFieldValue('comment', value)
