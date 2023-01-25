@@ -23,14 +23,14 @@ const useDebounceOnEventFunction = <
     reason: AutocompleteInputChangeReason,
   ) => void,
 >(
-  func: T,
+  func: T | undefined,
   delay: number,
 ): ((
   event: SyntheticEvent<Element, Event>,
   value: string,
   reason: AutocompleteInputChangeReason,
 ) => void) => {
-  const debounce = (func: T) => {
+  const debounce = (func: T | undefined) => {
     let timer: NodeJS.Timeout | null
     return (
       event: SyntheticEvent<Element, Event>,
@@ -40,7 +40,9 @@ const useDebounceOnEventFunction = <
       if (timer) clearTimeout(timer)
       timer = setTimeout(() => {
         timer = null
-        func(event, value, reason)
+        if (func) {
+          func(event, value, reason)
+        }
       }, delay)
     }
   }

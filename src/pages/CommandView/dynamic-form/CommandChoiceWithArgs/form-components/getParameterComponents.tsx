@@ -242,6 +242,8 @@ const DynamicChoiceParameterField = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, stateManager.choices])
 
+  let onInputChange
+
   if (isTypeAhead) {
     const update = (newValue: string) => {
       stateManager.model.set((prev) => {
@@ -254,8 +256,6 @@ const DynamicChoiceParameterField = ({
         }
       })
     }
-
-    let onInputChange
 
     if (!selfRefers) {
       onInputChange = (
@@ -292,10 +292,11 @@ const DynamicChoiceParameterField = ({
         }
       }
     }
+  }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const onInputChangeDebounce = useDebounceOnEventFunction(onInputChange, 500)
+  const onInputChangeDebounce = useDebounceOnEventFunction(onInputChange, 500)
 
+  if (isTypeAhead) {
     return (
       <Autocomplete
         id={name + '-autocomplete'}
