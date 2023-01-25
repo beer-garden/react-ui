@@ -11,7 +11,7 @@ import { useJobs } from 'hooks/useJobs'
 import { useMountedState } from 'hooks/useMountedState'
 import { DropzoneArea } from 'mui-file-dropzone'
 import { JobTableData, useJobColumns } from 'pages/JobIndex'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
@@ -22,7 +22,7 @@ const JobIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const [jobs, setJobs] = useMountedState<Job[]>([])
   const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
-  const [fileList, setFileList] = useState<string[]>([])
+  const [fileList, setFileList] = useMountedState<string[]>([])
   const [openImport, setOpenImport] = useMountedState<boolean>(false)
 
   const { getJobs, importJobs, exportJobs } = useJobs()
@@ -57,13 +57,14 @@ const JobIndex = () => {
   }
 
   const handleImport = (files: File[]) => {
+    const fileImportData: string[] = []
     files.forEach((file) => {
       const reader = new FileReader()
       reader.onload = (e) => {
         const result = reader.result
         try {
           JSON.parse(result as string)
-          setFileList((fileData) => [...fileData, result as string])
+          fileImportData.push(result as string)
         } catch (e) {
           setAlert({
             severity: 'error',
@@ -75,6 +76,7 @@ const JobIndex = () => {
       }
       reader.readAsText(file)
     })
+    setFileList(fileImportData)
   }
 
   const handleExport = () => {
