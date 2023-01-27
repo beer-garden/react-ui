@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
-import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
+import { FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
@@ -19,6 +19,7 @@ import {
   FileMetaData,
   handleByteParametersReset,
   isByteCommand,
+  removeOldTriggerKeys,
   TypeAheadChoicesWidget,
 } from 'pages/CommandView'
 import {
@@ -36,6 +37,7 @@ import {
   SnackbarState,
 } from 'types/custom-types'
 import {
+  CommandViewJobModel,
   CommandViewModel,
   CommandViewRequestModel,
 } from 'types/form-model-types'
@@ -102,11 +104,13 @@ const CommandViewForm = ({
     )
   }
 
-  const onFormUpdated = (
-    changeEvent: IChangeEvent,
-    es: ErrorSchema | undefined,
-  ) => {
+  const onFormUpdated = (changeEvent: IChangeEvent) => {
     const formData = changeEvent.formData as CommandViewModel
+    if (isJob) {
+      const oldTrigger = (displayModel as CommandViewJobModel).job.trigger
+      removeOldTriggerKeys(formData, oldTrigger)
+    }
+
     setModel(formData)
 
     const cleanedModel = cleanModelForDisplay(
