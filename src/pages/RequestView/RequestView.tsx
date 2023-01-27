@@ -14,19 +14,20 @@ import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { SocketContainer } from 'containers/SocketContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import { RequestViewOutput, RequestViewTable } from 'pages/RequestView'
 import { RemakeRequestButton } from 'pages/RequestView'
 import { getParentLinks } from 'pages/RequestView/requestViewHelpers'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
 
 const RequestView = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const theme = useContext(ThemeContext).theme
-  const [request, setRequest] = useState<Request>()
-  const [expandOutput, setExpandOutput] = useState(false)
-  const [expandParameter, setExpandParameter] = useState(false)
+  const [request, setRequest] = useMountedState<Request | undefined>()
+  const [expandOutput, setExpandOutput] = useMountedState<boolean>(false)
+  const [expandParameter, setExpandParameter] = useMountedState<boolean>(false)
   const { id } = useParams()
 
   const { addCallback, removeCallback } = SocketContainer.useContainer()
@@ -55,7 +56,7 @@ const RequestView = () => {
     if (data && !error) {
       setRequest(data)
     }
-  }, [data, error])
+  }, [data, error, setRequest])
 
   return request && !error ? (
     <>

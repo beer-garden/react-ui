@@ -11,8 +11,9 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
+import { useMountedState } from 'hooks/useMountedState'
 import useUsers from 'hooks/useUsers'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect } from 'react'
 import {
   DomainScope,
   Role,
@@ -30,7 +31,7 @@ interface ICard {
 }
 
 const RoleCard = ({ role, setAlert, roleKey, removeRole, setRole }: ICard) => {
-  const [roleNames, setRoles] = useState<string[]>([])
+  const [roleNames, setRoles] = useMountedState<string[]>([])
 
   const { getRoles } = useUsers()
 
@@ -62,7 +63,7 @@ const RoleCard = ({ role, setAlert, roleKey, removeRole, setRole }: ICard) => {
           doNotAutoDismiss: true,
         })
       })
-  }, [getRoles, setAlert])
+  }, [getRoles, setAlert, setRoles])
 
   return (
     <Card>

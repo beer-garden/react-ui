@@ -1,7 +1,8 @@
 import { TextField } from '@mui/material'
 import { useFormikContext } from 'formik'
+import { useMountedState } from 'hooks/useMountedState'
 import { DynamicChoicesStateManager } from 'pages/CommandView/dynamic-form'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect } from 'react'
 
 interface CommentFieldProps {
   stateManager: DynamicChoicesStateManager
@@ -9,20 +10,22 @@ interface CommentFieldProps {
 const CommentField = ({ stateManager }: CommentFieldProps) => {
   const context = useFormikContext<Record<string, unknown>>()
 
-  const [value, setValue] = useState('')
+  const [value, setValue] = useMountedState<string>('')
 
-  const setModel = (newValue: string) => {
+  const setModel = useCallback((newValue: string) => {
     stateManager.model.set({
       ...stateManager.model.get(),
       comment: newValue,
     })
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     context.setFieldValue('comment', value)
     setModel(value)
+    // context causes infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [setModel, value])
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value)

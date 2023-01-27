@@ -4,32 +4,29 @@ import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import {
   useSystemIndexTableColumns,
   useSystemIndexTableData,
 } from 'pages/SystemIndex'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { System } from 'types/backend-types'
 
 const SystemsIndex = () => {
-  const [systems, setSystems] = useState<System[]>([])
-  const [error, setError] = useState<AxiosError>()
+  const [systems, setSystems] = useMountedState<System[]>([])
+  const [error, setError] = useMountedState<AxiosError | undefined>()
   const { getSystems } = useSystems()
 
   useEffect(() => {
-    let isMounted = true
     getSystems()
       .then((response) => {
-        if (isMounted) setSystems(response.data)
+        setSystems(response.data)
       })
       .catch((e) => {
-        if (isMounted) setError(e)
+        setError(e)
       })
-    return () => {
-      isMounted = false
-    }
-  }, [getSystems])
+  }, [getSystems, setError, setSystems])
 
   const systemIndexTableData = useSystemIndexTableData(systems)
   const systemIndexTableColumns = useSystemIndexTableColumns()

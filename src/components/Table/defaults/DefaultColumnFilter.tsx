@@ -1,5 +1,6 @@
 import { TextField } from '@mui/material'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { ChangeEvent, useEffect } from 'react'
 import { ColumnInstance, FilterProps } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
@@ -13,7 +14,7 @@ const DefaultColumnFilter = ({
   column,
 }: FilterProps<ObjectWithStringKeys>) => {
   const { id, filterValue, setFilter, render } = column
-  const [value, setValue] = useState(filterValue || '')
+  const [value, setValue] = useMountedState<string>(filterValue || '')
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value)
@@ -21,7 +22,7 @@ const DefaultColumnFilter = ({
 
   useEffect(() => {
     setValue(filterValue || '')
-  }, [filterValue])
+  }, [filterValue, setValue])
 
   const isFirstColumn = findFirstColumn(columns) === column
 

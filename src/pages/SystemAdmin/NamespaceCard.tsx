@@ -9,6 +9,7 @@ import {
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import {
   alertStyle,
@@ -17,20 +18,20 @@ import {
   systemsSeverity,
 } from 'pages/SystemAdmin'
 import SystemCard from 'pages/SystemAdmin/SystemAdminCard'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { System } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
 const NamespaceCard = ({ namespace }: { namespace: string }) => {
   const { hasSystemPermission } = PermissionsContainer.useContainer()
   const { getSystems } = useSystems()
-  const [expanded, setExpanded] = useState(true)
-  const [permission, setPermission] = useState(false)
-  const [filteredSystems, setFilteredSystems] = useState<System[]>([])
-  const [sortedSystems, setSortedSystems] = useState<{
+  const [expanded, setExpanded] = useMountedState<boolean>(true)
+  const [permission, setPermission] = useMountedState<boolean>(false)
+  const [filteredSystems, setFilteredSystems] = useMountedState<System[]>([])
+  const [sortedSystems, setSortedSystems] = useMountedState<{
     [key: string]: System[]
   }>({})
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
   const { addCallback, removeCallback } = SocketContainer.useContainer()
 
   const fetchPermissions = useCallback(
@@ -74,7 +75,14 @@ const NamespaceCard = ({ namespace }: { namespace: string }) => {
           doNotAutoDismiss: true,
         })
       })
-  }, [fetchPermissions, getSystems, namespace])
+  }, [
+    fetchPermissions,
+    getSystems,
+    namespace,
+    setAlert,
+    setFilteredSystems,
+    setSortedSystems,
+  ])
 
   useEffect(() => {
     addCallback('system_updates', (event) => {

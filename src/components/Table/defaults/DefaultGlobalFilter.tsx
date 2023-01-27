@@ -1,5 +1,5 @@
 import { Box, TextField } from '@mui/material'
-import { useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
 import {
   useAsyncDebounce,
   UseGlobalFiltersInstanceProps,
@@ -17,7 +17,7 @@ const DefaultGlobalFilter = <T extends ObjectWithStringKeys>({
 > &
   Pick<UseGlobalFiltersOptions<T>, 'globalFilter'>) => {
   const count = preGlobalFilteredRows?.length ?? 0
-  const [value, setValue] = useState<string>(
+  const [value, setValue] = useMountedState<string>(
     globalFilter ? (globalFilter as string) : '',
   )
   const onChange = useAsyncDebounce((value) => {

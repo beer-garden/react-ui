@@ -1,11 +1,12 @@
 import { AxiosError } from 'axios'
 import { Table } from 'components/Table'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import {
   useSystemColumns,
   useSystemsData,
 } from 'pages/JobCreate/JobCreateSystemsData'
-import { PropsWithChildren, useEffect, useState } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 import { System } from 'types/backend-types'
 
 interface JobCreateSystemTableProps {
@@ -17,7 +18,7 @@ const JobCreateSystemsTable = ({
   errorSetter,
   children,
 }: PropsWithChildren<JobCreateSystemTableProps>) => {
-  const [systems, setSystems] = useState<System[]>([])
+  const [systems, setSystems] = useMountedState<System[]>([])
   const { getSystems } = useSystems()
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const JobCreateSystemsTable = ({
       .catch((e) => {
         errorSetter(e)
       })
-  }, [errorSetter, getSystems])
+  }, [errorSetter, getSystems, setSystems])
 
   return (
     <Table

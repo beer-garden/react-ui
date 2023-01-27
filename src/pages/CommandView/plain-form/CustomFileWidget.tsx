@@ -9,15 +9,9 @@ import {
 } from '@mui/material'
 import { WidgetProps } from '@rjsf/core'
 import { dataURItoBlob } from '@rjsf/core/lib/utils'
+import { useMountedState } from 'hooks/useMountedState'
 import { BytesParameterContext } from 'pages/CommandView/plain-form/CommandViewForm'
-import {
-  ChangeEvent,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect, useRef } from 'react'
 
 interface FileMetaData {
   dataUrl: string
@@ -119,7 +113,9 @@ const CustomFileWidget = (props: WidgetProps) => {
 
   const inputRef = useRef()
   const { setFileMetaData } = useContext(BytesParameterContext)
-  const [localFileMetaData, setLocalFileMetaData] = useState<FileMetaData[]>([])
+  const [localFileMetaData, setLocalFileMetaData] = useMountedState<
+    FileMetaData[]
+  >([])
 
   /**
    * Because there can be more than one of these file picker controls in a form,
@@ -190,7 +186,7 @@ const CustomFileWidget = (props: WidgetProps) => {
       })
 
     setLocalFileMetaData(newValues)
-  }, [schema.title, value])
+  }, [schema.title, setLocalFileMetaData, value])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

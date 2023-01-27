@@ -5,7 +5,8 @@ import { Table } from 'components/Table'
 import { DefaultCellRenderer } from 'components/Table/defaults'
 import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
-import { useEffect, useMemo, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { useEffect, useMemo } from 'react'
 import { Column } from 'react-table'
 import { Garden } from 'types/backend-types'
 import {
@@ -50,8 +51,8 @@ const useTableColumns = () => {
 }
 
 const SyncUserModal = ({ open, setOpen }: ModalProps) => {
-  const [gardens, setGardens] = useState<SyncGarden[]>([])
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [gardens, setGardens] = useMountedState<SyncGarden[]>([])
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
 
   const { getGardens, syncUsers } = useGardens()
   const { addCallback, removeCallback } = SocketContainer.useContainer()
@@ -90,30 +91,29 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
     return () => {
       removeCallback('sync_users')
     }
-  }, [addCallback, gardens, removeCallback])
+  }, [addCallback, gardens, removeCallback, setGardens])
 
   useEffect(() => {
-    setGardens([])
     getGardens()
       .then((response) => {
+        const gardenList: SyncGarden[] = []
         response.data.forEach((garden: Garden) => {
           if (garden.connection_type !== 'LOCAL') {
             if (garden.status !== 'RUNNING') {
-              setGardens((prev) => [
-                ...prev,
+              gardenList.push(
                 Object.assign(
                   { syncStatus: 'NOT RUNNING' as syncString },
                   garden,
                 ),
-              ])
+              )
             } else {
-              setGardens((prev) => [
-                ...prev,
+              gardenList.push(
                 Object.assign({ syncStatus: 'PENDING' as syncString }, garden),
-              ])
+              )
             }
           }
         })
+        setGardens(gardenList)
       })
       .catch((e) => {
         setAlert({
@@ -122,8 +122,7 @@ const SyncUserModal = ({ open, setOpen }: ModalProps) => {
           doNotAutoDismiss: true,
         })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getGardens, setAlert, setGardens])
 
   return (
     <>

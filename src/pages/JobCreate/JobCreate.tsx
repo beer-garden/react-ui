@@ -5,19 +5,19 @@ import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
+import { useMountedState } from 'hooks/useMountedState'
 import { JobCreateCommandsTable } from 'pages/JobCreate/JobCreateCommandsTable'
 import { JobCreateForwarder } from 'pages/JobCreate/JobCreateForwarder'
 import { JobCreateSystemsTable } from 'pages/JobCreate/JobCreateSystemsTable'
-import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Command, System } from 'types/backend-types'
 
 const DEBUG_DISPATCH_FUNCTIONS = false
 
 const JobCreate = () => {
-  const [system, _setSystem] = useState<System | undefined>(undefined)
-  const [command, _setCommand] = useState<Command | undefined>(undefined)
-  const [error, setError] = useState<AxiosError>()
+  const [system, _setSystem] = useMountedState<System | undefined>()
+  const [command, _setCommand] = useMountedState<Command | undefined>()
+  const [error, setError] = useMountedState<AxiosError | undefined>()
   const navigate = useNavigate()
 
   const setSystem = (system: System) => {

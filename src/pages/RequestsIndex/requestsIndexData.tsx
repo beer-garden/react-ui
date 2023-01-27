@@ -1,12 +1,13 @@
 import useAxios, { Options as AxiosHooksOptions } from 'axios-hooks'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import {
   getUrlFromSearchApi,
   updateApiOrderBy,
   updateApiSearchBy,
   useRequestsReducer,
 } from 'pages/RequestsIndex'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { Filters } from 'react-table'
 import { Request } from 'types/backend-types'
 import {
@@ -19,10 +20,10 @@ import { formatBeergardenRequests } from 'utils/dataHelpers'
 
 const useRequests = () => {
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isErrored, setIsErrored] = useState(false)
-  const [requests, setRequests] = useState<RequestsIndexTableData[]>([])
-  const [headers, setHeaders] = useState<RequestsIndexTableHeaders>({
+  const [isLoading, setIsLoading] = useMountedState<boolean>(false)
+  const [isErrored, setIsErrored] = useMountedState<boolean>(false)
+  const [requests, setRequests] = useMountedState<RequestsIndexTableData[]>([])
+  const [headers, setHeaders] = useMountedState<RequestsIndexTableHeaders>({
     start: 0,
     length: 0,
     requested: 0,
@@ -66,10 +67,10 @@ const useRequests = () => {
 
   useEffect(() => {
     setIsLoading(loading)
-  }, [loading])
+  }, [loading, setIsLoading])
   useEffect(() => {
     setIsErrored(!!error)
-  }, [error])
+  }, [error, setIsErrored])
 
   /**
    * This function will update whenever the state's config object has updated.
@@ -127,7 +128,15 @@ const useRequests = () => {
     } else if (error) {
       setIsErrored(!!error)
     }
-  }, [response, data, error, searchApi.length])
+  }, [
+    response,
+    data,
+    error,
+    searchApi.length,
+    setRequests,
+    setHeaders,
+    setIsErrored,
+  ])
 
   /* Handlers for when state that affects the config/URL change.  */
 

@@ -1,8 +1,9 @@
 import { DebugContainer } from 'containers/DebugContainer'
 import { SocketContainer } from 'containers/SocketContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { TokenResponse, useToken } from 'hooks/useToken'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import { createContainer } from 'unstated-next'
@@ -18,7 +19,7 @@ const useAuth = () => {
   const { axiosInstance } = useMyAxios()
   const navigate = useNavigate()
   const cookies = new Cookies()
-  const [user, _setUser] = useState<string | null>(cookies.get('user'))
+  const [user, _setUser] = useMountedState<string | null>(cookies.get('user'))
 
   const setUser = useCallback(
     (userName: string | null) => {

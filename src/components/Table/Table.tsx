@@ -24,10 +24,8 @@ import { useDebounce } from 'hooks/useDebounce'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import {
   CSSProperties,
-  Dispatch,
   PropsWithChildren,
   ReactElement,
-  SetStateAction,
   useCallback,
   useEffect,
 } from 'react'
@@ -87,7 +85,7 @@ export interface TableProps<T extends ObjectWithStringKeys>
   extends TableOptions<T> {
   data: T[]
   columns: Column<T>[]
-  setSelection?: Dispatch<SetStateAction<T[]>>
+  setSelection?: (arg0: T[]) => void
   showGlobalFilter?: boolean
   maxrows?: number
   tableName?: string

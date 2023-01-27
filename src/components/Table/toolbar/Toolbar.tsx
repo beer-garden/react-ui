@@ -3,13 +3,13 @@ import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { FilterChipBar } from 'components/Table'
 import { DefaultGlobalFilter } from 'components/Table/defaults'
 import { ColumnHidePage } from 'components/Table/toolbar/ColumnHidePage'
+import { useMountedState } from 'hooks/useMountedState'
 import {
   MouseEvent as ReactMouseEvent,
   MouseEventHandler,
   ReactElement,
   ReactNode,
   useCallback,
-  useState,
 } from 'react'
 import { ColumnInstance, TableInstance } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
@@ -84,8 +84,8 @@ const Toolbar = <T extends ObjectWithStringKeys>({
   childProps,
 }: ToolbarProps<T>) => {
   const { columns } = instance
-  const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined)
-  const [columnsOpen, setColumnsOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useMountedState<Element | undefined>()
+  const [columnsOpen, setColumnsOpen] = useMountedState<boolean>(false)
   const hideableColumns = getHideableColumns(columns)
 
   const handleColumnsClick = useCallback(
@@ -99,7 +99,7 @@ const Toolbar = <T extends ObjectWithStringKeys>({
   const handleClose = useCallback(() => {
     setColumnsOpen(false)
     setAnchorEl(undefined)
-  }, [])
+  }, [setAnchorEl, setColumnsOpen])
 
   return (
     <>

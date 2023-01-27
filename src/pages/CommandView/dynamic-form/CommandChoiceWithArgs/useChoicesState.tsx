@@ -1,4 +1,5 @@
 import { CommandBasicSchema, getSchema, ParameterAsProperty } from 'formHelpers'
+import { useMountedState } from 'hooks/useMountedState'
 import {
   DynamicChoice,
   DynamicChoices,
@@ -8,7 +9,7 @@ import {
   ReadyStatus,
 } from 'pages/CommandView/dynamic-form'
 import { extractModel } from 'pages/CommandView/dynamic-form'
-import { MutableRefObject, SetStateAction, useRef, useState } from 'react'
+import { MutableRefObject, SetStateAction, useRef } from 'react'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 type UseStateWithRefType = <S>(
@@ -22,7 +23,7 @@ type UseStateWithRefType = <S>(
 const useStateWithRef: UseStateWithRefType = <S,>(
   initialState: S | (() => S),
 ) => {
-  const [stateValue, _setStateValue] = useState<S>(initialState)
+  const [stateValue, _setStateValue] = useMountedState<S>(initialState)
   const theRef = useRef(stateValue)
 
   const setStateValue = (setStateFunctionOrValue: SetStateAction<S>) => {
