@@ -15,13 +15,14 @@ import { NavigationBarContextProvider } from 'components/UI/NavigationBar/Naviga
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { useEffect } from 'react'
 
 export const closedDrawerWidth = 37
 export const openedDrawerWidth = 205
 
 interface NavigationBarProps {
-  setMarginLeft: Dispatch<SetStateAction<number>>
+  setMarginLeft: (arg0: number) => void
 }
 
 const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
@@ -29,7 +30,8 @@ const NavigationBar = ({ setMarginLeft }: NavigationBarProps) => {
     'drawerIsPinned',
     false,
   )
-  const [drawerIsOpen, setDrawerIsOpen] = useState(drawerIsPinned)
+  const [drawerIsOpen, setDrawerIsOpen] =
+    useMountedState<boolean>(drawerIsPinned)
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { user } = AuthContainer.useContainer()
 

@@ -1,11 +1,11 @@
 import LoadingButton from '@mui/lab/LoadingButton'
 import useGardens from 'hooks/useGardens'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
 import { SnackbarState } from 'types/custom-types'
 
 interface GardenSynButtonParams {
   gardenName: string
-  setSyncStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
+  setSyncStatus: (arg0: SnackbarState) => void
 }
 
 const GardenSyncButton = ({
@@ -13,7 +13,7 @@ const GardenSyncButton = ({
   setSyncStatus,
 }: GardenSynButtonParams) => {
   const { loading, syncGarden } = useGardens()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useMountedState<boolean>(false)
 
   const handleClick = () => {
     syncGarden(gardenName)

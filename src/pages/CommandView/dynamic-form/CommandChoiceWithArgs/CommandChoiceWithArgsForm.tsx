@@ -5,6 +5,7 @@ import { Snackbar } from 'components/Snackbar'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { CommandBasicSchema, getSchema, ParameterAsProperty } from 'formHelpers'
 import { Form, Formik, FormikHelpers, FormikValues } from 'formik'
+import { useMountedState } from 'hooks/useMountedState'
 import { useMyAxios } from 'hooks/useMyAxios'
 import {
   extractModel,
@@ -16,7 +17,7 @@ import {
 } from 'pages/CommandView/dynamic-form'
 import { SubmitButton } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs'
 import { getFormComponents } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs/form-components/getFormComponents'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Request, RequestTemplate } from 'types/backend-types'
 import {
@@ -34,9 +35,9 @@ const CommandChoiceWithArgsForm = (
   const { authEnabled } = ServerConfigContainer.useContainer()
   const [, execute] = useAxios({}, axiosManualOptions)
   const navigate = useNavigate()
-  const [submitStatus, setSubmitStatus] = useState<SnackbarState | undefined>(
-    undefined,
-  )
+  const [submitStatus, setSubmitStatus] = useMountedState<
+    SnackbarState | undefined
+  >()
 
   const instances = system.instances
   const parameters = command.parameters

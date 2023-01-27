@@ -1,9 +1,10 @@
 import { Button } from '@material-ui/core'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import { commandIsDynamic } from 'pages/CommandView'
 import { CannotReExecuteButton } from 'pages/RequestView/RemakeRequestButton'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Request } from 'types/backend-types'
 import { SystemCommandPair } from 'types/custom-types'
@@ -21,7 +22,7 @@ interface RemakeRequestButtonProps {
 const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   const navigate = useNavigate()
   const { getSystems } = useSystems()
-  const [systemCommandPair, setSystemCommandPair] = useState<
+  const [systemCommandPair, setSystemCommandPair] = useMountedState<
     SystemCommandPair | undefined
   >()
   const { setSystem, setCommand, setIsJob, setRequestModel, setIsReplay } =
@@ -47,7 +48,14 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
           .pop(),
       )
     })
-  }, [commandName, getSystems, namespace, systemName, systemVersion])
+  }, [
+    commandName,
+    getSystems,
+    namespace,
+    setSystemCommandPair,
+    systemName,
+    systemVersion,
+  ])
 
   if (
     !setSystem ||

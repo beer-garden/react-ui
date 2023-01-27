@@ -9,9 +9,10 @@ import { Table } from 'components/Table'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
+import { useMountedState } from 'hooks/useMountedState'
 import { GardenAdminInfoCard } from 'pages/GardenAdminView'
 import { systemMapper, useSystemIndexTableColumns } from 'pages/SystemIndex'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -22,10 +23,10 @@ const GardenAdminView = () => {
   const systemsColumns = useSystemIndexTableColumns()
   const { error, getGarden } = useGardens()
 
-  const [requestStatus, setRequestStatus] = useState<SnackbarState | undefined>(
-    undefined,
-  )
-  const [garden, setGarden] = useState<Garden>()
+  const [requestStatus, setRequestStatus] = useMountedState<
+    SnackbarState | undefined
+  >()
+  const [garden, setGarden] = useMountedState<Garden | undefined>()
   const params = useParams()
 
   const gardenName = String(params.gardenName)
@@ -40,7 +41,7 @@ const GardenAdminView = () => {
           doNotAutoDismiss: true,
         })
       })
-  }, [gardenName, getGarden])
+  }, [gardenName, getGarden, setGarden, setRequestStatus])
 
   useEffect(() => {
     fetchGarden()

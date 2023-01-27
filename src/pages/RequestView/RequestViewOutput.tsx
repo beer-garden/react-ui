@@ -13,16 +13,15 @@ import {
   Typography,
 } from '@mui/material'
 import { SupportedColorScheme, useTheme } from '@mui/material/styles'
+import { useMountedState } from 'hooks/useMountedState'
 import { outputFormatted } from 'pages/RequestView/requestViewHelpers'
-import { Dispatch, SetStateAction } from 'react'
-import { useState } from 'react'
 import { Request } from 'types/backend-types'
 
 interface RequestViewOutputProps {
   request: Request
   expandParameter: boolean
   expandOutput: boolean
-  setExpandOutput: Dispatch<SetStateAction<boolean>>
+  setExpandOutput: (arg0: boolean) => void
   theme: SupportedColorScheme
 }
 
@@ -33,7 +32,7 @@ const RequestViewOutput = ({
   setExpandOutput,
   theme,
 }: RequestViewOutputProps) => {
-  const [showAsRawData, setShowAsRawData] = useState(false)
+  const [showAsRawData, setShowAsRawData] = useMountedState<boolean>(false)
   const colors = useTheme()
   const bgColor = colors.palette.background.default
   const downloadUrl = window.URL.createObjectURL(

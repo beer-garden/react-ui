@@ -1,8 +1,9 @@
 import { AutocompleteInputChangeReason } from '@mui/material'
-import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { SyntheticEvent, useCallback, useEffect } from 'react'
 
 const useDebounce = <T,>(value: T, delay: number): T => {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+  const [debouncedValue, setDebouncedValue] = useMountedState<T>(value)
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -11,7 +12,7 @@ const useDebounce = <T,>(value: T, delay: number): T => {
     return () => {
       clearTimeout(handler)
     }
-  }, [value, delay])
+  }, [value, delay, setDebouncedValue])
 
   return debouncedValue
 }

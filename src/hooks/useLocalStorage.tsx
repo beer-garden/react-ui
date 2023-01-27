@@ -1,9 +1,10 @@
 import { DebugContainer } from 'containers/DebugContainer'
-import { useCallback, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { useCallback } from 'react'
 
 const useLocalStorage = <T,>(key: string, initialValue: T) => {
   const { DEBUG_LOCAL_STORAGE } = DebugContainer.useContainer()
-  const [storedValue, _setStoredValue] = useState<T>(() => {
+  const [storedValue, _setStoredValue] = useMountedState<T>(() => {
     if (typeof window === 'undefined') {
       if (DEBUG_LOCAL_STORAGE) {
         console.log('useLocalStorage: not operating in a browser')
@@ -43,7 +44,7 @@ const useLocalStorage = <T,>(key: string, initialValue: T) => {
       }
       _setStoredValue(value)
     },
-    [DEBUG_LOCAL_STORAGE],
+    [DEBUG_LOCAL_STORAGE, _setStoredValue],
   )
 
   const setValue = useCallback(

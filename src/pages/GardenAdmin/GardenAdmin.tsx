@@ -7,8 +7,9 @@ import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import useGardens from 'hooks/useGardens'
+import { useMountedState } from 'hooks/useMountedState'
 import { CreateGarden, GardenAdminCard } from 'pages/GardenAdmin'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
@@ -16,23 +17,18 @@ const GardenAdmin = (): JSX.Element => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const { addCallback, removeCallback } = SocketContainer.useContainer()
   const { error, getGardens } = useGardens()
-  const [gardens, setGardens] = useState<Garden[]>([])
-  const [requestStatus, setRequestStatus] = useState<SnackbarState | undefined>(
-    undefined,
-  )
+  const [gardens, setGardens] = useMountedState<Garden[]>([])
+  const [requestStatus, setRequestStatus] = useMountedState<
+    SnackbarState | undefined
+  >()
 
   useEffect(() => {
-    let mounted = true
     getGardens().then((response) => {
-      if (mounted) setGardens(response.data)
+      setGardens(response.data)
     })
-    return () => {
-      mounted = false
-    }
-  }, [getGardens])
+  }, [getGardens, setGardens])
 
   useEffect(() => {
-    let mounted = true
     addCallback('garden_updates', (event) => {
       if (
         ['GARDEN_CREATED', 'GARDEN_UPDATED', 'GARDEN_REMOVED'].includes(
@@ -40,15 +36,14 @@ const GardenAdmin = (): JSX.Element => {
         )
       ) {
         getGardens().then((response) => {
-          if (mounted) setGardens(response.data)
+          setGardens(response.data)
         })
       }
     })
     return () => {
-      mounted = false
       removeCallback('garden_updates')
     }
-  }, [addCallback, getGardens, removeCallback])
+  }, [addCallback, getGardens, removeCallback, setGardens])
 
   return !error ? (
     <>

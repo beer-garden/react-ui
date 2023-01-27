@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useInstances } from 'hooks/useInstances'
+import { useMountedState } from 'hooks/useMountedState'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Instance } from 'types/backend-types'
 
@@ -32,7 +33,7 @@ const initialAlert: ILogAlert = {
 
 const LogAlert = (props: { onClose: () => void; logAlert: ILogAlert }) => {
   const { logAlert } = props
-  const [showAlert, setAlert] = useState(true)
+  const [showAlert, setAlert] = useMountedState<boolean>(true)
   return (
     <>
       {showAlert && (
@@ -53,12 +54,12 @@ const LogAlert = (props: { onClose: () => void; logAlert: ILogAlert }) => {
 const LogModal = ({ instance, fileHeader }: ILogModal) => {
   const wait = 30
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [tailLines, setTailLines] = useState<number>(20)
-  const [startLine, setStartLine] = useState<number>(0)
-  const [endLine, setEndLine] = useState<number>(20)
+  const [isLoading, setIsLoading] = useMountedState<boolean>(false)
+  const [tailLines, setTailLines] = useMountedState<number>(20)
+  const [startLine, setStartLine] = useMountedState<number>(0)
+  const [endLine, setEndLine] = useMountedState<number>(20)
   const [alerts, setAlerts] = useState<ILogAlert[]>([])
-  const [displayLogs, setDisplayLogs] = useState<string>('')
+  const [displayLogs, setDisplayLogs] = useMountedState<string>('')
   const logID = useRef<string | undefined>(undefined)
 
   useEffect(() => {

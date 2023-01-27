@@ -12,10 +12,11 @@ import {
 } from '@mui/material'
 import { NavigationBarContext } from 'components/UI/NavigationBar/NavigationBarContext'
 import { ThemeChooser } from 'components/UI/Theme/ThemeChooser'
-import { useContext, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { useContext } from 'react'
 
 const OptionsMenu = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useMountedState<boolean>(false)
   const handleClick = () => setOpen(!open)
   const drawerIsOpen = useContext(NavigationBarContext).drawerIsOpen
 

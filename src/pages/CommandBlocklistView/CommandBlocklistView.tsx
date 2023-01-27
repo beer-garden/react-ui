@@ -15,54 +15,47 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { Table } from 'components/Table'
 import { useBlockList } from 'hooks/useBlockList'
+import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import { useModalColumns, useTableColumns } from 'pages/CommandBlocklistView'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { BlockedCommand } from 'types/backend-types'
 import { CommandIndexTableData, SnackbarState } from 'types/custom-types'
 import { commandsFromSystems } from 'utils/commandFormatters'
 
 export const CommandBlocklistView = () => {
-  const [open, setOpen] = useState(false)
-  const [alert, setAlert] = useState<SnackbarState>()
-  const [blockList, setBlocklist] = useState<BlockedCommand[]>([])
-  const [commands, setCommands] = useState<CommandIndexTableData[]>([])
-  const [selection, setSelection] = useState<CommandIndexTableData[]>([])
+  const [open, setOpen] = useMountedState<boolean>(false)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
+  const [blockList, setBlocklist] = useMountedState<BlockedCommand[]>([])
+  const [commands, setCommands] = useMountedState<CommandIndexTableData[]>([])
+  const [selection, setSelection] = useMountedState<CommandIndexTableData[]>([])
   const { getBlockList, error, deleteBlockList, addBlockList } = useBlockList()
   const { getSystems } = useSystems()
 
   useEffect(() => {
-    // fix for cannot execute on unmounted component error
-    let mounted = true
     getBlockList()
       .then((response) => {
-        if (mounted) setBlocklist(response.data.command_publishing_blocklist)
+        setBlocklist(response.data.command_publishing_blocklist)
       })
       .catch((e) => {
-        if (mounted)
-          setAlert({
-            severity: 'error',
-            message: e.response?.data.message || 'Problem fetching blocklist',
-            doNotAutoDismiss: true,
-          })
+        setAlert({
+          severity: 'error',
+          message: e.response?.data.message || 'Problem fetching blocklist',
+          doNotAutoDismiss: true,
+        })
       })
     getSystems()
       .then((response) => {
-        if (mounted) setCommands(commandsFromSystems(response.data, false))
+        setCommands(commandsFromSystems(response.data, false))
       })
       .catch((e) => {
-        if (mounted)
-          setAlert({
-            severity: 'error',
-            message:
-              e.response?.data.message || 'Problem fetching command list',
-            doNotAutoDismiss: true,
-          })
+        setAlert({
+          severity: 'error',
+          message: e.response?.data.message || 'Problem fetching command list',
+          doNotAutoDismiss: true,
+        })
       })
-    return () => {
-      mounted = false
-    }
-  }, [getBlockList, getSystems])
+  }, [getBlockList, getSystems, setAlert, setBlocklist, setCommands])
 
   // populate data for modal All Commands list table
   const commandListData = useMemo((): CommandIndexTableData[] => {
@@ -130,7 +123,7 @@ export const CommandBlocklistView = () => {
         ),
       }
     })
-  }, [blockList, deleteBlockList, getBlockList])
+  }, [blockList, deleteBlockList, getBlockList, setAlert])
 
   const tableColumns = useTableColumns()
   const modalColumns = useModalColumns()

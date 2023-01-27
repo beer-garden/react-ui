@@ -1,5 +1,6 @@
 import { Box, Tooltip, Typography, TypographyTypeMap } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 interface OverflowTooltipProps {
@@ -13,16 +14,16 @@ interface OverflowTooltipProps {
 
 const OverflowTooltip = (props: OverflowTooltipProps) => {
   const textElementRef = useRef<HTMLInputElement | null>(null)
-  const [isOverflowed, setIsOverflow] = useState(false)
+  const [isOverflowed, setIsOverflow] = useMountedState<boolean>(false)
 
-  const compareSize = () => {
+  const compareSize = useCallback(() => {
     if (textElementRef.current) {
       setIsOverflow(
         textElementRef.current.scrollWidth >=
           textElementRef.current.clientWidth,
       )
     }
-  }
+  }, [setIsOverflow])
 
   useEffect(() => {
     compareSize()
@@ -30,7 +31,7 @@ const OverflowTooltip = (props: OverflowTooltipProps) => {
     return () => {
       window.removeEventListener('resize', compareSize)
     }
-  }, [])
+  }, [compareSize])
 
   return (
     <Tooltip title={props.tooltip} disableHoverListener={!isOverflowed}>

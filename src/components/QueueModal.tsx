@@ -4,8 +4,9 @@ import { Table } from 'components/Table'
 import { DefaultCellRenderer } from 'components/Table/defaults'
 import { NumberRangeColumnFilter } from 'components/Table/filters'
 import { useInterval } from 'hooks/useInterval'
+import { useMountedState } from 'hooks/useMountedState'
 import useQueue from 'hooks/useQueue'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Column } from 'react-table'
 import { Instance, Queue } from 'types/backend-types'
 import { ObjectWithStringKeys } from 'types/custom-types'
@@ -30,7 +31,7 @@ const QueueAlert = (props: {
   queueAlert: IQueueAlert
 }) => {
   const { queueAlert } = props
-  const [showAlert, setAlert] = useState(true)
+  const [showAlert, setAlert] = useMountedState<boolean>(true)
   return (
     <>
       {showAlert && (
@@ -50,8 +51,8 @@ const QueueAlert = (props: {
 
 const QueueModal = ({ instance }: IQueueModal) => {
   const [alerts, setAlerts] = useState<IQueueAlert[]>([])
-  const [queueList, setQueueList] = useState<Queue[]>([])
-  const [open, setOpen] = useState(false)
+  const [queueList, setQueueList] = useMountedState<Queue[]>([])
+  const [open, setOpen] = useMountedState<boolean>(false)
   const selectedQueue = useRef<string>('')
 
   const { getInstanceQueues, clearQueue } = useQueue()
@@ -70,11 +71,11 @@ const QueueModal = ({ instance }: IQueueModal) => {
         }
         setAlerts((alerts) => [...alerts, newAlert])
       })
-  }, [getInstanceQueues, instance.id])
+  }, [getInstanceQueues, instance.id, setQueueList])
 
-  useState(() => {
+  useEffect(() => {
     getQueueList()
-  })
+  }, [getQueueList])
 
   useInterval(getQueueList, 10000)
 
@@ -99,7 +100,7 @@ const QueueModal = ({ instance }: IQueueModal) => {
         ),
       }
     })
-  }, [queueList])
+  }, [queueList, setOpen])
 
   return (
     <>

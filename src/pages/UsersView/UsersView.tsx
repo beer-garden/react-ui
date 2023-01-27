@@ -19,10 +19,11 @@ import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import useUsers from 'hooks/useUsers'
 import { RoleCard } from 'pages/UsersView'
 import { GardenSyncTable } from 'pages/UsersView'
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import {
@@ -36,15 +37,15 @@ import {
 import { SnackbarState } from 'types/custom-types'
 
 export const UsersView = () => {
-  const [open, setOpen] = useState(false)
-  const [error, setError] = useState<boolean>(false)
-  const [errorFetch, setErrorFetch] = useState<AxiosError>()
-  const [debounce, setDebounce] = useState<NodeJS.Timeout | undefined>()
-  const [password, setPassword] = useState<string>('')
-  const [confirm, setConfirm] = useState<string>('')
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
-  const [roles, setRoles] = useState<RolePatch[]>([])
-  const [sync, setSync] = useState<SyncStatus | null>(null)
+  const [open, setOpen] = useMountedState<boolean>(false)
+  const [error, setError] = useMountedState<boolean>(false)
+  const [errorFetch, setErrorFetch] = useMountedState<AxiosError | undefined>()
+  const [debounce, setDebounce] = useMountedState<NodeJS.Timeout | undefined>()
+  const [password, setPassword] = useMountedState<string>('')
+  const [confirm, setConfirm] = useMountedState<string>('')
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
+  const [roles, setRoles] = useMountedState<RolePatch[]>([])
+  const [sync, setSync] = useMountedState<SyncStatus | null>(null)
   const { hasPermission } = PermissionsContainer.useContainer()
   const { getUser, deleteUser, updateUser } = useUsers()
 
@@ -65,7 +66,7 @@ export const UsersView = () => {
       .catch((e) => {
         setErrorFetch(e)
       })
-  }, [getUser, userName])
+  }, [getUser, setErrorFetch, setRoles, setSync, userName])
 
   useEffect(() => {
     if (debounce) {
@@ -94,7 +95,7 @@ export const UsersView = () => {
     }
     const allRoles = [...roles, newRole]
     setRoles(allRoles)
-  }, [roles])
+  }, [roles, setRoles])
 
   return !errorFetch ? (
     <>

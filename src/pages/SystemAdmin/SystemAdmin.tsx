@@ -7,12 +7,13 @@ import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import useAdmin from 'hooks/useAdmin'
 import { useLocalStorage } from 'hooks/useLocalStorage'
+import { useMountedState } from 'hooks/useMountedState'
 import { useNamespace } from 'hooks/useNamespace'
 import useQueue from 'hooks/useQueue'
 import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
 import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
 import { UnassociatedRunnersCard } from 'pages/SystemAdmin/UnassociatedRunners'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect } from 'react'
 
 const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
   if (!namespacesSelected.length) {
@@ -40,26 +41,22 @@ const SystemAdmin = () => {
     'namespacesSelected',
     [],
   )
-  const [open, setOpen] = useState(false)
-  const [namespaces, setNamespaces] = useState<string[]>([])
-  const [error, setError] = useState<AxiosError>()
+  const [open, setOpen] = useMountedState<boolean>(false)
+  const [namespaces, setNamespaces] = useMountedState<string[]>([])
+  const [error, setError] = useMountedState<AxiosError | undefined>()
   const { getNamespaces } = useNamespace()
   const { rescanPluginDirectory } = useAdmin()
   const { clearQueues } = useQueue()
 
   useEffect(() => {
-    let mounted = true
     getNamespaces()
       .then((response) => {
-        if (mounted) setNamespaces(response.data)
+        setNamespaces(response.data)
       })
       .catch((error) => {
-        if (mounted) setError(error)
+        setError(error)
       })
-    return () => {
-      mounted = false
-    }
-  }, [getNamespaces])
+  }, [getNamespaces, setError, setNamespaces])
 
   return !error ? (
     <Box>

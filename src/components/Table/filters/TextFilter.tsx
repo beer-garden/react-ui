@@ -1,17 +1,18 @@
 import { Search as SearchIcon } from '@mui/icons-material'
 import { InputAdornment, TextField, Tooltip } from '@mui/material'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { ChangeEvent, useEffect } from 'react'
 import { FilterProps } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 export const TextFilter = ({ column }: FilterProps<ObjectWithStringKeys>) => {
   const { id, filterValue, setFilter } = column
-  const [value, setValue] = useState(filterValue || '')
-  const [open, setOpen] = useState<boolean>(false)
+  const [value, setValue] = useMountedState<string>(filterValue || '')
+  const [open, setOpen] = useMountedState<boolean>(false)
 
   useEffect(() => {
     setValue(filterValue || '')
-  }, [filterValue])
+  }, [filterValue, setValue])
 
   return (
     <Tooltip

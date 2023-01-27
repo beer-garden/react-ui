@@ -1,7 +1,8 @@
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { LinkButton } from 'components/LinkButton'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
-import { useEffect, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { useEffect } from 'react'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 interface IExeButton {
@@ -12,7 +13,7 @@ interface IExeButton {
 const ExecuteButton = ({ system, command }: IExeButton) => {
   const { namespace, systemName, systemVersion, name, systemId } = command
   const { hasSystemPermission } = PermissionsContainer.useContainer()
-  const [permission, setPermission] = useState(false)
+  const [permission, setPermission] = useMountedState<boolean>(false)
 
   useEffect(() => {
     const fetchPermission = async () => {
@@ -24,7 +25,7 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
       setPermission(permCheck || false)
     }
     fetchPermission()
-  }, [hasSystemPermission, namespace, systemId])
+  }, [hasSystemPermission, namespace, setPermission, systemId])
 
   const linkTo = [
     '/systems',
