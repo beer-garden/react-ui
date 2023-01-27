@@ -112,7 +112,6 @@ const getOnChangeFunctions = (
         onChangeFunctions = {
           ...onChangeFunctions,
           [parameterName]: getOnChangeForDependency(
-            parameterName,
             parametersThatCanInitiateUpdates[parameterName],
             dynamicChoices,
             parametersThatMustBeUpdatedNames,
@@ -129,7 +128,6 @@ const getOnChangeFunctions = (
         onChangeFunctions = {
           ...onChangeFunctions,
           [parameterName]: getOnChangeForDependency(
-            parameterName,
             parametersThatCanInitiateUpdates[parameterName],
             dynamicChoices,
             parametersThatMustBeUpdatedNames,
@@ -182,7 +180,6 @@ const getOnChangeFunctions = (
  *     be used for 'onChange' in the component
  */
 const getOnChangeForDependency = (
-  tag: string,
   shouldUpdate: string[],
   dynamicChoices: Record<string, DynamicProperties>,
   mustChoose: Set<string>,
