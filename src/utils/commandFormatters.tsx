@@ -4,7 +4,6 @@ import { CommandIndexTableData, SystemCommandPair } from 'types/custom-types'
 
 const commandMapper = (pair: SystemCommandPair): CommandIndexTableData => {
   const { system, command } = pair
-
   return {
     namespace: command.namespace,
     system: command.systemName,

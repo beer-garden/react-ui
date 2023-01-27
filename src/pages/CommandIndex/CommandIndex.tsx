@@ -29,7 +29,6 @@ interface IParam extends ObjectWithStringKeys {
 const CommandIndex = () => {
   const { config } = ServerConfigContainer.useContainer()
   const { hasSystemPermission } = PermissionsContainer.useContainer()
-  const [permission, setPermission] = useState(false)
   const [loading, setLoading] = useState(true)
   const [commands, setCommands] = useState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useState(false)
@@ -54,50 +53,46 @@ const CommandIndex = () => {
           const foundSystem = response.data.find(
             (system: System) => system.name === systemName,
           )
-          if (foundSystem) {
-            const fetchPermission = async () => {
-              const permCheck = await hasSystemPermission(
-                'request:create',
-                namespace,
-                foundSystem.id,
+          if (foundSystem && foundSystem.template.length > 0) {
+            if (config?.execute_javascript) {
+              // Trigger page loading and hide table
+              setTemplate(<></>)
+              setLoading(false)
+              // Dangerously set HTML with <script> etc intact and executed
+              const scriptEl = document
+                .createRange()
+                .createContextualFragment(foundSystem.template)
+              const mydiv = document.getElementById('dangerousPlaceholder')
+              mydiv?.append(scriptEl)
+            } else {
+              setTemplate(
+                <div
+                  dangerouslySetInnerHTML={{ __html: foundSystem.template }}
+                />,
               )
-              if (mounted) setPermission(permCheck || false)
-            }
-            fetchPermission()
-
-            if (foundSystem.template.length > 0) {
-              if (config?.execute_javascript) {
-                // Trigger page loading and hide table
-                setTemplate(<></>)
-                setLoading(false)
-                // Dangerously set HTML with <script> etc intact and executed
-                const scriptEl = document
-                  .createRange()
-                  .createContextualFragment(foundSystem.template)
-                const mydiv = document.getElementById('dangerousPlaceholder')
-                mydiv?.append(scriptEl)
-              } else {
-                setTemplate(
-                  <div
-                    dangerouslySetInnerHTML={{ __html: foundSystem.template }}
-                  />,
-                )
-              }
             }
           }
           setLoading(false)
         }
       })
       .catch((e) => {
+        // e handled in ErrorAlert in return element
         if (mounted) setLoading(false)
       })
     return () => {
       mounted = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getSystems, includeHidden, namespace, systemName, version])
+  }, [
+    config?.execute_javascript,
+    getSystems,
+    hasSystemPermission,
+    includeHidden,
+    namespace,
+    systemName,
+    version,
+  ])
 
-  const columns = useCommandIndexTableColumns(permission)
+  const columns = useCommandIndexTableColumns()
   const breadcrumbs = [namespace, systemName, version]
     .filter((x) => !!x)
     .map((x) => String(x))

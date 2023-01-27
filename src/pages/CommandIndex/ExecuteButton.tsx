@@ -24,8 +24,7 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
       setPermission(permCheck || false)
     }
     fetchPermission()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [namespace, systemId])
+  }, [hasSystemPermission, namespace, systemId])
 
   const linkTo = [
     '/systems',
