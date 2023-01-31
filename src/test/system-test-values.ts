@@ -16,6 +16,7 @@ export const TParameter: Parameter = {
   optional: true,
   parameters: [],
   nullable: false,
+  choices: undefined,
 }
 
 export const TCommand: Command = {

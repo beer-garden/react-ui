@@ -20,6 +20,7 @@ import {
   FileMetaData,
   handleByteParametersReset,
   isByteCommand,
+  removeOldTriggerKeys,
   TypeAheadChoicesWidget,
 } from 'pages/CommandView'
 import {
@@ -37,6 +38,7 @@ import {
   SnackbarState,
 } from 'types/custom-types'
 import {
+  CommandViewJobModel,
   CommandViewModel,
   CommandViewRequestModel,
 } from 'types/form-model-types'
@@ -106,6 +108,11 @@ const CommandViewForm = ({
 
   const onFormUpdated = (changeEvent: IChangeEvent) => {
     const formData = changeEvent.formData as CommandViewModel
+    if (isJob) {
+      const oldTrigger = (displayModel as CommandViewJobModel).job.trigger
+      removeOldTriggerKeys(formData, oldTrigger)
+    }
+
     setModel(formData)
 
     const cleanedModel = cleanModelForDisplay(

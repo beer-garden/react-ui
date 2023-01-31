@@ -20,6 +20,7 @@ interface NavigatorProps {
   message: string
   link: string
 }
+
 /* This is an ugly placeholder */
 const Navigator = ({ message, link }: NavigatorProps) => {
   const navigate = useNavigate()
@@ -35,6 +36,7 @@ const Navigator = ({ message, link }: NavigatorProps) => {
     </Box>
   )
 }
+
 /*
     Sends us to a useful page if we came to CommandView using the wrong method.
  */
@@ -271,6 +273,65 @@ const cleanModelForDisplay = (
   return fixedModel
 }
 
+/**
+ * Removes old trigger related key/values from the model after the trigger
+ * type has been changed
+ * @param model
+ * @param oldTrigger
+ */
+const removeOldTriggerKeys = (model: CommandViewModel, oldTrigger?: string) => {
+  if (oldTrigger && oldTrigger !== (model as CommandViewJobModel).job.trigger) {
+    Object.keys((model as CommandViewJobModel).job).forEach((key: string) => {
+      if (key.startsWith(oldTrigger)) {
+        delete (model as CommandViewJobModel).job[key]
+      } else {
+        const baseKeys = ['start_date', 'end_date', 'timezone', 'jitter']
+        switch (oldTrigger) {
+          case 'cron': {
+            const cronKeys = [
+              'year',
+              'month',
+              'day',
+              'week',
+              'day_of_week',
+              'hour',
+              'minute',
+              'second',
+              ...baseKeys,
+            ]
+            if (cronKeys.includes(key)) {
+              delete (model as CommandViewJobModel).job[key]
+            }
+            break
+          }
+          case 'date': {
+            const dateKeys = ['run_date', 'timezone']
+            if (dateKeys.includes(key)) {
+              delete (model as CommandViewJobModel).job[key]
+            }
+            break
+          }
+          case 'interval': {
+            const intervalKeys = [
+              'reschedule_on_finish',
+              'days',
+              'weeks',
+              'hours',
+              'minutes',
+              'seconds',
+              ...baseKeys,
+            ]
+            if (intervalKeys.includes(key)) {
+              delete (model as CommandViewJobModel).job[key]
+            }
+            break
+          }
+        }
+      }
+    })
+  }
+}
+
 const dataUrlToFile = (dataUrl: string) => {
   const [preface, base64] = dataUrl.split(',')
   const [dataMimeType, filename] = preface.split(';')
@@ -387,4 +448,5 @@ export {
   handleByteParametersReset,
   isByteCommand,
   parameterHasDynamicChoiceProperties,
+  removeOldTriggerKeys,
 }

@@ -8,7 +8,6 @@ import {
   Request,
   RequestTemplate,
 } from 'types/backend-types'
-import { AugmentedCommand } from 'types/custom-types'
 
 export const TServerConfig = {
   application_name: 'testApp',
@@ -64,13 +63,6 @@ export const TJob: Job = {
   trigger: {} as DateTrigger,
   trigger_type: 'date',
 }
-
-export const TAugmentedCommand: AugmentedCommand = Object.assign({}, TCommand, {
-  namespace: 'someNamespace',
-  systemName: TSystem.name,
-  systemVersion: TSystem.version,
-  systemId: TSystem.id,
-})
 
 export const TQueue: Queue = {
   version: '1.0.2',

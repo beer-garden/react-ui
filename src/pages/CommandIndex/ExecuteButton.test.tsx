@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { TAugmentedCommand } from 'test/request-command-job-test-values'
 import { TSystem } from 'test/system-test-values'
-import { TAugmentedCommand } from 'test/test-values'
 import { AllProviders } from 'test/testMocks'
 
 import { ExecuteButton } from './ExecuteButton'
