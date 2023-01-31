@@ -2,12 +2,8 @@ import { render, screen, waitFor } from '@testing-library/react'
 import Router from 'react-router-dom'
 import { mockAxios, regexUsers } from 'test/axios-mock'
 import { TSystem } from 'test/system-test-values'
-import { TServerAuthConfig } from 'test/test-values'
-import {
-  LoggedInMemory,
-  MemoryProvider,
-  SuspendedProviders,
-} from 'test/testMocks'
+import { TServerAuthConfig, TServerConfig } from 'test/test-values'
+import { loginFN, MemoryProvider, SuspendedProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 
 import { Routes } from './Routes'
@@ -17,12 +13,23 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
 }))
 
+jest.mock('jwt-decode', () => () => ({
+  ...jest.requireActual('jwt-decode'),
+  exp: 9999912345,
+}))
+
 afterAll(() => {
   jest.unmock('react-router-dom')
+  jest.unmock('jwt-decode')
   jest.clearAllMocks()
 })
 
 describe('Routes basics', () => {
+  beforeAll(() => {
+    mockAxios.onGet('/config').reply(200, TServerConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+  })
+
   test('Systems is default page', async () => {
     render(
       <SuspendedProviders>
@@ -41,7 +48,38 @@ describe('Routes basics', () => {
 })
 
 describe('Routes with auth disabled', () => {
-  test('Users', async () => {
+  beforeAll(() => {
+    mockAxios.onGet('/config').reply(200, TServerConfig)
+    mockAxios.onGet(regexUsers).reply(200, TAdmin)
+  })
+
+  test('Systems should be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/systems']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Systems' }),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test('Requests should be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/requests']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Requests' }),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test('Users should not be accessible', async () => {
     render(
       <MemoryProvider startLocation={['/admin/users']}>
         <Routes />
@@ -52,6 +90,11 @@ describe('Routes with auth disabled', () => {
         screen.queryByRole('heading', { name: 'User Management' }),
       ).not.toBeInTheDocument(),
     )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Systems' }),
+      ).toBeInTheDocument()
+    })
   })
 
   test('Job should be accessible', async () => {
@@ -60,11 +103,11 @@ describe('Routes with auth disabled', () => {
         <Routes />
       </MemoryProvider>,
     )
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { name: 'Job' }),
-      ).not.toBeInTheDocument(),
-    )
+        screen.getByRole('heading', { name: 'Request Scheduler' }),
+      ).toBeInTheDocument()
+    })
   })
 
   test('System Admin should be accessible', async () => {
@@ -73,11 +116,11 @@ describe('Routes with auth disabled', () => {
         <Routes />
       </MemoryProvider>,
     )
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { name: 'Systems Management' }),
-      ).not.toBeInTheDocument(),
-    )
+        screen.getByRole('heading', { name: 'Systems Management' }),
+      ).toBeInTheDocument()
+    })
   })
 
   test('Garden Admin should be accessible', async () => {
@@ -86,11 +129,11 @@ describe('Routes with auth disabled', () => {
         <Routes />
       </MemoryProvider>,
     )
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { name: 'Gardens Management' }),
-      ).not.toBeInTheDocument(),
-    )
+        screen.getByRole('heading', { name: 'Gardens Management' }),
+      ).toBeInTheDocument()
+    })
   })
 
   test('Command Blocklist should be accessible', async () => {
@@ -102,13 +145,13 @@ describe('Routes with auth disabled', () => {
         <Routes />
       </MemoryProvider>,
     )
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
-        screen.queryByRole('heading', {
+        screen.getByRole('heading', {
           name: 'Command Publishing Blocklist',
         }),
-      ).not.toBeInTheDocument(),
-    )
+      ).toBeInTheDocument()
+    })
   })
 
   test('Login should not be accessible', async () => {
@@ -128,16 +171,184 @@ describe('Routes with auth disabled', () => {
   })
 })
 
+describe('Routes with auth enabled, no access', () => {
+  beforeAll(() => {
+    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    mockAxios.onGet(regexUsers).reply(200, TUser)
+  })
+
+  afterAll(() => {
+    mockAxios.onGet('/config').reply(200, TServerConfig)
+  })
+
+  test('Systems should be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/systems']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() => {
+      expect(screen.getByLabelText('Password *')).toBeInTheDocument()
+    })
+    // For some reason have to do this only once
+    loginFN()
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Systems' }),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test('Requests should be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/requests']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Requests' }),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test('Users should not be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/admin/users']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'User Management' }),
+      ).not.toBeInTheDocument(),
+    )
+    expect(screen.getByRole('heading', { name: 'Systems' })).toBeInTheDocument()
+  })
+
+  test('Job should not be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/jobs']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'Request Scheduler' }),
+      ).not.toBeInTheDocument(),
+    )
+    expect(screen.getByRole('heading', { name: 'Systems' })).toBeInTheDocument()
+  })
+
+  test('System Admin should not be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/admin/systems']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'Systems Management' }),
+      ).not.toBeInTheDocument(),
+    )
+    expect(screen.getByRole('heading', { name: 'Systems' })).toBeInTheDocument()
+  })
+
+  test('Garden Admin should not be accessible', async () => {
+    render(
+      <MemoryProvider startLocation={['/admin/gardens']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'Gardens Management' }),
+      ).not.toBeInTheDocument(),
+    )
+    expect(screen.getByRole('heading', { name: 'Systems' })).toBeInTheDocument()
+  })
+
+  test('Command Blocklist should not be accessible', async () => {
+    jest
+      .spyOn(Router, 'useParams')
+      .mockReturnValue({ systemName: TSystem.name })
+    render(
+      <MemoryProvider startLocation={['/admin/commandblocklist']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', {
+          name: 'Command Publishing Blocklist',
+        }),
+      ).not.toBeInTheDocument(),
+    )
+    expect(screen.getByRole('heading', { name: 'Systems' })).toBeInTheDocument()
+  })
+})
+
 describe('Routes with auth enabled, has access', () => {
   beforeAll(() => {
     mockAxios.onGet('/config').reply(200, TServerAuthConfig)
     mockAxios.onGet(regexUsers).reply(200, TAdmin)
   })
-  test.skip('Users', async () => {
+
+  afterAll(() => {
+    mockAxios.onGet('/config').reply(200, TServerConfig)
+  })
+
+  test('Systems', async () => {
     render(
-      <LoggedInMemory startLocation={['/admin/users']}>
+      <MemoryProvider startLocation={['/systems']}>
         <Routes />
-      </LoggedInMemory>,
+      </MemoryProvider>,
+    )
+    // For some reason still logged in from previous suite
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Systems' }),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test('Requests', async () => {
+    render(
+      <MemoryProvider startLocation={['/requests']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Requests' }),
+      ).toBeInTheDocument()
+    })
+    expect(
+      screen.queryByRole('heading', { name: 'Systems' }),
+    ).not.toBeInTheDocument()
+  })
+
+  test('Users', async () => {
+    render(
+      <MemoryProvider startLocation={['/admin/users']}>
+        <Routes />
+      </MemoryProvider>,
+    )
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'User Management' }),
+      ).toBeInTheDocument()
+    })
+    expect(
+      screen.queryByRole('heading', { name: 'Systems' }),
+    ).not.toBeInTheDocument()
+  })
+
+  test('Job', async () => {
+    render(
+      <MemoryProvider startLocation={['/jobs']}>
+        <Routes />
+      </MemoryProvider>,
     )
     await waitFor(() =>
       expect(
@@ -145,29 +356,15 @@ describe('Routes with auth enabled, has access', () => {
       ).not.toBeInTheDocument(),
     )
     expect(
-      screen.getByRole('heading', { name: 'User Management' }),
+      screen.getByRole('heading', { name: 'Request Scheduler' }),
     ).toBeInTheDocument()
   })
 
-  test.skip('Job', async () => {
+  test('System Admin', async () => {
     render(
-      <LoggedInMemory startLocation={['/admin/jobs']}>
+      <MemoryProvider startLocation={['/admin/systems']}>
         <Routes />
-      </LoggedInMemory>,
-    )
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('heading', { name: 'Systems' }),
-      ).not.toBeInTheDocument(),
-    )
-    expect(screen.getByRole('heading', { name: 'Job' })).toBeInTheDocument()
-  })
-
-  test.skip('System Admin', async () => {
-    render(
-      <LoggedInMemory startLocation={['/admin/jobs']}>
-        <Routes />
-      </LoggedInMemory>,
+      </MemoryProvider>,
     )
     await waitFor(() =>
       expect(
@@ -179,11 +376,11 @@ describe('Routes with auth enabled, has access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('Garden Admin', async () => {
+  test('Garden Admin', async () => {
     render(
-      <LoggedInMemory startLocation={['/admin/jobs']}>
+      <MemoryProvider startLocation={['/admin/gardens']}>
         <Routes />
-      </LoggedInMemory>,
+      </MemoryProvider>,
     )
     await waitFor(() =>
       expect(
@@ -195,11 +392,11 @@ describe('Routes with auth enabled, has access', () => {
     ).toBeInTheDocument()
   })
 
-  test.skip('Command Blocklist', async () => {
+  test('Command Blocklist', async () => {
     render(
-      <LoggedInMemory startLocation={['/admin/jobs']}>
+      <MemoryProvider startLocation={['/admin/commandblocklist']}>
         <Routes />
-      </LoggedInMemory>,
+      </MemoryProvider>,
     )
     await waitFor(() =>
       expect(
@@ -225,97 +422,6 @@ describe('Routes with auth enabled, has access', () => {
         screen.queryByRole('heading', { name: 'Systems' }),
       ).not.toBeInTheDocument()
     })
-    expect(
-      screen.getByRole('textbox', { name: 'Username' }),
-    ).toBeInTheDocument()
-  })
-})
-
-describe('Routes with auth enabled, no access', () => {
-  beforeAll(() => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TUser)
-  })
-  test('Users should not be accessible', async () => {
-    render(
-      <LoggedInMemory startLocation={['/admin/users']}>
-        <Routes />
-      </LoggedInMemory>,
-    )
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('heading', { name: 'User Management' }),
-      ).not.toBeInTheDocument(),
-    )
-    expect(
-      screen.getByRole('textbox', { name: 'Username' }),
-    ).toBeInTheDocument()
-  })
-
-  test('Job should not be accessible', async () => {
-    render(
-      <LoggedInMemory startLocation={['/jobs']}>
-        <Routes />
-      </LoggedInMemory>,
-    )
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('heading', { name: 'Job' }),
-      ).not.toBeInTheDocument(),
-    )
-    expect(
-      screen.getByRole('textbox', { name: 'Username' }),
-    ).toBeInTheDocument()
-  })
-
-  test('System Admin should not be accessible', async () => {
-    render(
-      <LoggedInMemory startLocation={['/admin/systems']}>
-        <Routes />
-      </LoggedInMemory>,
-    )
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('heading', { name: 'Systems Management' }),
-      ).not.toBeInTheDocument(),
-    )
-    expect(
-      screen.getByRole('textbox', { name: 'Username' }),
-    ).toBeInTheDocument()
-  })
-
-  test('Garden Admin should not be accessible', async () => {
-    render(
-      <LoggedInMemory startLocation={['/admin/gardens']}>
-        <Routes />
-      </LoggedInMemory>,
-    )
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('heading', { name: 'Gardens Management' }),
-      ).not.toBeInTheDocument(),
-    )
-    expect(
-      screen.getByRole('textbox', { name: 'Username' }),
-    ).toBeInTheDocument()
-  })
-
-  test('Command Blocklist should not be accessible', async () => {
-    jest
-      .spyOn(Router, 'useParams')
-      .mockReturnValue({ systemName: TSystem.name })
-    render(
-      <LoggedInMemory startLocation={['/admin/commandblocklist']}>
-        <Routes />
-      </LoggedInMemory>,
-    )
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('heading', {
-          name: 'Command Publishing Blocklist',
-        }),
-      ).not.toBeInTheDocument(),
-    )
     expect(
       screen.getByRole('textbox', { name: 'Username' }),
     ).toBeInTheDocument()

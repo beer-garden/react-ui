@@ -15,6 +15,9 @@ axios.defaults.baseURL = 'http://localhost:4000'
 
 const mock = new MockAdapter(axios)
 
+const mockToken =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbnMiOiJzb21lIiwidHlwZSI6ImFjY2VzcyJ9.4ooLLSdOD-221RbrVsueEglJY8JRPIebIAuQ8K2APVw'
+
 const regexLogs = new RegExp(/(\/api\/v1\/instances\/)\w+(\/logs)/)
 export const regexUsers = new RegExp(/(\/api\/v1\/users\/)\w+/)
 const regexQueues = new RegExp(/(\/api\/v1\/instances\/)(\w+[^bad])(\/queues)/)
@@ -50,7 +53,14 @@ mock
 
 // Success POST
 mock.onPost('/api/v1/requests').reply(200, { id: 'testRequest' })
-mock.onPost('/api/v1/token').reply(200, { access: 'admin', refresh: 'none' })
+mock.onPost('/api/v1/token').reply(200, {
+  access: mockToken,
+  refresh: mockToken,
+})
+mock.onPost('/api/v1/token/refresh').reply(200, {
+  access: mockToken,
+  refresh: mockToken,
+})
 mock.onPost('/api/v1/users').reply(200, { users: [TAdmin] })
 mock.onPost('/api/v1/gardens').reply(200, TGarden)
 mock.onPost('/api/v1/import/jobs').reply(200, { ids: [mockData.TJob.id] })

@@ -5,7 +5,7 @@ import Router from 'react-router-dom'
 import { mockAxios } from 'test/axios-mock'
 import { TSystem } from 'test/system-test-values'
 import { TServerConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders } from 'test/testMocks'
+import { AllProviders, MemoryProvider } from 'test/testMocks'
 
 import { CommandIndex } from './CommandIndex'
 
@@ -247,9 +247,9 @@ describe('CommandIndex', () => {
     })
     mockAxios.onGet('/api/v1/systems').reply(200, [TSystem])
     render(
-      <LoggedInProviders>
+      <MemoryProvider startLocation={['/systems/test/testCommand/1.0.0']}>
         <CommandIndex />
-      </LoggedInProviders>,
+      </MemoryProvider>,
     )
     await waitFor(() => {
       expect(screen.getByText('Execute')).toBeInTheDocument()
@@ -275,9 +275,9 @@ describe('CommandIndex', () => {
       version: TSystem.version,
     })
     render(
-      <LoggedInProviders>
+      <MemoryProvider startLocation={['/systems/test/testCommand/1.0.0']}>
         <CommandIndex />
-      </LoggedInProviders>,
+      </MemoryProvider>,
     )
     await waitFor(() => {
       expect(screen.queryByText('Execute')).not.toBeInTheDocument()

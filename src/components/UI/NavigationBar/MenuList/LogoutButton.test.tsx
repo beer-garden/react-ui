@@ -1,37 +1,29 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
-import { mockAxios } from 'test/axios-mock'
-import { TServerAuthConfig } from 'test/test-values'
-import { LoggedInProviders } from 'test/testMocks'
+import { AuthContainer } from 'containers/AuthContainer'
+import { AllProviders } from 'test/testMocks'
 
-import { MenuList } from './MenuList'
+import { LogoutButton } from './LogoutButton'
 
 describe('LogoutButton', () => {
   test('logs user out when clicked', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-
+    const logOutTrigger = jest.fn()
+    jest.spyOn(AuthContainer, 'useContainer').mockReturnValue({
+      user: 'admin',
+      login: jest.fn(),
+      logout: logOutTrigger,
+      refreshToken: jest.fn(),
+      isAuthenticated: jest.fn(),
+      tokenExpiration: new Date(),
+    })
     render(
-      <LoggedInProviders>
-        <NavigationBarContextProvider
-          toggleDrawer={(open: boolean) => () => {
-            // noop
-          }}
-          drawerIsOpen={true}
-        >
-          <MenuList />
-        </NavigationBarContextProvider>
-      </LoggedInProviders>,
+      <AllProviders>
+        <LogoutButton />
+      </AllProviders>,
     )
-
     await waitFor(() => {
       expect(screen.getByText('Logout')).toBeInTheDocument()
     })
-
-    const logOutButton = screen.getByText('Logout')
-    fireEvent.click(logOutButton)
-
-    await waitFor(() => {
-      expect(screen.queryByText('Logout')).not.toBeInTheDocument()
-    })
+    fireEvent.click(screen.getByText('Logout'))
+    expect(logOutTrigger).toHaveBeenCalledTimes(1)
   })
 })

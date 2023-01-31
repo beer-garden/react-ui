@@ -1,10 +1,12 @@
 import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
+import { AuthContainer } from 'containers/AuthContainer'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { mockAxios, regexUsers } from 'test/axios-mock'
 import { TGarden } from 'test/garden-test-values'
 import { TSystem } from 'test/system-test-values'
-import { TJob, TServerAuthConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders, LogsProvider } from 'test/testMocks'
+import { TJob, TServerAuthConfig, TServerConfig } from 'test/test-values'
+import { AllProviders, LogsProvider } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 
 import { PermissionsContainer } from './PermissionsContainer'
@@ -51,6 +53,14 @@ describe('Permissions Container', () => {
   })
 
   describe('no auth', () => {
+    beforeEach(() => {
+      jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+        config: TServerConfig,
+        authEnabled: false,
+        debugEnabled: false,
+      })
+    })
+
     test('checks base permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
         wrapper: AllProviders,
@@ -99,13 +109,17 @@ describe('Permissions Container', () => {
   })
 
   describe('auth no permissions', () => {
-    beforeAll(() => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    beforeEach(() => {
+      jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+        config: TServerAuthConfig,
+        authEnabled: true,
+        debugEnabled: false,
+      })
     })
 
     test('checks base permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(() => {
         expect(result.current.hasPermission('user:create')).toBeFalsy()
@@ -114,7 +128,7 @@ describe('Permissions Container', () => {
 
     test('checks garden permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(() => {
         expect(
@@ -125,7 +139,7 @@ describe('Permissions Container', () => {
 
     test('checks system permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(async () => {
         expect(
@@ -140,7 +154,7 @@ describe('Permissions Container', () => {
 
     test('checks job permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(async () => {
         expect(
@@ -151,14 +165,29 @@ describe('Permissions Container', () => {
   })
 
   describe('auth logged in with permission', () => {
+    beforeEach(() => {
+      jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+        config: TServerAuthConfig,
+        authEnabled: true,
+        debugEnabled: false,
+      })
+      jest.spyOn(AuthContainer, 'useContainer').mockReturnValue({
+        user: 'admin',
+        login: jest.fn(),
+        logout: jest.fn(),
+        refreshToken: jest.fn(),
+        isAuthenticated: jest.fn(),
+        tokenExpiration: new Date(),
+      })
+    })
+
     beforeAll(() => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
       mockAxios.onGet(regexUsers).reply(200, TAdmin)
     })
 
     test('checks base permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(() => {
         expect(result.current.hasPermission('user:create')).toBeTruthy()
@@ -167,7 +196,7 @@ describe('Permissions Container', () => {
 
     test('checks garden permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(() => {
         expect(
@@ -178,7 +207,7 @@ describe('Permissions Container', () => {
 
     test('checks system permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(async () => {
         expect(
@@ -193,7 +222,7 @@ describe('Permissions Container', () => {
 
     test('checks job permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(async () => {
         expect(
@@ -204,14 +233,29 @@ describe('Permissions Container', () => {
   })
 
   describe('auth logged in without permission', () => {
+    beforeEach(() => {
+      jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+        config: TServerAuthConfig,
+        authEnabled: true,
+        debugEnabled: false,
+      })
+      jest.spyOn(AuthContainer, 'useContainer').mockReturnValue({
+        user: TUser.username,
+        login: jest.fn(),
+        logout: jest.fn(),
+        refreshToken: jest.fn(),
+        isAuthenticated: jest.fn(),
+        tokenExpiration: new Date(),
+      })
+    })
+
     beforeAll(() => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
       mockAxios.onGet(regexUsers).reply(200, TUser)
     })
 
     test('checks base permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(() => {
         expect(result.current.hasPermission('user:create')).toBeFalsy()
@@ -220,7 +264,7 @@ describe('Permissions Container', () => {
 
     test('checks garden permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(() => {
         expect(
@@ -231,7 +275,7 @@ describe('Permissions Container', () => {
 
     test('checks system permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(async () => {
         expect(
@@ -246,7 +290,7 @@ describe('Permissions Container', () => {
 
     test('checks job permission', async () => {
       const { result } = renderHook(() => PermissionsContainer.useContainer(), {
-        wrapper: LoggedInProviders,
+        wrapper: AllProviders,
       })
       await waitFor(async () => {
         expect(
