@@ -1,15 +1,5 @@
+import { TParameter } from 'test/system-test-values'
 import { Choice, Command, Parameter } from 'types/backend-types'
-
-export const paramNoChoices: Parameter = {
-  key: 'paramKey',
-  type: 'String',
-  multi: false,
-  display_name: 'paramDisplayName',
-  optional: false,
-  parameters: [],
-  nullable: true,
-  choices: undefined,
-}
 
 export const staticChoice: Choice = {
   display: 'select',
@@ -20,7 +10,7 @@ export const staticChoice: Choice = {
 }
 
 export const paramWithStaticChoice: Parameter = {
-  ...paramNoChoices,
+  ...TParameter,
   choices: staticChoice,
 }
 

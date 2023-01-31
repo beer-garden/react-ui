@@ -1,21 +1,38 @@
-import { render, waitFor } from '@testing-library/react'
-import { screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import {
   emptyJobRequestCreationProviderState,
   JobRequestCreationContext,
   JobRequestCreationProviderState,
 } from 'components/JobRequestCreation'
 import * as commandViewHelpers from 'pages/CommandView/commandViewHelpers'
-import { TCommand, TSystem } from 'test/system-test-values'
+import {
+  TAugmentedCommand,
+  TRequestCommandModel,
+  TRequestJobModel,
+} from 'test/request-command-job-test-values'
+import { TParameter, TSystem } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
-import {
-  CommandViewJob,
-  CommandViewJobModel,
-  CommandViewRequestModel,
-} from 'types/form-model-types'
+import { CommandViewRequestModel } from 'types/form-model-types'
 
 import { CommandView } from './CommandView'
+
+const { commands, ...theSystem } = TSystem
+const CommandContextValues: JobRequestCreationProviderState = {
+  ...emptyJobRequestCreationProviderState,
+  system: theSystem as StrippedSystem,
+  command: TAugmentedCommand,
+  isReplay: true,
+  requestModel: TRequestCommandModel,
+}
+const JobContextValues: JobRequestCreationProviderState = {
+  ...emptyJobRequestCreationProviderState,
+  system: theSystem as StrippedSystem,
+  command: TAugmentedCommand,
+  isJob: true,
+  isReplay: true,
+  requestModel: TRequestJobModel,
+}
 
 describe('CommandView', () => {
   let checkContext: jest.SpyInstance<
@@ -41,101 +58,44 @@ describe('CommandView', () => {
   afterEach(() => {
     checkContext.mockRestore()
   })
-  test('renders request form with model context values', async () => {
-    const testComment = 'Silly comment!'
-    const testParameterValue = 'This is a parameter value'
-    const { commands, ...theSystem } = TSystem
-    const theCommand: AugmentedCommand = {
-      ...TCommand,
-      namespace: theSystem.namespace,
-      systemName: theSystem.name,
-      systemVersion: theSystem.version,
-      systemId: theSystem.id,
-    }
-    const theRequestModel: CommandViewRequestModel = {
-      comment: {
-        comment: testComment,
-      },
-      instance_names: {
-        instance_name: TSystem.instances[0].name,
-      },
-      parameters: {
-        [theCommand.parameters[0].key]: testParameterValue,
-      },
-    }
-    const TContextValues: JobRequestCreationProviderState = {
-      ...emptyJobRequestCreationProviderState,
-      system: theSystem as StrippedSystem,
-      command: theCommand,
-      isReplay: true,
-      requestModel: theRequestModel,
-    }
 
+  test('renders request form with model context values', async () => {
     render(
       <AllProviders>
-        <JobRequestCreationContext.Provider value={TContextValues}>
+        <JobRequestCreationContext.Provider value={CommandContextValues}>
           <CommandView />
         </JobRequestCreationContext.Provider>
       </AllProviders>,
     )
-
     // comment is inserted
     await waitFor(() => {
-      expect(screen.getByDisplayValue(testComment)).toBeInTheDocument()
+      expect(
+        screen.getByDisplayValue(TRequestCommandModel.comment.comment),
+      ).toBeInTheDocument()
     })
-
+    console.log(TAugmentedCommand.parameters[0].key)
     // parameter value is inserted
+    const paramString = TRequestCommandModel.parameters[
+      TParameter.key
+    ] as string
     await waitFor(() => {
-      expect(screen.getByDisplayValue(testParameterValue)).toBeInTheDocument()
+      expect(screen.getByDisplayValue(paramString)).toBeInTheDocument()
     })
   })
 
   test('renders job form with model context values', async () => {
-    const jobName = 'My favorite job'
-    const { commands, ...theSystem } = TSystem
-    const theCommand: AugmentedCommand = {
-      ...TCommand,
-      namespace: theSystem.namespace,
-      systemName: theSystem.name,
-      systemVersion: theSystem.version,
-      systemId: theSystem.id,
-    }
-    const theCommandViewJob: CommandViewJob = {
-      name: jobName,
-      trigger: 'date',
-    }
-    const theRequestModel: CommandViewJobModel = {
-      comment: {
-        comment: '',
-      },
-      instance_names: {
-        instance_name: TSystem.instances[0].name,
-      },
-      parameters: {
-        [theCommand.parameters[0].key]: 'This is a parameter value',
-      },
-      job: theCommandViewJob,
-    }
-    const TContextValues: JobRequestCreationProviderState = {
-      ...emptyJobRequestCreationProviderState,
-      system: theSystem as StrippedSystem,
-      command: theCommand,
-      isJob: true,
-      isReplay: true,
-      requestModel: theRequestModel,
-    }
-
     render(
       <AllProviders>
-        <JobRequestCreationContext.Provider value={TContextValues}>
+        <JobRequestCreationContext.Provider value={JobContextValues}>
           <CommandView />
         </JobRequestCreationContext.Provider>
       </AllProviders>,
     )
-
     // job name is inserted
     await waitFor(() => {
-      expect(screen.getByDisplayValue(jobName)).toBeInTheDocument()
+      expect(
+        screen.getByDisplayValue(TRequestJobModel.job.name),
+      ).toBeInTheDocument()
     })
   })
 })

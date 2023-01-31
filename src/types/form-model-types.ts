@@ -39,6 +39,7 @@ export interface CommandViewRequestModel {
 }
 
 export type CommandViewJob = {
+  [index: string]: number | string | boolean | undefined
   coalesce?: boolean
   max_instances?: number
   misfire_grace_time?: number
