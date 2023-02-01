@@ -162,7 +162,6 @@ const getOnChangeFunctions = (
  * Get an 'onChange' function for a parameter which is a dependency of a
  * dynamic choice parameter
  *
- * @param tag - the name of the parameter that's changing
  * @param shouldUpdate - an array of the dynamic choice parameters that should
  *     be updated by a change in this parameter
  * @param dynamicChoices - an object keyed by the name of the dynamic choice
