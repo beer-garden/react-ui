@@ -20,6 +20,7 @@ const mockToken =
 
 const regexLogs = new RegExp(/(\/api\/v1\/instances\/)\w+(\/logs)/)
 export const regexUsers = new RegExp(/(\/api\/v1\/users\/)\w+/)
+const regexRequests = new RegExp(/\/api\/v1\/requests\?/)
 const regexQueues = new RegExp(/(\/api\/v1\/instances\/)(\w+[^bad])(\/queues)/)
 
 // Success GET
@@ -35,6 +36,13 @@ mock.onGet('/api/v1/users').reply(200, { users: [TUser] })
 mock.onGet(regexUsers).reply(200, TUser)
 mock.onGet('/api/v1/roles').reply(200, { roles: [TRole, TAdminRole] })
 mock.onGet('/api/v1/requests/1234').reply(200, mockData.TRequest)
+mock.onGet(regexRequests).reply(200, [mockData.TRequest], {
+  start: '0',
+  length: '5',
+  recordsfiltered: '4',
+  recordstotal: '5',
+  draw: '2',
+})
 mock.onGet('/api/v1/namespaces').reply(200, ['test'])
 mock.onGet('/api/v1/users/adminUser').reply((config: AxiosRequestConfig) => {
   // this can be updated to be dynamic by parsing config.url for name

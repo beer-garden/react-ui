@@ -73,7 +73,6 @@ describe('CommandView', () => {
         screen.getByDisplayValue(TRequestCommandModel.comment.comment),
       ).toBeInTheDocument()
     })
-    console.log(TAugmentedCommand.parameters[0].key)
     // parameter value is inserted
     const paramString = TRequestCommandModel.parameters[
       TParameter.key
