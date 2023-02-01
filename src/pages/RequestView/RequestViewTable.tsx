@@ -108,7 +108,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
               </>
             }
           >
-            <InfoOutlined fontSize="small" />
+            <InfoOutlined tabIndex={0} fontSize="small" />
           </Tooltip>
         </LabeledData>
         <LabeledData
