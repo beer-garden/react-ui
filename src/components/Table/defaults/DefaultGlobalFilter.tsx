@@ -1,6 +1,5 @@
 import { Clear as ClearIcon, Search as SearchIcon } from '@mui/icons-material'
 import { Box, IconButton, InputAdornment, TextField } from '@mui/material'
-import { Box, TextField } from '@mui/material'
 import { useMountedState } from 'hooks/useMountedState'
 import {
   useAsyncDebounce,
