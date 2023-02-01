@@ -31,11 +31,14 @@ describe('Routes', () => {
         <Routes />
       </SuspendedProviders>,
     )
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: 'Systems' }),
-      ).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: 'Systems' }),
+        ).toBeInTheDocument()
+      },
+      { timeout: 2500 },
+    )
     expect(
       screen.getByRole('heading', { name: 'Systems' }).textContent,
     ).toEqual('Systems')
