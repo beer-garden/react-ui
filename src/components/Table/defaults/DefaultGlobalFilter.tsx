@@ -1,4 +1,5 @@
-import { Box, TextField } from '@mui/material'
+import { Clear as ClearIcon, Search as SearchIcon } from '@mui/icons-material'
+import { Box, IconButton, InputAdornment, TextField } from '@mui/material'
 import { useMountedState } from 'hooks/useMountedState'
 import {
   useAsyncDebounce,
@@ -27,8 +28,26 @@ const DefaultGlobalFilter = <T extends ObjectWithStringKeys>({
   return (
     <Box>
       <TextField
-        type="search"
-        variant="outlined"
+        variant="standard"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+          endAdornment: value && (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => {
+                  setValue('')
+                  onChange('')
+                }}
+              >
+                <ClearIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
         size="small"
         color="secondary"
         value={value || ''}
