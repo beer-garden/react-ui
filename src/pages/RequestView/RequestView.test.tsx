@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import WS from 'jest-websocket-mock'
 import Router from 'react-router-dom'
 import { mockAxios } from 'test/axios-mock'
@@ -19,6 +20,13 @@ describe('RequestView', () => {
   let server: WS
 
   beforeEach(() => {
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasPermission: () => true,
+      hasGardenPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+      hasSystemPermission: jest.fn(),
+    })
     server = new WS('ws://localhost:2337/api/v1/socket/events')
   })
 
@@ -48,6 +56,31 @@ describe('RequestView', () => {
     expect(
       screen.getByRole('heading', { name: 'Parameters' }),
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Remake Request' }),
+    ).toBeInTheDocument()
+  })
+
+  test('no remake button if no permission', async () => {
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasPermission: () => false,
+      hasGardenPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+      hasSystemPermission: jest.fn(),
+    })
+    jest.spyOn(Router, 'useParams').mockReturnValue({ id: mockId })
+    render(
+      <AllProviders>
+        <RequestView />
+      </AllProviders>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(mockId)).toBeInTheDocument()
+    })
+    expect(
+      screen.queryByRole('button', { name: 'Remake Request' }),
+    ).not.toBeInTheDocument()
   })
 
   test('refetches page contents when REQUEST_COMPLETED event occurs and requestId matches', async () => {

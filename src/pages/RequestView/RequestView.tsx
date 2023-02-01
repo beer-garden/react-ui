@@ -13,6 +13,7 @@ import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { useMountedState } from 'hooks/useMountedState'
 import { RequestViewOutput, RequestViewTable } from 'pages/RequestView'
@@ -23,6 +24,7 @@ import { useParams } from 'react-router-dom'
 import { Request } from 'types/backend-types'
 
 const RequestView = () => {
+  const { hasPermission } = PermissionsContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
   const theme = useContext(ThemeContext).theme
   const [request, setRequest] = useMountedState<Request | undefined>()
@@ -60,7 +62,7 @@ const RequestView = () => {
 
   return request && !error ? (
     <>
-      <RemakeRequestButton request={request} />
+      {hasPermission('job:create') && <RemakeRequestButton request={request} />}
       <PageHeader title="Request View" description={String(id)} />
       <Divider />
       {request.parent ? (
