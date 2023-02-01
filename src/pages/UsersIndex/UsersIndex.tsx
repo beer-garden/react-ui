@@ -21,8 +21,9 @@ import { Table } from 'components/Table'
 import { DefaultCellRenderer } from 'components/Table/defaults'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import useUsers from 'hooks/useUsers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { Column } from 'react-table'
 import { User } from 'types/backend-types'
 import { ObjectWithStringKeys, SyncUser } from 'types/custom-types'
@@ -65,11 +66,11 @@ const useTableColumns = (sync: boolean) => {
 export const UsersIndex = () => {
   const { hasPermission } = PermissionsContainer.useContainer()
   const { authEnabled } = ServerConfigContainer.useContainer()
-  const [openAdd, setOpenAdd] = useState<boolean>(false)
-  const [openSync, setOpenSync] = useState<boolean>(false)
-  const [syncStatus, setSyncStatus] = useState<boolean>(false)
-  const [errorFetch, setErrorFetch] = useState<AxiosError>()
-  const [users, setUsers] = useState<SyncUser[]>([])
+  const [openAdd, setOpenAdd] = useMountedState<boolean>(false)
+  const [openSync, setOpenSync] = useMountedState<boolean>(false)
+  const [syncStatus, setSyncStatus] = useMountedState<boolean>(false)
+  const [errorFetch, setErrorFetch] = useMountedState<AxiosError | undefined>()
+  const [users, setUsers] = useMountedState<SyncUser[]>([])
   const { getUsers } = useUsers()
 
   /**
@@ -95,7 +96,7 @@ export const UsersIndex = () => {
         setUsers(tmpUsers)
       })
       .catch((e) => setErrorFetch(e))
-  }, [getUsers])
+  }, [getUsers, setErrorFetch, setSyncStatus, setUsers])
 
   useEffect(() => {
     updateUsers()

@@ -12,17 +12,13 @@ import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { SSRTable } from 'components/Table'
+import { useMountedState } from 'hooks/useMountedState'
 import {
   defaultOrderingColumnIndex,
   useRequests,
   useRequestsIndexTableColumns,
 } from 'pages/RequestsIndex'
-import {
-  ChangeEvent as ReactChangeEvent,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react'
+import { ChangeEvent as ReactChangeEvent, useCallback, useMemo } from 'react'
 import { Filters, SortingRule } from 'react-table'
 import {
   OrderableColumnDirection,
@@ -48,15 +44,15 @@ const RequestsIndex = () => {
   const columns = useRequestsIndexTableColumns()
 
   /* These are for the children components passed to the table. */
-  const [includeChildren, setIncludeChildren] = useState(false)
-  const [showHidden, setShowHidden] = useState(false)
+  const [includeChildren, setIncludeChildren] = useMountedState<boolean>(false)
+  const [showHidden, setShowHidden] = useMountedState<boolean>(false)
 
   const includeChildrenOnChange = useCallback(
     (event: ReactChangeEvent<HTMLInputElement>) => {
       setIncludeChildren(event.target.checked)
       handleIncludeChildren(event.target.checked)
     },
-    [handleIncludeChildren],
+    [handleIncludeChildren, setIncludeChildren],
   )
 
   const showHiddenOnChange = useCallback(
@@ -64,23 +60,23 @@ const RequestsIndex = () => {
       setShowHidden(event.target.checked)
       handleShowHidden(event.target.checked)
     },
-    [handleShowHidden],
+    [handleShowHidden, setShowHidden],
   )
 
   /* These will keep the table state synced with what's maintained here. */
-  const [searchFilters, setSearchFilters] = useState<
+  const [searchFilters, setSearchFilters] = useMountedState<
     Filters<RequestsIndexTableData> | undefined
-  >(undefined)
-  const [ordering, setOrdering] = useState<
+  >()
+  const [ordering, setOrdering] = useMountedState<
     SortingRule<RequestsIndexTableData> | undefined
-  >(undefined)
+  >()
 
   const searchByOnChange = useCallback(
     (filters: Filters<RequestsIndexTableData>) => {
       setSearchFilters(filters)
       handleSearchBy(filters)
     },
-    [handleSearchBy],
+    [handleSearchBy, setSearchFilters],
   )
 
   const orderingOnChange = useCallback(
@@ -91,7 +87,7 @@ const RequestsIndex = () => {
       })
       handleOrderBy(column, direction)
     },
-    [handleOrderBy],
+    [handleOrderBy, setOrdering],
   )
 
   const sortAndOrdering = useMemo(

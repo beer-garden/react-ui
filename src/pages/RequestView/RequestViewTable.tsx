@@ -14,8 +14,8 @@ import {
 import { Divider as MyDivider } from 'components/Divider'
 import { LabeledData } from 'components/LabeledData'
 import { Table } from 'components/Table'
+import { useMountedState } from 'hooks/useMountedState'
 import { useRequestsIndexTableColumns } from 'pages/RequestsIndex'
-import { useState } from 'react'
 import { Request } from 'types/backend-types'
 import { formatBeergardenRequests } from 'utils/dataHelpers'
 import { dateFormatted } from 'utils/date-formatter'
@@ -57,7 +57,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
       break
   }
 
-  const [showChildren, setShowChildren] = useState(false)
+  const [showChildren, setShowChildren] = useMountedState<boolean>(false)
 
   const childColumns = useRequestsIndexTableColumns()
   const childData = formatBeergardenRequests(request.children)
@@ -108,7 +108,7 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
               </>
             }
           >
-            <InfoOutlined fontSize="small" />
+            <InfoOutlined tabIndex={0} fontSize="small" />
           </Tooltip>
         </LabeledData>
         <LabeledData

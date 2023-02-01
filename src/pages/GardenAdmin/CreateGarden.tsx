@@ -1,16 +1,16 @@
 import { Box, Button, Dialog } from '@mui/material'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
 import useGardens from 'hooks/useGardens'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
 interface GardenConnectionFormProps {
-  setRequestStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
+  setRequestStatus: (arg0: SnackbarState) => void
 }
 
 const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useMountedState<boolean>(false)
   const garden: Garden = {
     connection_params: { http: undefined, stomp: undefined },
     connection_type: 'HTTP',

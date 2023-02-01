@@ -18,16 +18,19 @@ import {
 } from '@mui/material'
 import { Snackbar } from 'components/Snackbar'
 import { SocketContainer } from 'containers/SocketContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import { useRunners } from 'hooks/useRunners'
 import { alertStyle } from 'pages/SystemAdmin'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Runner } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
 const UnassociatedRunnersCard = () => {
-  const [unassociatedRunners, setUnassociatedRunners] = useState<Runner[]>([])
-  const [expanded, setExpanded] = useState(true)
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
+  const [unassociatedRunners, setUnassociatedRunners] = useMountedState<
+    Runner[]
+  >([])
+  const [expanded, setExpanded] = useMountedState<boolean>(true)
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
   const { addCallback, removeCallback } = SocketContainer.useContainer()
   const { getRunners, startRunner, stopRunner, reloadRunner, deleteRunner } =
     useRunners()
@@ -48,7 +51,7 @@ const UnassociatedRunnersCard = () => {
           doNotAutoDismiss: true,
         })
       })
-  }, [getRunners])
+  }, [getRunners, setAlert, setUnassociatedRunners])
 
   useEffect(() => {
     updateRunners()

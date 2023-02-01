@@ -12,21 +12,21 @@ import { LabeledData } from 'components/LabeledData'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import useGardens from 'hooks/useGardens'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
 import { Link as RouterLink } from 'react-router-dom'
 import { Garden } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
 
 interface GardenAdminCardProps {
   garden: Garden
-  setRequestStatus: Dispatch<SetStateAction<SnackbarState | undefined>>
+  setRequestStatus: (arg0: SnackbarState) => void
 }
 
 const GardenAdminCard = ({
   garden,
   setRequestStatus,
 }: GardenAdminCardProps) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useMountedState<boolean>(false)
 
   const { deleteGarden } = useGardens()
   const { hasGardenPermission } = PermissionsContainer.useContainer()

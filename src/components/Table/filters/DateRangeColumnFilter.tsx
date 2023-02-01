@@ -1,14 +1,14 @@
 import { Search as SearchIcon } from '@mui/icons-material'
 import { Box, InputAdornment, TextField } from '@mui/material'
+import { useMountedState } from 'hooks/useMountedState'
 import { DateTime } from 'luxon'
-import { useState } from 'react'
 import { FilterProps } from 'react-table'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 const DateRangeColumnFilter = ({
   column: { filterValue = [], setFilter, id },
 }: FilterProps<ObjectWithStringKeys>) => {
-  const [startDate, setStartDate] = useState<string>(
+  const [startDate, setStartDate] = useMountedState<string>(
     filterValue[0]
       ? () => {
           const tempDate = DateTime.fromHTTP(
@@ -18,7 +18,7 @@ const DateRangeColumnFilter = ({
         }
       : '',
   )
-  const [endDate, setEndDate] = useState<string>(
+  const [endDate, setEndDate] = useMountedState<string>(
     filterValue[1]
       ? () => {
           const tempDate = DateTime.fromHTTP(

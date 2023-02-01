@@ -3,7 +3,8 @@ import {
   SupportedColorScheme,
 } from '@mui/material/styles'
 import { getTheme } from 'components/UI/Theme/Theme'
-import { createContext, useState } from 'react'
+import { useMountedState } from 'hooks/useMountedState'
+import { createContext } from 'react'
 
 type ThemeProviderContext = {
   theme: SupportedColorScheme
@@ -21,7 +22,7 @@ const ThemeProvider = ({
   children,
 }: React.PropsWithChildren<Record<never, never>>) => {
   const currentTheme = localStorage.getItem('bg-theme')
-  const [theme, _setTheme] = useState<SupportedColorScheme>(
+  const [theme, _setTheme] = useMountedState<SupportedColorScheme>(
     currentTheme === 'dark' ? 'dark' : 'light',
   )
   const setTheme = (theme: SupportedColorScheme) => {

@@ -1,9 +1,10 @@
 import { AxiosRequestConfig } from 'axios'
 import { configure } from 'axios-hooks'
 import { DebugContainer } from 'containers/DebugContainer'
+import { useMountedState } from 'hooks/useMountedState'
 import { useMyAxios } from 'hooks/useMyAxios'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import Cookies from 'universal-cookie'
 
 export interface TokenResponse {
@@ -14,9 +15,9 @@ export interface TokenResponse {
 export const useToken = (onTokenInvalid: () => void) => {
   const cookies = new Cookies()
   const tokenRefreshTimerId = useRef<number>()
-  const [tokenExpiration, setTokenExpiration] = useState<Date | undefined>(
-    undefined,
-  )
+  const [tokenExpiration, setTokenExpiration] = useMountedState<
+    Date | undefined
+  >()
 
   const { DEBUG_AUTH } = DebugContainer.useContainer()
   const { axiosInstance } = useMyAxios()
@@ -91,7 +92,7 @@ export const useToken = (onTokenInvalid: () => void) => {
     }
     window.clearTimeout(tokenRefreshTimerId.current)
     setTokenExpiration(undefined)
-  }, [DEBUG_AUTH])
+  }, [DEBUG_AUTH, setTokenExpiration])
 
   const isAuthenticated = useCallback(() => {
     return !!cookies.get('token')

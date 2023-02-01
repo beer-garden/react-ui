@@ -18,8 +18,9 @@ import { PageHeader } from 'components/PageHeader'
 import { Snackbar } from 'components/Snackbar'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { useJobs } from 'hooks/useJobs'
+import { useMountedState } from 'hooks/useMountedState'
 import { UpdateJobButton } from 'pages/JobView/UpdateJobButton'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Job } from 'types/backend-types'
 import { SnackbarState } from 'types/custom-types'
@@ -30,14 +31,14 @@ const isIntervalTrigger = (triggerType: string) => {
 }
 
 const JobView = () => {
-  const [runOpen, setRunOpen] = useState<boolean>(false)
-  const [delOpen, setDeleteOpen] = useState<boolean>(false)
-  const [job, setLocalJob] = useState<Job>()
-  const [alert, setAlert] = useState<SnackbarState | undefined>(undefined)
-  const [description, setDescription] = useState('')
-  const [showTrigger, setShowTrigger] = useState(true)
-  const [showTemplate, setShowTemplate] = useState(true)
-  const [permission, setPermission] = useState(false)
+  const [runOpen, setRunOpen] = useMountedState<boolean>(false)
+  const [delOpen, setDeleteOpen] = useMountedState<boolean>(false)
+  const [job, setLocalJob] = useMountedState<Job | undefined>()
+  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
+  const [description, setDescription] = useMountedState<string>('')
+  const [showTrigger, setShowTrigger] = useMountedState<boolean>(true)
+  const [showTemplate, setShowTemplate] = useMountedState<boolean>(true)
+  const [permission, setPermission] = useMountedState<boolean>(false)
   const { setJob } = useJobRequestCreation()
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
@@ -50,7 +51,7 @@ const JobView = () => {
   }
 
   const id = params.id as string
-  const [errorFetch, setErrorFetch] = useState<AxiosError>()
+  const [errorFetch, setErrorFetch] = useMountedState<AxiosError | undefined>()
 
   const runNow = (reset: boolean) => {
     runAdHoc(id, reset).then(

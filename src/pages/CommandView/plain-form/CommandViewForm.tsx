@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
-import { ErrorSchema, FormValidation, IChangeEvent } from '@rjsf/core'
+import { FormValidation, IChangeEvent } from '@rjsf/core'
 import { MuiForm5 as Form } from '@rjsf/material-ui'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
@@ -10,6 +10,7 @@ import {
   getSubmitArgument,
   prepareModelForSubmit,
 } from 'formHelpers/get-submit-argument'
+import { useMountedState } from 'hooks/useMountedState'
 import { useMyAxios } from 'hooks/useMyAxios'
 import { JSONSchema7 } from 'json-schema'
 import {
@@ -19,6 +20,7 @@ import {
   FileMetaData,
   handleByteParametersReset,
   isByteCommand,
+  removeOldTriggerKeys,
   TypeAheadChoicesWidget,
 } from 'pages/CommandView'
 import {
@@ -36,6 +38,7 @@ import {
   SnackbarState,
 } from 'types/custom-types'
 import {
+  CommandViewJobModel,
   CommandViewModel,
   CommandViewRequestModel,
 } from 'types/form-model-types'
@@ -80,11 +83,12 @@ const CommandViewForm = ({
   validator,
   context,
 }: CommandViewFormProps) => {
-  const [submitStatus, setSubmitStatus] = useState<SnackbarState | undefined>(
-    undefined,
-  )
-  const [model, setModel] = useState<CommandViewModel>(initialModel)
-  const [displayModel, setDisplayModel] = useState<CommandViewModel>(model)
+  const [submitStatus, setSubmitStatus] = useMountedState<
+    SnackbarState | undefined
+  >()
+  const [model, setModel] = useMountedState<CommandViewModel>(initialModel)
+  const [displayModel, setDisplayModel] =
+    useMountedState<CommandViewModel>(model)
   const [fileMetaData, setFileMetaData] = useState<FileMetaData[]>([])
   const navigate = useNavigate()
   const hasByteParameters = isByteCommand(command.parameters)
@@ -102,11 +106,13 @@ const CommandViewForm = ({
     )
   }
 
-  const onFormUpdated = (
-    changeEvent: IChangeEvent,
-    es: ErrorSchema | undefined,
-  ) => {
+  const onFormUpdated = (changeEvent: IChangeEvent) => {
     const formData = changeEvent.formData as CommandViewModel
+    if (isJob) {
+      const oldTrigger = (displayModel as CommandViewJobModel).job.trigger
+      removeOldTriggerKeys(formData, oldTrigger)
+    }
+
     setModel(formData)
 
     const cleanedModel = cleanModelForDisplay(
