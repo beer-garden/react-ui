@@ -80,7 +80,7 @@ const usePermissions = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
-  const basePermissionCheck = (): boolean | undefined => {
+  const basePermissionCheck = useCallback((): boolean | undefined => {
     if (DEBUG_PERMISSION) {
       console.log('authEnabled', authEnabled)
       console.log('globalPerms', globalPerms)
@@ -90,7 +90,7 @@ const usePermissions = () => {
     if (!globalPerms) return false
     if (!domainPerms) return false
     return undefined
-  }
+  }, [DEBUG_PERMISSION, authEnabled, domainPerms, globalPerms])
 
   const hasPermission = (permission: string): boolean => {
     const baseCheck = basePermissionCheck()
@@ -103,73 +103,88 @@ const usePermissions = () => {
     )
   }
 
-  const hasGardenPermission = (permission: string, garden: Garden): boolean => {
-    const baseCheck = basePermissionCheck()
-    if (typeof baseCheck !== 'undefined') {
-      return !!baseCheck
-    }
-    if (globalPerms?.includes(permission)) {
-      return true
-    }
-    if (
-      garden.id &&
-      domainPerms &&
-      Object.prototype.hasOwnProperty.call(domainPerms, permission)
-    ) {
-      return domainPerms[permission].garden_ids.includes(garden.id)
-    }
-    return false
-  }
+  const hasGardenPermission = useCallback(
+    (permission: string, garden: Garden): boolean => {
+      const baseCheck = basePermissionCheck()
+      if (typeof baseCheck !== 'undefined') {
+        return !!baseCheck
+      }
+      if (globalPerms?.includes(permission)) {
+        return true
+      }
+      if (
+        garden.id &&
+        domainPerms &&
+        Object.prototype.hasOwnProperty.call(domainPerms, permission)
+      ) {
+        return domainPerms[permission].garden_ids.includes(garden.id)
+      }
+      return false
+    },
+    [basePermissionCheck, domainPerms, globalPerms],
+  )
 
-  const hasSystemPermission = async (
-    permission: string,
-    namespace: string,
-    systemId: string,
-  ): Promise<boolean> => {
-    const baseCheck = basePermissionCheck()
-    if (typeof baseCheck !== 'undefined') {
-      return !!baseCheck
-    }
-    if (globalPerms?.includes(permission)) {
-      return true
-    }
-    const response = await getGarden(namespace)
-    const garden = response.data
-    if (garden && hasGardenPermission(permission, garden)) {
-      return true
-    }
-    if (
-      domainPerms &&
-      Object.prototype.hasOwnProperty.call(domainPerms, permission)
-    ) {
-      return domainPerms[permission].system_ids.includes(systemId)
-    }
-    return false
-  }
+  const hasSystemPermission = useCallback(
+    async (
+      permission: string,
+      namespace: string,
+      systemId: string,
+    ): Promise<boolean> => {
+      const baseCheck = basePermissionCheck()
+      if (typeof baseCheck !== 'undefined') {
+        return !!baseCheck
+      }
+      if (globalPerms?.includes(permission)) {
+        return true
+      }
+      const response = await getGarden(namespace)
+      const garden = response.data
+      if (garden && hasGardenPermission(permission, garden)) {
+        return true
+      }
+      if (
+        domainPerms &&
+        Object.prototype.hasOwnProperty.call(domainPerms, permission)
+      ) {
+        return domainPerms[permission].system_ids.includes(systemId)
+      }
+      return false
+    },
+    [
+      basePermissionCheck,
+      domainPerms,
+      getGarden,
+      globalPerms,
+      hasGardenPermission,
+    ],
+  )
 
-  const hasJobPermission = async (permission: string, job: Job) => {
-    const baseCheck = basePermissionCheck()
-    if (typeof baseCheck !== 'undefined') {
-      return !!baseCheck
-    }
-    const response = await getSystems()
-    const systems: System[] = response.data
-    const foundSystem = systems.find(
-      (system) =>
-        system.namespace === job.request_template.namespace &&
-        system.version === job.request_template.system_version &&
-        system.name === job.request_template.system,
-    )
-    if (foundSystem) {
-      const systemPerm = await hasSystemPermission(
-        permission,
-        job.request_template.namespace,
-        foundSystem.id,
+  const hasJobPermission = useCallback(
+    async (permission: string, job: Job) => {
+      const baseCheck = basePermissionCheck()
+      if (typeof baseCheck !== 'undefined') {
+        return !!baseCheck
+      }
+      const response = await getSystems()
+      const systems: System[] = response.data
+      const foundSystem = systems.find(
+        (system) =>
+          system.namespace === job.request_template.namespace &&
+          system.version === job.request_template.system_version &&
+          system.name === job.request_template.system,
       )
-      return systemPerm
-    }
-    return false
-  }
+      if (foundSystem) {
+        const systemPerm = await hasSystemPermission(
+          permission,
+          job.request_template.namespace,
+          foundSystem.id,
+        )
+        return systemPerm
+      }
+      return false
+    },
+    [basePermissionCheck, getSystems, hasSystemPermission],
+  )
 
   return {
     hasPermission,
