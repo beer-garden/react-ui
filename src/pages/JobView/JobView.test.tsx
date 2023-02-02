@@ -5,10 +5,11 @@ import {
   waitFor,
   within,
 } from '@testing-library/react'
-import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TJob, TServerAuthConfig, TServerConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders } from 'test/testMocks'
-import { TAdmin, TUser } from 'test/user-test-values'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { mockAxios } from 'test/axios-mock'
+import { TJob } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
+import { Job } from 'types/backend-types'
 
 import { JobView } from './JobView'
 
@@ -25,6 +26,17 @@ describe('JobView', () => {
   afterAll(() => {
     jest.unmock('react-router-dom')
     jest.clearAllMocks()
+  })
+
+  beforeEach(() => {
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: jest.fn(),
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: (p: string, j: Job): Promise<boolean> =>
+        Promise.resolve(true),
+      isPermissionsSet: jest.fn(),
+    })
   })
 
   test('run now runs the job', async () => {
@@ -133,17 +145,26 @@ describe('JobView', () => {
   })
 
   describe('user does not have permission', () => {
-    beforeAll(() => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, TUser)
+    beforeEach(() => {
+      jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+        hasGardenPermission: jest.fn(),
+        hasPermission: jest.fn(),
+        hasSystemPermission: jest.fn(),
+        hasJobPermission: (p: string, j: Job): Promise<boolean> =>
+          Promise.resolve(false),
+        isPermissionsSet: jest.fn(),
+      })
     })
 
     test('no Delete button', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
+      await waitFor(() => {
+        expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+      })
       await waitFor(() => {
         expect(screen.queryByText('Delete Job')).not.toBeInTheDocument()
       })
@@ -151,10 +172,13 @@ describe('JobView', () => {
 
     test('no Update button', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
+      await waitFor(() => {
+        expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+      })
       await waitFor(() => {
         expect(screen.queryByText('Update Job')).not.toBeInTheDocument()
       })
@@ -162,10 +186,13 @@ describe('JobView', () => {
 
     test('no Run button', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
+      await waitFor(() => {
+        expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+      })
       await waitFor(() => {
         expect(screen.queryByText('Run Now')).not.toBeInTheDocument()
       })
@@ -173,10 +200,13 @@ describe('JobView', () => {
 
     test('no Pause button when jobs', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
+      await waitFor(() => {
+        expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+      })
       await waitFor(async () => {
         expect(screen.queryByText('Pause job')).not.toBeInTheDocument()
       })
@@ -184,11 +214,13 @@ describe('JobView', () => {
 
     test('not render Resume or Pause buttons when jobs', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
-      // slight cheat - job does not immediately exist and we check immediately
+      await waitFor(() => {
+        expect(screen.getByText(`${TJob.name} ${TJob.id}`)).toBeInTheDocument()
+      })
       await waitFor(() => {
         expect(screen.queryByText('Resume Job')).not.toBeInTheDocument()
       })
@@ -196,20 +228,11 @@ describe('JobView', () => {
   })
 
   describe('user has permission', () => {
-    beforeAll(() => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, TAdmin)
-    })
-
-    afterAll(() => {
-      mockAxios.onGet('/config').reply(200, TServerConfig)
-    })
-
     test('renders Delete button', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.getByText('Delete Job')).toBeInTheDocument()
@@ -218,9 +241,9 @@ describe('JobView', () => {
 
     test('renders Update button', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.getByText('Update Job')).toBeInTheDocument()
@@ -229,9 +252,9 @@ describe('JobView', () => {
 
     test('renders Run button', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.getByText('Run Now')).toBeInTheDocument()
@@ -240,9 +263,9 @@ describe('JobView', () => {
 
     test('not render Resume or Pause buttons if no jobs', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.queryByText('Resume Job')).not.toBeInTheDocument()
@@ -251,9 +274,9 @@ describe('JobView', () => {
 
     test('render Pause button when jobs', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobView />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.getByText('Pause job')).toBeInTheDocument()

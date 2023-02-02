@@ -1,3 +1,4 @@
+import { fireEvent, screen } from '@testing-library/react'
 import ErrorBoundary from 'components/ErrorBoundary'
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -14,6 +15,16 @@ export interface ProviderMocks {
   user?: string
   pw?: string
   logs?: DebugSettings
+}
+
+export const loginFN = () => {
+  fireEvent.change(screen.getByRole('textbox', { name: 'Username' }), {
+    target: { value: 'admin' },
+  })
+  fireEvent.change(screen.getByLabelText('Password *'), {
+    target: { value: 'password' },
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
 }
 
 /**
@@ -67,41 +78,6 @@ export const MemoryProvider = ({ children, startLocation }: ProviderMocks) => {
 }
 
 /**
- * Wrapper that puts children inside all props needed to render app properly
- * using MemoryRouter so a current page location can be given and username/password
- * to login with
- * @param children Component(s) to render as children
- * @param startLocation String path for page URL when test runs
- * @returns
- */
-export const LoggedInMemory = ({
-  children,
-  startLocation,
-  user,
-  pw,
-}: ProviderMocks) => {
-  return (
-    <MemoryRouter initialEntries={startLocation}>
-      <ErrorBoundary>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <SocketContainer.Provider>
-              <AuthContainer.Provider>
-                <PermissionsContainer.Provider>
-                  <LoginProvider user={user} pw={pw}>
-                    <Suspense fallback={<>LOADING...</>}>{children}</Suspense>
-                  </LoginProvider>
-                </PermissionsContainer.Provider>
-              </AuthContainer.Provider>
-            </SocketContainer.Provider>
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </ErrorBoundary>
-    </MemoryRouter>
-  )
-}
-
-/**
  * Wrapper that just has config provider
  * @param children Component(s) to render as children
  * @returns
@@ -136,47 +112,6 @@ export const SuspendedProviders = ({ children }: ProviderMocks) => {
       </ErrorBoundary>
     </HashRouter>
   )
-}
-
-/**
- * Wrapper that puts children inside all props needed to render app properly
- * AND logs in as admin user
- * @param children Component(s) to render as children
- * @returns
- */
-export const LoggedInProviders = ({ children }: ProviderMocks) => {
-  return (
-    <HashRouter>
-      <ErrorBoundary>
-        <ServerConfigContainer.Provider>
-          <DebugContainer.Provider>
-            <SocketContainer.Provider>
-              <AuthContainer.Provider>
-                <PermissionsContainer.Provider>
-                  <LoginProvider>{children}</LoginProvider>
-                </PermissionsContainer.Provider>
-              </AuthContainer.Provider>
-            </SocketContainer.Provider>
-          </DebugContainer.Provider>
-        </ServerConfigContainer.Provider>
-      </ErrorBoundary>
-    </HashRouter>
-  )
-}
-
-const LoginProvider = ({ children, user, pw }: ProviderMocks) => {
-  const { login } = AuthContainer.useContainer()
-  const userName = user || 'admin'
-  const password = pw || 'password'
-  login(userName, password)
-    .then(() => {
-      // do nothing its a test
-    })
-    .catch((E) => {
-      // swallowing Error { message: "Invalid token specified: Cannot read
-      // properties of undefined (reading 'replace')" }
-    })
-  return <>{children}</>
 }
 
 /**

@@ -1,15 +1,35 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { Routes } from 'components/Routes'
+import { AuthContainer } from 'containers/AuthContainer'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { Suspense } from 'react'
-import { mockAxios } from 'test/axios-mock'
-import { TServerAuthConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders } from 'test/testMocks'
+import { TServerConfig } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 
 import { NavigationBar } from './NavigationBar'
 
 const originalLocation = Object.assign({}, window.location)
 
 describe('NavigationBar', () => {
+  beforeEach(() => {
+    jest.spyOn(AuthContainer, 'useContainer').mockReturnValue({
+      user: 'admin',
+      login: jest.fn(),
+      logout: jest.fn(),
+      refreshToken: jest.fn(),
+      isAuthenticated: () => true,
+      tokenExpiration: new Date(),
+    })
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: () => true,
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: () => true,
+    })
+  })
+
   test('renders title bar', async () => {
     render(
       <AllProviders>
@@ -29,6 +49,21 @@ describe('NavigationBar', () => {
       // hides page does not exist warning log we don't really care about
       // since Router handles redirect
       warnSpy = jest.spyOn(console, 'warn')
+    })
+
+    beforeEach(() => {
+      jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+        hasGardenPermission: jest.fn(),
+        hasPermission: () => true,
+        hasSystemPermission: jest.fn(),
+        hasJobPermission: jest.fn(),
+        isPermissionsSet: () => true,
+      })
+      jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+        config: TServerConfig,
+        authEnabled: true,
+        debugEnabled: false,
+      })
     })
 
     afterEach(() => {
@@ -92,6 +127,11 @@ describe('NavigationBar', () => {
   })
 
   test('no user welcome when not logged in', async () => {
+    jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+      config: null,
+      authEnabled: false,
+      debugEnabled: false,
+    })
     render(
       <AllProviders>
         <NavigationBar setMarginLeft={jest.fn()} />
@@ -103,12 +143,15 @@ describe('NavigationBar', () => {
   })
 
   test('adds user welcome when logged in', async () => {
-    // change return to enable auth
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
+    jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+      config: null,
+      authEnabled: true,
+      debugEnabled: false,
+    })
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <NavigationBar setMarginLeft={jest.fn()} />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     const header = await screen.findByRole('heading', { name: 'Hello, admin!' })
     expect(header).toBeInTheDocument()

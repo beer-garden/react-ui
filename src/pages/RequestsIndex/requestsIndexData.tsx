@@ -104,8 +104,8 @@ const useRequests = () => {
    * updated) and update our own state.
    */
   useEffect(() => {
-    if (response && !error) {
-      if (data) {
+    if (data && !error) {
+      if (response?.headers) {
         setRequests(formatBeergardenRequests(data))
 
         const {
@@ -122,8 +122,10 @@ const useRequests = () => {
           requested: searchApi.length,
           recordsFiltered: parseInt(recordsFiltered),
           recordsTotal: parseInt(recordsTotal),
-          draw: draw.length > 0 ? parseInt(draw) : undefined,
+          draw: draw?.length > 0 ? parseInt(draw) : undefined,
         })
+      } else {
+        setIsErrored(true)
       }
     } else if (error) {
       setIsErrored(!!error)

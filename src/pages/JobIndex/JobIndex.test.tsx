@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TJob, TServerAuthConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders } from 'test/testMocks'
-import { TAdmin, TUser } from 'test/user-test-values'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { mockAxios } from 'test/axios-mock'
+import { TJob } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 
 import { JobIndex } from './JobIndex'
 
@@ -46,6 +46,16 @@ function createFile(
 }
 
 describe('JobIndex', () => {
+  beforeEach(() => {
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: () => true,
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
+  })
+
   test('displays table with job data', async () => {
     render(
       <AllProviders>
@@ -98,12 +108,17 @@ describe('JobIndex', () => {
 
   describe('import', () => {
     test('no button if no permission', async () => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, TUser)
+      jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+        hasGardenPermission: jest.fn(),
+        hasPermission: () => false,
+        hasSystemPermission: jest.fn(),
+        hasJobPermission: jest.fn(),
+        isPermissionsSet: jest.fn(),
+      })
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobIndex />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.queryByText('IMPORT')).not.toBeInTheDocument()
@@ -111,12 +126,10 @@ describe('JobIndex', () => {
     })
 
     test('button if permission', async () => {
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, TAdmin)
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobIndex />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       await waitFor(() => {
         expect(screen.getByText('IMPORT')).toBeInTheDocument()
@@ -125,9 +138,9 @@ describe('JobIndex', () => {
 
     test('button opens dialog', async () => {
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobIndex />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByText('IMPORT'))
       await waitFor(() => {
@@ -140,9 +153,9 @@ describe('JobIndex', () => {
     test('cancel dialog', async () => {
       mockAxios.onGet('/api/v1/jobs').reply(200, [])
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobIndex />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByText('IMPORT'))
       await waitFor(() => {
@@ -163,9 +176,9 @@ describe('JobIndex', () => {
       const files = [createFile('file1', [JSON.stringify([TJob])])]
       const data = createDtWithFiles(files)
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobIndex />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByText('IMPORT'))
       await waitFor(() => {
@@ -194,9 +207,9 @@ describe('JobIndex', () => {
       const files = [createFile('file1', [], 'img/png')]
       const data = createDtWithFiles(files)
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <JobIndex />
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByText('IMPORT'))
       await waitFor(() => {
@@ -218,12 +231,10 @@ describe('JobIndex', () => {
   })
 
   test('create button if permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <JobIndex />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.getByText('Create')).toBeInTheDocument()
@@ -231,12 +242,17 @@ describe('JobIndex', () => {
   })
 
   test('no create button if no permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TUser)
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: () => false,
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <JobIndex />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.queryByText('Create')).not.toBeInTheDocument()

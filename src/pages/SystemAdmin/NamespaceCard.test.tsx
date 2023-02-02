@@ -1,10 +1,9 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
 import WS from 'jest-websocket-mock'
-import { mockAxios, regexUsers } from 'test/axios-mock'
+import { mockAxios } from 'test/axios-mock'
 import { TInstance, TSystem } from 'test/system-test-values'
-import { TServerAuthConfig } from 'test/test-values'
-import { LoggedInProviders } from 'test/testMocks'
-import { TAdmin, TUser } from 'test/user-test-values'
+import { AllProviders } from 'test/testMocks'
 
 import { NamespaceCard } from './NamespaceCard'
 
@@ -13,6 +12,14 @@ describe('NamespaceCard', () => {
 
   beforeEach(() => {
     server = new WS('ws://localhost:2337/api/v1/socket/events')
+
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: jest.fn(),
+      hasSystemPermission: (): Promise<boolean> => Promise.resolve(true),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
   })
 
   afterEach(() => {
@@ -20,12 +27,10 @@ describe('NamespaceCard', () => {
   })
 
   test('renders card if permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <NamespaceCard namespace={TSystem.namespace} />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.getByText(TSystem.namespace)).toBeInTheDocument()
@@ -52,12 +57,17 @@ describe('NamespaceCard', () => {
   })
 
   test('does not render if no permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TUser)
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: jest.fn(),
+      hasSystemPermission: (): Promise<boolean> => Promise.resolve(false),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <NamespaceCard namespace={TSystem.namespace} />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.queryByText(TSystem.namespace)).not.toBeInTheDocument()
@@ -72,9 +82,9 @@ describe('NamespaceCard', () => {
     const mockSystem = Object.assign({}, TSystem, { instances: [mockInstance] })
 
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <NamespaceCard namespace={TSystem.namespace} />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
 
     await waitFor(() => {
@@ -107,9 +117,9 @@ describe('NamespaceCard', () => {
 
   test('Namespace Card updated on SYSTEM_REMOVED event', async () => {
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <NamespaceCard namespace={TSystem.namespace} />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.getByText(TSystem.namespace)).toBeInTheDocument()
@@ -165,9 +175,9 @@ describe('NamespaceCard', () => {
     mockAxios.onGet('/api/v1/systems').reply(404)
 
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <NamespaceCard namespace={TSystem.namespace} />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
 
     await waitFor(() => {

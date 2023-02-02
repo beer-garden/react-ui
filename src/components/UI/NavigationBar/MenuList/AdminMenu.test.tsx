@@ -1,13 +1,28 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { NavigationBarContextProvider } from 'components/UI/NavigationBar/NavigationBarContext'
-import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TServerAuthConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders } from 'test/testMocks'
-import { TUser } from 'test/user-test-values'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { TServerConfig } from 'test/test-values'
+import { AllProviders } from 'test/testMocks'
 
 import { AdminMenu } from './AdminMenu'
 
 describe('Admin Menu', () => {
+  beforeEach(() => {
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: () => true,
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
+    jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+      config: TServerConfig,
+      authEnabled: false,
+      debugEnabled: false,
+    })
+  })
+
   test('makes menu', async () => {
     render(
       <AllProviders>
@@ -69,26 +84,32 @@ describe('Admin Menu', () => {
 
   describe('menu items only for specific user access', () => {
     test('lists users', async () => {
-      const userObj = Object.assign({}, TUser, {
-        permissions: {
-          global_permissions: ['user:update'],
-          domain_permissions: {},
+      jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+        hasGardenPermission: jest.fn(),
+        hasPermission: (p: string) => {
+          return (
+            ['user:update'].includes(p) ||
+            Object.prototype.hasOwnProperty.call(['user:update'], p)
+          )
         },
+        hasSystemPermission: jest.fn(),
+        hasJobPermission: jest.fn(),
+        isPermissionsSet: jest.fn(),
       })
-      // change return to enable auth
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, userObj)
+      jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
+        config: TServerConfig,
+        authEnabled: true,
+        debugEnabled: false,
+      })
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <NavigationBarContextProvider
-            toggleDrawer={(open: boolean) => () => {
-              // noop
-            }}
+            toggleDrawer={jest.fn()}
             drawerIsOpen={true}
           >
             <AdminMenu />
           </NavigationBarContextProvider>
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
       await waitFor(() => {
@@ -102,26 +123,27 @@ describe('Admin Menu', () => {
     })
 
     test('lists garden and blocklist', async () => {
-      const userObj = Object.assign({}, TUser, {
-        permissions: {
-          global_permissions: ['garden:update'],
-          domain_permissions: {},
+      jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+        hasGardenPermission: jest.fn(),
+        hasPermission: (p: string) => {
+          return (
+            ['garden:update'].includes(p) ||
+            Object.prototype.hasOwnProperty.call(['garden:update'], p)
+          )
         },
+        hasSystemPermission: jest.fn(),
+        hasJobPermission: jest.fn(),
+        isPermissionsSet: jest.fn(),
       })
-      // change return to enable auth
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, userObj)
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <NavigationBarContextProvider
-            toggleDrawer={(open: boolean) => () => {
-              // noop
-            }}
+            toggleDrawer={jest.fn()}
             drawerIsOpen={true}
           >
             <AdminMenu />
           </NavigationBarContextProvider>
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
       await waitFor(() => {
@@ -137,26 +159,27 @@ describe('Admin Menu', () => {
     })
 
     test('lists system', async () => {
-      const userObj = Object.assign({}, TUser, {
-        permissions: {
-          global_permissions: ['system:update'],
-          domain_permissions: {},
+      jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+        hasGardenPermission: jest.fn(),
+        hasPermission: (p: string) => {
+          return (
+            ['system:update'].includes(p) ||
+            Object.prototype.hasOwnProperty.call(['system:update'], p)
+          )
         },
+        hasSystemPermission: jest.fn(),
+        hasJobPermission: jest.fn(),
+        isPermissionsSet: jest.fn(),
       })
-      // change return to enable auth
-      mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-      mockAxios.onGet(regexUsers).reply(200, userObj)
       render(
-        <LoggedInProviders>
+        <AllProviders>
           <NavigationBarContextProvider
-            toggleDrawer={(open: boolean) => () => {
-              // noop
-            }}
+            toggleDrawer={jest.fn()}
             drawerIsOpen={true}
           >
             <AdminMenu />
           </NavigationBarContextProvider>
-        </LoggedInProviders>,
+        </AllProviders>,
       )
       fireEvent.click(screen.getByTestId('ExpandMoreIcon'))
       await waitFor(() => {

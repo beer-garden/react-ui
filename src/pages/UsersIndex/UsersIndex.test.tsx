@@ -5,14 +5,24 @@ import {
   waitFor,
   within,
 } from '@testing-library/react'
-import { mockAxios, regexUsers } from 'test/axios-mock'
-import { TServerAuthConfig } from 'test/test-values'
-import { AllProviders, LoggedInProviders } from 'test/testMocks'
+import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { mockAxios } from 'test/axios-mock'
+import { AllProviders } from 'test/testMocks'
 import { TAdmin, TUser } from 'test/user-test-values'
 
 import { UsersIndex } from './UsersIndex'
 
 describe('UsersIndex', () => {
+  beforeEach(() => {
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: () => true,
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
+  })
+
   test('render table of current users', async () => {
     render(
       <AllProviders>
@@ -45,12 +55,10 @@ describe('UsersIndex', () => {
   })
 
   test('render button to add user', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <UsersIndex />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() => {
       expect(screen.getByTestId('AddIcon')).toBeInTheDocument()
@@ -58,12 +66,17 @@ describe('UsersIndex', () => {
   })
 
   test('no add user button if no permission', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TUser)
+    jest.spyOn(PermissionsContainer, 'useContainer').mockReturnValue({
+      hasGardenPermission: jest.fn(),
+      hasPermission: () => false,
+      hasSystemPermission: jest.fn(),
+      hasJobPermission: jest.fn(),
+      isPermissionsSet: jest.fn(),
+    })
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <UsersIndex />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() =>
       expect(screen.queryByTestId('AddIcon')).not.toBeInTheDocument(),
@@ -71,12 +84,10 @@ describe('UsersIndex', () => {
   })
 
   test('no sync button if no sync status', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <UsersIndex />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     await waitFor(() =>
       expect(
@@ -86,13 +97,11 @@ describe('UsersIndex', () => {
   })
 
   test('render button to sync user', async () => {
-    mockAxios.onGet('/config').reply(200, TServerAuthConfig)
-    mockAxios.onGet(regexUsers).reply(200, TAdmin)
     mockAxios.onGet('/api/v1/users').reply(200, { users: [TAdmin] })
     render(
-      <LoggedInProviders>
+      <AllProviders>
         <UsersIndex />
-      </LoggedInProviders>,
+      </AllProviders>,
     )
     const btn = await screen.findByRole('button', { name: 'Sync user' })
     expect(btn).toBeInTheDocument()
