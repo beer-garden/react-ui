@@ -22,6 +22,11 @@ const getOnChangeFunctions = (
   parameters: Parameter[],
   stateManager: DynamicChoicesStateManager,
   systemProperties: SystemProperties,
+  setLoadingChoicesContext: (name: string, isLoading: boolean) => void,
+  setDynamicRequestErrors: (
+    name: string,
+    error: AxiosError | undefined,
+  ) => void,
 ) => {
   let onChangeFunctions: Record<string, OnChangeGetterFunction> = {}
   let dynamicChoices: Record<string, DynamicProperties> = {}
@@ -102,6 +107,8 @@ const getOnChangeFunctions = (
           dynamicChoices,
           parametersThatMustBeUpdatedNames,
           stateManager,
+          setLoadingChoicesContext,
+          setDynamicRequestErrors,
         ),
       }
     } else if (
@@ -116,6 +123,8 @@ const getOnChangeFunctions = (
             dynamicChoices,
             parametersThatMustBeUpdatedNames,
             stateManager,
+            setLoadingChoicesContext,
+            setDynamicRequestErrors,
           ),
         }
       }
@@ -132,6 +141,8 @@ const getOnChangeFunctions = (
             dynamicChoices,
             parametersThatMustBeUpdatedNames,
             stateManager,
+            setLoadingChoicesContext,
+            setDynamicRequestErrors,
           ),
         }
       }
@@ -150,6 +161,8 @@ const getOnChangeFunctions = (
           dynamicChoices,
           parametersThatMustBeUpdatedNames,
           stateManager,
+          setLoadingChoicesContext,
+          setDynamicRequestErrors,
         ),
       }
     }
@@ -171,6 +184,8 @@ const getOnChangeFunctions = (
  *     an initial value before an update request can be executed
  * @param stateManager - the getters and setters of the state we need to keep
  *     track of
+ * @param setLoadingChoicesContext - sets context for what parameter choices are being loaded
+ * @param setDynamicRequestErrors - sets error for parameters that got an error from dynamic request
  * @returns - a function for use in individual components to get an 'onChange'
  *     function; this function takes a FormikContextType, the execute function
  *     from an invocation of 'useAxios', an 'onError' function in case
@@ -183,6 +198,11 @@ const getOnChangeForDependency = (
   dynamicChoices: Record<string, DynamicProperties>,
   mustChoose: Set<string>,
   stateManager: DynamicChoicesStateManager,
+  setLoadingChoicesContext: (name: string, isLoading: boolean) => void,
+  setDynamicRequestErrors: (
+    name: string,
+    error: AxiosError | undefined,
+  ) => void,
 ): OnChangeGetterFunction => {
   return <T extends Record<string, unknown>>(
     context: FormikContextType<T>,
@@ -227,12 +247,23 @@ const getOnChangeForDependency = (
           data: request,
           withCredentials: authEnabled,
         }
+        if (setLoadingChoicesContext) {
+          setLoadingChoicesContext(dynamicChoicesParameter, true)
+        }
+        if (setDynamicRequestErrors) {
+          setDynamicRequestErrors(dynamicChoicesParameter, undefined)
+        }
 
         functions.push(() =>
           execute(config)
             .then((response) => {
               const values = response.data.output
-
+              if (setLoadingChoicesContext) {
+                setLoadingChoicesContext(dynamicChoicesParameter, false)
+              }
+              if (setDynamicRequestErrors) {
+                setDynamicRequestErrors(dynamicChoicesParameter, undefined)
+              }
               try {
                 if (values) {
                   const parsedValues = JSON.parse(values)
@@ -276,7 +307,23 @@ const getOnChangeForDependency = (
                 // this is for problems with JSON parsing -- 'nop'
               }
             })
-            .catch((e) => onError(e)),
+            .catch((e) => {
+              if (setLoadingChoicesContext) {
+                setLoadingChoicesContext(dynamicChoicesParameter, false)
+              }
+              if (setDynamicRequestErrors) {
+                setDynamicRequestErrors(dynamicChoicesParameter, e)
+              }
+              onError(e)
+              stateManager.choices.set((prev) => {
+                return {
+                  ...prev,
+                  [dynamicChoicesParameter]: {
+                    enum: [],
+                  },
+                }
+              })
+            }),
         )
       }
 
@@ -332,6 +379,8 @@ const getOnChangeForDependency = (
  *     an initial value before an update request can be executed
  * @param stateManager - the getters and setters of the state we need to keep
  *     track of
+ * @param setLoadingChoicesContext - sets context for what parameter choices are being loaded
+ * @param setDynamicRequestErrors - sets error for parameters that got an error from dynamic request
  * @returns - a function for use in individual components to get an 'onChange'
  *     function; this function takes a FormikContextType, the execute function
  *     from an invocation of 'useAxios', an 'onError' function in case
@@ -345,6 +394,11 @@ const getOnChangeForMustChoose = (
   dynamicChoices: Record<string, DynamicProperties>,
   mustChoose: Set<string>,
   stateManager: DynamicChoicesStateManager,
+  setLoadingChoicesContext: (name: string, isLoading: boolean) => void,
+  setDynamicRequestErrors: (
+    name: string,
+    error: AxiosError | undefined,
+  ) => void,
 ): OnChangeGetterFunction => {
   /* at this time, we assume every 'must choose' is not actually a proper
      parameter of the request -- e.g. 'instance_name' */
@@ -400,7 +454,12 @@ const getOnChangeForMustChoose = (
             .then((response) => {
               // our response provides the values for the dynamic choices
               const values = response.data.output
-
+              if (setLoadingChoicesContext) {
+                setLoadingChoicesContext(dynamicChoicesParameter, false)
+              }
+              if (setDynamicRequestErrors) {
+                setDynamicRequestErrors(dynamicChoicesParameter, undefined)
+              }
               try {
                 if (values) {
                   const parsedValues = JSON.parse(values)
@@ -441,7 +500,23 @@ const getOnChangeForMustChoose = (
                 // this is for problems with JSON parsing -- 'nop'
               }
             })
-            .catch((e) => onError(e)),
+            .catch((e) => {
+              if (setLoadingChoicesContext) {
+                setLoadingChoicesContext(dynamicChoicesParameter, false)
+              }
+              if (setDynamicRequestErrors) {
+                setDynamicRequestErrors(dynamicChoicesParameter, e)
+              }
+              onError(e)
+              stateManager.choices.set((prev) => {
+                return {
+                  ...prev,
+                  [dynamicChoicesParameter]: {
+                    enum: [],
+                  },
+                }
+              })
+            }),
         )
       }
 
