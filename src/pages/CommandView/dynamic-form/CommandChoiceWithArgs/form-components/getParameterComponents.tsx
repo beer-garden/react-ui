@@ -1,8 +1,11 @@
 import {
   Autocomplete,
   AutocompleteInputChangeReason,
+  CircularProgress,
   MenuItem,
+  Stack,
   TextField,
+  Typography,
 } from '@mui/material'
 import { AxiosError } from 'axios'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -14,7 +17,8 @@ import {
   DynamicExecuteFunction,
   OnChangeFunctionMap,
 } from 'pages/CommandView/dynamic-form'
-import { ChangeEvent, SyntheticEvent, useMemo } from 'react'
+import { DynamicLoadingContext } from 'pages/CommandView/dynamic-form'
+import { ChangeEvent, SyntheticEvent, useContext, useMemo } from 'react'
 import { ObjectWithStringKeys } from 'types/custom-types'
 
 interface ParameterBasics {
@@ -188,6 +192,9 @@ const DynamicChoiceParameterField = ({
 }: DynamicChoiceParameterFieldProps) => {
   const context = useFormikContext<Record<string, unknown>>()
   const { authEnabled } = ServerConfigContainer.useContainer()
+  const { loadingChoicesContext, dynamicRequestErrors } = useContext(
+    DynamicLoadingContext,
+  )
 
   const onChange: (e: ChangeEvent<HTMLInputElement>) => void = (
     event: ChangeEvent<HTMLInputElement>,
@@ -305,15 +312,44 @@ const DynamicChoiceParameterField = ({
         handleHomeEndKeys
         autoComplete
         autoHighlight
+        fullWidth
         disabled={isDisabled}
-        renderInput={(params) => <TextField {...params} label={title} />}
-        renderOption={(props, option) => (
-          <li {...props} key={option}>
-            {option}
-          </li>
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label={title}
+            error={
+              Boolean(context.errors[name]) ||
+              Boolean(dynamicRequestErrors[name])
+            }
+            helperText={description}
+            sx={{ pb: 1 }}
+          />
         )}
-        options={values}
+        options={
+          !loadingChoicesContext[name] && !dynamicRequestErrors[name]
+            ? values
+            : ['']
+        }
         onInputChange={onInputChangeDebounce}
+        renderOption={(props, option) =>
+          loadingChoicesContext[name] ? (
+            <MenuItem disabled {...props} key={`${name}-loading`}>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <CircularProgress color="secondary" size={25} />
+                <Typography>Loading options</Typography>
+              </Stack>
+            </MenuItem>
+          ) : dynamicRequestErrors[name] ? (
+            <MenuItem disabled {...props} key={`${name}-error`}>
+              <Typography>Error loading options</Typography>
+            </MenuItem>
+          ) : (
+            <MenuItem {...props} key={option}>
+              {option}
+            </MenuItem>
+          )
+        }
         filterOptions={(x) => x}
       />
     )
@@ -326,20 +362,36 @@ const DynamicChoiceParameterField = ({
       select
       disabled={isDisabled}
       name={name}
+      fullWidth
       label={title}
       value={stateManager.model.get().parameters[name]}
-      error={Boolean(context.errors[name])}
+      error={
+        Boolean(context.errors[name]) || Boolean(dynamicRequestErrors[name])
+      }
       onChange={onChange}
       helperText={description}
     >
-      {values &&
+      {loadingChoicesContext[name] ? (
+        <MenuItem disabled key={`${name}-loading`}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <CircularProgress color="secondary" size={25} />
+            <Typography>Loading options</Typography>
+          </Stack>
+        </MenuItem>
+      ) : dynamicRequestErrors[name] ? (
+        <MenuItem disabled key={`${name}-error`}>
+          <Typography>Error loading options</Typography>
+        </MenuItem>
+      ) : (
+        values &&
         values.map((v) => {
           return (
             <MenuItem key={`${name}-value-${v || 'dummy'}`} value={v}>
               {v}
             </MenuItem>
           )
-        })}
+        })
+      )}
     </TextField>
   )
 }

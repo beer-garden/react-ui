@@ -17,7 +17,7 @@ import {
 } from 'pages/CommandView/dynamic-form'
 import { SubmitButton } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs'
 import { getFormComponents } from 'pages/CommandView/dynamic-form/CommandChoiceWithArgs/form-components/getFormComponents'
-import { useMemo } from 'react'
+import { createContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Request, RequestTemplate } from 'types/backend-types'
 import {
@@ -25,6 +25,24 @@ import {
   SnackbarState,
   StrippedSystem,
 } from 'types/custom-types'
+
+type DynamicLoadingProviderContext = {
+  loadingChoicesContext: { [name: string]: boolean }
+  dynamicRequestErrors: { [name: string]: AxiosError | undefined }
+  setLoadingChoicesContext: (name: string, isLoading: boolean) => void
+  setDynamicRequestErrors: (name: string, error: AxiosError | undefined) => void
+}
+
+const DynamicLoadingContext = createContext<DynamicLoadingProviderContext>({
+  loadingChoicesContext: {},
+  dynamicRequestErrors: {},
+  setLoadingChoicesContext: () => {
+    return
+  },
+  setDynamicRequestErrors: () => {
+    return
+  },
+})
 
 const CommandChoiceWithArgsForm = (
   system: StrippedSystem,
@@ -36,8 +54,27 @@ const CommandChoiceWithArgsForm = (
   const [, execute] = useAxios({}, axiosManualOptions)
   const navigate = useNavigate()
   const [submitStatus, setSubmitStatus] = useMountedState<
-    SnackbarState | undefined
-  >()
+      SnackbarState | undefined
+      >()
+  const [loadingChoicesContext, _setLoadingChoicesForNames] = useMountedState<{
+    [name: string]: boolean
+  }>({})
+  const [dynamicRequestErrors, _setDynamicRequestErrors] = useMountedState<{
+    [name: string]: AxiosError | undefined
+  }>({})
+
+  const setLoadingChoicesContext = (name: string, isLoading: boolean) => {
+    loadingChoicesContext[name] = isLoading
+    _setLoadingChoicesForNames(loadingChoicesContext)
+  }
+
+  const setDynamicRequestErrors = (
+    name: string,
+    error: AxiosError | undefined,
+  ) => {
+    dynamicRequestErrors[name] = error
+    _setDynamicRequestErrors(dynamicRequestErrors)
+  }
 
   const instances = system.instances
   const parameters = command.parameters
@@ -64,6 +101,8 @@ const CommandChoiceWithArgsForm = (
     parameters,
     stateManager,
     systemProperties,
+    setLoadingChoicesContext,
+    setDynamicRequestErrors,
   )
 
   const onSubmit = <T extends FormikValues>(
@@ -109,22 +148,31 @@ const CommandChoiceWithArgsForm = (
       <Formik onSubmit={onSubmit} initialValues={model}>
         <>
           <Box width={3 / 5}>
-            <Form>
-              {getFormComponents(
-                parametersSchema,
-                instancesSchema,
-                onChangeFunctions,
-                execute,
-                stateManager,
-              )}
-              <ButtonGroup variant="contained" size="large">
-                <Button onClick={resetAll}>Reset</Button>
-                <SubmitButton
-                  schemaProperties={schema.properties}
-                  stateManager={stateManager}
-                />
-              </ButtonGroup>
-            </Form>
+            <DynamicLoadingContext.Provider
+              value={{
+                loadingChoicesContext: loadingChoicesContext,
+                dynamicRequestErrors: dynamicRequestErrors,
+                setLoadingChoicesContext: setLoadingChoicesContext,
+                setDynamicRequestErrors: setDynamicRequestErrors,
+              }}
+            >
+              <Form>
+                {getFormComponents(
+                  parametersSchema,
+                  instancesSchema,
+                  onChangeFunctions,
+                  execute,
+                  stateManager,
+                )}
+                <ButtonGroup variant="contained" size="large">
+                  <Button onClick={resetAll}>Reset</Button>
+                  <SubmitButton
+                    schemaProperties={schema.properties}
+                    stateManager={stateManager}
+                  />
+                </ButtonGroup>
+              </Form>
+            </DynamicLoadingContext.Provider>
           </Box>
           <JobRequestFormModelPreview data={previewModel} />
         </>
@@ -134,4 +182,4 @@ const CommandChoiceWithArgsForm = (
   )
 }
 
-export { CommandChoiceWithArgsForm }
+export { CommandChoiceWithArgsForm, DynamicLoadingContext }
