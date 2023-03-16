@@ -2,16 +2,16 @@ name: Auto Assign to Project
 
 on:
   issues:
-    types: [opened]
+    types:
+      - opened
 
 jobs:
   assign_project:
     runs-on: ubuntu-latest
     name: Assign Project
     steps:
-      - name: Assign NEW issues to Dev project
-        uses: KekeHub/auto-assign-project@v1
+      - uses: actions/add-to-project@v0.4.0
+        name: Assign new issues to Dev project
         with:
-          token: ${{ secrets.BUILDBOT_TOKEN }}
-          owner: beer-garden
-          project-id: 27
+          project-url: https://github.com/orgs/beer-garden/projects/27
+          github-token: ${{ secrets.FUNCTIONARY_BUILDBOT_TOKEN }}
