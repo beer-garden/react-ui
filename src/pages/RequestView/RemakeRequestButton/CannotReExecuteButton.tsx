@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@material-ui/core'
+import { Button, Tooltip } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 interface CannotReExecuteButtonProps {
@@ -16,7 +16,6 @@ const CannotReExecuteButton = ({ message }: CannotReExecuteButtonProps) => {
         style={{
           float: 'right',
           pointerEvents: 'auto',
-          // theme style override not applying for some reason
           color: theme.palette.action.disabled,
         }}
       >

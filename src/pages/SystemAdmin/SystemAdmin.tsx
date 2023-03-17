@@ -1,79 +1,27 @@
 import { Backdrop, CircularProgress, Stack, Typography } from '@mui/material'
-import { Alert, Box, Button, Grid, Tooltip } from '@mui/material'
+import { Box, Button, Grid, Tooltip } from '@mui/material'
 import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { ModalWrapper } from 'components/ModalWrapper'
 import { PageHeader } from 'components/PageHeader'
 import useAdmin from 'hooks/useAdmin'
-import { useLocalStorage } from 'hooks/useLocalStorage'
 import { useMountedState } from 'hooks/useMountedState'
-import { useNamespace } from 'hooks/useNamespace'
 import useQueue from 'hooks/useQueue'
-import { NamespaceCard } from 'pages/SystemAdmin/NamespaceCard'
-import { NamespaceSelect } from 'pages/SystemAdmin/NamespaceSelect'
-import { UnassociatedRunnersCard } from 'pages/SystemAdmin/UnassociatedRunners'
-import { createContext, useEffect } from 'react'
+import { SystemsCard, UnassociatedRunnersCard } from 'pages/SystemAdmin'
 
-const getSelectMessage = (namespacesSelected: string[]): JSX.Element | void => {
-  if (!namespacesSelected.length) {
-    return <Alert severity="info">Please select a namespace</Alert>
-  }
-}
-
-interface NamespacesSelectedContextType {
-  namespaces: string[]
-  namespacesSelected: string[]
-  setNamespacesSelected: (value: string[]) => void
-}
-
-export const NamespacesSelectedContext =
-  createContext<NamespacesSelectedContextType>({
-    namespaces: [],
-    namespacesSelected: [],
-    setNamespacesSelected: () => {
-      return
-    },
-  })
 
 const SystemAdmin = () => {
-  const [namespacesSelected, setNamespacesSelected] = useLocalStorage<string[]>(
-    'namespacesSelected',
-    [],
-  )
   const [open, setOpen] = useMountedState<boolean>(false)
-  const [namespaces, setNamespaces] = useMountedState<string[]>([])
   const [error, setError] = useMountedState<AxiosError | undefined>()
-  const { getNamespaces } = useNamespace()
   const { rescanPluginDirectory } = useAdmin()
   const { clearQueues } = useQueue()
-
-  useEffect(() => {
-    getNamespaces()
-      .then((response) => {
-        setNamespaces(response.data)
-      })
-      .catch((error) => {
-        setError(error)
-      })
-  }, [getNamespaces, setError, setNamespaces])
 
   return !error ? (
     <Box>
       <Grid alignItems="start" justifyContent="space-between" container>
         <Grid key="header" item>
           <PageHeader title="Systems Management" description="" />
-        </Grid>
-        <Grid key="filter" item>
-          <NamespacesSelectedContext.Provider
-            value={{
-              namespaces: namespaces,
-              namespacesSelected: namespacesSelected,
-              setNamespacesSelected: setNamespacesSelected,
-            }}
-          >
-            <NamespaceSelect />
-          </NamespacesSelectedContext.Provider>
         </Grid>
         <Grid key="actions" item>
           <Stack direction="row" spacing={2}>
@@ -118,10 +66,7 @@ const SystemAdmin = () => {
       />
       <Divider />
       <UnassociatedRunnersCard />
-      {namespacesSelected.map((namespace: string) => (
-        <NamespaceCard namespace={namespace} key={namespace + 'card'} />
-      ))}
-      {getSelectMessage(namespacesSelected)}
+      <SystemsCard setError={setError} />
     </Box>
   ) : error?.response ? (
     <ErrorAlert
