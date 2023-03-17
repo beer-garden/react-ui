@@ -233,7 +233,7 @@ describe('CommandIndex', () => {
       hasGardenPermission: jest.fn(),
       hasJobPermission: jest.fn(),
       isPermissionsSet: jest.fn(),
-      hasSystemPermission: () => Promise.resolve(true),
+      hasSystemPermission: jest.fn(),
     })
     jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
       config: TServerConfig,
@@ -262,7 +262,7 @@ describe('CommandIndex', () => {
       hasGardenPermission: jest.fn(),
       hasJobPermission: jest.fn(),
       isPermissionsSet: jest.fn(),
-      hasSystemPermission: () => Promise.resolve(true),
+      hasSystemPermission: jest.fn(),
     })
     jest.spyOn(ServerConfigContainer, 'useContainer').mockReturnValue({
       config: TServerConfig,

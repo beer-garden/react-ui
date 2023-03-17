@@ -15,9 +15,9 @@ describe('SystemCard actions', () => {
       </AllProviders>,
     )
     await waitFor(() => {
-      expect(screen.getByText('testInstance')).toBeInTheDocument()
+      expect(screen.getByText(TInstance.name)).toBeInTheDocument()
     })
-    expect(screen.getByText('secondInstance')).toBeInTheDocument()
+    expect(screen.getByText(TInstance2.name)).toBeInTheDocument()
   })
 
   test('opens queue modal', async () => {
@@ -29,7 +29,7 @@ describe('SystemCard actions', () => {
         />
       </AllProviders>,
     )
-    fireEvent.click(screen.getByText('testInstance'))
+    fireEvent.click(screen.getByTestId(`${TInstance.name}-menu-button`))
     fireEvent.click(screen.getByText('Manage Queue'))
     expect(await screen.findByText(/Queue Manager:/)).toBeInTheDocument()
   })
@@ -43,7 +43,7 @@ describe('SystemCard actions', () => {
         />
       </AllProviders>,
     )
-    fireEvent.click(screen.getByText('testInstance'))
+    fireEvent.click(screen.getByTestId(`${TInstance.name}-menu-button`))
     fireEvent.click(screen.getByText('Show Logs'))
     expect(await screen.findByText(/Logs for/)).toBeInTheDocument()
   })

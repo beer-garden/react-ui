@@ -1,7 +1,6 @@
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
-import useGardens from 'hooks/useGardens'
 import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import useUsers from 'hooks/useUsers'
@@ -24,8 +23,6 @@ const usePermissions = () => {
       }
     | undefined
   >(cookies.get('domainPerms'))
-
-  const { getGarden } = useGardens()
   const { getSystems } = useSystems()
   const { getUser } = useUsers()
 
@@ -125,21 +122,15 @@ const usePermissions = () => {
   )
 
   const hasSystemPermission = useCallback(
-    async (
+    (
       permission: string,
-      namespace: string,
       systemId: string,
-    ): Promise<boolean> => {
+    ): boolean => {
       const baseCheck = basePermissionCheck()
       if (typeof baseCheck !== 'undefined') {
         return !!baseCheck
       }
       if (globalPerms?.includes(permission)) {
-        return true
-      }
-      const response = await getGarden(namespace)
-      const garden = response.data
-      if (garden && hasGardenPermission(permission, garden)) {
         return true
       }
       if (
@@ -153,9 +144,7 @@ const usePermissions = () => {
     [
       basePermissionCheck,
       domainPerms,
-      getGarden,
       globalPerms,
-      hasGardenPermission,
     ],
   )
 
@@ -176,7 +165,6 @@ const usePermissions = () => {
       if (foundSystem) {
         const systemPerm = await hasSystemPermission(
           permission,
-          job.request_template.namespace,
           foundSystem.id,
         )
         return systemPerm

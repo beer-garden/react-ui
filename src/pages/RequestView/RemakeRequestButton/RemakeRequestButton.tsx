@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
