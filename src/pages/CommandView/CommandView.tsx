@@ -1,6 +1,8 @@
-import { Box, Stack } from '@mui/material'
+import { Backdrop, Box, CircularProgress,Stack } from '@mui/material'
+import { AxiosError } from 'axios'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
+import { ErrorAlert } from 'components/ErrorAlert'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { JsonCard } from 'components/JsonCard'
 import { PageHeader } from 'components/PageHeader'
@@ -13,6 +15,8 @@ import {
   getUiSchema,
   getValidator,
 } from 'formHelpers'
+import { useMountedState } from 'hooks/useMountedState'
+import { useSystems } from 'hooks/useSystems'
 import {
   checkContext,
   commandIsDynamic,
@@ -22,12 +26,17 @@ import { DynamicForm } from 'pages/CommandView/dynamic-form'
 import { CommandViewForm } from 'pages/CommandView/plain-form'
 import { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { Command, System } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewModel } from 'types/form-model-types'
 
 const CommandView = () => {
   const { debugEnabled } = ServerConfigContainer.useContainer()
   const { namespace, systemName, version, commandName } = useParams()
+  const [ checkedParams, setCheckedParams ] = useMountedState<JSX.Element>()
+  const [ paramsHistory, setParamsHistory ] = useMountedState({namespace: namespace, systemName: systemName, version: version, commandName: commandName })
+  const [error, setError] = useMountedState<AxiosError | undefined>()
+  const { getSystems } = useSystems()
   const {
     system,
     setSystem,
@@ -53,18 +62,87 @@ const CommandView = () => {
     }
   }, [setCommand, setIsReplay, setRequestModel, setSystem, setJob])
 
-  const checkedParams = checkContext(
-    namespace,
-    systemName,
-    version,
+  useEffect(() => {
+    if(paramsHistory.namespace !== namespace || paramsHistory.systemName !== systemName || paramsHistory.version !== version || paramsHistory.commandName !== commandName) {
+      setSystem && setSystem(undefined)
+      setCommand && setCommand(undefined)
+      setCheckedParams(undefined)
+      setParamsHistory({namespace: namespace, systemName: systemName, version: version, commandName: commandName })
+    }
+    else if(!system) {
+      setError(undefined)
+      getSystems()
+      .then((response) => {
+        return response.data.find((system: System) => 
+          (system.name === systemName && system.namespace === namespace && system.version === version)
+        )
+      })
+      .then((system: System | void) => {
+        setSystem && setSystem(system as StrippedSystem)
+        if (system && !command) {
+          const command: Command | undefined = system.commands.find((command: Command) => (command.name===commandName))
+          setCommand && setCommand(command as AugmentedCommand | undefined)
+        }
+        setCheckedParams(checkContext(
+          namespace,
+          systemName,
+          version,
+          commandName,
+          system as StrippedSystem | undefined,
+          command,
+          isReplay,
+          requestModel,
+        ))
+      }).catch((e) => {
+        setError(e)
+      })
+    } else {
+      setCheckedParams(checkContext(
+        namespace,
+        systemName,
+        version,
+        commandName,
+        system,
+        command,
+        isReplay,
+        requestModel,
+      ))
+    }
+  }, [
+    getSystems,
+    setSystem,
+    setCommand,
+    setCheckedParams,
+    setParamsHistory,
+    setError,
+    paramsHistory,
     commandName,
+    systemName,
+    namespace,
+    version,
     system,
     command,
     isReplay,
     requestModel,
-  )
+  ]) 
 
   if (checkedParams) return checkedParams
+
+
+  if (!system || !command || error) {
+    return (
+      error?.response ? (
+        <ErrorAlert
+          statusCode={error.response.status}
+          errorMsg={error.response.statusText}
+        />
+      ) : (
+        <Backdrop open={true}>
+          <CircularProgress color="inherit" aria-label="System data loading" />
+        </Backdrop>
+      )
+    )
+  }
 
   // we know that neither of these are undefined because of the call to
   // 'checkedParams'
