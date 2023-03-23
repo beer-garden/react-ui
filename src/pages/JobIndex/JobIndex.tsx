@@ -144,7 +144,7 @@ const JobIndex = () => {
             aria-label="Import Jobs"
             onClick={() => setOpenImport(true)}
           >
-            IMPORT
+            Import
           </Button>
         )}
         <Button
@@ -153,7 +153,7 @@ const JobIndex = () => {
           aria-label="Export Jobs"
           onClick={handleExport}
         >
-          EXPORT
+          Export
         </Button>
       </Table>
       <ModalWrapper

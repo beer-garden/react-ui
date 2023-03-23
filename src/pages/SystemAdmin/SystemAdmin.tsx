@@ -83,7 +83,7 @@ const SystemAdmin = () => {
                 color="secondary"
                 onClick={() => setOpen(true)}
               >
-                Clear
+                Clear All Queues
               </Button>
             </Tooltip>
             <Tooltip arrow title="Rescan Plugin Directory">
@@ -92,7 +92,7 @@ const SystemAdmin = () => {
                 variant="contained"
                 color="primary"
               >
-                Rescan
+                Rescan Plugin Directory
               </Button>
             </Tooltip>
           </Stack>

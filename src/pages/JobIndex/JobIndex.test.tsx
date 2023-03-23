@@ -121,7 +121,7 @@ describe('JobIndex', () => {
         </AllProviders>,
       )
       await waitFor(() => {
-        expect(screen.queryByText('IMPORT')).not.toBeInTheDocument()
+        expect(screen.queryByText('Import')).not.toBeInTheDocument()
       })
     })
 
@@ -132,7 +132,7 @@ describe('JobIndex', () => {
         </AllProviders>,
       )
       await waitFor(() => {
-        expect(screen.getByText('IMPORT')).toBeInTheDocument()
+        expect(screen.getByText('Import')).toBeInTheDocument()
       })
     })
 
@@ -142,7 +142,7 @@ describe('JobIndex', () => {
           <JobIndex />
         </AllProviders>,
       )
-      fireEvent.click(screen.getByText('IMPORT'))
+      fireEvent.click(screen.getByText('Import'))
       await waitFor(() => {
         expect(
           screen.getByRole('heading', { name: 'Import Jobs' }),
@@ -157,7 +157,7 @@ describe('JobIndex', () => {
           <JobIndex />
         </AllProviders>,
       )
-      fireEvent.click(screen.getByText('IMPORT'))
+      fireEvent.click(screen.getByText('Import'))
       await waitFor(() => {
         expect(
           screen.getByRole('heading', { name: 'Import Jobs' }),
@@ -180,7 +180,7 @@ describe('JobIndex', () => {
           <JobIndex />
         </AllProviders>,
       )
-      fireEvent.click(screen.getByText('IMPORT'))
+      fireEvent.click(screen.getByText('Import'))
       await waitFor(() => {
         expect(
           screen.getByRole('heading', { name: 'Import Jobs' }),
@@ -211,7 +211,7 @@ describe('JobIndex', () => {
           <JobIndex />
         </AllProviders>,
       )
-      fireEvent.click(screen.getByText('IMPORT'))
+      fireEvent.click(screen.getByText('Import'))
       await waitFor(() => {
         expect(
           screen.getByRole('heading', { name: 'Import Jobs' }),
