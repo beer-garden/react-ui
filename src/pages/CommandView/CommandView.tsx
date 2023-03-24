@@ -73,27 +73,27 @@ const CommandView = () => {
       setError(undefined)
       getSystems()
       .then((response) => {
-        return response.data.find((system: System) => 
-          (system.name === systemName && system.namespace === namespace && system.version === version)
+        const tempSystem = response.data.find((sys: System) => 
+          (sys.name === systemName && sys.namespace === namespace && sys.version === version)
         )
-      })
-      .then((system: System | void) => {
-        setSystem && setSystem(system as StrippedSystem)
-        if (system && !command) {
-          const command: Command | undefined = system.commands.find((command: Command) => (command.name===commandName))
-          setCommand && setCommand(command as AugmentedCommand | undefined)
+        setSystem && setSystem(tempSystem as StrippedSystem)
+        let tempCommand: Command | undefined = undefined
+        if (tempSystem && !command) {
+          tempCommand = tempSystem.commands.find((cmd: Command) => (cmd.name===commandName))
+          setCommand && setCommand(tempCommand as AugmentedCommand | undefined)
         }
         setCheckedParams(checkContext(
           namespace,
           systemName,
           version,
           commandName,
-          system as StrippedSystem | undefined,
-          command,
+          tempSystem as StrippedSystem | undefined,
+          tempCommand as AugmentedCommand | undefined,
           isReplay,
           requestModel,
         ))
-      }).catch((e) => {
+      })
+      .catch((e) => {
         setError(e)
       })
     } else {
@@ -144,8 +144,6 @@ const CommandView = () => {
     )
   }
 
-  // we know that neither of these are undefined because of the call to
-  // 'checkedParams'
   const theSystem = system as StrippedSystem
   const theCommand = command as AugmentedCommand
 
