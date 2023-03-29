@@ -1,47 +1,62 @@
 import {
   Card,
+  CardContent,
   Grid,
-  Stack,
-  Typography,
+  Stack
 } from '@mui/material'
 import { AxiosError } from 'axios'
 import OverflowTooltip from 'components/OverflowTooltip'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
 import { SocketContainer } from 'containers/SocketContainer'
+import useGardens from 'hooks/useGardens'
 import { useMountedState } from 'hooks/useMountedState'
-import { useSystems } from 'hooks/useSystems'
 import { SystemAdminCard } from 'pages/SystemAdmin'
 import { useCallback, useEffect } from 'react'
-import { System } from 'types/backend-types'
+import { Garden, System } from 'types/backend-types'
 
 const SystemsCard = ({setError}: {setError: (error: AxiosError) => void}) => {
-  const { hasSystemPermission } = PermissionsContainer.useContainer()
-  const { getSystems } = useSystems()
+  const { hasSystemPermission, hasGardenPermission } = PermissionsContainer.useContainer()
+  const { getGardens } = useGardens()
   const [groupedSystems, setGroupedSystems] = useMountedState<{[name: string]: System[]}>({})
   const { addCallback, removeCallback } = SocketContainer.useContainer()
 
   const updateSystems = useCallback(() => {
-    getSystems()
-      .then((response) => {
-        const groupedSystems: {[name: string]: System[]} = {}
-        response.data.forEach((system: System) => {
-          if(hasSystemPermission('system:update', system.id)){
+    getGardens().then((response) => {
+      const groupedSystems: {[name: string]: System[]} = {}
+      const localGarden: Garden | undefined = response.data.find((garden: Garden) => (garden.connection_type === 'LOCAL'))
+      if(localGarden && hasGardenPermission('system:update', localGarden)) {
+        localGarden.systems.forEach((system: System) => {
+          if(hasGardenPermission('system:update', localGarden) || hasSystemPermission('system:update', system.id)){
             if(!groupedSystems[system.name]){
               groupedSystems[system.name] = []
             }
             groupedSystems[system.name].push(system)
           }
         })
-        setGroupedSystems(groupedSystems)
-      })
-      .catch((e) => {
-        setError(e)
-      })
+      }
+      else { 
+        response.data.forEach((garden: Garden) => {
+          garden.systems.forEach((system: System) => {
+            if(hasSystemPermission('system:update', system.id)){
+              if(!groupedSystems[system.name]){
+                groupedSystems[system.name] = []
+              }
+              groupedSystems[system.name].push(system)
+            }
+          })
+        })
+      }
+      setGroupedSystems(groupedSystems)
+    })
+    .catch((e) => {
+      setError(e)
+    })
   }, [
-    getSystems,
     hasSystemPermission,
+    hasGardenPermission,
     setError,
-    setGroupedSystems
+    setGroupedSystems,
+    getGardens,
   ])
 
   useEffect(() => {
@@ -73,23 +88,21 @@ const SystemsCard = ({setError}: {setError: (error: AxiosError) => void}) => {
             xs={1}
             sx={{minWidth: '400px'}}
           >
-            <Card sx={{ backgroundColor: 'background.default', height: '100%'}}>
-              <Typography sx={{
-                    backgroundColor: 'primary.main',
-                  }} variant="h4" color="common.white" p={1}>
+            <Card sx={{ height: '100%' }}>
                   <OverflowTooltip
                     color="common.white"
                     variant="h3"
                     tooltip={name}
                     text={name}
-                    css={{ py: 0 }}
+                    css={{ p: 1, backgroundColor: 'primary.main' }}
                   />
-              </Typography>
-              <Stack sx={{m: 2}} spacing={2}>
-                  {systems.sort((a: System, b: System) => (a.namespace > b.namespace ? 1 : -1)).map((system: System) => (
-                    <SystemAdminCard key={system.id} system={system} />
-                  ))}
-              </Stack>
+              <CardContent>
+                <Stack spacing={2}>
+                    {systems.sort((a: System, b: System) => (a.namespace > b.namespace ? 1 : -1)).map((system: System) => (
+                      <SystemAdminCard key={system.id} system={system} />
+                    ))}
+                </Stack>
+              </CardContent>
             </Card>
           </Grid>
         ))}

@@ -28,7 +28,7 @@ const SystemAdmin = () => {
             <Tooltip arrow title="Clear All Queues">
               <Button
                 variant="contained"
-                color="secondary"
+                color="error"
                 onClick={() => setOpen(true)}
               >
                 Clear All Queues

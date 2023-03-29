@@ -373,14 +373,16 @@ describe('Routes', () => {
           <Routes />
         </MemoryProvider>,
       )
-      await waitFor(() =>
+      await waitFor(() =>{
         expect(
-          screen.queryByRole('heading', { name: 'Systems' }),
-        ).not.toBeInTheDocument(),
+          screen.getByRole('heading', { name: 'Systems Management' }),
+        ).toBeInTheDocument()
+      }
       )
       expect(
-        screen.getByRole('heading', { name: 'Systems Management' }),
-      ).toBeInTheDocument()
+        screen.queryByRole('heading', { name: 'Systems' }),
+      ).not.toBeInTheDocument()
+      
     })
 
     test('Garden Admin', async () => {

@@ -76,34 +76,30 @@ const UnassociatedRunnersCard = () => {
 
   return Object.entries(groupedUnassociatedRunners).length > 0 ? (
     <>
-      <Card sx={{ backgroundColor: 'background.default', height: '100%', mb: 2}}>
-        <Typography 
-          sx={{
-            backgroundColor: 'primary.main',
-          }} variant="h4" color="common.white" p={1}
-        >
+      <Card sx={{ height: '100%', mb: 2 }}>
           <OverflowTooltip
             color="common.white"
             variant="h3"
             tooltip="Unassociated Local Runners"
             text="Unassociated Local Runners"
-            css={{ py: 0 }}
+            css={{ p: 1, backgroundColor: 'primary.main' }}
           />
-        </Typography>
         <CardContent>
           <Grid container
             columns={3}
             columnSpacing={2}
             rowSpacing={2}
           >
-            {Object.entries(groupedUnassociatedRunners).sort((a: [string, Runner[]], b: [string, Runner[]]) => (a[0] > b[0] ? 1 : -1)).map(([path, runners]) => (
+            {Object.entries(groupedUnassociatedRunners)
+            .sort((a: [string, Runner[]], b: [string, Runner[]]) => (a[0] > b[0] ? 1 : -1))
+            .map(([path, runners]) => (
               <Grid
                 item
                 key={`${path}Actions`}
                 xs={1}
                 sx={{minWidth: '400px'}}
               >
-                <Card >
+                <Card sx={{ backgroundColor: 'background.default'}} >
                   <CardContent>
                     <Stack
                       direction="row"
@@ -111,10 +107,7 @@ const UnassociatedRunnersCard = () => {
                       alignItems="center"
                       key={`stack${path}`}
                     >
-                      <Typography
-                        variant="body1"
-                        color="textSecondary"
-                      >
+                      <Typography variant="body1">
                         {path}
                       </Typography>
                       <Toolbar

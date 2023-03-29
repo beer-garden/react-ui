@@ -8,9 +8,11 @@ import {
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
+import { useGardensContext } from 'components/GardensContext'
 import { PageHeader } from 'components/PageHeader'
 import { Table } from 'components/Table'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
+import useGardens from 'hooks/useGardens'
 import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import { useCommandIndexTableColumns } from 'pages/CommandIndex'
@@ -28,14 +30,31 @@ interface IParam extends ObjectWithStringKeys {
 
 const CommandIndex = () => {
   const { config } = ServerConfigContainer.useContainer()
-  const [loading, setLoading] = useMountedState<boolean>(true)
+  const [loadingSystem, setLoadingSystem] = useMountedState<boolean>(true)
+  const [loadingGarden, setLoadingGarden] = useMountedState<boolean>(true)
   const [commands, setCommands] = useMountedState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useMountedState<boolean>(false)
   const [template, setTemplate] = useMountedState<JSX.Element | undefined>()
   const { error, getSystems } = useSystems()
+  const { getGardens } = useGardens()
   const { namespace, systemName, version } = useParams() as IParam
+  const { setGardens } = useGardensContext()
+
+  // handle leaving the page for any reason
+  useEffect(() => {
+    return () => {
+      setGardens && setGardens(undefined)
+    }
+  }, [setGardens])
 
   useEffect(() => {
+    getGardens().then((response) => {
+      setGardens && setGardens(response.data)
+      setLoadingGarden(false)
+    }).catch((e) => {
+      // e handled in ErrorAlert in return element
+      setLoadingGarden(false)
+    })
     getSystems()
       .then((response) => {
         setCommands(
@@ -54,7 +73,7 @@ const CommandIndex = () => {
           if (config?.execute_javascript) {
             // Trigger page loading and hide table
             setTemplate(<></>)
-            setLoading(false)
+            setLoadingSystem(false)
             // Dangerously set HTML with <script> etc intact and executed
             const scriptEl = document
               .createRange()
@@ -69,11 +88,11 @@ const CommandIndex = () => {
             )
           }
         }
-        setLoading(false)
+        setLoadingSystem(false)
       })
       .catch((e) => {
         // e handled in ErrorAlert in return element
-        setLoading(false)
+        setLoadingSystem(false)
       })
   }, [
     config?.execute_javascript,
@@ -81,10 +100,13 @@ const CommandIndex = () => {
     includeHidden,
     namespace,
     setCommands,
-    setLoading,
+    setLoadingSystem,
+    setLoadingGarden,
     setTemplate,
     systemName,
     version,
+    getGardens, 
+    setGardens,
   ])
 
   const columns = useCommandIndexTableColumns()
@@ -97,7 +119,7 @@ const CommandIndex = () => {
   if (systemName) tableKey = systemName + tableKey
   if (namespace) tableKey = namespace + tableKey
 
-  return !loading && !error ? (
+  return !(loadingGarden || loadingSystem) && !error ? (
     <Box>
       <PageHeader title="Commands" description="" />
       <Divider />

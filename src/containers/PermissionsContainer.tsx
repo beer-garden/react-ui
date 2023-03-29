@@ -1,6 +1,7 @@
 import { AuthContainer } from 'containers/AuthContainer'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { DebugContainer } from 'containers/DebugContainer'
+import useGardens from 'hooks/useGardens'
 import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import useUsers from 'hooks/useUsers'
@@ -24,6 +25,7 @@ const usePermissions = () => {
     | undefined
   >(cookies.get('domainPerms'))
   const { getSystems } = useSystems()
+  const { getGarden } = useGardens()
   const { getUser } = useUsers()
 
   const resetPerms = useCallback(() => {
@@ -125,6 +127,8 @@ const usePermissions = () => {
     (
       permission: string,
       systemId: string,
+      namespace?: string,
+      gardens?: Garden[]
     ): boolean => {
       const baseCheck = basePermissionCheck()
       if (typeof baseCheck !== 'undefined') {
@@ -132,6 +136,12 @@ const usePermissions = () => {
       }
       if (globalPerms?.includes(permission)) {
         return true
+      }
+      if(gardens && namespace){
+        const foundGarden = gardens.find((findGarden: Garden) => (findGarden.name === namespace))
+        if(foundGarden) {
+          return hasGardenPermission(permission, foundGarden)
+        }
       }
       if (
         domainPerms &&
@@ -143,6 +153,7 @@ const usePermissions = () => {
     },
     [
       basePermissionCheck,
+      hasGardenPermission,
       domainPerms,
       globalPerms,
     ],
@@ -163,7 +174,12 @@ const usePermissions = () => {
           system.name === job.request_template.system,
       )
       if (foundSystem) {
-        const systemPerm = await hasSystemPermission(
+        const gardenResponse = await getGarden(foundSystem.namespace)
+        const garden = gardenResponse.data
+        if(garden && hasGardenPermission(permission, garden)){
+          return true
+        }
+        const systemPerm = hasSystemPermission(
           permission,
           foundSystem.id,
         )
@@ -171,7 +187,7 @@ const usePermissions = () => {
       }
       return false
     },
-    [basePermissionCheck, getSystems, hasSystemPermission],
+    [basePermissionCheck, getSystems, hasSystemPermission, getGarden, hasGardenPermission],
   )
 
   return {

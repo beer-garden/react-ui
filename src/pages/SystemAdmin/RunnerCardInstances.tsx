@@ -36,20 +36,20 @@ const RunnerCardInstances = ({ runners, setAlert }: {runners: Runner[], setAlert
           <Stack alignItems="center" direction="row" spacing={1}>
             <Alert
               severity={runner.dead || runner.stopped ? 'error' : !runner.restart ? 'warning' : 'success'}
+              variant="filled"
               sx={alertStyle}
               icon={false}
               key={`status${runner.id}`}
             >
               {runner.dead ? 'DEAD' : runner.stopped ? 'STOPPED' : !runner.restart ? 'UNRESPONSIVE' : 'RUNNING'}
             </Alert>
-            <Typography variant="body1" color="textSecondary">
+            <Typography variant="body1">
               {runner.id}
             </Typography>
           </Stack>
           <Toolbar
             variant="dense"
             disableGutters
-            sx={{ minHeight: 36 }}
           >
             <Tooltip
               arrow

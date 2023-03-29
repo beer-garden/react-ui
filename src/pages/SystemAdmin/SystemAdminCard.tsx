@@ -51,7 +51,7 @@ import {
   
     return (
       <>
-        <Card>
+        <Card sx={{ backgroundColor: 'background.default'}}>
           <CardContent>
             <Stack
               direction="row"
@@ -121,10 +121,7 @@ import {
                 </Tooltip>
               </Toolbar>
             </Stack>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-            >
+            <Typography variant="body2">
               {system.description}
             </Typography>
           </CardContent>

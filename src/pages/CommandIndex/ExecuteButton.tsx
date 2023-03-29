@@ -1,6 +1,8 @@
+import { GardensContext } from 'components/GardensContext'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { LinkButton } from 'components/LinkButton'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { useContext } from 'react'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 interface IExeButton {
@@ -11,6 +13,7 @@ interface IExeButton {
 const ExecuteButton = ({ system, command }: IExeButton) => {
   const { namespace, systemName, systemVersion, name, systemId } = command
   const { hasSystemPermission } = PermissionsContainer.useContainer()
+  const { gardens } = useContext(GardensContext)
 
   const linkTo = [
     '/systems',
@@ -32,7 +35,7 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
         return LinkButton(
           'Execute',
           linkTo,
-          !hasSystemPermission('request:create', systemId,),
+          !hasSystemPermission('request:create', systemId, namespace, gardens),
           onClickCallback,
         )
       }}

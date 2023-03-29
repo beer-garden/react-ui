@@ -49,17 +49,21 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
           <Stack alignItems="center" direction="row" spacing={1}>
             <Alert
               severity={getSeverity(instance.status)}
+              variant="filled"
               sx={alertStyle}
               icon={false}
               key={`status${instance.name}`}
             >
               {instance.status}
             </Alert>
-            <Typography variant="body1" color="textSecondary">
+            <Typography variant="body1">
               {instance.name}
             </Typography>
           </Stack>
-          <Toolbar variant="dense" >
+          <Toolbar 
+            variant="dense"
+            disableGutters
+          >
             <Tooltip
               arrow
               title={`Start instance ${instance.name}`}
