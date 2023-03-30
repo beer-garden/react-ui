@@ -46,7 +46,6 @@ const UnassociatedRunnersCard = () => {
             }
             groupedUnassociatedRunners[runner.path].push(runner)
           }
-          
         })
         setGroupedUnassociatedRunners(groupedUnassociatedRunners)
       })
