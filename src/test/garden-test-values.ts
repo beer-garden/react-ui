@@ -1,13 +1,13 @@
-import { TSystem } from 'test/system-test-values'
-import { Garden, System } from 'types/backend-types'
+import { TSystem, TSystem2 } from 'test/system-test-values'
+import { Garden } from 'types/backend-types'
 
 export const TGarden: Garden = {
-  id: 'localGarden',
+  id: 'remoteGarden',
   name: 'testGarden',
   namespaces: ['basic'],
   status: 'RUNNING',
   status_info: { heartbeat: 3000 },
-  systems: [TSystem, { name: 'fakeSystem' } as System],
+  systems: [TSystem, TSystem2],
   connection_type: 'HTTP',
 }
 
