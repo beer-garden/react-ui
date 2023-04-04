@@ -5,6 +5,7 @@ import {
   CircularProgress,
   FormControlLabel,
 } from '@mui/material'
+import { AxiosError } from 'axios'
 import Breadcrumbs from 'components/Breadcrumbs'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
@@ -35,7 +36,8 @@ const CommandIndex = () => {
   const [commands, setCommands] = useMountedState<CommandIndexTableData[]>([])
   const [includeHidden, setIncludeHidden] = useMountedState<boolean>(false)
   const [template, setTemplate] = useMountedState<JSX.Element | undefined>()
-  const { error, getSystems } = useSystems()
+  const { getSystems } = useSystems()
+  const [error, setError] = useMountedState<AxiosError | undefined>()
   const { getGardens } = useGardens()
   const { namespace, systemName, version } = useParams() as IParam
   const { setGardens } = useGardensContext()
@@ -52,7 +54,7 @@ const CommandIndex = () => {
       setGardens && setGardens(response.data)
       setLoadingGarden(false)
     }).catch((e) => {
-      // e handled in ErrorAlert in return element
+      setError(e)
       setLoadingGarden(false)
     })
     getSystems()
@@ -91,7 +93,7 @@ const CommandIndex = () => {
         setLoadingSystem(false)
       })
       .catch((e) => {
-        // e handled in ErrorAlert in return element
+        setError(e)
         setLoadingSystem(false)
       })
   }, [
@@ -107,6 +109,7 @@ const CommandIndex = () => {
     version,
     getGardens, 
     setGardens,
+    setError,
   ])
 
   const columns = useCommandIndexTableColumns()
