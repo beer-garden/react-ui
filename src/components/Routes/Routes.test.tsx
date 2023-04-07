@@ -178,7 +178,7 @@ describe('Routes', () => {
       mockAxios.onGet('/config').reply(200, TServerConfig)
     })
 
-    test('Systems should be accessible', async () => {
+    test('Logging in', async () => {
       render(
         <MemoryProvider startLocation={['/systems']}>
           <Routes />
@@ -189,6 +189,14 @@ describe('Routes', () => {
       })
       // For some reason have to do this only once
       loginFN()
+    })
+
+    test('Systems should be accessible', async () => {
+      render(
+        <MemoryProvider startLocation={['/systems']}>
+          <Routes />
+        </MemoryProvider>,
+      )
       await waitFor(() => {
         expect(
           screen.getByRole('heading', { name: 'Systems' }),
@@ -373,16 +381,14 @@ describe('Routes', () => {
           <Routes />
         </MemoryProvider>,
       )
-      await waitFor(() =>{
+      await waitFor(() =>
         expect(
-          screen.getByRole('heading', { name: 'Systems Management' }),
-        ).toBeInTheDocument()
-      }
+          screen.queryByRole('heading', { name: 'Systems' }),
+        ).not.toBeInTheDocument(),
       )
       expect(
-        screen.queryByRole('heading', { name: 'Systems' }),
-      ).not.toBeInTheDocument()
-      
+        screen.getByRole('heading', { name: 'Systems Management' }),
+      ).toBeInTheDocument()
     })
 
     test('Garden Admin', async () => {
