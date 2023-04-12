@@ -12,6 +12,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { ModalWrapper } from 'components/ModalWrapper'
+import { useMountedState } from 'hooks/useMountedState'
 import { useRunners } from 'hooks/useRunners'
 import { alertStyle } from 'pages/SystemAdmin'
 import { Runner } from 'types/backend-types'
@@ -23,6 +25,8 @@ const RunnerCardInstances = ({ runners, setAlert }: {runners: Runner[], setAlert
     stopRunner,
     deleteRunner
   } = useRunners()
+  const [open, setOpen] = useMountedState<boolean>(false)
+  const [runner, setRunner] = useMountedState<Runner>()
 
   return (
     <Stack divider={<Divider />} sx={{width: '100%'}}>
@@ -49,7 +53,6 @@ const RunnerCardInstances = ({ runners, setAlert }: {runners: Runner[], setAlert
           </Stack>
           <Toolbar
             variant="dense"
-            disableGutters
           >
             <Tooltip
               arrow
@@ -101,13 +104,8 @@ const RunnerCardInstances = ({ runners, setAlert }: {runners: Runner[], setAlert
               <IconButton
                 size="small"
                 onClick={() => {
-                  deleteRunner(runner.id).catch((e) => {
-                    setAlert({
-                      severity: 'error',
-                      message: e,
-                      doNotAutoDismiss: true,
-                    })
-                  })
+                  setRunner(runner)
+                  setOpen(true)
                 }}
                 aria-label="delete"
               >
@@ -117,6 +115,30 @@ const RunnerCardInstances = ({ runners, setAlert }: {runners: Runner[], setAlert
           </Toolbar>
         </Stack>
       ))}
+      <ModalWrapper
+        open={open}
+        header="Confirm Runner Deletion"
+        onClose={() => setOpen(false)}
+        onSubmit={() => {
+            if(runner) deleteRunner(runner.id).then((responce) => setOpen(false)).catch((e) => {
+              setOpen(false)
+              setAlert({
+                severity: 'error',
+                message: e,
+                doNotAutoDismiss: true,
+              })
+            })
+        }}
+        onCancel={() => setOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        styleOverrides={{ size: 'sm', top: '-55%' }}
+        content={
+          <Typography variant="body1">
+            Are you sure you want to delete runner: {runner?.id}?
+          </Typography>
+        }
+      />
     </Stack>
   )
 }

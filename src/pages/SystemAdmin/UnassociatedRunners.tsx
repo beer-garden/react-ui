@@ -6,7 +6,6 @@ import {
 } from '@mui/icons-material'
 import {
   Card,
-  CardActions,
   CardContent,
   Divider,
   Grid,
@@ -16,6 +15,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { ModalWrapper } from 'components/ModalWrapper'
 import OverflowTooltip from 'components/OverflowTooltip'
 import { Snackbar } from 'components/Snackbar'
 import { SocketContainer } from 'containers/SocketContainer'
@@ -34,6 +34,10 @@ const UnassociatedRunnersCard = () => {
   const { addCallback, removeCallback } = SocketContainer.useContainer()
   const { getRunners, startRunner, stopRunner, reloadRunner, deleteRunner } =
     useRunners()
+  const [open, setOpen] = useMountedState<boolean>(false)
+  const [runners, setRunners] = useMountedState<Runner[]>()
+  const [path, setPath] = useMountedState<string>()
+  
 
   const updateRunners = useCallback(() => {
     getRunners()
@@ -111,7 +115,6 @@ const UnassociatedRunnersCard = () => {
                       </Typography>
                       <Toolbar
                         variant="dense"
-                        disableGutters
                         sx={{ minHeight: 36 }}
                       >
                         <Tooltip
@@ -189,15 +192,9 @@ const UnassociatedRunnersCard = () => {
                           <IconButton
                             size="small"
                             onClick={() => {
-                              runners.map((runner: Runner) =>
-                                deleteRunner(runner.id).catch((e) => {
-                                  setAlert({
-                                    severity: 'error',
-                                    message: e,
-                                    doNotAutoDismiss: true,
-                                  })
-                                }),
-                              )
+                              setRunners(runners)
+                              setPath(path)
+                              setOpen(true)
                             }}
                             aria-label="delete"
                           >
@@ -206,17 +203,41 @@ const UnassociatedRunnersCard = () => {
                         </Tooltip>
                       </Toolbar>
                     </Stack>
-                  </CardContent>
-                  <Divider />
-                  <CardActions>
+                    <Divider sx={{pt: 1}} />
                     <RunnerCardInstances runners={runners} setAlert={setAlert} />
-                  </CardActions>
+                  </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </CardContent>
       </Card>
+      <ModalWrapper
+        open={open}
+        header="Confirm Runners Deletion"
+        onClose={() => setOpen(false)}
+        onSubmit={() => {
+          runners?.map((runner: Runner) =>
+            deleteRunner(runner.id).then((responce) => setOpen(false)).catch((e) => {
+              setOpen(false)
+              setAlert({
+                severity: 'error',
+                message: e,
+                doNotAutoDismiss: true,
+              })
+            }),
+          )
+        }}
+        onCancel={() => setOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        styleOverrides={{ size: 'sm', top: '-55%' }}
+        content={
+          <Typography variant="body1">
+            Are you sure you want to delete all runners in path: {path}?
+          </Typography>
+        }
+      />
       {alert && <Snackbar status={alert} />}
     </>
   ) : (

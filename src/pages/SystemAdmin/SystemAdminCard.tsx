@@ -6,7 +6,6 @@ import {
   } from '@mui/icons-material'
   import {
     Card,
-    CardActions,
     CardContent,
     Divider,
     IconButton,
@@ -15,6 +14,7 @@ import {
     Tooltip,
     Typography,
   } from '@mui/material'
+  import { ModalWrapper } from 'components/ModalWrapper'
   import { Snackbar } from 'components/Snackbar'
   import { useInstances } from 'hooks/useInstances'
   import { useMountedState } from 'hooks/useMountedState'
@@ -28,6 +28,7 @@ import {
     const { startAllInstances, stopAllInstances } = useInstances()
     const { reloadSystem, deleteSystem } = useSystems()
     const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
+    const [open, setOpen] = useMountedState<boolean>(false)
   
     const handleReloadSystem = (systemId: string) => {
       reloadSystem(systemId).catch((e) => {
@@ -40,7 +41,8 @@ import {
     }
   
     const handleDeleteSystem = (systemId: string) => {
-      deleteSystem(systemId).catch((e) => {
+      deleteSystem(systemId).then((response) => setOpen(false)).catch((e) => {
+        setOpen(false)
         setAlert({
           severity: 'error',
           message: e,
@@ -113,7 +115,7 @@ import {
                 <Tooltip arrow title="Delete system" placement="bottom-start">
                   <IconButton
                     size="small"
-                    onClick={() => handleDeleteSystem(system.id)}
+                    onClick={() => setOpen(true)}
                     aria-label="delete"
                   >
                     <DeleteIcon />
@@ -124,12 +126,25 @@ import {
             <Typography variant="body2">
               {system.description}
             </Typography>
-          </CardContent>
-          <Divider />
-          <CardActions>
+            <Divider sx={{pt: 1}} />
             <SystemCardInstances instances={system.instances} fileHeader={`${system.name}[${system.version}]`} />
-          </CardActions>
+          </CardContent>
         </Card>
+        <ModalWrapper
+          open={open}
+          header="Confirm System Deletion"
+          onClose={() => setOpen(false)}
+          onSubmit={() => handleDeleteSystem(system.id)}
+          onCancel={() => setOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          styleOverrides={{ size: 'sm', top: '-55%' }}
+          content={
+            <Typography variant="body1">
+              Are you sure you want to delete system: {system.name}?
+            </Typography>
+          }
+        />
         {alert && <Snackbar status={alert} />}
       </>
     )

@@ -60,10 +60,7 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
               {instance.name}
             </Typography>
           </Stack>
-          <Toolbar 
-            variant="dense"
-            disableGutters
-          >
+          <Toolbar variant="dense" >
             <Tooltip
               arrow
               title={`Start instance ${instance.name}`}
