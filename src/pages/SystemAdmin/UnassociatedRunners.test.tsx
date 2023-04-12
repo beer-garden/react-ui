@@ -16,6 +16,7 @@ describe('UnassociatedRunnersCard', () => {
       expect(screen.getByText('Unassociated Local Runners')).toBeInTheDocument()
     })
     expect(screen.getByText(TRunner2.path)).toBeInTheDocument()
+    expect(screen.getByText(TRunner2.id)).toBeInTheDocument()
     expect(screen.queryByText(TRunner.path)).not.toBeInTheDocument()
   })
 

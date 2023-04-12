@@ -89,7 +89,6 @@ describe('Permissions Container', () => {
         expect(
           await result.current.hasSystemPermission(
             'user:create',
-            TSystem.namespace,
             TSystem.id,
           ),
         ).toBeTruthy()
@@ -145,7 +144,6 @@ describe('Permissions Container', () => {
         expect(
           await result.current.hasSystemPermission(
             'user:create',
-            TSystem.namespace,
             TSystem.id,
           ),
         ).toBeFalsy()
@@ -213,7 +211,6 @@ describe('Permissions Container', () => {
         expect(
           await result.current.hasSystemPermission(
             'user:create',
-            TSystem.namespace,
             TSystem.id,
           ),
         ).toBeTruthy()
@@ -281,7 +278,6 @@ describe('Permissions Container', () => {
         expect(
           await result.current.hasSystemPermission(
             'user:create',
-            TSystem.namespace,
             TSystem.id,
           ),
         ).toBeFalsy()

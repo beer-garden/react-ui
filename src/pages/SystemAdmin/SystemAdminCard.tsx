@@ -1,138 +1,82 @@
 import {
-  Cached as CachedIcon,
-  Delete as DeleteIcon,
-  Link as LinkIcon,
-  PlayCircleFilled as PlayCircleFilledIcon,
-  Stop as StopIcon,
-} from '@mui/icons-material'
-import {
-  Alert,
-  Card,
-  CardContent,
-  Divider,
-  FormControl,
-  Grid,
-  IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import OverflowTooltip from 'components/OverflowTooltip'
-import { Snackbar } from 'components/Snackbar'
-import { useInstances } from 'hooks/useInstances'
-import { useMountedState } from 'hooks/useMountedState'
-import { useSystems } from 'hooks/useSystems'
-import {
-  alertStyle,
-  instanceIcon,
-  systemIcon,
-  systemsSeverity,
-} from 'pages/SystemAdmin'
-import SystemCardInstances from 'pages/SystemAdmin/SystemCardInstances'
-import { Link as RouterLink } from 'react-router-dom'
-import { System } from 'types/backend-types'
-import { SnackbarState } from 'types/custom-types'
-
-const SystemAdminCard = ({ systems }: { systems: System[] }) => {
-  const { startAllInstances, stopAllInstances } = useInstances()
-  const { reloadSystem, deleteSystem } = useSystems()
-  const [systemIndex, setSystemIndex] = useMountedState<number>(0)
-  const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setSystemIndex(parseInt(event.target.value))
-  }
-
-  const handleReloadSystem = (systemId: string) => {
-    reloadSystem(systemId).catch((e) => {
-      setAlert({
-        severity: 'error',
-        message: e,
-        doNotAutoDismiss: true,
+    Cached as CachedIcon,
+    Delete as DeleteIcon,
+    PlayCircleFilled as PlayCircleFilledIcon,
+    Stop as StopIcon,
+  } from '@mui/icons-material'
+  import {
+    Card,
+    CardContent,
+    Divider,
+    IconButton,
+    Stack,
+    Toolbar,
+    Tooltip,
+    Typography,
+  } from '@mui/material'
+  import { ModalWrapper } from 'components/ModalWrapper'
+  import { Snackbar } from 'components/Snackbar'
+  import { useInstances } from 'hooks/useInstances'
+  import { useMountedState } from 'hooks/useMountedState'
+  import { useSystems } from 'hooks/useSystems'
+  import SystemCardInstances from 'pages/SystemAdmin/SystemCardInstances'
+  import { Link as RouterLink } from 'react-router-dom'
+  import { System } from 'types/backend-types'
+  import { SnackbarState } from 'types/custom-types'
+  
+  const SystemAdminCard = ( { system }: { system: System } ) => {
+    const { startAllInstances, stopAllInstances } = useInstances()
+    const { reloadSystem, deleteSystem } = useSystems()
+    const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
+    const [open, setOpen] = useMountedState<boolean>(false)
+  
+    const handleReloadSystem = (systemId: string) => {
+      reloadSystem(systemId).catch((e) => {
+        setAlert({
+          severity: 'error',
+          message: e,
+          doNotAutoDismiss: true,
+        })
       })
-    })
-  }
-
-  const handleDeleteSystem = (systemId: string) => {
-    deleteSystem(systemId).catch((e) => {
-      setAlert({
-        severity: 'error',
-        message: e,
-        doNotAutoDismiss: true,
+    }
+  
+    const handleDeleteSystem = (systemId: string) => {
+      deleteSystem(systemId).then((response) => setOpen(false)).catch((e) => {
+        setOpen(false)
+        setAlert({
+          severity: 'error',
+          message: e,
+          doNotAutoDismiss: true,
+        })
       })
-    })
-  }
-
-  return (
-    <>
-      <Card sx={{ width: 200 }}>
-        <Alert
-          variant="outlined"
-          sx={{
-            ...alertStyle,
-            backgroundColor: 'primary.main',
-          }}
-          icon={
-            instanceIcon(systems[systemIndex].instances) ? undefined : false
-          }
-          severity={systemsSeverity(systems)}
-        >
-          <OverflowTooltip
-            color="common.white"
-            variant="h3"
-            tooltip={systems[systemIndex].name}
-            text={systems[systemIndex].name}
-            css={{ py: 0 }}
-          />
-        </Alert>
-        <CardContent>
-          <Grid justifyContent="center" container>
-            <Grid item key="selector">
-              <FormControl sx={{ m: 0.1, py: 0.1 }} size="small">
-                <Select
-                  variant="outlined"
-                  error={systemIcon(systems)}
-                  value={systemIndex.toString()}
-                  onChange={handleChange}
-                  sx={{ py: 0.1 }}
+    }
+  
+    return (
+      <>
+        <Card sx={{ backgroundColor: 'background.default'}}>
+          <CardContent>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Tooltip
+                arrow
+                title="View commands"
+                placement="bottom-start"
+              >
+                <RouterLink
+                  to={[
+                    '/systems',
+                    system.namespace,
+                    system.name,
+                    system.version,
+                  ].join('/')}
                 >
-                  {systems.map((system, index) => (
-                    <MenuItem key={system.version} value={index} dense divider>
-                      <Alert
-                        sx={{ ...alertStyle, py: 0.1 }}
-                        severity={systemsSeverity([system])}
-                        icon={false}
-                      >
-                        {system.version}
-                      </Alert>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item key={`${systems[systemIndex]}Actions`}>
-              <Toolbar variant="dense" disableGutters sx={{ minHeight: 36 }}>
-                <Tooltip
-                  arrow
-                  title="View instance commands"
-                  placement="bottom-start"
-                >
-                  <IconButton
-                    size="small"
-                    component={RouterLink}
-                    to={[
-                      '/systems',
-                      systems[systemIndex].namespace,
-                      systems[systemIndex].name,
-                      systems[systemIndex].version,
-                    ].join('/')}
-                  >
-                    <LinkIcon />
-                  </IconButton>
-                </Tooltip>
+                  {`${system.namespace}/${system.version}`}
+                </RouterLink>
+              </Tooltip>
+              <Toolbar variant="dense" >
                 <Tooltip
                   arrow
                   title="Start all instances"
@@ -140,7 +84,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
                 >
                   <IconButton
                     size="small"
-                    onClick={() => startAllInstances(systems[systemIndex])}
+                    onClick={() => startAllInstances(system)}
                     aria-label="start"
                   >
                     <PlayCircleFilledIcon />
@@ -153,7 +97,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
                 >
                   <IconButton
                     size="small"
-                    onClick={() => stopAllInstances(systems[systemIndex])}
+                    onClick={() => stopAllInstances(system)}
                     aria-label="stop"
                   >
                     <StopIcon />
@@ -162,7 +106,7 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
                 <Tooltip arrow title="Reload system" placement="bottom-start">
                   <IconButton
                     size="small"
-                    onClick={() => handleReloadSystem(systems[systemIndex].id)}
+                    onClick={() => handleReloadSystem(system.id)}
                     aria-label="reload"
                   >
                     <CachedIcon />
@@ -171,34 +115,40 @@ const SystemAdminCard = ({ systems }: { systems: System[] }) => {
                 <Tooltip arrow title="Delete system" placement="bottom-start">
                   <IconButton
                     size="small"
-                    onClick={() => handleDeleteSystem(systems[systemIndex].id)}
+                    onClick={() => setOpen(true)}
                     aria-label="delete"
                   >
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
               </Toolbar>
-            </Grid>
-            <Grid item key="description">
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                gutterBottom={false}
-              >
-                {systems[systemIndex].description}
-              </Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider variant="middle" />
-        <SystemCardInstances
-          instances={systems[systemIndex].instances}
-          fileHeader={`${systems[systemIndex].name}[${systems[systemIndex].version}]`}
+            </Stack>
+            <Typography variant="body2">
+              {system.description}
+            </Typography>
+            <Divider sx={{pt: 1}} />
+            <SystemCardInstances instances={system.instances} fileHeader={`${system.name}[${system.version}]`} />
+          </CardContent>
+        </Card>
+        <ModalWrapper
+          open={open}
+          header="Confirm System Deletion"
+          onClose={() => setOpen(false)}
+          onSubmit={() => handleDeleteSystem(system.id)}
+          onCancel={() => setOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          styleOverrides={{ size: 'sm', top: '-55%' }}
+          content={
+            <Typography variant="body1">
+              Are you sure you want to delete system: {system.name}?
+            </Typography>
+          }
         />
-      </Card>
-      {alert && <Snackbar status={alert} />}
-    </>
-  )
-}
-
-export default SystemAdminCard
+        {alert && <Snackbar status={alert} />}
+      </>
+    )
+  }
+  
+  export { SystemAdminCard }
+  

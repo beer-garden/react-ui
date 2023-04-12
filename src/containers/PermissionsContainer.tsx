@@ -24,9 +24,8 @@ const usePermissions = () => {
       }
     | undefined
   >(cookies.get('domainPerms'))
-
-  const { getGarden } = useGardens()
   const { getSystems } = useSystems()
+  const { getGarden } = useGardens()
   const { getUser } = useUsers()
 
   const resetPerms = useCallback(() => {
@@ -125,11 +124,12 @@ const usePermissions = () => {
   )
 
   const hasSystemPermission = useCallback(
-    async (
+    (
       permission: string,
-      namespace: string,
       systemId: string,
-    ): Promise<boolean> => {
+      namespace?: string,
+      gardens?: Garden[]
+    ): boolean => {
       const baseCheck = basePermissionCheck()
       if (typeof baseCheck !== 'undefined') {
         return !!baseCheck
@@ -137,10 +137,11 @@ const usePermissions = () => {
       if (globalPerms?.includes(permission)) {
         return true
       }
-      const response = await getGarden(namespace)
-      const garden = response.data
-      if (garden && hasGardenPermission(permission, garden)) {
-        return true
+      if(gardens && namespace){
+        const foundGarden = gardens.find((findGarden: Garden) => (findGarden.name === namespace))
+        if(foundGarden) {
+          return hasGardenPermission(permission, foundGarden)
+        }
       }
       if (
         domainPerms &&
@@ -152,10 +153,9 @@ const usePermissions = () => {
     },
     [
       basePermissionCheck,
-      domainPerms,
-      getGarden,
-      globalPerms,
       hasGardenPermission,
+      domainPerms,
+      globalPerms,
     ],
   )
 
@@ -174,16 +174,20 @@ const usePermissions = () => {
           system.name === job.request_template.system,
       )
       if (foundSystem) {
-        const systemPerm = await hasSystemPermission(
+        const gardenResponse = await getGarden(foundSystem.namespace)
+        const garden = gardenResponse.data
+        if(garden && hasGardenPermission(permission, garden)){
+          return true
+        }
+        const systemPerm = hasSystemPermission(
           permission,
-          job.request_template.namespace,
           foundSystem.id,
         )
         return systemPerm
       }
       return false
     },
-    [basePermissionCheck, getSystems, hasSystemPermission],
+    [basePermissionCheck, getSystems, hasSystemPermission, getGarden, hasGardenPermission],
   )
 
   return {

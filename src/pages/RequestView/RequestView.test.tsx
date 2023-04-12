@@ -57,7 +57,7 @@ describe('RequestView', () => {
       screen.getByRole('heading', { name: 'Parameters' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: 'Remake Request' }),
+      screen.getByText('Remake Request'),
     ).toBeInTheDocument()
   })
 

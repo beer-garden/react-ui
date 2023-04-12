@@ -1,22 +1,25 @@
 import {
-  PlayCircleFilled as PlayIcon,
+  Menu as MenuIcon,
+  PlayCircleFilled as PlayCircleFilledIcon,
   Queue as QueueIcon,
   Receipt as ReceiptIcon,
   Stop as StopIcon,
 } from '@mui/icons-material'
 import {
   Alert,
-  Button,
-  CardActions,
+  Divider,
+  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
+  Toolbar,
   Tooltip,
+  Typography,
 } from '@mui/material'
 import LogModal from 'components/LogModal'
 import { ModalWrapper } from 'components/ModalWrapper'
-import OverflowTooltip from 'components/OverflowTooltip'
 import QueueModal from 'components/QueueModal'
 import { useInstances } from 'hooks/useInstances'
 import { useMountedState } from 'hooks/useMountedState'
@@ -35,134 +38,143 @@ const SystemCardInstances = ({ instances, fileHeader }: ISystemCard) => {
   const [queueModal, setQueueModal] = useMountedState<boolean>(false)
 
   return (
-    <>
-      <CardActions sx={{ justifyContent: 'center' }}>
-        {instances.map((instance: Instance) => (
-          <PopupState
-            key={instance.name}
-            variant="popover"
-            popupId="demo-popup-menu"
-          >
-            {(popupState) => (
-              <>
-                <Button
-                  {...bindTrigger(popupState)}
-                  variant="contained"
-                  size="small"
-                  sx={{ padding: 0, minWidth: '50px', maxWidth: '150px' }}
-                >
-                  <Tooltip arrow title={instance.status} placement="top-start">
-                    <Alert
-                      severity={getSeverity(instance.status)}
-                      sx={alertStyle}
-                      icon={false}
+    <Stack divider={<Divider />} sx={{width: '100%'}}>
+      {instances.sort((a: Instance, b: Instance) => (a.name > b.name ? 1 : -1)).map((instance: Instance) => (
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          key={`stack${instance.name}`}
+        > 
+          <Stack alignItems="center" direction="row" spacing={1}>
+            <Alert
+              severity={getSeverity(instance.status)}
+              variant="filled"
+              sx={alertStyle}
+              icon={false}
+              key={`status${instance.name}`}
+            >
+              {instance.status}
+            </Alert>
+            <Typography variant="body1">
+              {instance.name}
+            </Typography>
+          </Stack>
+          <Toolbar variant="dense" >
+            <Tooltip
+              arrow
+              title={`Start instance ${instance.name}`}
+              placement="bottom-start"
+            >
+              <IconButton
+                size="small"
+                onClick={() => startInstance(instance.id).then((resp) => {
+                  instance.status = resp
+                })}
+                aria-label="start"
+              >
+                <PlayCircleFilledIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              arrow
+              title={`Stop instance ${instance.name}`}
+              placement="bottom-start"
+            >
+              <IconButton
+                size="small"
+                onClick={() => stopInstance(instance.id).then((resp) => {
+                  instance.status = resp
+                })}
+                aria-label="stop"
+              >
+                <StopIcon />
+              </IconButton>
+            </Tooltip>
+            <PopupState
+              key={instance.name}
+              variant="popover"
+              popupId="popup-menu"
+            >
+              {(popupState) => (
+                <>
+                  <Tooltip
+                    arrow
+                    title={`Menu instance ${instance.name}`}
+                    placement="bottom-start"
+                  >
+                    <IconButton
+                      {...bindTrigger(popupState)}
+                      size="small"
+                      data-testid={`${instance.name}-menu-button`}
                     >
-                      <OverflowTooltip
-                        variant="subtitle2"
-                        tooltip={instance.name}
-                        text={instance.name}
-                        css={{ py: 0 }}
-                      />
-                    </Alert>
+                      <MenuIcon />
+                    </IconButton>
                   </Tooltip>
-                </Button>
-                <Menu {...bindMenu(popupState)}>
-                  <MenuItem
-                    dense
-                    divider
-                    sx={{ fontSize: '0.9375rem' }}
-                    key="start"
-                    onClick={() => {
-                      popupState.close()
-                      startInstance(instance.id).then((resp) => {
-                        instance.status = resp
-                      })
-                    }}
-                  >
-                    <ListItemIcon>
-                      <PlayIcon />
-                    </ListItemIcon>
-                    <ListItemText>Start</ListItemText>
-                  </MenuItem>
-                  <MenuItem
-                    dense
-                    divider
-                    sx={{ fontSize: '0.9375rem' }}
-                    key="stop"
-                    onClick={() => {
-                      popupState.close()
-                      stopInstance(instance.id).then((resp) => {
-                        instance.status = resp
-                      })
-                    }}
-                  >
-                    <ListItemIcon>
-                      <StopIcon />
-                    </ListItemIcon>
-                    <ListItemText>Stop</ListItemText>
-                  </MenuItem>
-                  <MenuItem
-                    dense
-                    divider
-                    sx={{ fontSize: '0.9375rem' }}
-                    onClick={() => {
-                      setLogModal(true)
-                      popupState.close()
-                    }}
-                  >
-                    <ListItemIcon>
-                      <ReceiptIcon />
-                    </ListItemIcon>
-                    <ListItemText>Show Logs</ListItemText>
-                  </MenuItem>
-                  <MenuItem
-                    dense
-                    sx={{ fontSize: '0.9375rem' }}
-                    onClick={() => {
-                      popupState.close()
-                      setQueueModal(true)
-                    }}
-                  >
-                    <ListItemIcon>
-                      <QueueIcon />
-                    </ListItemIcon>
-                    <ListItemText>Manage Queue</ListItemText>
-                  </MenuItem>
-                </Menu>
-                <ModalWrapper
-                  open={logModal}
-                  header={`Logs for ${fileHeader}-${instance.name}`}
-                  onClose={() => setLogModal(false)}
-                  customButton={{
-                    label: 'Close',
-                    cb: () => {
-                      setLogModal(false)
-                    },
-                    color: 'primary',
-                  }}
-                  content={
-                    <LogModal instance={instance} fileHeader={fileHeader} />
-                  }
-                />
-                <ModalWrapper
-                  open={queueModal}
-                  header={`Queue Manager: ${fileHeader}${instance.name}`}
-                  onClose={() => setQueueModal(false)}
-                  customButton={{
-                    label: 'Close',
-                    cb: () => {
-                      setQueueModal(false)
-                    },
-                    color: 'primary',
-                  }}
-                  content={<QueueModal instance={instance} />}
-                />
-              </>
-            )}
-          </PopupState>
-        ))}
-      </CardActions>
-    </>
+                    <Menu {...bindMenu(popupState)}>
+                      <MenuItem
+                        dense
+                        divider
+                        sx={{ fontSize: '0.9375rem' }}
+                        onClick={() => {
+                          setLogModal(true)
+                          popupState.close()
+                        }}
+                      >
+                        <ListItemIcon>
+                          <ReceiptIcon />
+                        </ListItemIcon>
+                        <ListItemText>Show Logs</ListItemText>
+                      </MenuItem>
+                      <MenuItem
+                        dense
+                        sx={{ fontSize: '0.9375rem' }}
+                        onClick={() => {
+                          popupState.close()
+                          setQueueModal(true)
+                        }}
+                      >
+                        <ListItemIcon>
+                          <QueueIcon />
+                        </ListItemIcon>
+                        <ListItemText>Manage Queue</ListItemText>
+                      </MenuItem>
+                    </Menu>
+                </>
+              )}
+            </PopupState>
+          </Toolbar>
+          <ModalWrapper
+            open={logModal}
+            header={`Logs for ${fileHeader}-${instance.name}`}
+            onClose={() => setLogModal(false)}
+            customButton={{
+              label: 'Close',
+              cb: () => {
+                setLogModal(false)
+              },
+              color: 'primary',
+            }}
+            content={
+              <LogModal instance={instance} fileHeader={fileHeader} />
+            }
+          />
+          <ModalWrapper
+            open={queueModal}
+            header={`Queue Manager: ${fileHeader}${instance.name}`}
+            onClose={() => setQueueModal(false)}
+            customButton={{
+              label: 'Close',
+              cb: () => {
+                setQueueModal(false)
+              },
+              color: 'primary',
+            }}
+            content={<QueueModal instance={instance} />}
+          />
+        </Stack>
+      ))}
+    </Stack>
   )
 }
 
