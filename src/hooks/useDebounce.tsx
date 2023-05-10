@@ -51,4 +51,26 @@ const useDebounceOnEventFunction = <
   return useCallback(debounce(func), [])
 }
 
-export { useDebounce, useDebounceOnEventFunction }
+const useDebounceEmptyFunction = <
+  T extends () => void,
+>(
+  func: T | undefined,
+  delay: number,
+): (() => void) => {
+  const debounce = (func: T | undefined) => {
+    let timer: NodeJS.Timeout | null
+    return () => {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(() => {
+        timer = null
+        if (func) {
+          func()
+        }
+      }, delay)
+    }
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useCallback(debounce(func), [])
+}
+
+export { useDebounce, useDebounceEmptyFunction, useDebounceOnEventFunction }

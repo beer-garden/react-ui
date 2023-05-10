@@ -1,6 +1,7 @@
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
+import { CommandViewOld } from 'pages/CommandView'
 import { Login } from 'pages/Login'
 import { lazy } from 'react'
 import {
@@ -75,7 +76,10 @@ const Routes = () => {
       {hasPermission('job:read') && (
         <Route path="jobs" element={<RequireAuth />}>
           <Route index element={<JobIndex />} />
-          <Route path="create" element={<JobCreate />} />
+          <Route path="create" >
+            <Route index element={<JobCreate />} />
+              <Route path=":namespace/:systemName/:version/commands/:commandName" element={<CommandViewOld />} />
+          </Route>
           <Route path=":id" element={<JobView />} />
         </Route>
       )}

@@ -91,7 +91,7 @@ const UpdateJobButton = ({ job }: UpdateJobButtonProps) => {
           setRequestModel(extractRequestModel(job))
           navigate(
             [
-              '/systems',
+              '/jobs/create',
               namespace,
               system,
               system_version,

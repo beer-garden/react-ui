@@ -8,30 +8,21 @@ import * as commandViewHelpers from 'pages/CommandView/commandViewHelpers'
 import {
   TAugmentedCommand,
   TRequestCommandModel,
-  TRequestJobModel,
 } from 'test/request-command-job-test-values'
 import { TParameter, TSystem } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
+import { RequestTemplate } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
-import { CommandViewRequestModel } from 'types/form-model-types'
+import { CommandViewJobModel, CommandViewRequestModel } from 'types/form-model-types'
 
-import { CommandView } from './CommandView'
+import { CommandView } from './CommandView_new'
 
 const { commands, ...theSystem } = TSystem
 const CommandContextValues: JobRequestCreationProviderState = {
   ...emptyJobRequestCreationProviderState,
   system: theSystem as StrippedSystem,
   command: TAugmentedCommand,
-  isReplay: true,
   requestModel: TRequestCommandModel,
-}
-const JobContextValues: JobRequestCreationProviderState = {
-  ...emptyJobRequestCreationProviderState,
-  system: theSystem as StrippedSystem,
-  command: TAugmentedCommand,
-  isJob: true,
-  isReplay: true,
-  requestModel: TRequestJobModel,
 }
 
 describe('CommandView', () => {
@@ -45,7 +36,7 @@ describe('CommandView', () => {
       system: StrippedSystem | undefined,
       command: AugmentedCommand | undefined,
       isReplay: boolean,
-      requestModel: CommandViewRequestModel | undefined,
+      requestModel: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined,
     ]
   >
 
@@ -70,7 +61,7 @@ describe('CommandView', () => {
     // comment is inserted
     await waitFor(() => {
       expect(
-        screen.getByDisplayValue(TRequestCommandModel.comment.comment),
+        screen.getByDisplayValue(TRequestCommandModel.comment || 'Silly comment!'),
       ).toBeInTheDocument()
     })
     // parameter value is inserted
@@ -79,22 +70,6 @@ describe('CommandView', () => {
     ] as string
     await waitFor(() => {
       expect(screen.getByDisplayValue(paramString)).toBeInTheDocument()
-    })
-  })
-
-  test('renders job form with model context values', async () => {
-    render(
-      <AllProviders>
-        <JobRequestCreationContext.Provider value={JobContextValues}>
-          <CommandView />
-        </JobRequestCreationContext.Provider>
-      </AllProviders>,
-    )
-    // job name is inserted
-    await waitFor(() => {
-      expect(
-        screen.getByDisplayValue(TRequestJobModel.job.name),
-      ).toBeInTheDocument()
     })
   })
 })

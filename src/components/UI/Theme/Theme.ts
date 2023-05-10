@@ -48,6 +48,16 @@ function getTheme(themeName: SupportedColorScheme) {
           },
         },
       },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            '&.MuiInputBase-readOnly': {
+              color: 'gray',
+              pointerEvents: 'none',
+            },
+          },
+        },
+      },
       MuiToolTip: { styleOverrides: { root: { backgroundColor: '#58595A' } } },
     },
     light: {
@@ -67,6 +77,15 @@ function getTheme(themeName: SupportedColorScheme) {
             // disabled input label color
             '&.Mui-disabled': {
               color: '#6b6b6b',
+            },
+          },
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            '&.MuiInputBase-readOnly': {
+              color: 'gray',
             },
           },
         },

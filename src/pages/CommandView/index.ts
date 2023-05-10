@@ -1,3 +1,7 @@
-export { CommandView as default } from './CommandView'
+export { CommandForm } from './CommandForm'
+export { CommandViewOld } from './CommandView'
+export { CommandView as default } from './CommandView_new'
 export * from './commandViewHelpers'
+export * from './ParameterElements'
 export * from './plain-form'
+export * from './PreviewCard'

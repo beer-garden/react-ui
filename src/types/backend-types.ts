@@ -152,7 +152,7 @@ export interface Request {
   metadata?: ObjectWithStringKeys | EmptyObject
   namespace: string
   output?: string
-  output_type: string
+  output_type: OutputType
   parameters: ObjectWithStringKeys | EmptyObject
   parent: Request | null
   requester?: string
