@@ -157,7 +157,7 @@ export interface Request {
   parent: Request | null
   requester?: string
   status: string
-  status_updated_at?: number
+  status_updated_at: number
   system: string
   system_version: string
   updated_at: number

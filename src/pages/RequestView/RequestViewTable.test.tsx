@@ -21,6 +21,10 @@ describe('RequestViewTable', () => {
     'en-US',
     dateOptions,
   ).format(new Date(TRequest.updated_at))
+  const statusUpdatedAtLocalDateString = new Intl.DateTimeFormat(
+    'en-US',
+    dateOptions,
+  ).format(new Date(TRequest.status_updated_at))
 
   test('renders request data', async () => {
     render(
@@ -44,6 +48,8 @@ describe('RequestViewTable', () => {
     expect(screen.getByText('SUCCESS')).toBeInTheDocument()
     expect(screen.getByText('Created:')).toBeInTheDocument()
     expect(screen.getByText(createdAtLocalDateString)).toBeInTheDocument()
+    expect(screen.getByText('Status Updated:')).toBeInTheDocument()
+    expect(screen.getByText(statusUpdatedAtLocalDateString)).toBeInTheDocument()
     expect(screen.getByText('Updated:')).toBeInTheDocument()
     expect(screen.getByText(updatedAtLocalDateString)).toBeInTheDocument()
   })
