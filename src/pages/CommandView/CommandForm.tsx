@@ -113,7 +113,7 @@ const CommandForm = ({ system, command}: {system: StrippedSystem, command: Comma
       <FormProvider {...methods} >
         <Grid columns={5} spacing={1} pt={1} alignItems="start" justifyContent="space-between" container>
           <Grid minWidth="300px" xs={3} key="form" item>
-            <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+            <form onSubmit={handleSubmit(onSubmit)} >
               <Stack rowGap={1} >
                 <TabContext value={tabValue}>
                   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
