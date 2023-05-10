@@ -49,7 +49,7 @@ describe('Labeled Data Component', () => {
       </HashRouter>,
     )
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    expect(screen.getByRole('alert')).toHaveClass('MuiAlert-standardSuccess')
+    expect(screen.getByRole('alert')).toHaveClass('MuiAlert-filledSuccess')
     expect(screen.queryByTestId('Test LabelLink')).not.toBeInTheDocument()
   })
 })
