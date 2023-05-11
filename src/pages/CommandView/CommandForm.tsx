@@ -38,7 +38,7 @@ const CommandForm = ({ system, command}: {system: StrippedSystem, command: Comma
 
   const textFieldProps: TextFieldProps = {
     size:'small',
-    InputProps: {readOnly: true,},
+    disabled: true,
     fullWidth: true
   }
 
@@ -139,12 +139,6 @@ const CommandForm = ({ system, command}: {system: StrippedSystem, command: Comma
                   rowSpacing={2}
                   pt={1}
                 >
-                  <Grid display="none" key="namespace" xs={1} item>
-                    <TextField label="Namespace" {...textFieldProps} {...register('namespace')} />
-                  </Grid>
-                  <Grid display="none" key="outputType" xs={1} item>
-                    <TextField label="Output Type" {...textFieldProps} {...register('output_type')} />
-                  </Grid>
                   <Grid key="systemName" minWidth="150px" xs={1} item>
                     <TextField label="System Name" {...textFieldProps} {...register('system')} />
                   </Grid>
