@@ -57,9 +57,9 @@ const GardenAdmin = (): JSX.Element => {
       </Stack>
       <PageHeader title="Gardens Management" description="" />
       <Divider />
-      <Grid container spacing={3}>
+      <Grid container spacing={3} columns={3}>
         {gardens.map((garden: Garden) => (
-          <Grid key={garden['name']} item xs={4}>
+          <Grid key={garden['name']} item xs={1} sx={{minWidth: '375px'}}>
             <GardenAdminCard
               garden={garden}
               setRequestStatus={setRequestStatus}

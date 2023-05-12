@@ -1,10 +1,10 @@
 import {
   AppBar,
-  Box,
   Button,
   Card,
   CardActions,
   CardContent,
+  Grid,
   Toolbar,
   Typography,
 } from '@mui/material'
@@ -58,7 +58,7 @@ const GardenAdminCard = ({
   }
 
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card>
       <AppBar color="inherit" position="static">
         <Toolbar>
           <Typography variant="h3" color="inherit">
@@ -68,19 +68,20 @@ const GardenAdminCard = ({
         </Toolbar>
       </AppBar>
       <CardContent>
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, 180px)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 1,
-          }}
+        <Grid
+          container
+          spacing={4}
         >
-          <LabeledData label="Status" data={garden.status} alert />
-          <LabeledData label="Namespaces" data={garden.namespaces.length} />
-          <LabeledData label="Systems" data={garden.systems.length} />
-        </Box>
+          <Grid item >
+            <LabeledData label="Status" data={garden.status} alert />
+          </Grid>
+          <Grid item >
+            <LabeledData label="Namespaces" data={garden.namespaces.length} />
+          </Grid>
+          <Grid item >
+            <LabeledData label="Systems" data={garden.systems.length} />
+          </Grid>
+        </Grid>
       </CardContent>
       <CardActions>
         {hasGardenPermission('garden:update', garden) && (

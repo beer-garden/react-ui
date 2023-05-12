@@ -15,7 +15,6 @@ const alertStyle = {
   '& .MuiAlert-message': {
     padding: '0px',
   },
-  width: '80%',
   py: 0.1,
 }
 
@@ -43,6 +42,7 @@ const LabeledData = ({ label, data, link, children, alert }: ILabelData) => {
         <Alert
           sx={alertStyle}
           icon={false}
+          variant="filled"
           severity={getSeverity(data as string)}
         >
           {data}
