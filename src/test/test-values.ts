@@ -92,6 +92,7 @@ export const TRequest: Request = {
   system: 'test system',
   system_version: 'test version',
   updated_at: 1667517254662,
+  status_updated_at: 1667517244664,
 }
 
 export const TChildRequest: Request = {
@@ -112,6 +113,7 @@ export const TChildRequest: Request = {
   system: 'child system',
   system_version: 'child version',
   updated_at: 1667517244664,
+  status_updated_at: 1667517254662,
 }
 
 export const TFullSimpleParameter: Parameter = {

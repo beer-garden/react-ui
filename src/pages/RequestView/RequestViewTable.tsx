@@ -4,8 +4,8 @@ import {
   KeyboardArrowRight as KeyboardArrowRightIcon,
 } from '@mui/icons-material'
 import {
-  Box,
   Divider,
+  Grid,
   IconButton,
   Paper,
   Tooltip,
@@ -64,67 +64,84 @@ const RequestViewTable = ({ request }: RequestViewTableProps) => {
 
   return (
     <Paper sx={{ backgroundColor: 'background.default' }} elevation={0}>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, 280px)',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 2,
-        }}
+      <Grid
+        container
+        spacing={2}
       >
-        <LabeledData
-          label="Command"
-          data={request.command}
-          link={`/systems/${request.namespace}/${request.system}/${request.system_version}/commands/${request.command}`}
-        />
-        <LabeledData
-          label="Namespace"
-          data={request.namespace}
-          link={`/systems/${request.namespace}`}
-        />
-        <LabeledData
-          label="System"
-          data={request.system}
-          link={`/systems/${request.namespace}/${request.system}`}
-        />
-        <LabeledData
-          label="Version"
-          data={request.system_version}
-          link={`/systems/${request.namespace}/${request.system}/${request.system_version}`}
-        />
-        <LabeledData label="Instance" data={request.instance_name} />
-        <LabeledData label="Status" data={request.status}>
-          <Tooltip
-            arrow
-            placement="right"
-            title={
-              <>
-                <Typography>
-                  <b>{request.status}</b>
-                </Typography>
-                <Divider />
-                <Typography>{statusMsg}</Typography>
-              </>
-            }
-          >
-            <InfoOutlined tabIndex={0} fontSize="small" />
-          </Tooltip>
-        </LabeledData>
-        <LabeledData
-          label="Created"
-          data={dateFormatted(new Date(request.created_at))}
-        />
-        <LabeledData
-          label="Updated"
-          data={dateFormatted(new Date(request.updated_at))}
-        />
+        <Grid item xs={true} >
+          <LabeledData
+            label="Command"
+            data={request.command}
+            link={`/systems/${request.namespace}/${request.system}/${request.system_version}/commands/${request.command}`}
+          />
+        </Grid>
+        <Grid item xs={true} >
+          <LabeledData
+            label="Namespace"
+            data={request.namespace}
+            link={`/systems/${request.namespace}`}
+          />
+        </Grid>
+        <Grid item xs={true} >
+          <LabeledData
+            label="System"
+            data={request.system}
+            link={`/systems/${request.namespace}/${request.system}`}
+          />
+        </Grid>
+        <Grid item xs={true} >
+          <LabeledData
+            label="Version"
+            data={request.system_version}
+            link={`/systems/${request.namespace}/${request.system}/${request.system_version}`}
+          />
+        </Grid>
+        <Grid item xs={true} >
+          <LabeledData label="Instance" data={request.instance_name} />
+        </Grid>
+        <Grid item xs={true} >
+          <LabeledData label="Status" data={request.status}>
+            <Tooltip
+              arrow
+              placement="right"
+              title={
+                <>
+                  <Typography>
+                    <b>{request.status}</b>
+                  </Typography>
+                  <Divider />
+                  <Typography>{statusMsg}</Typography>
+                </>
+              }
+            >
+              <InfoOutlined tabIndex={0} fontSize="small" />
+            </Tooltip>
+          </LabeledData>
+        </Grid>
+        <Grid item xs={true} minWidth="250px" >
+          <LabeledData
+            label="Created"
+            data={dateFormatted(new Date(request.created_at))}
+          />
+        </Grid>
+        <Grid item xs={true} minWidth="250px" >
+          <LabeledData
+            label="Status Updated"
+            data={dateFormatted(new Date(request.status_updated_at))}
+          />
+        </Grid>
+        <Grid item xs={true} minWidth="250px" >
+          <LabeledData
+            label="Updated"
+            data={dateFormatted(new Date(request.updated_at))}
+          />
+        </Grid>
         {request.comment && (
-          <Box sx={{ gridColumnStart: '1', gridColumnEnd: -1 }}>
+          <Grid item xs={true} minWidth="250px" >
             <LabeledData label="Comment" data={request.comment || ''} />
-          </Box>
+          </Grid>
         )}
-      </Box>
+      </Grid>
       {request.children[0] ? (
         <>
           <MyDivider />

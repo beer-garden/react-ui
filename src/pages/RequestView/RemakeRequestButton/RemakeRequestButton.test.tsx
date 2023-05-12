@@ -24,6 +24,7 @@ const DummyRequest: Request = {
   system: '',
   system_version: '',
   updated_at: 0,
+  status_updated_at: 0,
 }
 
 describe('RemakeRequestButton', () => {
