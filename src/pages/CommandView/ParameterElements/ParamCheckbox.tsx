@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel, FormHelperText } from '@mui/material'
-import { useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form'
 import { Parameter } from 'types/backend-types'
 
 interface ParamCheckboxProps {
@@ -14,7 +14,7 @@ const ParamCheckbox = ({ parameter, registerKey }: ParamCheckboxProps) => {
   return (
     <>
       <FormControlLabel
-        sx={{pl: 1, my: -1}}
+        sx={{my: -1}}
         control={
           <Checkbox
             checked={getValues(registerKey)}
@@ -25,7 +25,7 @@ const ParamCheckbox = ({ parameter, registerKey }: ParamCheckboxProps) => {
         label={ !parameter.multi && parameter.display_name }
       />
       {!parameter.multi && parameter.description && 
-        <FormHelperText sx={{mt: -1, pl: 2}} id={`${registerKey}-helperText`}>
+        <FormHelperText sx={{mt: -2}} id={`${registerKey}-helperText`}>
           {error? error.message : parameter.description}
         </FormHelperText>
       }

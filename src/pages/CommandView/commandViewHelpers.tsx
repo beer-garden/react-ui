@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import { isDictionaryChoice } from 'pages/CommandView/dynamic-form'
 import { useNavigate } from 'react-router-dom'
-import { Command, Parameter, RequestTemplate } from 'types/backend-types'
+import { Command, Parameter, RequestTemplate, System } from 'types/backend-types'
 import {
   AugmentedCommand,
   ObjectWithStringKeys,
@@ -45,8 +45,8 @@ const checkContext = (
   systemName: string | undefined,
   version: string | undefined,
   commandName: string | undefined,
-  system: StrippedSystem | undefined,
-  command: AugmentedCommand | undefined,
+  system: StrippedSystem| System | undefined,
+  command: AugmentedCommand | Command | undefined,
   isReplay: boolean,
   requestModel: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined,
 ): JSX.Element | undefined => {

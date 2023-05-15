@@ -69,8 +69,8 @@ const CommandView = () => {
           systemName,
           version,
           commandName,
-          tempSystem as StrippedSystem | undefined,
-          tempCommand as AugmentedCommand | undefined,
+          tempSystem,
+          tempCommand,
           false,
           requestModel,
         ))
@@ -124,20 +124,18 @@ const CommandView = () => {
     )
   }
 
-  const theSystem = system as StrippedSystem
-
   const breadcrumbs = [namespace, systemName, version, commandName].filter(
     (x) => !!x,
   ) as string[]
   const description = command.description || ''
-  const title = commandName ?? ''
+  const title = command.name
 
   return (
     <>
       <PageHeader title={title} description={description} />
       <Divider />
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <CommandForm system={theSystem} command={command} />
+      <CommandForm system={system} command={command} />
       {debugEnabled && (
         <Stack mt={1} direction={'row'} spacing={2}>
           <JsonCard title="Command" data={command} />

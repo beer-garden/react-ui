@@ -1,8 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material'
-import { ParamCheckbox, ParamTextField } from 'pages/CommandView/ParameterElements'
+import { ParamArray, ParamCheckbox, ParamTextField } from 'pages/CommandView/ParameterElements'
 import { Parameter } from 'types/backend-types'
-
-import { ParamArray } from './ParamArray'
 
 interface ParameterElementProps {
   parameters?: Parameter[]
@@ -17,7 +15,7 @@ const ParameterElement = ({ parameter, parameters, title, ignoreMulti, arrayInde
     
     if(parameters){
       return (
-        <Box p={1} sx={title ? {border: 'solid 1px gray', borderRadius: 2} : {}} >
+        <Box p={title ? 1 : 0} sx={title ? {border: 'solid 1px gray', borderRadius: 2} : {}} >
           {title && <Typography pb={1} variant="h3" >{title}</Typography>}
           <Stack rowGap={2}>
             {parameters.map((param: Parameter) => (

@@ -11,7 +11,7 @@ import {
 } from 'test/request-command-job-test-values'
 import { TParameter, TSystem } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
-import { RequestTemplate } from 'types/backend-types'
+import { Command, RequestTemplate, System } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandViewJobModel, CommandViewRequestModel } from 'types/form-model-types'
 
@@ -33,8 +33,8 @@ describe('CommandView', () => {
       systemName: string | undefined,
       version: string | undefined,
       commandName: string | undefined,
-      system: StrippedSystem | undefined,
-      command: AugmentedCommand | undefined,
+      system: StrippedSystem | System | undefined,
+      command: AugmentedCommand | Command | undefined,
       isReplay: boolean,
       requestModel: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined,
     ]

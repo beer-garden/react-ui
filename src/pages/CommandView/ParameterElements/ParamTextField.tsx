@@ -1,13 +1,13 @@
 import { Alert, Autocomplete, InputBaseComponentProps, MenuItem, TextField, TextFieldProps } from '@mui/material'
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import useAxios from 'axios-hooks';
-import { ServerConfigContainer } from 'containers/ConfigContainer';
-import { SocketContainer } from 'containers/SocketContainer';
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import useAxios from 'axios-hooks'
+import { ServerConfigContainer } from 'containers/ConfigContainer'
+import { SocketContainer } from 'containers/SocketContainer'
 import { useDebounceEmptyFunction } from 'hooks/useDebounce'
-import { useMountedState } from 'hooks/useMountedState';
-import { useMyAxios } from 'hooks/useMyAxios';
-import { ChangeEvent, useCallback, useEffect, useMemo } from 'react';
-import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
+import { useMountedState } from 'hooks/useMountedState'
+import { useMyAxios } from 'hooks/useMyAxios'
+import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form'
 import { 
   DynamicChoiceCommandDetails,
   DynamicChoiceDictionaryDetails,
@@ -74,6 +74,9 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     size: 'small',
     error: !!error,
     fullWidth: true,
+    FormHelperTextProps: {
+      sx: {ml: 0}
+    }
   }
 
   if(parameter.regex) {

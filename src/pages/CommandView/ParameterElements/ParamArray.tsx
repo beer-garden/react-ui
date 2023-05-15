@@ -1,8 +1,7 @@
 import { Alert, Box, Button, FormHelperText, Stack, Typography, } from '@mui/material'
-import { useFormContext } from 'react-hook-form';
+import { ParameterElement } from 'pages/CommandView/ParameterElements'
+import { useFormContext } from 'react-hook-form'
 import { Parameter } from 'types/backend-types'
-
-import { ParameterElement } from './ParameterElement';
 
 interface ParamTextFieldProps {
   parameter: Parameter
