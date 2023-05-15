@@ -2,17 +2,11 @@ import { Button } from '@mui/material'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
-import { commandIsDynamic } from 'pages/CommandView'
 import { CannotReExecuteButton } from 'pages/RequestView/RemakeRequestButton'
 import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Request } from 'types/backend-types'
+import { Request, RequestTemplate } from 'types/backend-types'
 import { SystemCommandPair } from 'types/custom-types'
-import {
-  CommandViewModelComment,
-  CommandViewModelParameters,
-  CommandViewRequestModel,
-} from 'types/form-model-types'
 import { commandsPairer, systemFilter } from 'utils/commandFormatters'
 
 interface RemakeRequestButtonProps {
@@ -32,9 +26,6 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     system: systemName,
     system_version: systemVersion,
     namespace,
-    instance_name: instanceName,
-    parameters: theParameters,
-    comment: theComment,
   } = request
 
   useEffect(() => {
@@ -74,16 +65,15 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
     )
   }
 
-  if (commandIsDynamic(systemCommandPair.command)) {
-    return (
-      <CannotReExecuteButton message="Replay not supported for dynamic commands" />
-    )
-  }
-
-  const model: CommandViewRequestModel = {
-    comment: { comment: theComment || '' } as CommandViewModelComment,
-    instance_names: { instance_name: instanceName },
-    parameters: theParameters as CommandViewModelParameters,
+  const model: RequestTemplate = {
+    system: request.system,
+    system_version: request.system_version,
+    namespace: request.namespace,
+    command: request.command,
+    comment: request.comment || '',
+    output_type: request.output_type,
+    instance_name: request.instance_name,
+    parameters: request.parameters
   }
 
   const onClick = () => {

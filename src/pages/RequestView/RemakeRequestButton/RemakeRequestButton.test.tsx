@@ -17,7 +17,7 @@ const DummyRequest: Request = {
   error_class: null,
   instance_name: '',
   namespace: '',
-  output_type: '',
+  output_type: 'STRING',
   parameters: {},
   parent: null,
   status: '',

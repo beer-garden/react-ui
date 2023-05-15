@@ -40,7 +40,7 @@ const JobCreateForwarder = ({ system, command }: JobCreateForwarderProps) => {
   return (
     <Navigate
       to={
-        `/systems/${system.namespace}/${system.name}` +
+        `/jobs/create/${system.namespace}/${system.name}` +
         `/${system.version}/commands/${command.name}`
       }
     />

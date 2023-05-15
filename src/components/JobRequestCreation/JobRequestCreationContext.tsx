@@ -1,8 +1,8 @@
 import { useMountedState } from 'hooks/useMountedState'
 import { createContext, ReactNode, useContext } from 'react'
-import { Job } from 'types/backend-types'
+import { Job, RequestTemplate } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
-import { CommandViewRequestModel } from 'types/form-model-types'
+import { CommandViewJobModel, CommandViewRequestModel } from 'types/form-model-types'
 
 interface JobRequestCreationProviderProps {
   children: ReactNode
@@ -19,9 +19,9 @@ export interface JobRequestCreationProviderState {
   setIsReplay: ((arg0: boolean) => void) | undefined
   job: Job | undefined
   setJob: ((arg0: Job | undefined) => void) | undefined
-  requestModel: CommandViewRequestModel | undefined
+  requestModel: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined
   setRequestModel:
-    | ((arg0: CommandViewRequestModel | undefined) => void)
+    | ((arg0: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined) => void)
     | undefined
 }
 
@@ -55,7 +55,7 @@ const JobRequestCreationProvider = ({
   const [isJob, setIsJob] = useMountedState(false)
   const [isReplay, setIsReplay] = useMountedState(false)
   const [requestModel, setRequestModel] = useMountedState<
-    CommandViewRequestModel | undefined
+    RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined
   >()
 
   const value: JobRequestCreationProviderState = {
