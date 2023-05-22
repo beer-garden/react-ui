@@ -21,7 +21,7 @@ const GardenAdminView = () => {
   const { addCallback, removeCallback } = SocketContainer.useContainer()
   const { hasPermission } = PermissionsContainer.useContainer()
   const systemsColumns = useSystemIndexTableColumns()
-  const { error, getGarden } = useGardens()
+  const { error, getGarden, updateGarden } = useGardens()
 
   const [requestStatus, setRequestStatus] = useMountedState<
     SnackbarState | undefined
@@ -60,8 +60,6 @@ const GardenAdminView = () => {
       removeCallback('garden_updates')
     }
   }, [addCallback, removeCallback, gardenName, getGarden, fetchGarden])
-
-  const { updateGarden } = useGardens()
 
   const formOnSubmit = (garden: Garden) => {
     updateGarden(garden)

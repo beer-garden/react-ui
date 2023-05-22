@@ -1,4 +1,4 @@
-import { Box, Button, Dialog } from '@mui/material'
+import { Button, Dialog } from '@mui/material'
 import { GardenConnectionForm } from 'components/GardenConnectionForm'
 import useGardens from 'hooks/useGardens'
 import { useMountedState } from 'hooks/useMountedState'
@@ -50,7 +50,7 @@ const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
   }
 
   return (
-    <Box style={{ float: 'right' }}>
+    <>
       <Button
         variant="contained"
         color="secondary"
@@ -64,6 +64,7 @@ const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         maxWidth={'md'}
+        PaperProps={{sx: {p: 1}}}
       >
         <GardenConnectionForm
           garden={garden}
@@ -72,7 +73,7 @@ const CreateGarden = ({ setRequestStatus }: GardenConnectionFormProps) => {
           includeGardenName={true}
         />
       </Dialog>
-    </Box>
+    </>
   )
 }
 

@@ -1,17 +1,13 @@
-import { Box, Button, Divider, Typography } from '@mui/material'
+import { Button, TextFieldProps, Typography } from '@mui/material'
+import { Divider } from 'components/Divider'
+import { FormTextField } from 'components/FormComponents'
 import {
-  ConnectionHttpValues,
-  connectionInitialValues,
-  ConnectionMethod,
-  ConnectionStompValues,
-  connectionValidationSchema,
-  GardenName,
-  useGardenConnectionFormOnSubmit,
+  ConnectionHttpFields,
+  ConnectionStompFields,
 } from 'components/GardenConnectionForm'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
-import { Form, Formik } from 'formik'
+import { FieldValues, FormProvider, useForm, } from 'react-hook-form'
 import { Garden } from 'types/backend-types'
-import { GardenConnectionParameters } from 'types/garden-admin-view-types'
 
 interface GardenConnectionFormProps {
   garden: Garden
@@ -26,52 +22,77 @@ const GardenConnectionForm = ({
   formOnSubmit,
   includeGardenName,
 }: GardenConnectionFormProps) => {
-  const {
-    connection_type: conxType,
-    connection_params: conxParms,
-    name: conxName,
-  } = garden
   const { hasPermission } = PermissionsContainer.useContainer()
 
+  const methods = useForm({defaultValues: garden as FieldValues})
+  const { handleSubmit, formState: { errors }, getValues, watch } = methods
+  const textFieldProps: TextFieldProps = {
+    disabled: !hasPermission('garden:update')
+  }
+
+  const submitForm = (garden: FieldValues) => {
+    if(Object.keys(errors).length === 0) formOnSubmit(garden as Garden)
+  }
+
+  watch('connection_type')
+  const connectionType: 'HTTP' | 'STOMP' = getValues('connection_type')
+
   return (
-    <>
-      <Formik
-        initialValues={connectionInitialValues(
-          conxName,
-          conxType,
-          conxParms as GardenConnectionParameters,
-        )}
-        validationSchema={connectionValidationSchema}
-        onSubmit={useGardenConnectionFormOnSubmit(garden, formOnSubmit)}
-      >
-        <Form>
-          <fieldset
-            style={{ border: 0 }}
-            disabled={!hasPermission('garden:update')}
-          >
+      <FormProvider {...methods} >
+        <form onSubmit={handleSubmit(submitForm)}>
             <Typography variant="h3">{title}</Typography>
-            {includeGardenName ? <GardenName /> : null}
-            <ConnectionMethod />
-            <Divider sx={{ mt: 2, mb: 1 }} />
-            <Box sx={{ p: 1 }}>
-              <ConnectionHttpValues />
-              <Divider sx={{ mt: 2, mb: 1 }} />
-              <ConnectionStompValues />
-            </Box>
+              {includeGardenName ? 
+                <>
+                  <FormTextField
+                    {...textFieldProps}
+                    registerKey="name"
+                    registerOptions={{
+                      required: {
+                        value: true,
+                        message: 'Garden name is required'
+                      }
+                    }}
+                    label="Garden name"
+                    fullWidth={false}
+                    sx={{m: 2, mb: 1, minWidth: '150px'}}
+                  />
+                  <br/>
+                </>
+                :
+                null
+              }
+              <FormTextField
+                {...textFieldProps}
+                registerKey="connection_type"
+                registerOptions={{
+                  required: {
+                    value: true,
+                    message: 'Connection method is required'
+                  }
+                }}
+                menuOptions={['HTTP', 'STOMP']}
+                label="Connection method"
+                helperText="Select the connection method"
+                fullWidth={false}
+                sx={{m: 2, mb: 1, minWidth: '150px'}}
+              />
+            <Divider />
+            <ConnectionHttpFields connectionType={connectionType} textFieldProps={textFieldProps} display={connectionType === 'HTTP' ? '' : 'none'} />
+            <ConnectionStompFields connectionType={connectionType} textFieldProps={textFieldProps} display={connectionType === 'STOMP' ? '' : 'none'} />
+            <Divider />
             {hasPermission('garden:update') && (
               <Button
                 color="primary"
                 variant="contained"
                 fullWidth
                 type="submit"
+                disabled={!hasPermission('garden:update')}
               >
                 {title}
               </Button>
             )}
-          </fieldset>
-        </Form>
-      </Formik>
-    </>
+        </form>
+      </FormProvider>
   )
 }
 
