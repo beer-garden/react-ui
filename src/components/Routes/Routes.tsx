@@ -1,7 +1,6 @@
 import { RequireAuth } from 'components/Routes'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { PermissionsContainer } from 'containers/PermissionsContainer'
-import { CommandViewOld } from 'pages/CommandView'
 import { Login } from 'pages/Login'
 import { lazy } from 'react'
 import {
@@ -78,7 +77,7 @@ const Routes = () => {
           <Route index element={<JobIndex />} />
           <Route path="create" >
             <Route index element={<JobCreate />} />
-              <Route path=":namespace/:systemName/:version/commands/:commandName" element={<CommandViewOld />} />
+              <Route path=":namespace/:systemName/:version/commands/:commandName" element={<CommandView isJob={true} />} />
           </Route>
           <Route path=":id" element={<JobView />} />
         </Route>

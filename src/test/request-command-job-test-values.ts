@@ -1,9 +1,6 @@
 import { TCommand, TSystem } from 'test/system-test-values'
 import { RequestTemplate } from 'types/backend-types'
 import { AugmentedCommand } from 'types/custom-types'
-import {
-  CommandViewJobModel,
-} from 'types/form-model-types'
 
 export const TAugmentedCommand: AugmentedCommand = {
   ...TCommand,
@@ -23,22 +20,5 @@ export const TRequestCommandModel: RequestTemplate = {
   instance_name: TSystem.instances[0].name,
   parameters: {
     [TAugmentedCommand.parameters[0].key]: 'This is a parameter value',
-  },
-}
-
-export const TRequestJobModel: CommandViewJobModel = {
-  comment: {
-    comment: 'Silly JOB comment!',
-  },
-  instance_names: {
-    instance_name: TSystem.instances[0].name,
-  },
-  parameters: {
-    [TAugmentedCommand.parameters[0].key]: 'This is a JOB parameter value',
-  },
-  job: {
-    name: 'My favorite job',
-    trigger: 'date',
-    timezone: 'UTC'
   },
 }

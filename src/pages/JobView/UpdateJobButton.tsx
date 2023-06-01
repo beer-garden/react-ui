@@ -1,35 +1,13 @@
 import { Button, Tooltip } from '@mui/material'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
-import { DisplayTrigger, formatTrigger } from 'formHelpers/get-submit-argument'
 import { useSystems } from 'hooks/useSystems'
 import { MouseEventHandler, useContext, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Job } from 'types/backend-types'
-import { CommandViewJobModel } from 'types/form-model-types'
 import { commandsPairer, systemFilter } from 'utils/commandFormatters'
 
 interface UpdateJobButtonProps {
   job: Job
-}
-
-/* From a backend Job definition, format it in a way that it displays
- * correctly in the frontend form. */
-const extractRequestModel = (job: Job): CommandViewJobModel => {
-  const { trigger, triggerData } = formatTrigger(job) as DisplayTrigger
-  return {
-    comment: { comment: job.request_template.comment || '' },
-    instance_names: { instance_name: job.request_template.instance_name },
-    parameters: {},
-    job: {
-      coalesce: job.coalesce,
-      max_instances: job.max_instances,
-      misfire_grace_time: job.misfire_grace_time ?? undefined,
-      name: job.name,
-      timeout: job.timeout ?? undefined,
-      trigger: trigger,
-      ...triggerData,
-    },
-  }
 }
 
 const UpdateJobButton = ({ job }: UpdateJobButtonProps) => {
@@ -37,7 +15,7 @@ const UpdateJobButton = ({ job }: UpdateJobButtonProps) => {
   const { getSystems } = useSystems()
   const isErroredRef = useRef(false)
   const onClickRef = useRef<MouseEventHandler<HTMLButtonElement> | undefined>()
-  const { setIsJob, setIsReplay, setRequestModel, setSystem, setCommand } =
+  const { setJob, setSystem, setCommand } =
     useContext(JobRequestCreationContext)
 
   useEffect(() => {
@@ -45,9 +23,7 @@ const UpdateJobButton = ({ job }: UpdateJobButtonProps) => {
 
     if (mounted) {
       if (
-        setIsReplay &&
-        setIsJob &&
-        setRequestModel &&
+        setJob &&
         setSystem &&
         setCommand
       ) {
@@ -85,10 +61,20 @@ const UpdateJobButton = ({ job }: UpdateJobButtonProps) => {
 
         fetchSystemCommandPair()
 
+        const getJobTemplate = (job: Job) => ({
+            id: job.id,
+            misfire_grace_time: job.misfire_grace_time,
+            trigger: job.trigger,
+            name: job.name,
+            request_template: job.request_template,
+            trigger_type: job.trigger_type,
+            timeout: job.timeout,
+            coalesce: job.coalesce,
+            max_instances: job.max_instances,
+          })
+
         const onClick: MouseEventHandler<HTMLButtonElement> = () => {
-          setIsReplay(true)
-          setIsJob(true)
-          setRequestModel(extractRequestModel(job))
+          setJob(getJobTemplate(job))
           navigate(
             [
               '/jobs/create',
@@ -114,9 +100,7 @@ const UpdateJobButton = ({ job }: UpdateJobButtonProps) => {
     navigate,
     getSystems,
     setCommand,
-    setIsJob,
-    setIsReplay,
-    setRequestModel,
+    setJob,
     setSystem,
   ])
 

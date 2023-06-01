@@ -50,6 +50,13 @@ const JobView = () => {
     setLocalJob(job)
   }
 
+  // handle leaving the page for any reason
+  useEffect(() => {
+    return () => {
+      setJob && setJob(undefined)
+    }
+  }, [setJob])
+
   const id = params.id as string
   const [errorFetch, setErrorFetch] = useMountedState<AxiosError | undefined>()
 

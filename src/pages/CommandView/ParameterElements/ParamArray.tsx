@@ -24,8 +24,7 @@ const ParamArray = ({ parameter, registerKey }: ParamTextFieldProps) => {
   }
 
   // triggers rerender when adding or removing
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const watchArray = watch(registerKey)
+  watch(registerKey)
 
   const {error} = getFieldState(registerKey)
 

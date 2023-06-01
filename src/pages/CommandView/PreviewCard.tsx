@@ -6,8 +6,7 @@ const PreviewCard = () => {
   const {watch, getValues} = useFormContext()
   
   // triggers rerender when form data changes
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const watchAllFields = watch()
+  watch()
   
   const formData = getValues()
 

@@ -4,18 +4,15 @@ import {
   JobRequestCreationContext,
   JobRequestCreationProviderState,
 } from 'components/JobRequestCreation'
-import * as commandViewHelpers from 'pages/CommandView/commandViewHelpers'
 import {
   TAugmentedCommand,
   TRequestCommandModel,
 } from 'test/request-command-job-test-values'
 import { TParameter, TSystem } from 'test/system-test-values'
 import { AllProviders } from 'test/testMocks'
-import { Command, RequestTemplate, System } from 'types/backend-types'
-import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
-import { CommandViewJobModel, CommandViewRequestModel } from 'types/form-model-types'
+import { StrippedSystem } from 'types/custom-types'
 
-import { CommandView } from './CommandView_new'
+import { CommandView } from './CommandView'
 
 const { commands, ...theSystem } = TSystem
 const CommandContextValues: JobRequestCreationProviderState = {
@@ -26,29 +23,6 @@ const CommandContextValues: JobRequestCreationProviderState = {
 }
 
 describe('CommandView', () => {
-  let checkContext: jest.SpyInstance<
-    JSX.Element | undefined,
-    [
-      namespace: string | undefined,
-      systemName: string | undefined,
-      version: string | undefined,
-      commandName: string | undefined,
-      system: StrippedSystem | System | undefined,
-      command: AugmentedCommand | Command | undefined,
-      isReplay: boolean,
-      requestModel: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined,
-    ]
-  >
-
-  beforeEach(() => {
-    checkContext = jest
-      .spyOn(commandViewHelpers, 'checkContext')
-      .mockImplementation(() => undefined)
-  })
-
-  afterEach(() => {
-    checkContext.mockRestore()
-  })
 
   test('renders request form with model context values', async () => {
     render(

@@ -19,7 +19,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   const [systemCommandPair, setSystemCommandPair] = useMountedState<
     SystemCommandPair | undefined
   >()
-  const { setSystem, setCommand, setIsJob, setRequestModel, setIsReplay } =
+  const { setSystem, setCommand, setRequestModel } =
     useContext(JobRequestCreationContext)
   const {
     command: commandName,
@@ -51,9 +51,7 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   if (
     !setSystem ||
     !setCommand ||
-    !setIsJob ||
-    !setRequestModel ||
-    !setIsReplay
+    !setRequestModel
   ) {
     return <CannotReExecuteButton message="ERROR: Unknown error" />
   } else if (!request) {
@@ -79,8 +77,6 @@ const RemakeRequestButton = ({ request }: RemakeRequestButtonProps) => {
   const onClick = () => {
     setSystem(systemCommandPair.system)
     setCommand(systemCommandPair.command)
-    setIsJob(false)
-    setIsReplay(true)
     setRequestModel(model)
     navigate(
       [

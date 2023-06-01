@@ -2,7 +2,6 @@ import { useMountedState } from 'hooks/useMountedState'
 import { createContext, ReactNode, useContext } from 'react'
 import { Job, RequestTemplate } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
-import { CommandViewJobModel, CommandViewRequestModel } from 'types/form-model-types'
 
 interface JobRequestCreationProviderProps {
   children: ReactNode
@@ -13,15 +12,11 @@ export interface JobRequestCreationProviderState {
   setSystem: ((arg0: StrippedSystem | undefined) => void) | undefined
   command: AugmentedCommand | undefined
   setCommand: ((arg0: AugmentedCommand | undefined) => void) | undefined
-  isJob: boolean
-  setIsJob: ((arg0: boolean) => void) | undefined
-  isReplay: boolean
-  setIsReplay: ((arg0: boolean) => void) | undefined
   job: Job | undefined
   setJob: ((arg0: Job | undefined) => void) | undefined
-  requestModel: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined
+  requestModel: RequestTemplate | undefined
   setRequestModel:
-    | ((arg0: RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined) => void)
+    | ((arg0: RequestTemplate | undefined) => void)
     | undefined
 }
 
@@ -31,10 +26,6 @@ export const emptyJobRequestCreationProviderState: JobRequestCreationProviderSta
     setSystem: undefined,
     command: undefined,
     setCommand: undefined,
-    isJob: false,
-    setIsJob: undefined,
-    isReplay: false,
-    setIsReplay: undefined,
     job: undefined,
     setJob: undefined,
     requestModel: undefined,
@@ -52,10 +43,8 @@ const JobRequestCreationProvider = ({
   const [system, setSystem] = useMountedState<StrippedSystem | undefined>()
   const [job, setJob] = useMountedState<Job | undefined>()
   const [command, setCommand] = useMountedState<AugmentedCommand | undefined>()
-  const [isJob, setIsJob] = useMountedState(false)
-  const [isReplay, setIsReplay] = useMountedState(false)
   const [requestModel, setRequestModel] = useMountedState<
-    RequestTemplate | CommandViewJobModel | CommandViewRequestModel | undefined
+    RequestTemplate | undefined
   >()
 
   const value: JobRequestCreationProviderState = {
@@ -63,10 +52,6 @@ const JobRequestCreationProvider = ({
     setSystem,
     command,
     setCommand,
-    isJob,
-    setIsJob,
-    isReplay,
-    setIsReplay,
     job,
     setJob,
     requestModel,
