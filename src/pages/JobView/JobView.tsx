@@ -10,7 +10,6 @@ import {
 import { AxiosError } from 'axios'
 import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
-import { useJobRequestCreation } from 'components/JobRequestCreation'
 import { JsonCard } from 'components/JsonCard'
 import { LabeledData } from 'components/LabeledData'
 import { ModalWrapper } from 'components/ModalWrapper'
@@ -33,29 +32,16 @@ const isIntervalTrigger = (triggerType: string) => {
 const JobView = () => {
   const [runOpen, setRunOpen] = useMountedState<boolean>(false)
   const [delOpen, setDeleteOpen] = useMountedState<boolean>(false)
-  const [job, setLocalJob] = useMountedState<Job | undefined>()
+  const [job, setJob] = useMountedState<Job | undefined>()
   const [alert, setAlert] = useMountedState<SnackbarState | undefined>()
   const [description, setDescription] = useMountedState<string>('')
   const [showTrigger, setShowTrigger] = useMountedState<boolean>(true)
   const [showTemplate, setShowTemplate] = useMountedState<boolean>(true)
   const [permission, setPermission] = useMountedState<boolean>(false)
-  const { setJob } = useJobRequestCreation()
   const { hasJobPermission } = PermissionsContainer.useContainer()
   const params = useParams()
   const { getJob, deleteJob, pauseJob, resumeJob, runAdHoc } = useJobs()
   const navigate = useNavigate()
-
-  const _setJob = (job: Job) => {
-    setJob && setJob(job)
-    setLocalJob(job)
-  }
-
-  // handle leaving the page for any reason
-  useEffect(() => {
-    return () => {
-      setJob && setJob(undefined)
-    }
-  }, [setJob])
 
   const id = params.id as string
   const [errorFetch, setErrorFetch] = useMountedState<AxiosError | undefined>()
@@ -100,7 +86,7 @@ const JobView = () => {
     if (id) {
       getJob(id)
         .then((response) => {
-          _setJob(response.data)
+          setJob(response.data)
           if (response.data) {
             setDescription(`${response.data.name} ${id}`)
           } else {
@@ -146,7 +132,7 @@ const JobView = () => {
               onClick={() => {
                 pauseJob(id)
                   .then((response) => {
-                    _setJob(response.data)
+                    setJob(response.data)
                     setTimeout(() => fetchJob(), 100)
                   })
                   .catch((e) => {
@@ -163,7 +149,7 @@ const JobView = () => {
               onClick={() => {
                 resumeJob(id)
                   .then((response) => {
-                    _setJob(response.data)
+                    setJob(response.data)
                     setTimeout(() => fetchJob(), 100)
                   })
                   .catch((e) => {

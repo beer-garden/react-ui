@@ -19,6 +19,9 @@ const JobDateFields = ({ triggerType, textFieldProps, ...gridProps }: {triggerTy
           registerKey="trigger.run_date"
           registerOptions={{
             setValueAs: value => {
+              if(typeof value === 'number'){
+                return value
+              }
               const dateTime = DateTime.fromISO(value)
               return value === '' ? '' : new Date(dateTime.toHTTP()).getTime()
             },

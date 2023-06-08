@@ -79,6 +79,9 @@ const Routes = () => {
             <Route index element={<JobCreate />} />
               <Route path=":namespace/:systemName/:version/commands/:commandName" element={<CommandView isJob={true} />} />
           </Route>
+          <Route path="update" >
+              <Route path=":jobId" element={<CommandView isJob={true} />} />
+          </Route>
           <Route path=":id" element={<JobView />} />
         </Route>
       )}

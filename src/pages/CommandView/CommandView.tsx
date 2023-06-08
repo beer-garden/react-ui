@@ -5,6 +5,7 @@ import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { JobRequestCreationContext } from 'components/JobRequestCreation'
 import { PageHeader } from 'components/PageHeader'
+import { useJobs } from 'hooks/useJobs'
 import { useMountedState } from 'hooks/useMountedState'
 import { useSystems } from 'hooks/useSystems'
 import { useContext, useEffect } from 'react'
@@ -15,9 +16,11 @@ import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 import { CommandJobForm } from './CommandJobForm'
 
 const CommandView = ({isJob} : {isJob?: boolean}) => {
-  const { namespace, systemName, version, commandName } = useParams()
+  let { namespace, systemName, version, commandName } = useParams()
+  const { jobId } = useParams()
   const [ paramsHistory, setParamsHistory ] = useMountedState({namespace: namespace, systemName: systemName, version: version, commandName: commandName })
   const [error, setError] = useMountedState<AxiosError | undefined>()
+  const { getJob } = useJobs()
   const { getSystems } = useSystems()
 
   const {
@@ -26,6 +29,7 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
     command,
     setCommand,
     setRequestModel,
+    job,
     setJob
   } = useContext(JobRequestCreationContext)
 
@@ -37,13 +41,30 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
       setRequestModel && setRequestModel(undefined)
       setJob && setJob(undefined)
     }
-  }, [setCommand, setRequestModel, setSystem, setJob])
+  }, [setCommand, setRequestModel, setSystem, setJob, setParamsHistory])
+
+  if(jobId && job) {
+    commandName = job.request_template.command
+    systemName = job.request_template.system
+    version = job.request_template.system_version
+    namespace = job.request_template.namespace
+  }
 
   useEffect(() => {
+    if(jobId && !job) {
+      getJob(jobId)
+        .then((response) => {
+          setError(undefined)
+          setJob && setJob(response.data)
+        })
+        .catch((e) => {
+          setError(e)
+        })
+    }
     if(paramsHistory.namespace !== namespace || paramsHistory.systemName !== systemName || paramsHistory.version !== version || paramsHistory.commandName !== commandName) {
       setSystem && setSystem(undefined)
       setCommand && setCommand(undefined)
-      setParamsHistory({namespace: namespace, systemName: systemName, version: version, commandName: commandName })
+      setParamsHistory({namespace: namespace, systemName: systemName, version: version, commandName: commandName})
     }
     else if(!system) {
       setError(undefined)
@@ -53,11 +74,6 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
           (sys.name === systemName && sys.namespace === namespace && sys.version === version)
         )
         setSystem && setSystem(tempSystem as StrippedSystem)
-        let tempCommand: Command | undefined = undefined
-        if (tempSystem && !command) {
-          tempCommand = tempSystem.commands.find((cmd: Command) => (cmd.name===commandName))
-          setCommand && setCommand(tempCommand as AugmentedCommand | undefined)
-        }
       })
       .catch((e) => {
         setError(e)
@@ -69,6 +85,8 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
     setCommand,
     setParamsHistory,
     setError,
+    getJob,
+    setJob,
     paramsHistory,
     commandName,
     systemName,
@@ -76,7 +94,19 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
     version,
     system,
     command,
+    jobId,
+    job,
+    isJob
   ])
+
+  const getCommandFromSystem = (sys: System) => {
+    let tempCommand: Command | undefined = undefined
+    tempCommand = sys.commands.find((cmd: Command) => (cmd.name===commandName))
+    setCommand && setCommand(tempCommand as AugmentedCommand | undefined)
+  }
+  
+  if(system && Object.hasOwn(system, 'commands') && !command) getCommandFromSystem(system as System)
+  
 
   if (!system || !command || error) {
     return (

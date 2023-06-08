@@ -24,7 +24,14 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
   const [submitStatus, setSubmitStatus] = useMountedState<
     SnackbarState | undefined
   >()
-  const { requestModel, job } = useContext(JobRequestCreationContext)
+  const {
+    requestModel,
+    job,
+    setSystem,
+    setCommand,
+    setRequestModel,
+    setJob
+  } = useContext(JobRequestCreationContext)
   const raiseError = (message: string) => {
     console.error(message)
     setSubmitStatus({
@@ -64,18 +71,34 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
   
   const defaultValues: FieldValues = isJob ?
     {
+      name: '',
       trigger_type: '',
       trigger: {timezone: 'UTC'},
       misfire_grace_time: 5,
       coalesce: true,
       max_instances: 3,
+      timeout: undefined,
       request_template: getRequestTemplate(),
     } : getRequestTemplate()
+
+  const getJobTemplate = () => (
+    job ? {
+      id: job.id,
+      misfire_grace_time: job.misfire_grace_time,
+      trigger: job.trigger,
+      name: job.name,
+      request_template: job.request_template,
+      trigger_type: job.trigger_type,
+      timeout: job.timeout,
+      coalesce: job.coalesce,
+      max_instances: job.max_instances,
+    } : undefined
+  )
     
-  const methods = useForm({defaultValues: (isJob ? job : requestModel) || defaultValues})
+  const methods = useForm({defaultValues: (isJob || job ? getJobTemplate() : requestModel) || defaultValues})
   const { handleSubmit, formState: { errors }, reset, resetField, trigger } = methods
 
-  const switchCommandOrJob =async () => {
+  const switchCommandOrJob = async () => {
     if(showJobFields || await trigger('request_template')) setShowJobFields(!showJobFields)
   }
 
@@ -98,9 +121,9 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
       let method: Method = 'post'
       let operation: PatchOperation | undefined
       if(isJob) {
-        if(job){
+        if(Object.hasOwn(data, 'id')){
           method = 'patch'
-          path = `/api/v1/jobs/${job.id}`
+          path = `/api/v1/jobs/${data.id}`
           operation = { operations: [
             {
               operation: 'update',
@@ -124,10 +147,14 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
         .then((response: AxiosResponse<Request | Job>) => {
           let path = '/requests/'
           if(isJob) path = '/jobs/'
+          setSystem && setSystem(undefined)
+          setCommand && setCommand(undefined)
+          setRequestModel && setRequestModel(undefined)
+          setJob && setJob(undefined)
           navigate(path + response.data.id)
         })
         .catch((error: AxiosError) => {
-          raiseError(JSON.stringify(error.toJSON()))
+          raiseError(error.response?.data.message || error.message)
         })
     }
   }
@@ -156,16 +183,16 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
             <form onSubmit={handleSubmit(onSubmit)} >
               <Stack rowGap={2} >
                 {!showJobFields ?
-                  <CommandFormFields parentKey={isJob ? 'request_template' : ''} parameters={command.parameters} instances={system.instances} />
+                  <CommandFormFields parentKey={isJob ? 'request_template' : undefined} parameters={command.parameters} instances={system.instances} />
                   :
                   <JobSettingFormFields />
                 }
                 <Stack direction="row" spacing={1} >
                   <Button sx={{width: '150px'}} type="button" onClick={() => formReset()} variant="contained" >Reset</Button>
-                  {isJob && 
+                  {isJob &&
                     <Button sx={{width: '150px'}} type="button" onClick={() => switchCommandOrJob()} variant="contained" >{!showJobFields ? 'Next' : 'Back'}</Button>
                   }
-                  { (!isJob || showJobFields) &&
+                  {(!isJob || showJobFields) &&
                     <Button sx={{width: '150px'}} type="submit" variant="contained" >{!isJob ? 'Make Request' : 'Schedule' }</Button>
                   }
                 </Stack>

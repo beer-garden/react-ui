@@ -16,10 +16,14 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
     fullWidth: true,
   }
     
-  const { register, formState: { errors }, } = useFormContext()
+  const { register, formState: { errors } } = useFormContext()
+  const getKey = (key: string) => (
+    parentKey ? [parentKey, key].join('.') : key
+  )
+  
 
-  const areRequiredParams = parameters.find((param: Parameter) => (!param.optional))
-  const areOptionalParams = parameters.find((param: Parameter) => (param.optional))
+  const requiredParams = parameters.filter((param: Parameter) => (!param.optional)) || []
+  const optionalParams = parameters.filter((param: Parameter) => (param.optional)) || []
 
   return (
     <>
@@ -27,17 +31,17 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={(event: React.SyntheticEvent, newValue: 'required' | 'optional') => setTabValue(newValue)} >
             <Tab label="Required Fields" value="required" />
-            {areOptionalParams && <Tab label="Optional Fields" value="optional" />}
+            {optionalParams.length > 0 && <Tab label="Optional Fields" value="optional" />}
           </TabList>
         </Box>
         <Box display={tabValue === 'required' ? '' : 'none'}>
-            { areRequiredParams ? 
-              <ParameterElement parameters={parameters.filter((param: Parameter) => (!param.optional))} parentKey={[parentKey,'parameters'].join('.')} /> :
+            { requiredParams.length ? 
+              <ParameterElement parameters={requiredParams} parentKey={getKey('parameters')} /> :
               <Alert severity="info">None</Alert>
             }
         </Box>
         <Box display={tabValue === 'optional' ? '' : 'none'}>
-            <ParameterElement parameters={parameters.filter((param: Parameter) => (param.optional))} parentKey={[parentKey,'parameters'].join('.')} />
+            <ParameterElement parameters={optionalParams} parentKey={getKey('parameters')} />
         </Box>
       </TabContext>
       <Divider />
@@ -48,18 +52,18 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
         rowSpacing={2}
       >
         <Grid key="systemName" minWidth="150px" xs={1} item>
-          <TextField label="System Name" {...textFieldProps} {...register([parentKey, 'system'].join('.'))} />
+          <TextField label="System Name" {...textFieldProps} {...register(getKey('system'))} />
         </Grid>
         <Grid key="systemVersion" minWidth="150px" xs={1} item>
-          <TextField label="System Version" {...textFieldProps} {...register([parentKey,'system_version'].join('.'))} />
+          <TextField label="System Version" {...textFieldProps} {...register(getKey('system_version'))} />
         </Grid>
         <Grid key="commandName" minWidth="150px" xs={1} item>
-          <TextField label="Command Name" {...textFieldProps} {...register([parentKey,'command'].join('.'))} />
+          <TextField label="Command Name" {...textFieldProps} {...register(getKey('command'))} />
         </Grid>
         <Grid key="instanceName" minWidth="150px" xs={1} item>
           {
             instances.length === 1 ?
-            <TextField label="Instance Name" {...textFieldProps} {...register([parentKey,'instance_name'].join('.'))} />
+            <TextField label="Instance Name" {...textFieldProps} {...register(getKey('instance_name'))} />
             :
             <TextField
               label="Instance Name"
@@ -70,14 +74,15 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
               select
               defaultValue={''}
               fullWidth
-              {...register([parentKey,'instance_name'].join('.'), {required: 'Instance is required'})}
-            >{(instances.sort((a, b) =>
+              {...register(getKey('instance_name'), {required: 'Instance is required'})}
+            >
+              {(instances.sort((a, b) =>
                 (a.name < b.name ? -1 : 1)
               ).map((instance, index) => (
                 <MenuItem key={`${instance.name}MenuItem${index}`} value={instance.name} >
                   {instance.name}
                 </MenuItem>)
-            ))}
+              ))}
             </TextField>
           }
         </Grid>
@@ -90,7 +95,7 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
         error={!!errors['comment']}
         helperText={errors['comment']?.message || ''}
         maxRows={3}
-        {...register([parentKey,'comment'].join('.'), {
+        {...register(getKey('comment'), {
           maxLength: {value: 140, message: 'Maximum comment length is 140 characters'}
         })}
       />

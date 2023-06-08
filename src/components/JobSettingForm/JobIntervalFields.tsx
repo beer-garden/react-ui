@@ -13,9 +13,20 @@ const JobIntervalFields = ({ triggerType, textFieldProps, ...gridProps }: {trigg
     minWidth: '250px',
     xs: 3
   }
-  const [interval, setInterval] = useMountedState<IntervalType>('hours')
+  let defaultInterval: IntervalType = 'hours'
 
   const { getValues, setValue, unregister } = useFormContext()
+
+  if(triggerType === 'interval'){
+    const trigger = getValues('trigger')
+    defaultInterval = (['seconds', 'minutes', 'hours', 'days', 'weeks'] as IntervalType[]).find((key) => {
+      if(trigger[key] > 0) return true
+      return false
+    } ) || 'hours'
+  }
+
+  const [interval, setInterval] = useMountedState<IntervalType>(defaultInterval)
+  
 
   const onIntervalChange = (value: IntervalType) => {
     const oldValueKey = ['trigger', interval].join('.')
@@ -36,6 +47,7 @@ const JobIntervalFields = ({ triggerType, textFieldProps, ...gridProps }: {trigg
               value: triggerType === 'interval',
               message: 'Interval is required'
             },
+            min: {value: 0, message: 'Interval must be 0 or greater'}
           }}
           type="number"
           label="Interval"
@@ -61,6 +73,7 @@ const JobIntervalFields = ({ triggerType, textFieldProps, ...gridProps }: {trigg
           registerKey={['trigger', 'jitter'].join('.')}
           registerOptions={{
             valueAsNumber: true,
+            min: {value: 0, message: 'Jitter must be 0 or greater'}
           }}
           type="number"
           label="Jitter (seconds)"
@@ -76,6 +89,9 @@ const JobIntervalFields = ({ triggerType, textFieldProps, ...gridProps }: {trigg
           registerKey="trigger.start_date"
           registerOptions={{
             setValueAs: value => {
+              if(typeof value === 'number'){
+                return value
+              }
               const dateTime = DateTime.fromISO(value)
               return (value === '' || value === null) ? null : new Date(dateTime.toHTTP()).getTime()
             },
@@ -90,6 +106,9 @@ const JobIntervalFields = ({ triggerType, textFieldProps, ...gridProps }: {trigg
           registerKey="trigger.end_date"
           registerOptions={{
             setValueAs: value => {
+              if(typeof value === 'number'){
+                return value
+              }
               const dateTime = DateTime.fromISO(value)
               return (value === '' || value === null) ? null : new Date(dateTime.toHTTP()).getTime()
             },

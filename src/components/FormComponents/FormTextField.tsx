@@ -4,10 +4,10 @@ import { useMountedState } from 'hooks/useMountedState'
 import { DateTime } from 'luxon'
 import { RegisterOptions, useFormContext } from 'react-hook-form'
 
-type FormTextFieldProps = {
+export type FormTextFieldProps = {
   registerKey: string
   registerOptions?: RegisterOptions
-  menuOptions?: string[]
+  menuOptions?: (string | number)[]
 } & TextFieldProps
 
 const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textFieldProps }: FormTextFieldProps) => {
@@ -46,8 +46,9 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
     }
   }
 
-  const displayValue = (textFieldProps.type === 'datetime-local' || textFieldProps.type === 'date-local') ? 
-    (currentValue ? DateTime.fromISO(new Date(currentValue).toISOString()).toISO().slice(0,-8) : '' ) : currentValue || ''
+  if(textFieldProps.type === 'datetime-local' || textFieldProps.type === 'date-local'){
+    textFieldProps.value = currentValue ? DateTime.fromISO(new Date(currentValue).toISOString()).toISO().slice(0,-8) : ''
+  }
 
   return menuOptions ? (
     <TextField
@@ -60,7 +61,7 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
       {menuOptions.map((value) => <MenuItem key={value} value={value}>{value}</MenuItem>)}
     </TextField>
   ) : (
-    <TextField {...defaultTextFieldProps} {...textFieldProps} value={displayValue} {...register(registerKey, registerOptions)} />
+    <TextField {...defaultTextFieldProps} value={(currentValue === 0 || currentValue) ? currentValue : ''} {...textFieldProps} {...register(registerKey, registerOptions)} />
   )
 }
 

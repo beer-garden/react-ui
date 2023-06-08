@@ -17,7 +17,7 @@ const JobCronFields = ({ triggerType, textFieldProps, ...gridProps }: {triggerTy
     }
     try {
       const tempValue = JSON.parse(value)
-      if( typeof tempValue === 'number' ) {
+      if(typeof tempValue === 'number') {
         return true
       } else throw new Error('value is not valid')
     } catch(e) {
@@ -38,7 +38,8 @@ const JobCronFields = ({ triggerType, textFieldProps, ...gridProps }: {triggerTy
               registerOptions = {
                 {
                   required: {value: triggerType === 'cron', message: `${fieldKeyToLabel(key)} is required`},
-                  validate: value => validateUnit(['trigger', key].join('.'), value, fieldKeyToLabel(key))
+                  validate: value => validateUnit(['trigger', key].join('.'), value, fieldKeyToLabel(key)),
+                  min: {value: 0, message: `${fieldKeyToLabel(key)} must be 0 or greater`}
                 }
               }
               label={fieldKeyToLabel(key)}
@@ -52,6 +53,7 @@ const JobCronFields = ({ triggerType, textFieldProps, ...gridProps }: {triggerTy
           registerKey={['trigger', 'jitter'].join('.')}
           registerOptions={{
             valueAsNumber: true,
+            min: {value: 0, message: 'Jitter must be 0 or greater'}
           }}
           type="number"
           label="Jitter (seconds)"
@@ -64,6 +66,9 @@ const JobCronFields = ({ triggerType, textFieldProps, ...gridProps }: {triggerTy
           registerKey="trigger.start_date"
           registerOptions={{
             setValueAs: value => {
+              if(typeof value === 'number'){
+                return value
+              }
               const dateTime = DateTime.fromISO(value)
               return (value === '' || value === null) ? null : new Date(dateTime.toHTTP()).getTime()
             },
@@ -78,6 +83,9 @@ const JobCronFields = ({ triggerType, textFieldProps, ...gridProps }: {triggerTy
           registerKey="trigger.end_date"
           registerOptions={{
             setValueAs: value => {
+              if(typeof value === 'number'){
+                return value
+              }
               const dateTime = DateTime.fromISO(value)
               return (value === '' || value === null) ? null : new Date(dateTime.toHTTP()).getTime()
             },

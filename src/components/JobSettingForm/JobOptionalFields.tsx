@@ -1,7 +1,7 @@
 import { Grid, GridProps, TextFieldProps } from '@mui/material'
 import { FormTextField } from 'components/FormComponents'
 
-const JobOptionaFields = ({ textFieldProps, ...gridProps }: {textFieldProps: TextFieldProps} & GridProps) => {
+const JobOptionalFields = ({ textFieldProps, ...gridProps }: {textFieldProps: TextFieldProps} & GridProps) => {
   const gridItemProps: GridProps = {
     item: true,
     minWidth: '200px',
@@ -51,4 +51,4 @@ const JobOptionaFields = ({ textFieldProps, ...gridProps }: {textFieldProps: Tex
   )
 }
 
-export { JobOptionaFields }
+export { JobOptionalFields }

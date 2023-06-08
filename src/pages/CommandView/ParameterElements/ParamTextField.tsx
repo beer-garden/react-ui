@@ -1,6 +1,7 @@
-import { Alert, Autocomplete, InputBaseComponentProps, MenuItem, TextField, TextFieldProps } from '@mui/material'
+import { Alert, Autocomplete, InputBaseComponentProps, MenuItem, TextField } from '@mui/material'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
+import { FormTextField, FormTextFieldProps } from 'components/FormComponents'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { useDebounceEmptyFunction } from 'hooks/useDebounce'
@@ -69,7 +70,8 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
   const [isLoading, setIsLoading] = useMountedState(false)
   const { addCallback, removeCallback } = SocketContainer.useContainer()
   const {error} = getFieldState(registerKey)
-  const textFieldProps: TextFieldProps = {
+  const formTextFieldProps: FormTextFieldProps = {
+    registerKey: registerKey,
     type: type,
     size: 'small',
     error: !!error,
@@ -184,8 +186,11 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       }
       if(parameter.choices.type === 'command' || Object.hasOwn(parameter.choices.details, 'key_reference')){
         const subscription = watch((value, { name, type }) => {
+          console.log('blahaj 1 '+name)
           if(name && (watchKeys.includes(name) || name === 'instance_name')){
+            console.log('blahaj 2')
             if(parameter.choices?.type === 'command' || parameter.choices?.type === 'url'){
+              console.log('blahaj 3')
               if(type === 'change') makeRequestDebounce()
               else makeRequest()
             }
@@ -193,8 +198,10 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
               const keyReference = getValues(name)
               const valueDict = parameter.choices.value as {[key: string|number]: Array<string | number>}
               if(!keyReference) {
+                console.log('blahaj 4')
                 setChoiceValues([])
               }
+              console.log('blahaj 5')
               setChoiceValues(valueDict[keyReference] as (string | number)[] || [])
             }
           }
@@ -234,21 +241,21 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
 
 
   if(!parameter.multi){
-    textFieldProps.label = parameter.display_name
-    if(parameter.description) textFieldProps.helperText = parameter.description
-  } else textFieldProps.label = `Index: ${registerKey.split('.')[registerKey.split('.').length-1]}`
+    formTextFieldProps.label = parameter.display_name
+    if(parameter.description) formTextFieldProps.helperText = parameter.description
+  } else formTextFieldProps.label = `Index: ${registerKey.split('.')[registerKey.split('.').length-1]}`
 
-  if(error) textFieldProps.helperText = error.message
+  if(error) formTextFieldProps.helperText = error.message
 
   if(parameter.type === 'Dictionary') {
-    textFieldProps.maxRows=3
-    textFieldProps.multiline=true
+    formTextFieldProps.maxRows=3
+    formTextFieldProps.multiline=true
   }
 
   if(parameter.choices) {
     if(parameter.choices.display === 'select') {
-      textFieldProps.select = true
-      textFieldProps.defaultValue = getValues(registerKey) || ''
+      formTextFieldProps.select = true
+      formTextFieldProps.defaultValue = getValues(registerKey) || ''
     }
     registerOptions.validate = (value) => {
       return choiceValues.includes(value)
@@ -268,7 +275,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          {...textFieldProps}
+          {...formTextFieldProps}
           required={!parameter.optional}
           {...register(`${registerKey}`, registerOptions)}
         />
@@ -308,7 +315,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
               {...field}
               value={error ? value : (value!==null ? JSON.stringify(value) : '')}
               inputProps={inputProps}
-              {...textFieldProps}
+              {...formTextFieldProps}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 try {
                   const value = JSON.parse(event.target.value)
@@ -351,7 +358,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
               {...field}
               value={value?.fileName}
               inputProps={inputProps}
-              {...textFieldProps}
+              {...formTextFieldProps}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 if(event.target.files) onChange(event.target.files[0])
               }}
@@ -362,17 +369,15 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     )
   }
 
+  if(inputProps) formTextFieldProps.inputProps = inputProps
+
+  if(parameter.choices?.display === 'select') formTextFieldProps.menuOptions = choiceValues
+
   return (
-    <TextField
-      {...textFieldProps}
-      inputProps={inputProps}
-      {...register(`${registerKey}`, registerOptions)}
-    >{parameter.choices?.display === 'select' && (choiceValues.map((item, index) => (
-      <MenuItem key={`${parameter.key}MenuItem${index}`} value={item} >
-        {item}
-      </MenuItem>)
-    ))}
-    </TextField>
+    <FormTextField
+      {...formTextFieldProps}
+      registerOptions={registerOptions}
+    />
   )
 }
 

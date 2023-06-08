@@ -1,6 +1,6 @@
 import { useMountedState } from 'hooks/useMountedState'
 import { createContext, ReactNode, useContext } from 'react'
-import { Job, RequestTemplate } from 'types/backend-types'
+import { Job, RequestTemplate, System } from 'types/backend-types'
 import { AugmentedCommand, StrippedSystem } from 'types/custom-types'
 
 interface JobRequestCreationProviderProps {
@@ -8,8 +8,8 @@ interface JobRequestCreationProviderProps {
 }
 
 export interface JobRequestCreationProviderState {
-  system: StrippedSystem | undefined
-  setSystem: ((arg0: StrippedSystem | undefined) => void) | undefined
+  system: StrippedSystem | System | undefined
+  setSystem: ((arg0: StrippedSystem | System | undefined) => void) | undefined
   command: AugmentedCommand | undefined
   setCommand: ((arg0: AugmentedCommand | undefined) => void) | undefined
   job: Job | undefined
@@ -40,7 +40,7 @@ const JobRequestCreationContext =
 const JobRequestCreationProvider = ({
   children,
 }: JobRequestCreationProviderProps) => {
-  const [system, setSystem] = useMountedState<StrippedSystem | undefined>()
+  const [system, setSystem] = useMountedState<StrippedSystem | System | undefined>()
   const [job, setJob] = useMountedState<Job | undefined>()
   const [command, setCommand] = useMountedState<AugmentedCommand | undefined>()
   const [requestModel, setRequestModel] = useMountedState<
