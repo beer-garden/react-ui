@@ -77,7 +77,7 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
       misfire_grace_time: 5,
       coalesce: true,
       max_instances: 3,
-      timeout: undefined,
+      timeout: null,
       request_template: getRequestTemplate(),
     } : getRequestTemplate()
 
