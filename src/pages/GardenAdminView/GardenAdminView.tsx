@@ -101,6 +101,13 @@ const GardenAdminView = () => {
       )}
       <PageHeader title="Garden View" description="" />
       <Divider />
+      {garden?.connection_type === 'LOCAL' &&
+        <Alert severity="info">
+          {
+            'Since this is the local Garden it is not possible to modify connection information'
+          }
+        </Alert>
+      }
       {garden ? (
         <>
           <GardenAdminInfoCard garden={garden} />
@@ -116,21 +123,14 @@ const GardenAdminView = () => {
             `Unable to display systems when status is ${garden.status}`
           )}
           <Divider />
-          {garden.connection_type === 'LOCAL' ? (
-            <Alert severity="info">
-              {
-                'Since this is the local Garden it is not possible to modify connection information'
-              }
-            </Alert>
-          ) : (
-            garden.connection_params && (
-              <GardenConnectionForm
-                garden={garden}
-                title="Update Connection Information"
-                formOnSubmit={formOnSubmit}
-              />
-            )
-          )}
+          {garden.connection_type !== 'LOCAL' &&
+            garden.connection_params &&
+            <GardenConnectionForm
+              garden={garden}
+              title="Update Connection Information"
+              formOnSubmit={formOnSubmit}
+            />
+          }
         </>
       ) : (
         <Backdrop open={true}>

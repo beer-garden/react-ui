@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/backend-types'
 
-type SystemIndexTableData = {
+export type SystemIndexTableData = {
   name: string
   description: string
   version: string
@@ -37,7 +37,7 @@ const useSystemIndexTableData = (systems: System[]): SystemIndexTableData[] => {
   return systems.map(systemMapper)
 }
 
-const useSystemIndexTableColumns = () => {
+const useSystemIndexTableColumns = (): Column<SystemIndexTableData>[] => {
   return useMemo<Column<SystemIndexTableData>[]>(
     () => [
       {
