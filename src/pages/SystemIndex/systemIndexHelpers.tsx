@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { Column } from 'react-table'
 import { System } from 'types/backend-types'
 
-export type SystemIndexTableData = {
+type SystemIndexTableData = {
   name: string
   description: string
   version: string
