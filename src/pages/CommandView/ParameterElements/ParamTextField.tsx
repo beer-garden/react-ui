@@ -186,11 +186,8 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       }
       if(parameter.choices.type === 'command' || Object.hasOwn(parameter.choices.details, 'key_reference')){
         const subscription = watch((value, { name, type }) => {
-          console.log('blahaj 1 '+name)
           if(name && (watchKeys.includes(name) || name === 'instance_name')){
-            console.log('blahaj 2')
             if(parameter.choices?.type === 'command' || parameter.choices?.type === 'url'){
-              console.log('blahaj 3')
               if(type === 'change') makeRequestDebounce()
               else makeRequest()
             }
@@ -198,10 +195,8 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
               const keyReference = getValues(name)
               const valueDict = parameter.choices.value as {[key: string|number]: Array<string | number>}
               if(!keyReference) {
-                console.log('blahaj 4')
                 setChoiceValues([])
               }
-              console.log('blahaj 5')
               setChoiceValues(valueDict[keyReference] as (string | number)[] || [])
             }
           }
