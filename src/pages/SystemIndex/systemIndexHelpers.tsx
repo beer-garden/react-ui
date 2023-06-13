@@ -37,7 +37,7 @@ const useSystemIndexTableData = (systems: System[]): SystemIndexTableData[] => {
   return systems.map(systemMapper)
 }
 
-const useSystemIndexTableColumns = () => {
+const useSystemIndexTableColumns = (): Column<SystemIndexTableData>[] => {
   return useMemo<Column<SystemIndexTableData>[]>(
     () => [
       {
