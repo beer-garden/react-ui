@@ -26,11 +26,10 @@ const ExecuteButton = ({ system, command }: IExeButton) => {
 
   return (
     <JobRequestCreationContext.Consumer>
-      {({ setSystem, setCommand, setIsJob }) => {
+      {({ setSystem, setCommand}) => {
         const onClickCallback = () => {
           setSystem && setSystem(system)
           setCommand && setCommand(command)
-          setIsJob && setIsJob(false)
         }
         return LinkButton(
           'Execute',

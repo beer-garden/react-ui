@@ -1,24 +1,28 @@
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment, MenuItem, TextField, TextFieldProps } from '@mui/material'
 import { useMountedState } from 'hooks/useMountedState'
+import { DateTime } from 'luxon'
 import { RegisterOptions, useFormContext } from 'react-hook-form'
 
-type FormTextFieldProps = {
+export type FormTextFieldProps = {
   registerKey: string
   registerOptions?: RegisterOptions
-  menuOptions?: string[]
+  menuOptions?: (string | number)[]
 } & TextFieldProps
 
 const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textFieldProps }: FormTextFieldProps) => {
-  const { register, getFieldState, getValues } = useFormContext()
+  const { register, getFieldState, watch, } = useFormContext()
   const [showPassword, setShowPassword] = useMountedState(false)
   const defaultTextFieldProps: TextFieldProps = {
     FormHelperTextProps: {
       sx: {ml: 0}
     },
     size:'small',
-    fullWidth: true
+    fullWidth: true,
+    InputLabelProps: {shrink: true}
   }
+
+  const currentValue = watch(registerKey)
 
   const error = getFieldState(registerKey).error
   if(error){
@@ -42,18 +46,22 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
     }
   }
 
+  if(textFieldProps.type === 'datetime-local' || textFieldProps.type === 'date-local'){
+    textFieldProps.value = currentValue ? DateTime.fromISO(new Date(currentValue).toISOString()).toISO().slice(0,-8) : ''
+  }
+
   return menuOptions ? (
     <TextField
       select
       {...defaultTextFieldProps}
-      value={getValues(registerKey) || ''}
+      value={currentValue || ''}
       {...textFieldProps}
       {...register(registerKey, registerOptions)}
     >
       {menuOptions.map((value) => <MenuItem key={value} value={value}>{value}</MenuItem>)}
     </TextField>
   ) : (
-    <TextField {...defaultTextFieldProps} {...textFieldProps} type={showPassword ? 'string' : textFieldProps.type} {...register(registerKey, registerOptions)} />
+    <TextField {...defaultTextFieldProps} value={(currentValue === 0 || currentValue) ? currentValue : ''} {...textFieldProps} {...register(registerKey, registerOptions)} />
   )
 }
 

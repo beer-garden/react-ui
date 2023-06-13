@@ -3,7 +3,7 @@ import { EmptyObject, ObjectWithStringKeys } from './custom-types'
 export interface PatchData {
   operation: string
   path?: string
-  value?: string | Garden
+  value?: string | Garden | Job
 }
 
 export interface PatchOperation {

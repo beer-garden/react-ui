@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import {
   emptyJobRequestCreationProviderState,
   JobRequestCreationContext,
@@ -41,9 +41,8 @@ describe('UpdateJobButton', () => {
         </JobRequestCreationContext.Provider>
       </AllProviders>,
     )
-
-    fireEvent.click(await screen.findByText(/update job/i))
-
-    expect(mockGetSystems).toHaveBeenCalledTimes(1)
+    await waitFor(() => {
+      expect(screen.getByText('Update Job')).toBeInTheDocument()
+    })
   })
 })

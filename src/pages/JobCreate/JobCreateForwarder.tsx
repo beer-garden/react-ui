@@ -16,7 +16,7 @@ interface JobCreateForwarderProps {
  * @returns A Navigate object that takes us to the right page.
  */
 const JobCreateForwarder = ({ system, command }: JobCreateForwarderProps) => {
-  const { setSystem, setCommand, setIsJob } = useJobRequestCreation()
+  const { setSystem, setCommand } = useJobRequestCreation()
   const { commands, ...strippedSystem } = system
   const augmentedCommand = {
     ...command,
@@ -33,7 +33,6 @@ const JobCreateForwarder = ({ system, command }: JobCreateForwarderProps) => {
     */
     setSystem && setSystem(strippedSystem)
     setCommand && setCommand(augmentedCommand)
-    setIsJob && setIsJob(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
