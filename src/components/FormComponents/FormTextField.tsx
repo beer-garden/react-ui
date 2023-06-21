@@ -10,17 +10,18 @@ export type FormTextFieldProps = {
   menuOptions?: (string | number)[]
 } & TextFieldProps
 
+const defaultTextFieldProps: TextFieldProps = {
+  FormHelperTextProps: {
+    sx: {ml: 0}
+  },
+  size:'small',
+  fullWidth: true,
+  InputLabelProps: {shrink: true}
+}
+
 const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textFieldProps }: FormTextFieldProps) => {
   const { register, getFieldState, watch, } = useFormContext()
   const [showPassword, setShowPassword] = useMountedState(false)
-  const defaultTextFieldProps: TextFieldProps = {
-    FormHelperTextProps: {
-      sx: {ml: 0}
-    },
-    size:'small',
-    fullWidth: true,
-    InputLabelProps: {shrink: true}
-  }
 
   const currentValue = watch(registerKey)
 
@@ -61,8 +62,13 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
       {menuOptions.map((value) => <MenuItem key={value} value={value}>{value}</MenuItem>)}
     </TextField>
   ) : (
-    <TextField {...defaultTextFieldProps} value={(currentValue === 0 || currentValue) ? currentValue : ''} {...textFieldProps} {...register(registerKey, registerOptions)} />
+    <TextField
+      {...defaultTextFieldProps}
+      value={(currentValue === 0 || currentValue) ? currentValue : ''}
+      {...textFieldProps}
+      {...register(registerKey, registerOptions)}
+    />
   )
 }
 
-export { FormTextField }
+export { defaultTextFieldProps, FormTextField }

@@ -1,14 +1,14 @@
-import { Alert, Autocomplete, InputBaseComponentProps, MenuItem, TextField } from '@mui/material'
+import { Alert, Autocomplete, MenuItem } from '@mui/material'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import useAxios from 'axios-hooks'
-import { FormTextField, FormTextFieldProps } from 'components/FormComponents'
+import { defaultTextFieldProps, FormAnyOrDict, FormFile, FormFileProps, FormTextField, FormTextFieldProps } from 'components/FormComponents'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
 import { SocketContainer } from 'containers/SocketContainer'
 import { useDebounceEmptyFunction } from 'hooks/useDebounce'
 import { useMountedState } from 'hooks/useMountedState'
 import { useMyAxios } from 'hooks/useMyAxios'
-import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
-import { Controller, RegisterOptions, useFormContext } from 'react-hook-form'
+import { useCallback, useEffect, useMemo } from 'react'
+import { RegisterOptions, useFormContext } from 'react-hook-form'
 import { 
   DynamicChoiceCommandDetails,
   DynamicChoiceDictionaryDetails,
@@ -25,7 +25,8 @@ interface ParamTextFieldProps {
 }
 
 const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
-  const { getValues, setValue, register, watch, getFieldState, setError, clearErrors, control } = useFormContext()
+  const { getValues, setValue, watch, getFieldState, setError } = useFormContext()
+  const registerKeyPrefix = registerKey.split('parameters.')[0]
   let type = 'string'
   switch(parameter.type) { 
     case 'Float':
@@ -48,7 +49,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       type = parameter.type.toLowerCase()
       break
     }
-  } 
+  }
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
@@ -56,15 +57,8 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     parameter.choices?.type === 'static' && !Object.hasOwn(parameter.choices?.details, 'key_reference')
     ? parameter.choices.value as (string | number)[] : []
   )
-  const inputProps: InputBaseComponentProps = {key: parameter.key}
   const registerOptions: RegisterOptions = {
     required: parameter.optional ? false : `${parameter.display_name} is required`,
-    setValueAs: value => {
-      return value === '' ? (parameter.nullable ? null : undefined) : value
-    }
-  }
-  if(type === 'file'){
-    registerKey = registerKey.replace('parameters', 'multipart')
   }
   const [requestId, setRequestId] = useMountedState<string>()
   const [isLoading, setIsLoading] = useMountedState(false)
@@ -73,13 +67,8 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
   const formTextFieldProps: FormTextFieldProps = {
     registerKey: registerKey,
     type: type,
-    size: 'small',
-    error: !!error,
-    fullWidth: true,
-    FormHelperTextProps: {
-      sx: {ml: 0}
-    }
   }
+  formTextFieldProps.inputProps = {key: parameter.key}
 
   if(parameter.regex) {
     registerOptions.pattern = new RegExp(parameter.regex)
@@ -89,15 +78,17 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     if(parameter.choices){
       const tempWatchKey: string[] = []
       if(parameter.choices.type === 'command' || parameter.choices?.type === 'url'){
-        (parameter.choices.details as DynamicChoiceCommandDetails).args.forEach((arg) => tempWatchKey.push(`parameters.${arg[1]}`))
+        (parameter.choices.details as DynamicChoiceCommandDetails).args.forEach((arg) => 
+          tempWatchKey.push(`${registerKeyPrefix}parameters.${arg[1]}`)
+        )
       }
       if(parameter.choices.type === 'static' && Object.hasOwn(parameter.choices.details, 'key_reference')){
-        tempWatchKey.push(`parameters.${(parameter.choices.details as DynamicChoiceDictionaryDetails).key_reference}`)
+        tempWatchKey.push(`${registerKeyPrefix}parameters.${(parameter.choices.details as DynamicChoiceDictionaryDetails).key_reference}`)
       }
       return tempWatchKey
     }
     return []
-  }, [parameter])
+  }, [parameter, registerKeyPrefix])
 
   const makeRequest = useCallback(() => {
     if(parameter.choices?.type === 'command'){
@@ -112,18 +103,18 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
         if(name) value = getValues(name)
         choicesParameters[arg[0]] = value
       })
-      if(getValues('instance_name') === '' || Object.values(choicesParameters).includes(undefined)) {
+      if(getValues(`${registerKeyPrefix}instance_name`) === '' || Object.values(choicesParameters).includes(undefined)) {
         setChoiceValues([])
         setIsLoading(false)
         return
       }
       const choicesRequest: RequestTemplate = {
         command: choicesDetails.name,
-        instance_name: getValues('instance_name'),
-        namespace: getValues('namespace'),
+        instance_name: getValues(`${registerKeyPrefix}instance_name`),
+        namespace: getValues(`${registerKeyPrefix}namespace`),
         parameters: choicesParameters,
-        system: getValues('system'),
-        system_version: getValues('system_version')
+        system: getValues(`${registerKeyPrefix}system`),
+        system_version: getValues(`${registerKeyPrefix}system_version`)
       }
 
       const config: AxiosRequestConfig<RequestTemplate> = {
@@ -156,7 +147,17 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
           // todo add error handling
         })
     }
-  }, [authEnabled, execute, getValues, parameter.choices?.details, parameter.choices?.type, setChoiceValues, setIsLoading, setRequestId, watchKeys])
+  }, [
+    authEnabled,
+    execute,
+    getValues,
+    parameter,
+    registerKeyPrefix,
+    setChoiceValues,
+    setIsLoading,
+    setRequestId,
+    watchKeys
+  ])
 
   const makeRequestDebounce = useDebounceEmptyFunction(makeRequest, 500)
   
@@ -186,7 +187,9 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       }
       if(parameter.choices.type === 'command' || Object.hasOwn(parameter.choices.details, 'key_reference')){
         const subscription = watch((value, { name, type }) => {
-          if(name && (watchKeys.includes(name) || name === 'instance_name')){
+          
+          if(name === undefined && type === undefined) setChoiceValues([])
+          else if(name && (watchKeys.includes(name) || name === `${registerKeyPrefix}instance_name`)){
             if(parameter.choices?.type === 'command' || parameter.choices?.type === 'url'){
               if(type === 'change') makeRequestDebounce()
               else makeRequest()
@@ -207,11 +210,36 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
         }
       }
     }
-  }, [watch, makeRequest, setChoiceValues, getValues, parameter, addCallback, requestId, removeCallback, setIsLoading, setRequestId, isLoading, watchKeys, makeRequestDebounce, registerKey, setError])
+  }, [
+    watch,
+    makeRequest,
+    setChoiceValues,
+    getValues,
+    parameter,
+    addCallback,
+    requestId,
+    removeCallback,
+    setIsLoading,
+    setRequestId,
+    isLoading,
+    watchKeys,
+    makeRequestDebounce,
+    registerKey,
+    setError,
+    registerKeyPrefix
+  ])
+
+  if(parameter.type === 'Base64'){
+    return(
+      <Alert severity="warning" >
+        Parameter type Base64 is not supported in the UI
+      </Alert>
+    )
+  }
 
   if(type==='number'){
     registerOptions.valueAsNumber = true
-    if(parameter.type === 'Float') inputProps.step = 'any'
+    if(parameter.type === 'Float') formTextFieldProps.inputProps.step = 'any'
     if(!parameter.multi){
       if(parameter.maximum) {
         registerOptions.max = {value: parameter.maximum, message: `Maximum ${parameter.display_name} number is ${parameter.minimum}`}
@@ -256,23 +284,45 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       return choiceValues.includes(value)
     }
   }
-  
-  
+
+  if(type === 'file'){
+    if(!parameter.optional && getValues(registerKey) !== undefined)
+      registerOptions.required = false
+      formTextFieldProps.registerKey = registerKey.replace('parameters', 'multipart')
+    return (
+      <FormFile {...formTextFieldProps as FormFileProps} registerOptions={registerOptions} />
+    )
+  }
+
+  if(!parameter.choices && (parameter.type === 'Any' || parameter.type === 'Dictionary')){
+    const currentValue = getValues(registerKey)
+    if(!parameter.optional)
+      if((currentValue === '' && parameter.type === 'Any') || (parameter.nullable && currentValue === null))
+        registerOptions.required = false
+    return (
+      <FormAnyOrDict {...formTextFieldProps as FormFileProps} registerOptions={registerOptions} />
+    )
+  } else registerOptions.setValueAs = value => {
+    return value === '' && type !== 'any' ? (parameter.nullable ? null : undefined) : value
+  }
+
   if(parameter.choices?.display === 'typeahead') {
-      return (<Autocomplete
+    if(formTextFieldProps.inputProps) delete formTextFieldProps.inputProps
+    if(getValues(registerKey) === undefined) setValue(registerKey, '')
+    return (<Autocomplete
       freeSolo
       selectOnFocus
       handleHomeEndKeys
       autoComplete
       autoHighlight
       fullWidth
-      defaultValue={(parameter.default as string | number | undefined) || ''}
+      value={getValues(registerKey)}
       renderInput={(params) => (
-        <TextField
+        <FormTextField
           {...params}
+          {...defaultTextFieldProps}
           {...formTextFieldProps}
-          required={!parameter.optional}
-          {...register(`${registerKey}`, registerOptions)}
+          registerOptions={registerOptions}
         />
       )}
       options={
@@ -290,81 +340,6 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       }
     />)
   }
-
-  if(parameter.type === 'Base64'){
-    return(
-      <Alert severity="warning" >
-        Parameter type Base64 is not supported in the UI
-      </Alert>
-    )
-  }
-
-  if(!parameter.choices && (parameter.type === 'Any' || parameter.type === 'Dictionary')){
-    return (
-      <Controller
-        control={control}
-        name={registerKey}
-        render={({ field: { value, onChange, ...field } }) => {
-          return (
-            <TextField
-              {...field}
-              value={error ? value : (value!==null ? JSON.stringify(value) : '')}
-              inputProps={inputProps}
-              {...formTextFieldProps}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                try {
-                  const value = JSON.parse(event.target.value)
-                  if( parameter.type === 'Any' || typeof value === 'object' ) {
-                    onChange(value)
-                    clearErrors(registerKey)
-                  } else throw new Error('value is not valid')
-                } catch(e) {
-                  if(event.target.value !== '' || !parameter.nullable){
-                    setError(registerKey, {
-                      type: 'parseError', 
-                      message: parameter.type === 'Dictionary' ? 
-                        'Invalid object'
-                        :
-                        'Unknown Type. Remember, variant fields must be enclosed with {} (object), [] (array), or "" (string).'
-                    })
-                    onChange(event.target.value === '' && parameter.nullable ? null : event.target.value)
-                  } else {
-                    clearErrors(registerKey)
-                    onChange(event.target.value === '' && parameter.nullable ? null : event.target.value)
-                  }
-                  
-                }
-              }}
-            />
-          )
-        }}
-      />
-    )
-  }
-
-  if(type === 'file'){
-    return (
-      <Controller
-        control={control}
-        name={registerKey}
-        render={({ field: { value, onChange, ...field } }) => {
-          return (
-            <TextField
-              {...field}
-              value={value?.fileName}
-              inputProps={inputProps}
-              {...formTextFieldProps}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                if(event.target.files) onChange(event.target.files[0])
-              }}
-            />
-          )
-        }}
-      />
-    )
-  }
-
-  if(inputProps) formTextFieldProps.inputProps = inputProps
 
   if(parameter.choices?.display === 'select') formTextFieldProps.menuOptions = choiceValues
 
