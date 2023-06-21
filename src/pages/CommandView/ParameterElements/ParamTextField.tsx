@@ -7,6 +7,7 @@ import { SocketContainer } from 'containers/SocketContainer'
 import { useDebounceEmptyFunction } from 'hooks/useDebounce'
 import { useMountedState } from 'hooks/useMountedState'
 import { useMyAxios } from 'hooks/useMyAxios'
+import { DateTime } from 'luxon'
 import { useCallback, useEffect, useMemo } from 'react'
 import { RegisterOptions, useFormContext } from 'react-hook-form'
 import { 
@@ -237,22 +238,6 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     )
   }
 
-  if(type==='number'){
-    registerOptions.valueAsNumber = true
-    if(parameter.type === 'Float') formTextFieldProps.inputProps.step = 'any'
-    if(!parameter.multi){
-      if(parameter.maximum) {
-        registerOptions.max = {value: parameter.maximum, message: `Maximum ${parameter.display_name} number is ${parameter.minimum}`}
-      }
-      if(parameter.minimum) {
-        registerOptions.min = {value: parameter.minimum, message: `Minimum ${parameter.display_name} number is ${parameter.minimum}`}
-      }
-    }
-  } else if(parameter.type === 'Date' || parameter.type === 'DateTime') {
-    registerOptions.setValueAs = value => {
-      return value === '' ? (parameter.nullable ? null : undefined) : new Date(value).getTime()
-    }
-  }
   if(parameter.type === 'String' && !parameter.multi){
     if(parameter.maximum) {
       registerOptions.maxLength = {value: parameter.maximum, message: `Maximum ${parameter.display_name} length is ${parameter.minimum} characters`}
@@ -302,6 +287,25 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     return (
       <FormAnyOrDict {...formTextFieldProps as FormFileProps} registerOptions={registerOptions} />
     )
+  } else if(type==='number'){
+    registerOptions.valueAsNumber = true
+    if(parameter.type === 'Float') formTextFieldProps.inputProps.step = 'any'
+    if(!parameter.multi){
+      if(parameter.maximum) {
+        registerOptions.max = {value: parameter.maximum, message: `Maximum ${parameter.display_name} number is ${parameter.minimum}`}
+      }
+      if(parameter.minimum) {
+        registerOptions.min = {value: parameter.minimum, message: `Minimum ${parameter.display_name} number is ${parameter.minimum}`}
+      }
+    }
+  } else if(parameter.type === 'Date' || parameter.type === 'DateTime') {
+    registerOptions.setValueAs = value => {
+      if(typeof value === 'number'){
+        return value
+      }
+      const dateTime = DateTime.fromISO(value)
+      return value === '' ? '' : new Date(dateTime.toHTTP()).getTime()
+    }
   } else registerOptions.setValueAs = value => {
     return value === '' && type !== 'any' ? (parameter.nullable ? null : undefined) : value
   }
