@@ -28,6 +28,7 @@ function getTheme(themeName: SupportedColorScheme) {
         styleOverrides: {
           a: {
             color: d3,
+            textDecoration: 'none',
           },
           span: {
             fontSize: 18,
@@ -55,6 +56,7 @@ function getTheme(themeName: SupportedColorScheme) {
         styleOverrides: {
           a: {
             color: l3,
+            textDecoration: 'none',
           },
           span: {
             fontSize: 18,
