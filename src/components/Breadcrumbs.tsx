@@ -37,7 +37,7 @@ const Breadcrumbs = ({ breadcrumbs: breadcrumbsArr }: MyBreadcrumbsProps) => {
               </RouterLink>
             </Tooltip>
           ))}
-        <Box component="span">{breadcrumbsArr[breadcrumbsArr.length - 1]}</Box>
+        <Box color="InfoText">{breadcrumbsArr[breadcrumbsArr.length - 1]}</Box>
       </MUIBreadcrumbs>
     )
   }
