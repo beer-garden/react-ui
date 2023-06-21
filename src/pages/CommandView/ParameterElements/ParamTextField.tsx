@@ -240,7 +240,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
 
   if(parameter.type === 'String' && !parameter.multi){
     if(parameter.maximum) {
-      registerOptions.maxLength = {value: parameter.maximum, message: `Maximum ${parameter.display_name} length is ${parameter.minimum} characters`}
+      registerOptions.maxLength = {value: parameter.maximum, message: `Maximum ${parameter.display_name} length is ${parameter.maximum} characters`}
     }
     if(parameter.minimum) {
       registerOptions.minLength = {value: parameter.minimum, message: `Minimum ${parameter.display_name} length is ${parameter.minimum} characters`}
@@ -292,7 +292,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     if(parameter.type === 'Float') formTextFieldProps.inputProps.step = 'any'
     if(!parameter.multi){
       if(parameter.maximum) {
-        registerOptions.max = {value: parameter.maximum, message: `Maximum ${parameter.display_name} number is ${parameter.minimum}`}
+        registerOptions.max = {value: parameter.maximum, message: `Maximum ${parameter.display_name} number is ${parameter.maximum}`}
       }
       if(parameter.minimum) {
         registerOptions.min = {value: parameter.minimum, message: `Minimum ${parameter.display_name} number is ${parameter.minimum}`}
