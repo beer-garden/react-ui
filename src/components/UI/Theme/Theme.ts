@@ -60,6 +60,9 @@ function getTheme(themeName: SupportedColorScheme) {
           a: {
             color: l3,
             textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline'
+            },
           },
           span: {
             fontSize: 18,
