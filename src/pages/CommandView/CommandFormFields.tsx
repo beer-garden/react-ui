@@ -1,6 +1,7 @@
 import { TabContext, TabList } from '@mui/lab'
-import { Alert, Box, Grid, MenuItem, Tab, TextField, TextFieldProps } from '@mui/material'
+import { Alert, Box, Grid, Tab, TextFieldProps } from '@mui/material'
 import { Divider } from 'components/Divider'
+import { FormTextField } from 'components/FormComponents'
 import { useMountedState } from 'hooks/useMountedState'
 import { ParameterElement } from 'pages/CommandView'
 import { useFormContext } from 'react-hook-form'
@@ -16,11 +17,15 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
     fullWidth: true,
   }
     
-  const { register, formState: { errors } } = useFormContext()
+  const { formState: { errors } } = useFormContext()
   const getKey = (key: string) => (
     parentKey ? [parentKey, key].join('.') : key
   )
-  
+
+  const instancesNames: (string | number)[] | undefined = instances.length === 1 ? undefined : []
+  if(instancesNames) instances.sort((a, b) =>
+    (a.name < b.name ? -1 : 1)
+  ).forEach(instance => instancesNames.push(instance.name))
 
   const requiredParams = parameters.filter((param: Parameter) => (!param.optional)) || []
   const optionalParams = parameters.filter((param: Parameter) => (param.optional)) || []
@@ -52,42 +57,26 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
         rowSpacing={2}
       >
         <Grid key="systemName" minWidth="150px" xs={1} item>
-          <TextField label="System Name" {...textFieldProps} {...register(getKey('system'))} />
+          <FormTextField label="System Name" {...textFieldProps} registerKey={getKey('system')} />
         </Grid>
         <Grid key="systemVersion" minWidth="150px" xs={1} item>
-          <TextField label="System Version" {...textFieldProps} {...register(getKey('system_version'))} />
+          <FormTextField label="System Version" {...textFieldProps} registerKey={getKey('system_version')} />
         </Grid>
         <Grid key="commandName" minWidth="150px" xs={1} item>
-          <TextField label="Command Name" {...textFieldProps} {...register(getKey('command'))} />
+          <FormTextField label="Command Name" {...textFieldProps} registerKey={getKey('command')} />
         </Grid>
         <Grid key="instanceName" minWidth="150px" xs={1} item>
-          {
-            instances.length === 1 ?
-            <TextField label="Instance Name" {...textFieldProps} {...register(getKey('instance_name'))} />
-            :
-            <TextField
-              label="Instance Name"
-              type="string"
-              size="small"
-              error={!!errors['instance_name']}
-              helperText={errors['instance_name']?.message || ''}
-              select
-              defaultValue={''}
-              fullWidth
-              {...register(getKey('instance_name'), {required: 'Instance is required'})}
-            >
-              {(instances.sort((a, b) =>
-                (a.name < b.name ? -1 : 1)
-              ).map((instance, index) => (
-                <MenuItem key={`${instance.name}MenuItem${index}`} value={instance.name} >
-                  {instance.name}
-                </MenuItem>)
-              ))}
-            </TextField>
-          }
+          <FormTextField
+            label="Instance Name"
+            {...textFieldProps}
+            disabled={instances.length <= 1}
+            registerKey={getKey('instance_name')}
+            registerOptions={{required: {value: true, message: 'Instance Name is required'}}}
+            menuOptions={instancesNames}
+          />
         </Grid>
       </Grid>
-      <TextField
+      <FormTextField
         {...textFieldProps}
         disabled={false}
         multiline
@@ -95,9 +84,12 @@ const CommandFormFields = ({ parameters, instances, parentKey }: { parameters: P
         error={!!errors['comment']}
         helperText={errors['comment']?.message || ''}
         maxRows={3}
-        {...register(getKey('comment'), {
-          maxLength: {value: 140, message: 'Maximum comment length is 140 characters'}
-        })}
+        registerKey={getKey('comment')}
+        registerOptions={
+          {
+            maxLength: {value: 140, message: 'Maximum comment length is 140 characters'}
+          }
+        }
       />
     </>
   )

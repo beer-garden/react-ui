@@ -26,12 +26,10 @@ const FormArray = ({ registerKey, disabled, helperText, label, minimum, maximum,
   const addItem = () => {
     const tempData = getValues(registerKey) || []
     if(!maximum || tempData.length < maximum)
-    setValue(`${registerKey}.${tempData.length}`, addValue ? addValue : null)
+    setValue(`${registerKey}.${tempData.length}`, addValue)
   }
 
-  watch(registerKey)
-
-  const currentValue = getValues(registerKey) || []
+  const currentValue = watch(registerKey) || []
 
   const error = getFieldState(registerKey).error
 

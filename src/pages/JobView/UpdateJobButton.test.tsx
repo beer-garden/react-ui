@@ -27,8 +27,7 @@ describe('UpdateJobButton', () => {
     })
     const context = {
       ...emptyJobRequestCreationProviderState,
-      setIsJob: jest.fn(),
-      setIsReplay: jest.fn(),
+      setJob: jest.fn(),
       setRequestModel: jest.fn(),
       setSystem: jest.fn(),
       setCommand: jest.fn(),

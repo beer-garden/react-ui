@@ -98,14 +98,15 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
     job,
     isJob
   ])
-
-  const getCommandFromSystem = (sys: System) => {
-    let tempCommand: Command | undefined = undefined
-    tempCommand = sys.commands.find((cmd: Command) => (cmd.name===commandName))
-    setCommand && setCommand(tempCommand as AugmentedCommand | undefined)
-  }
   
-  if(system && Object.hasOwn(system, 'commands') && !command) getCommandFromSystem(system as System)
+  useEffect(() => {
+    const getCommandFromSystem = (sys: System) => {
+      let tempCommand: Command | undefined = undefined
+      tempCommand = sys.commands.find((cmd: Command) => (cmd.name===commandName))
+      setCommand && setCommand(tempCommand as AugmentedCommand | undefined)
+    }
+    if(system && Object.hasOwn(system, 'commands') && !command) getCommandFromSystem(system as System)
+  }, [command, commandName, setCommand, system])
   
 
   if (!system || !command || error) {
