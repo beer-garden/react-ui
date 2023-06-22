@@ -1,6 +1,7 @@
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { LoadingButton } from '@mui/lab'
 import {
+  Alert,
   Backdrop,
   Box,
   Button,
@@ -12,13 +13,14 @@ import { Divider } from 'components/Divider'
 import { ErrorAlert } from 'components/ErrorAlert'
 import { PageHeader } from 'components/PageHeader'
 import { SSRTable } from 'components/Table'
+import { SocketContainer } from 'containers/SocketContainer'
 import { useMountedState } from 'hooks/useMountedState'
 import {
   defaultOrderingColumnIndex,
   useRequests,
   useRequestsIndexTableColumns,
 } from 'pages/RequestsIndex'
-import { ChangeEvent as ReactChangeEvent, useCallback, useMemo } from 'react'
+import { ChangeEvent as ReactChangeEvent, useCallback, useEffect, useMemo } from 'react'
 import { Filters, SortingRule } from 'react-table'
 import {
   OrderableColumnDirection,
@@ -46,6 +48,10 @@ const RequestsIndex = () => {
   /* These are for the children components passed to the table. */
   const [includeChildren, setIncludeChildren] = useMountedState<boolean>(false)
   const [showHidden, setShowHidden] = useMountedState<boolean>(false)
+  const [updatesDetected, setUpdatesDetected] = useMountedState<boolean>(false)
+  const { addCallback, removeCallback } = SocketContainer.useContainer()
+
+  if(isLoading && updatesDetected) setUpdatesDetected(false)
 
   const includeChildrenOnChange = useCallback(
     (event: ReactChangeEvent<HTMLInputElement>) => {
@@ -54,6 +60,24 @@ const RequestsIndex = () => {
     },
     [handleIncludeChildren, setIncludeChildren],
   )
+
+  useEffect(() => {
+    addCallback('request_updates', (event) => {
+      if (
+        ['REQUEST_CREATED',
+        'REQUEST_STARTED',
+        'REQUEST_UPDATED',
+        'REQUEST_COMPLETED',
+        'REQUEST_CANCELED'].includes(event.name)
+        && !updatesDetected
+      ){
+        setUpdatesDetected(true)
+      }
+    })
+    return () => {
+      removeCallback('request_updates')
+    }
+  }, [addCallback, removeCallback, setUpdatesDetected, updatesDetected])
 
   const showHiddenOnChange = useCallback(
     (event: ReactChangeEvent<HTMLInputElement>) => {
@@ -163,6 +187,15 @@ const RequestsIndex = () => {
             Refresh
           </LoadingButton>
         )}
+        { updatesDetected &&
+          <Alert
+            sx={{border: 'none', fontWeight: 'fontWeightMedium'}}
+            severity="info"
+            variant="outlined"
+          >
+            Updates detected
+          </Alert>
+        }
       </SSRTable>
     </Box>
   ) : error?.response ? (
