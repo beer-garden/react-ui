@@ -28,6 +28,10 @@ function getTheme(themeName: SupportedColorScheme) {
         styleOverrides: {
           a: {
             color: d3,
+            textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline'
+            },
           },
           span: {
             fontSize: 18,
@@ -55,6 +59,10 @@ function getTheme(themeName: SupportedColorScheme) {
         styleOverrides: {
           a: {
             color: l3,
+            textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline'
+            },
           },
           span: {
             fontSize: 18,
