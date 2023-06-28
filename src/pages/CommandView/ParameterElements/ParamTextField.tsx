@@ -1,5 +1,6 @@
-import { Alert, Autocomplete, MenuItem } from '@mui/material'
+import { Alert, Autocomplete, CircularProgress, Divider, MenuItem, Stack, Tooltip } from '@mui/material'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios from 'axios'
 import useAxios from 'axios-hooks'
 import { defaultTextFieldProps, FormAnyOrDict, FormFile, FormFileProps, FormTextField, FormTextFieldProps } from 'components/FormComponents'
 import { ServerConfigContainer } from 'containers/ConfigContainer'
@@ -54,10 +55,11 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
   const { authEnabled } = ServerConfigContainer.useContainer()
   const { axiosManualOptions } = useMyAxios()
   const [, execute] = useAxios({}, axiosManualOptions)
-  const [choiceValues, setChoiceValues] = useMountedState<(string | number)[]>(
+  const [choiceValues, _setChoiceValues] = useMountedState<(string | number | null)[]>(
     parameter.choices?.type === 'static' && !Object.hasOwn(parameter.choices?.details, 'key_reference')
     ? parameter.choices.value as (string | number)[] : []
   )
+  const [choicesError, setChoicesError] = useMountedState<AxiosError>()
   const registerOptions: RegisterOptions = {
     required: parameter.optional ? false : `${parameter.display_name} is required`,
   }
@@ -71,9 +73,19 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
   }
   formTextFieldProps.inputProps = {key: parameter.key}
 
+  const setChoiceValues = useCallback((values: (string | number | null)[]) => {
+    if(parameter.nullable && !values.includes(null)) values.push(null)
+    if(!values.includes(getValues(registerKey)) && getValues(registerKey) !== '' && parameter.choices?.display !== 'typeahead') 
+      setValue(registerKey, '')
+    _setChoiceValues(values)
+  }, [_setChoiceValues, getValues, parameter.choices?.display, parameter.nullable, registerKey, setValue])
+
   if(parameter.regex) {
     registerOptions.pattern = new RegExp(parameter.regex)
   }
+  
+  if(parameter.nullable && !parameter.optional)
+    registerOptions.required = getValues(registerKey) === null ? false : `${parameter.display_name} is required`
 
   const watchKeys = useMemo((): string[] => {
     if(parameter.choices){
@@ -92,8 +104,9 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
   }, [parameter, registerKeyPrefix])
 
   const makeRequest = useCallback(() => {
+    setIsLoading(true)
+    setChoicesError()
     if(parameter.choices?.type === 'command'){
-      setIsLoading(true)
       const choicesParameters: {[key: string]: unknown} = {}
       const choicesDetails = parameter.choices.details as DynamicChoiceCommandDetails
       choicesDetails.args.forEach((arg) => {
@@ -111,7 +124,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       }
       const choicesRequest: RequestTemplate = {
         command: choicesDetails.name,
-        instance_name: getValues(`${registerKeyPrefix}instance_name`),
+        instance_name: getValues(`${registerKeyPrefix}instance_name`), 
         namespace: getValues(`${registerKeyPrefix}namespace`),
         parameters: choicesParameters,
         system: getValues(`${registerKeyPrefix}system`),
@@ -130,22 +143,26 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
           setRequestId(response.data.id)
         })
         .catch((error: AxiosError) => {
-          // todo add error handling
+          setChoiceValues([])
+          setChoicesError(error)
+          setIsLoading(false)
         })
     }
     if(parameter.choices?.type === 'url'){
       const choicesDetails = parameter.choices.details as DynamicChoiceUrlDetails
-      const config: AxiosRequestConfig = {
-        url: choicesDetails.address,
-        method: 'get',
-      }
-
-      execute(config)
+      axios({url: choicesDetails.address, method: 'get'})
         .then((response: AxiosResponse) => {
-          setChoiceValues(response.data)
+          if(Object.hasOwn(response.data, 'length')) {
+            setChoiceValues(response.data)
+          } else {
+            setChoicesError({message: 'Error populating choices', response: {data: {message: 'Could not parse response data into list for choices'}}} as AxiosError)
+          }
+          setIsLoading(false)
         })
         .catch((error: AxiosError) => {
-          // todo add error handling
+          setChoiceValues([])
+          setChoicesError({message: 'Error populating choices', response: {data: {message: `${error.message} from ${choicesDetails.address}`}}} as AxiosError)
+          setIsLoading(false)
         })
     }
   }, [
@@ -157,27 +174,34 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     setChoiceValues,
     setIsLoading,
     setRequestId,
+    setChoicesError,
     watchKeys
   ])
 
   const makeRequestDebounce = useDebounceEmptyFunction(makeRequest, 500)
+
+  useEffect(() => {
+    if(parameter.choices?.type === 'url') makeRequest()
+  }, [makeRequest, parameter.choices?.type])
   
   useEffect(() => {
     if(parameter.choices){
       if(parameter.choices.type === 'command') {
-        if(!isLoading && !requestId) makeRequest()
         addCallback('request_completed', (event: {name: string, payload: Request}) => {
           if ('REQUEST_COMPLETED' === event.name && event.payload.id === requestId) {
-            let value:(string | number)[] | undefined
-            if(event.payload.output) value = JSON.parse(event.payload.output)
-            if(value) {
-              setChoiceValues(value)
+            if(event.payload.output) {
+              try { 
+                const value = JSON.parse(event.payload.output)
+                setChoiceValues(value)
+              } catch (e) {
+                setChoiceValues([])
+                setChoicesError({message: 'Parse error', response: {data: {message: 'Could not parse response data into list for choices'}}} as AxiosError)
+              }
+              setIsLoading(false)
             }
-            setIsLoading(false)
           }
         })
       }
-      if(parameter.choices.type === 'url') makeRequest()
       if(parameter.choices && Object.hasOwn(parameter.choices.details, 'key_reference')){
         const keyReference = getValues(watchKeys[0])
         const valueDict = parameter.choices.value as {[key: string|number]: Array<string | number>}
@@ -192,15 +216,16 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
           if(name === undefined && type === undefined) setChoiceValues([])
           else if(name && (watchKeys.includes(name) || name === `${registerKeyPrefix}instance_name`)){
             if(parameter.choices?.type === 'command' || parameter.choices?.type === 'url'){
-              if(type === 'change') makeRequestDebounce()
-              else makeRequest()
+              if(type === 'change') {
+                makeRequestDebounce()
+              }
+              else {
+                makeRequest()
+              }
             }
-            if(parameter.choices && Object.hasOwn(parameter.choices.details, 'key_reference')){
+            if(parameter.choices && Object.hasOwn(parameter.choices.details, 'key_reference') && name !== `${registerKeyPrefix}instance_name`){
               const keyReference = getValues(name)
               const valueDict = parameter.choices.value as {[key: string|number]: Array<string | number>}
-              if(!keyReference) {
-                setChoiceValues([])
-              }
               setChoiceValues(valueDict[keyReference] as (string | number)[] || [])
             }
           }
@@ -227,6 +252,8 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
     makeRequestDebounce,
     registerKey,
     setError,
+    choicesError,
+    setChoicesError,
     registerKeyPrefix
   ])
 
@@ -306,13 +333,58 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
       const dateTime = DateTime.fromISO(value)
       return value === '' ? '' : new Date(dateTime.toHTTP()).getTime()
     }
-  } else registerOptions.setValueAs = value => {
+  } else if(parameter.choices) registerOptions.setValueAs = value => {
     return value === '' && type !== 'any' ? (parameter.nullable ? null : undefined) : value
+  }
+
+  if((watchKeys.length || (parameter.choices?.type === 'command' && getValues(`${registerKeyPrefix}instance_name`) === '') || (parameter.choices?.type === 'url' && !choiceValues.length))) {
+    const getDynamicStatusTitle = () => {
+      if (isLoading) return 'Loading Choices'
+      if (choicesError) return (
+        <>
+          {choicesError.message}
+          <Divider />
+          {choicesError.response?.data.message}
+        </>
+      )
+      const fieldList = []
+      if (parameter.choices?.type === 'command' && getValues(`${registerKeyPrefix}instance_name`) === '')
+        fieldList.push(<div key="dependent_key_instance_name">instance_name</div>)
+      watchKeys.forEach(key => {
+        if(key !== registerKey && (getValues(key) === undefined || getValues(key) === ''))
+          fieldList.push(<div key={`dependent_key_${key}`}>{key.split('.').splice(-1)[0]}</div>)
+      })
+      if (fieldList.length) return (
+        <>
+          Dependant fields must be selected to populate choices
+          <Divider />
+          Required fields:
+          <Stack ml={1}>
+            {fieldList}
+          </Stack>
+        </>
+      )
+    }
+
+    const dynamicStatusTitle = getDynamicStatusTitle()
+    if (dynamicStatusTitle) formTextFieldProps.label = (
+      <Stack direction="row" alignItems="center" mt={isLoading ? 0 : -1.5}>
+        <>{formTextFieldProps.label}</>
+          <Tooltip title={dynamicStatusTitle} placement="right-end" arrow={true}>
+            { isLoading ? 
+              <CircularProgress sx={{ml: 1}} thickness={6} size={25} color="info" aria-label="choices data loading" />
+              :
+              <Alert severity={choicesError ? 'error' : 'info'} variant="outlined" sx={{border: 'none', width: '40px', pr: 0}} />
+            }
+          </Tooltip>
+      </Stack>
+    )
   }
 
   if(parameter.choices?.display === 'typeahead') {
     if(formTextFieldProps.inputProps) delete formTextFieldProps.inputProps
     if(getValues(registerKey) === undefined) setValue(registerKey, '')
+    delete registerOptions.setValueAs
     return (<Autocomplete
       freeSolo
       selectOnFocus
