@@ -51,8 +51,8 @@ const CommandJobForm = ({ system, command, isJob}: {system: StrippedSystem, comm
             [getDefaultParamValues(parameter.parameters)] : getDefaultParamValues(parameter.parameters)
           }
           else {
-            if(parameter.default || parameter.default === false) 
-              defaultParamValues[parameter.key] = parameter.default
+            if(parameter.default || parameter.default === false || parameter.type === 'Boolean') 
+              defaultParamValues[parameter.key] = parameter.type === 'Boolean' ? parameter.default || false : parameter.default
           }
       })
       return defaultParamValues
