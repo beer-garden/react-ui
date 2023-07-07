@@ -12,7 +12,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
-import { SupportedColorScheme, useTheme } from '@mui/material/styles'
+import { SupportedColorScheme } from '@mui/material/styles'
 import { useMountedState } from 'hooks/useMountedState'
 import { outputFormatted } from 'pages/RequestView/requestViewHelpers'
 import { Request } from 'types/backend-types'
@@ -33,8 +33,6 @@ const RequestViewOutput = ({
   theme,
 }: RequestViewOutputProps) => {
   const [showAsRawData, setShowAsRawData] = useMountedState<boolean>(false)
-  const colors = useTheme()
-  const bgColor = colors.palette.background.default
   const downloadUrl = window.URL.createObjectURL(
     new Blob([request?.output || '']),
   )
@@ -93,8 +91,8 @@ const RequestViewOutput = ({
           </IconButton>
         </Typography>
       </CardActions>
-      <CardContent>
-        {outputFormatted(request, theme, bgColor, showAsRawData)}
+      <CardContent sx={{maxHeight: '700px', overflowY: 'auto' }} >
+        {outputFormatted(request, theme, showAsRawData)}
       </CardContent>
     </Card>
   )

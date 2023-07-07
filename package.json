@@ -42,6 +42,7 @@
     "react-fast-compare": "^3.2.0",
     "react-hook-form": "^7.43.9",
     "react-json-view": "^1.21.3",
+    "react-json-view-lite": "^0.9.6",
     "react-router-dom": "^6.2.2",
     "react-scripts": "^5.0.1",
     "react-table": "^7.8.0",
