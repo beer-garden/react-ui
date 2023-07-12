@@ -18,7 +18,6 @@ import { CommandJobForm } from './CommandJobForm'
 const CommandView = ({isJob} : {isJob?: boolean}) => {
   let { namespace, systemName, version, commandName } = useParams()
   const { jobId } = useParams()
-  const [ paramsHistory, setParamsHistory ] = useMountedState({namespace: namespace, systemName: systemName, version: version, commandName: commandName })
   const [error, setError] = useMountedState<AxiosError | undefined>()
   const { getJob } = useJobs()
   const { getSystems } = useSystems()
@@ -41,9 +40,10 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
       setRequestModel && setRequestModel(undefined)
       setJob && setJob(undefined)
     }
-  }, [setCommand, setRequestModel, setSystem, setJob, setParamsHistory])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  if(jobId && job) {
+  if(jobId && job && jobId === job.id) {
     commandName = job.request_template.command
     systemName = job.request_template.system
     version = job.request_template.system_version
@@ -51,7 +51,7 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
   }
 
   useEffect(() => {
-    if(jobId && !job) {
+    if(jobId && (!job || jobId !== job.id)) {
       getJob(jobId)
         .then((response) => {
           setError(undefined)
@@ -61,12 +61,21 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
           setError(e)
         })
     }
-    if(paramsHistory.namespace !== namespace || paramsHistory.systemName !== systemName || paramsHistory.version !== version || paramsHistory.commandName !== commandName) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobId, job])
+
+  useEffect(() => {
+    if(system && (system.namespace !== namespace || system.name !== systemName || system.version !== version)){
       setSystem && setSystem(undefined)
       setCommand && setCommand(undefined)
-      setParamsHistory({namespace: namespace, systemName: systemName, version: version, commandName: commandName})
+    } else if(command && command.name !== commandName) {
+      setCommand && setCommand(undefined)
     }
-    else if(!system) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commandName, namespace, systemName, version, system])
+
+  useEffect(() => {
+    if(!system && systemName && namespace && version) {
       setError(undefined)
       getSystems()
       .then((response) => {
@@ -79,25 +88,8 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
         setError(e)
       })
     }
-  }, [
-    getSystems,
-    setSystem,
-    setCommand,
-    setParamsHistory,
-    setError,
-    getJob,
-    setJob,
-    paramsHistory,
-    commandName,
-    systemName,
-    namespace,
-    version,
-    system,
-    command,
-    jobId,
-    job,
-    isJob
-  ])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [namespace, systemName, version, system])
   
   useEffect(() => {
     const getCommandFromSystem = (sys: System) => {
@@ -106,7 +98,8 @@ const CommandView = ({isJob} : {isJob?: boolean}) => {
       setCommand && setCommand(tempCommand as AugmentedCommand | undefined)
     }
     if(system && Object.hasOwn(system, 'commands') && !command) getCommandFromSystem(system as System)
-  }, [command, commandName, setCommand, system])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commandName, system, command])
   
 
   if (!system || !command || error) {
