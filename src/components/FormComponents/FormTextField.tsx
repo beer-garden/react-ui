@@ -7,7 +7,7 @@ import { RegisterOptions, useFormContext } from 'react-hook-form'
 export type FormTextFieldProps = {
   registerKey: string
   registerOptions?: RegisterOptions
-  menuOptions?: (string | number)[]
+  menuOptions?: (string | number | null)[]
 } & TextFieldProps
 
 const defaultTextFieldProps: TextFieldProps = {
@@ -20,7 +20,7 @@ const defaultTextFieldProps: TextFieldProps = {
 }
 
 const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textFieldProps }: FormTextFieldProps) => {
-  const { register, getFieldState, watch, } = useFormContext()
+  const { register, getFieldState, watch } = useFormContext()
   const [showPassword, setShowPassword] = useMountedState(false)
 
   const currentValue = watch(registerKey)
@@ -57,11 +57,15 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
     <TextField
       select
       {...defaultTextFieldProps}
-      value={currentValue || ''}
       {...textFieldProps}
+      value={currentValue || ''}
       {...register(registerKey, registerOptions)}
     >
-      {menuOptions.map((value) => <MenuItem key={value} value={value}>{value}</MenuItem>)}
+      {menuOptions.map((value, index) => (
+        <MenuItem key={`${registerKey}-${value === null ? JSON.stringify(value) : value}-${index}`} value={value as string | number}>
+          {value === null ? JSON.stringify(value) : value}
+        </MenuItem>
+      ))}
     </TextField>
   ) : (
     <TextField
