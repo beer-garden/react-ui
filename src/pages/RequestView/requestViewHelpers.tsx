@@ -1,4 +1,4 @@
-import 'pages/RequestView/CustomJsonViewIndex.css'
+import 'css/CustomJsonViewIndex.css'
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { Breadcrumbs, CircularProgress } from '@mui/material'

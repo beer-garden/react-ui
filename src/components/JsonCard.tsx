@@ -1,4 +1,4 @@
-import 'pages/RequestView/CustomJsonViewIndex.css'
+import 'css/CustomJsonViewIndex.css'
 
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import {
