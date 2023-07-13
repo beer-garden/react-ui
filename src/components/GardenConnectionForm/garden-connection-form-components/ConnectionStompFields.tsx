@@ -32,7 +32,7 @@ const ConnectionStompFields = ({connectionType, textFieldProps, ...gridProps}: C
                   label="Host"
                 />
               </Grid>
-              <Grid item minWidth="125px" maxWidth="125px" xs={1}>
+              <Grid item minWidth="150px" maxWidth="150px" xs={1}>
                 <FormTextField
                   {...textFieldProps}
                   registerKey="connection_params.stomp.port"

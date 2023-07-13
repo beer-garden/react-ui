@@ -1,4 +1,5 @@
-import { TextField, TextFieldProps } from '@mui/material'
+import { Clear } from '@mui/icons-material'
+import { IconButton, InputAdornment, TextField, TextFieldProps } from '@mui/material'
 import { defaultTextFieldProps } from 'components/FormComponents'
 import { ChangeEvent } from 'react'
 import { RegisterOptions, useFormContext } from 'react-hook-form'
@@ -22,11 +23,29 @@ const FormAnyOrDict = ({ registerKey, registerOptions, ...textFieldProps }: Form
     if(error.message) textFieldProps.helperText = error.message
   }
 
+  const endAdornment = (
+    <InputAdornment position="end">
+      {!textFieldProps.disabled &&
+        <IconButton
+          onClick={() => {
+            setValue(registerKey, undefined)
+          }}
+        >
+          <Clear />
+        </IconButton>
+      }
+    </InputAdornment>
+  )
+  if (textFieldProps.InputProps && !textFieldProps.disabled) textFieldProps.InputProps.endAdornment = endAdornment
+  else textFieldProps.InputProps = {
+    endAdornment: endAdornment
+  }
+
   return (
     <TextField
       {...defaultTextFieldProps}
       {...textFieldProps}
-      value={ invalid ? currentValue : JSON.stringify(currentValue)}
+      value={ currentValue === undefined ? '' : ( invalid ? currentValue : JSON.stringify(currentValue))}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         if(event.target.value === '') {
             clearErrors(registerKey)
