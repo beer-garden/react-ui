@@ -38,7 +38,7 @@ describe('JSON Card', () => {
       </HashRouter>,
     )
     expect(screen.getByText(`"${testObject.value}"`)).toBeInTheDocument()
-    expect(screen.getByText(Object.keys(testObject)[1])).toBeInTheDocument()
+    expect(screen.getByText(`${Object.keys(testObject)[1]}:`)).toBeInTheDocument()
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
   })
 

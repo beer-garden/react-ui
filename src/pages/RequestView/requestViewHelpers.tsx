@@ -1,15 +1,15 @@
+import 'css/CustomJsonViewIndex.css'
+
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { Breadcrumbs, CircularProgress } from '@mui/material'
 import { SupportedColorScheme } from '@mui/material/styles'
-import ReactJson from 'react-json-view'
+import { darkStyles, defaultStyles, JsonView } from 'react-json-view-lite'
 import { Link as RouterLink } from 'react-router-dom'
 import { Request } from 'types/backend-types'
-import { darkTheme, lightTheme } from 'utils/customRJVThemes'
 
 const outputFormatted = (
   request: Request,
   theme: SupportedColorScheme,
-  bgColor: string,
   showAsRawData = false,
 ) => {
   if (['SUCCESS', 'CANCELED', 'ERROR'].includes(request.status)) {
@@ -38,11 +38,16 @@ const outputFormatted = (
         </pre>
       )
     } else if (output_type === 'JSON') {
+      darkStyles.punctuation = '_puncuationMargin'
+      defaultStyles.punctuation = '_puncuationMargin'
+
+      const shouldInitiallyExpand = (new TextEncoder().encode(output).length) < 7e5
+      
       return (
-        <ReactJson
-          src={JSON.parse(output)}
-          theme={theme === 'dark' ? darkTheme(bgColor) : lightTheme(bgColor)}
-          style={{ backgroundColor: 'primary' }}
+        <JsonView
+          data={JSON.parse(output)}
+          shouldInitiallyExpand={(level) => shouldInitiallyExpand}
+          style={theme === 'dark' ? darkStyles : defaultStyles}
         />
       )
     } else if (output_type === 'HTML') {

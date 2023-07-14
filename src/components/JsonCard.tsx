@@ -1,3 +1,5 @@
+import 'css/CustomJsonViewIndex.css'
+
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import {
   Card,
@@ -7,11 +9,9 @@ import {
   IconButton,
   Typography,
 } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
 import { ThemeContext } from 'components/UI/Theme/ThemeProvider'
 import { useContext } from 'react'
-import ReactJson from 'react-json-view'
-import { darkTheme, lightTheme } from 'utils/customRJVThemes'
+import { darkStyles, defaultStyles, JsonView } from 'react-json-view-lite'
 
 interface IJsonCard {
   title: string
@@ -30,8 +30,10 @@ interface IJsonCard {
  */
 const JsonCard = ({ title, collapseHandler, data, iconTrigger }: IJsonCard) => {
   const theme = useContext(ThemeContext).theme
-  const colors = useTheme()
-  const bgColor = colors.palette.background.default
+  darkStyles.punctuation = '_puncuationMargin'
+  defaultStyles.punctuation = '_puncuationMargin'
+
+  const shouldInitiallyExpand = (new TextEncoder().encode(JSON.stringify(data)).length) < 7e5
 
   return (
     <Card sx={{ width: 1 }}>
@@ -56,12 +58,12 @@ const JsonCard = ({ title, collapseHandler, data, iconTrigger }: IJsonCard) => {
           </Typography>
         )}
       </CardActions>
-      <CardContent>
+      <CardContent sx={{maxHeight: '700px', overflowY: 'auto' }} >
         {data ? (
-          <ReactJson
-            src={data}
-            theme={theme === 'dark' ? darkTheme(bgColor) : lightTheme(bgColor)}
-            style={{ backgroundColor: 'primary' }}
+          <JsonView
+            data={data}
+            shouldInitiallyExpand={(level) => shouldInitiallyExpand}
+            style={theme === 'dark' ? darkStyles : defaultStyles}
           />
         ) : (
           <CircularProgress aria-label="JSON data loading" />
