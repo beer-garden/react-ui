@@ -1,4 +1,4 @@
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { Clear, Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment, MenuItem, TextField, TextFieldProps } from '@mui/material'
 import { useMountedState } from 'hooks/useMountedState'
 import { DateTime } from 'luxon'
@@ -20,7 +20,7 @@ const defaultTextFieldProps: TextFieldProps = {
 }
 
 const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textFieldProps }: FormTextFieldProps) => {
-  const { register, getFieldState, watch } = useFormContext()
+  const { register, getFieldState, watch, setValue } = useFormContext()
   const [showPassword, setShowPassword] = useMountedState(false)
 
   const currentValue = watch(registerKey)
@@ -31,14 +31,25 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
     if(error.message) textFieldProps.helperText = error.message
   }
 
-  if(textFieldProps.type === 'password'){
+  if(!menuOptions){
     const endAdornment = (
       <InputAdornment position="end">
-        <IconButton
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? <Visibility /> : <VisibilityOff />}
-        </IconButton>
+        {textFieldProps.type === 'password' && 
+          <IconButton
+            onClick={() => setShowPassword(!showPassword)}
+            sx={{mr: -2}}
+          >
+            {showPassword ? <Visibility /> : <VisibilityOff />}
+          </IconButton>
+        }
+        {!textFieldProps.disabled &&
+          <IconButton
+            onClick={() => setValue(registerKey, '')}
+            sx={{mr: -2}}
+          >
+            <Clear />
+          </IconButton>
+        }
       </InputAdornment>
     )
     if (textFieldProps.InputProps) textFieldProps.InputProps.endAdornment = endAdornment
@@ -72,6 +83,7 @@ const FormTextField = ({ registerKey, registerOptions, menuOptions, ...textField
       {...defaultTextFieldProps}
       value={(currentValue === 0 || currentValue) ? currentValue : ''}
       {...textFieldProps}
+      type={showPassword ? 'string' : textFieldProps.type}
       {...register(registerKey, registerOptions)}
     />
   )
