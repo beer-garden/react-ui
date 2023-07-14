@@ -81,7 +81,7 @@ const ParamTextField = ({ parameter, registerKey }: ParamTextFieldProps) => {
   }, [_setChoiceValues, getValues, parameter.choices?.display, parameter.nullable, registerKey, setValue])
 
   if(parameter.regex) {
-    registerOptions.pattern = new RegExp(parameter.regex)
+    registerOptions.pattern = {value: new RegExp(parameter.regex), message: `Value does not match pattern: ${parameter.regex}`}
   }
   
   if(parameter.nullable && !parameter.optional)
